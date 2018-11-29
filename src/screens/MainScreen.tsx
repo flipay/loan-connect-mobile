@@ -49,7 +49,6 @@ export class MainScreen extends Component<NavigationScreenProps> {
           flex: 1
         }}
       >
-        <Text>test</Text>
         {cards.map(card => (
           <AssetCard
             key={card.name}

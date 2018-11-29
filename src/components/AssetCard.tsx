@@ -16,6 +16,7 @@ interface Props {
   unit?: string
   isFiat?: boolean
 }
+import { COLORS } from '../constants/styleGuide'
 
 export default class AssetCard extends React.Component<Props> {
   constructor(props: Props) {
@@ -32,7 +33,7 @@ export default class AssetCard extends React.Component<Props> {
         <View style={styles.valueContainer}>
           <Text>{`${this.props.amount} ${this.props.unit || 'THB'}`}</Text>
           {!this.props.isFiat && (
-            <Text>{`${(this.props.price || 0) * this.props.amount} THB`}</Text>
+            <Text style={styles.bahtPrice}>{`${(this.props.price || 0) * this.props.amount} THB`}</Text>
           )}
         </View>
       </View>
@@ -68,5 +69,9 @@ const styles = StyleSheet.create({
   },
   valueContainer: {
     alignItems: 'flex-end'
+  },
+  bahtPrice: {
+    color: COLORS.N500,
+    fontSize: 11
   }
 })
