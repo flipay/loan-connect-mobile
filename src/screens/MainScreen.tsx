@@ -11,19 +11,22 @@ const cards = [
     image: require('../img/btc.png'),
     amount: 3000,
     isFiat: true
-  }, {
+  },
+  {
     name: 'Bitcoin',
     image: require('../img/btc.png'),
     amount: 1,
     price: 200000,
     unit: 'BTC'
-  },  {
+  },
+  {
     name: 'Ethereum',
     image: require('../img/btc.png'),
     amount: 0,
     price: 3000,
     unit: 'ETH'
-  },   {
+  },
+  {
     name: 'OmiseGo',
     image: require('../img/btc.png'),
     amount: 0,
@@ -46,10 +49,8 @@ export class MainScreen extends Component<NavigationScreenProps> {
           flex: 1
         }}
       >
-        <Text>
-          test
-        </Text>
-        {cards.map((card) => (
+        <Text>test</Text>
+        {cards.map(card => (
           <AssetCard
             key={card.name}
             name={card.name}
