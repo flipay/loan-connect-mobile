@@ -113,6 +113,7 @@
     "object-literal-key-quotes": [
       false
     ],
+    "object-literal-sort-keys": false,
     "ter-indent": [
       true,
       2,
