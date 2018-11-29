@@ -26,7 +26,7 @@ export default class AssetCard extends React.Component<Props> {
     return (
       <View style={styles.container}>
         <View style={styles.labelContainer}>
-          <Image source={this.props.image} />
+          <Image source={this.props.image} style={styles.icon} />
           <Text>{this.props.name}</Text>
         </View>
         <View style={styles.valueContainer}>
@@ -42,22 +42,29 @@ export default class AssetCard extends React.Component<Props> {
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
     flex: 1,
+    alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
     backgroundColor: '#fff',
     padding: 20,
-    margin: 20,
+    marginHorizontal: 12,
+    marginBottom: 8,
     borderWidth: 0.5,
     shadowColor: 'black',
     shadowOffset: { height: 4, width: 0 },
     shadowOpacity: 0.2,
-    shadowRadius: 2
+    shadowRadius: 2,
+    height: 72
   },
   labelContainer: {
     flexDirection: 'row',
     alignItems: 'center'
+  },
+  icon: {
+    width: 16,
+    height: 16,
+    marginRight: 8
   },
   valueContainer: {
     alignItems: 'flex-end'
