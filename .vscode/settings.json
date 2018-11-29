@@ -2,6 +2,7 @@
 {
   "editor.tabSize": 2,
   "eslint.enable": false,
+  "prettier.tslintIntegration": true,
   "javascript.validate.enable": false,
   "tslint.enable": true,
   "tslint.exclude": "/node_modules/**/*",
