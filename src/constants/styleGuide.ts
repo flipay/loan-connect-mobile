@@ -17,5 +17,6 @@ export const COLORS = {
   N500: '#8993A4',
   N600: '#5D687F',
   N700: '#3C4558',
-  N800: '#091E42'
+  N800: '#091E42',
+  WHITE: '#FFFFFF'
 }

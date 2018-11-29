@@ -1,9 +1,10 @@
 import * as React from 'react'
-import { Text } from 'react-native'
+import { Text, View, StyleSheet } from 'react-native'
 import { Component } from 'react'
 import { NavigationScreenProps } from 'react-navigation'
 import { ScrollView } from 'react-native'
 import AssetCard from '../components/AssetCard'
+import { COLORS } from '../constants/styleGuide'
 
 const cards = [
   {
@@ -37,8 +38,19 @@ const cards = [
 
 // tslint:disable-next-line:max-classes-per-file
 export class MainScreen extends Component<NavigationScreenProps> {
-  public static navigationOptions = {
-    title: 'Home'
+  // public static navigationOptions = {
+  //   title: 'Home'
+  // }
+  public renderHeader() {
+    return (
+      <View style={styles.header}>
+        <Text style={styles.totalLabel}>TOTAL VALUE</Text>
+        <Text style={styles.totalValueContainer}>
+          <Text>฿</Text>
+          <Text style={styles.totalValue}> 203,000</Text>
+        </Text>
+      </View>
+    )
   }
 
   public render() {
@@ -49,18 +61,46 @@ export class MainScreen extends Component<NavigationScreenProps> {
           flex: 1
         }}
       >
-        {cards.map(card => (
-          <AssetCard
-            key={card.name}
-            name={card.name}
-            image={card.image}
-            amount={card.amount}
-            unit={card.unit}
-            price={card.price}
-            isFiat={card.isFiat}
-          />
-        ))}
+        {this.renderHeader()}
+        <View style={styles.cardsContainer}>
+          {cards.map(card => (
+            <AssetCard
+              key={card.name}
+              name={card.name}
+              image={card.image}
+              amount={card.amount}
+              unit={card.unit}
+              price={card.price}
+              isFiat={card.isFiat}
+            />
+          ))}
+        </View>
       </ScrollView>
     )
   }
 }
+
+const styles = StyleSheet.create({
+  header: {
+    backgroundColor: 'blue',
+    height: 172,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  totalLabel: {
+    fontSize: 11,
+    color: COLORS.P100
+  },
+  totalValueContainer: {
+    color: COLORS.WHITE,
+    marginTop: 8
+  },
+  totalValue: {
+    marginLeft: 8,
+    fontSize: 32
+  },
+  cardsContainer: {
+    position: 'relative',
+    top: -24
+  }
+})
