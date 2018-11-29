@@ -8,20 +8,24 @@ import AssetCard from '../components/AssetCard'
 const cards = [
   {
     name: 'Cash',
+    image: require('../img/btc.png'),
     amount: 3000,
     isFiat: true
   }, {
     name: 'Bitcoin',
+    image: require('../img/btc.png'),
     amount: 1,
     price: 200000,
     unit: 'BTC'
   },  {
     name: 'Ethereum',
+    image: require('../img/btc.png'),
     amount: 0,
     price: 3000,
     unit: 'ETH'
   },   {
     name: 'OmiseGo',
+    image: require('../img/btc.png'),
     amount: 0,
     price: 300,
     unit: 'OMG'
@@ -49,6 +53,7 @@ export class MainScreen extends Component<NavigationScreenProps> {
           <AssetCard
             key={card.name}
             name={card.name}
+            image={card.image}
             amount={card.amount}
             unit={card.unit}
             price={card.price}

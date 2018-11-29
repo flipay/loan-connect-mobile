@@ -1,9 +1,9 @@
 import * as React from "react";
 
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Image, ImageSourcePropType } from "react-native";
 
 interface Props {
-  // image: string
+  image: ImageSourcePropType;
   name: string;
   amount: number;
   price?: number;
@@ -17,9 +17,13 @@ export default class AssetCard extends React.Component<Props> {
   }
 
   render() {
+    console.log('kendo jaa eieie', this.props.image, typeof this.props.image)
     return (
       <View style={styles.container}>
-        <View>
+        <View style={styles.labelContainer}>
+          <Image
+            source={this.props.image}
+          />
           <Text>{this.props.name}</Text>
         </View>
         <View style={styles.valueContainer}>
@@ -40,12 +44,17 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     backgroundColor: "#fff",
+    padding: 20,
     margin: 20,
     borderWidth: 0.5,
     shadowColor: 'black',
     shadowOffset: {height: 4, width: 0},
     shadowOpacity: 0.2,
     shadowRadius: 2
+  },
+  labelContainer: {
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   valueContainer: {
     alignItems: "flex-end"
