@@ -16,7 +16,7 @@ interface Props {
   unit?: string
   isFiat?: boolean
 }
-import { COLORS } from '../constants/styleGuide'
+import { COLORS } from '../constants/styleGuides'
 
 export default class AssetCard extends React.Component<Props> {
   constructor(props: Props) {

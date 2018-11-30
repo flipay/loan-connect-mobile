@@ -4,7 +4,7 @@ import { Component } from 'react'
 import { NavigationScreenProps } from 'react-navigation'
 import { ScrollView } from 'react-native'
 import AssetCard from '../components/AssetCard'
-import { COLORS } from '../constants/styleGuide'
+import { COLORS } from '../constants/styleGuides'
 
 const cards = [
   {
