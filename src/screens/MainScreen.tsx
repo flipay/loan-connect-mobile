@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Text, View, StyleSheet } from 'react-native'
-import { Component } from 'react'
+import { LinearGradient } from 'expo'
 import { NavigationScreenProps } from 'react-navigation'
 import { ScrollView } from 'react-native'
 import AssetCard from '../components/AssetCard'
@@ -37,19 +37,24 @@ const cards = [
 ]
 
 // tslint:disable-next-line:max-classes-per-file
-export class MainScreen extends Component<NavigationScreenProps> {
+export class MainScreen extends React.Component<NavigationScreenProps> {
   // public static navigationOptions = {
   //   title: 'Home'
   // }
   public renderHeader() {
     return (
-      <View style={styles.header}>
+      <LinearGradient
+        colors={[COLORS.P400, COLORS.C500]}
+        start={[0.3, 0.7]}
+        end={[2, -0.8]}
+        style={styles.header}
+      >
         <Text style={styles.totalLabel}>TOTAL VALUE</Text>
         <Text style={styles.totalValueContainer}>
           <Text>฿</Text>
           <Text style={styles.totalValue}> 203,000</Text>
         </Text>
-      </View>
+      </LinearGradient>
     )
   }
 
