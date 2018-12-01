@@ -1,4 +1,4 @@
-import { createStackNavigator } from 'react-navigation'
+import { createAppContainer, createStackNavigator } from 'react-navigation'
 
 import { ConstantsScreen } from './constants/ConstantsScreen'
 
@@ -7,12 +7,14 @@ import { ManifestScreen } from './constants/ManifestScreen'
 import { PlatformScreen } from './constants/PlatformScreen'
 import { SystemFontsScreen } from './constants/SystemFontsScreen'
 
-export default createStackNavigator({
-  // tslint:disable:object-literal-sort-keys
-  Main: { screen: MainScreen },
-
+const AppNavigator = createStackNavigator({
+  Main: { screen: MainScreen, navigationOptions: {
+    header: null
+  }},
   Constants: { screen: ConstantsScreen },
   Manifest: { screen: ManifestScreen },
   Platform: { screen: PlatformScreen },
-  SystemFonts: { screen: SystemFontsScreen },
+  SystemFonts: { screen: SystemFontsScreen }
 })
+
+export default createAppContainer(AppNavigator)

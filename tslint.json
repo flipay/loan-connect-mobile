@@ -33,7 +33,6 @@
     ],
     "no-bitwise": false,
     "no-duplicate-imports": false,
-    "no-null-keyword": true,
     "no-switch-case-fall-through": true,
     "object-literal-shorthand": false,
     "one-line": [
