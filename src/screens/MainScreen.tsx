@@ -8,12 +8,14 @@ import { COLORS } from '../constants/styleGuides'
 
 const cards = [
   {
+    id: 'cash',
     name: 'Cash',
     image: require('../img/btc.png'),
     amount: 3000,
     isFiat: true
   },
   {
+    id: 'bitcoin',
     name: 'Bitcoin',
     image: require('../img/btc.png'),
     amount: 1,
@@ -21,6 +23,7 @@ const cards = [
     unit: 'BTC'
   },
   {
+    id: 'ethereum',
     name: 'Ethereum',
     image: require('../img/btc.png'),
     amount: 0,
@@ -28,6 +31,7 @@ const cards = [
     unit: 'ETH'
   },
   {
+    id: 'omisego',
     name: 'OmiseGo',
     image: require('../img/btc.png'),
     amount: 0,
@@ -36,11 +40,31 @@ const cards = [
   }
 ]
 
+interface State {
+  selectedCoin: string | null
+}
+
 // tslint:disable-next-line:max-classes-per-file
-export class MainScreen extends React.Component<NavigationScreenProps> {
+export default class MainScreen extends React.Component<NavigationScreenProps, State> {
   // public static navigationOptions = {
   //   title: 'Home'
   // }
+  constructor(props: NavigationScreenProps) {
+    super(props)
+    this.state = {
+      selectedCoin: null
+    }
+  }
+
+  public onPress = (coinId: string) => {
+    if (this.state.selectedCoin === coinId) {
+      this.setState({ selectedCoin: null })
+    }
+    else {
+      this.setState({ selectedCoin: coinId })
+    }
+  }
+
   public renderHeader() {
     return (
       <LinearGradient
@@ -70,13 +94,18 @@ export class MainScreen extends React.Component<NavigationScreenProps> {
         <View style={styles.cardsContainer}>
           {cards.map(card => (
             <AssetCard
-              key={card.name}
+              key={card.id}
               name={card.name}
               image={card.image}
               amount={card.amount}
               unit={card.unit}
               price={card.price}
               isFiat={card.isFiat}
+              expanded={
+                !!this.state.selectedCoin && this.state.selectedCoin === card.id
+              }
+              onPress={() => this.onPress(card.id)}
+              navigation={this.props.navigation}
             />
           ))}
         </View>
