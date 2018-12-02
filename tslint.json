@@ -104,6 +104,7 @@
     "no-irregular-whitespace": true,
     "no-multi-spaces": true,
     "no-regex-spaces": true,
+    "space-before-function-paren": [true, "always"],
     "object-curly-spacing":
     [
       true,
