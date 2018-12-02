@@ -1,8 +1,7 @@
 import * as React from 'react'
-import { Text, View, StyleSheet } from 'react-native'
+import { ScrollView, StatusBar, Text, View, StyleSheet } from 'react-native'
 import { LinearGradient } from 'expo'
 import { NavigationScreenProps } from 'react-navigation'
-import { ScrollView } from 'react-native'
 import AssetCard from '../components/AssetCard'
 import { COLORS } from '../constants/styleGuides'
 
@@ -45,7 +44,10 @@ interface State {
 }
 
 // tslint:disable-next-line:max-classes-per-file
-export default class MainScreen extends React.Component<NavigationScreenProps, State> {
+export default class MainScreen extends React.Component<
+  NavigationScreenProps,
+  State
+> {
   // public static navigationOptions = {
   //   title: 'Home'
   // }
@@ -59,8 +61,7 @@ export default class MainScreen extends React.Component<NavigationScreenProps, S
   public onPress = (coinId: string) => {
     if (this.state.selectedCoin === coinId) {
       this.setState({ selectedCoin: null })
-    }
-    else {
+    } else {
       this.setState({ selectedCoin: coinId })
     }
   }
@@ -84,32 +85,36 @@ export default class MainScreen extends React.Component<NavigationScreenProps, S
 
   public render() {
     return (
-      <ScrollView
-        style={{
-          backgroundColor: '#fff',
-          flex: 1
-        }}
-      >
-        {this.renderHeader()}
-        <View style={styles.cardsContainer}>
-          {cards.map(card => (
-            <AssetCard
-              key={card.id}
-              name={card.name}
-              image={card.image}
-              amount={card.amount}
-              unit={card.unit}
-              price={card.price}
-              isFiat={card.isFiat}
-              expanded={
-                !!this.state.selectedCoin && this.state.selectedCoin === card.id
-              }
-              onPress={() => this.onPress(card.id)}
-              navigation={this.props.navigation}
-            />
-          ))}
-        </View>
-      </ScrollView>
+      <View style={{ flex: 1 }}>
+        <StatusBar barStyle="light-content" />
+        <ScrollView
+          style={{
+            backgroundColor: '#fff',
+            flex: 1
+          }}
+        >
+          {this.renderHeader()}
+          <View style={styles.cardsContainer}>
+            {cards.map(card => (
+              <AssetCard
+                key={card.id}
+                name={card.name}
+                image={card.image}
+                amount={card.amount}
+                unit={card.unit}
+                price={card.price}
+                isFiat={card.isFiat}
+                expanded={
+                  !!this.state.selectedCoin &&
+                  this.state.selectedCoin === card.id
+                }
+                onPress={() => this.onPress(card.id)}
+                navigation={this.props.navigation}
+              />
+            ))}
+          </View>
+        </ScrollView>
+      </View>
     )
   }
 }
