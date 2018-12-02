@@ -14,6 +14,7 @@ import { COLORS } from '../constants/styleGuides'
 import Button from './Button'
 
 interface Props {
+  id: string
   image: ImageSourcePropType
   name: string
   amount: number
@@ -21,24 +22,24 @@ interface Props {
   unit?: string
   isFiat?: boolean
   expanded: boolean
-  onPress: () => void,
+  onPress: () => void
 }
 
-export default class AssetCard extends React.Component<Props & NavigationScreenProps> {
-
-  public onPressButton = (side: 'buy'|'sell') => {
-    this.props.navigation.navigate('Trade')
+export default class AssetCard extends React.Component<
+  Props & NavigationScreenProps
+> {
+  public onPressButton = (side: 'buy' | 'sell') => {
+    this.props.navigation.navigate('Trade', {
+      side,
+      coinId: this.props.id
+    })
   }
 
   public renderBuySellButton() {
     return (
       <View style={styles.buttonsContainer}>
-        <Button onPress={() => this.onPressButton('buy')}>
-          Buy
-        </Button>
-        <Button onPress={() => this.onPressButton('sell')}>
-          Sell
-        </Button>
+        <Button onPress={() => this.onPressButton('buy')}>Buy</Button>
+        <Button onPress={() => this.onPressButton('sell')}>Sell</Button>
       </View>
     )
   }

@@ -98,6 +98,7 @@ export default class MainScreen extends React.Component<
             {cards.map(card => (
               <AssetCard
                 key={card.id}
+                id={card.id}
                 name={card.name}
                 image={card.image}
                 amount={card.amount}

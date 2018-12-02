@@ -3,9 +3,16 @@ import { Text } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { ScrollView } from 'react-native'
 
-export default class TradeScreen extends React.Component<NavigationScreenProps> {
-  public static navigationOptions = {
-    title: 'Buy/Sell'
+export default class TradeScreen extends React.Component<
+  NavigationScreenProps
+> {
+  public static navigationOptions = (props: NavigationScreenProps) => {
+    return {
+      title: `${props.navigation.getParam(
+        'side',
+        'Buy'
+      )} ${props.navigation.getParam('coinId', 'Bitcoin')}`
+    }
   }
 
   public render() {
@@ -16,9 +23,7 @@ export default class TradeScreen extends React.Component<NavigationScreenProps> 
           flex: 1
         }}
       >
-        <Text>
-          buy / sell
-        </Text>
+        <Text>buy / sell</Text>
       </ScrollView>
     )
   }
