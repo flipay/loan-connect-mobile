@@ -35,7 +35,7 @@ export default class AssetCard extends React.Component<
     })
   }
 
-  public renderBuySellButton() {
+  public renderBuySellButton () {
     return (
       <View style={styles.buttonsContainer}>
         <Button onPress={() => this.onPressButton('buy')}>Buy</Button>
@@ -44,29 +44,64 @@ export default class AssetCard extends React.Component<
     )
   }
 
-  public render() {
+  public renderLabel () {
+    return (
+      <View style={styles.labelContainer}>
+        <Image source={this.props.image} style={styles.icon} />
+        <Text>{this.props.name}</Text>
+      </View>
+    )
+  }
+
+  public renderExpandedCard () {
+    return (
+      <View style={styles.expandedContainer}>
+        {this.renderLabel()}
+        <Text>{`${this.props.amount} ${this.props.unit || 'THB'}`}</Text>
+        {!this.props.isFiat && (
+          <Text style={styles.bahtPrice}>{`${(this.props.price || 0) *
+            this.props.amount} THB`}</Text>
+        )}
+        {this.renderBuySellButton()}
+      </View>
+    )
+  }
+
+  public renderNormalCard () {
     return (
       <TouchableOpacity style={styles.container} onPress={this.props.onPress}>
-        <View style={styles.content}>
-          <View style={styles.labelContainer}>
-            <Image source={this.props.image} style={styles.icon} />
-            <Text>{this.props.name}</Text>
-          </View>
-          <View style={styles.valueContainer}>
-            <Text>{`${this.props.amount} ${this.props.unit || 'THB'}`}</Text>
-            {!this.props.isFiat && (
-              <Text style={styles.bahtPrice}>{`${(this.props.price || 0) *
-                this.props.amount} THB`}</Text>
-            )}
-          </View>
+        {this.renderLabel()}
+        <View style={styles.valueContainer}>
+          <Text>{`${this.props.amount} ${this.props.unit || 'THB'}`}</Text>
+          {!this.props.isFiat && (
+            <Text style={styles.bahtPrice}>{`${(this.props.price || 0) *
+              this.props.amount} THB`}</Text>
+          )}
         </View>
-        {this.props.expanded && this.renderBuySellButton()}
       </TouchableOpacity>
     )
+  }
+
+  public render () {
+    return this.props.expanded
+      ? this.renderExpandedCard()
+      : this.renderNormalCard()
   }
 }
 
 const styles = StyleSheet.create({
+  expandedContainer: {
+    backgroundColor: COLORS.WHITE,
+    shadowColor: 'black',
+    shadowOffset: { height: 4, width: 0 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    marginHorizontal: 12,
+    marginBottom: 8,
+    padding: 20,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
   container: {
     backgroundColor: COLORS.WHITE,
     shadowColor: 'black',
@@ -75,10 +110,7 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     marginHorizontal: 12,
     marginBottom: 8,
-    padding: 20
-  },
-  content: {
-    flex: 1,
+    padding: 20,
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between'

@@ -15,7 +15,7 @@ export default class TradeScreen extends React.Component<
     }
   }
 
-  public render() {
+  public render () {
     return (
       <ScrollView
         style={{

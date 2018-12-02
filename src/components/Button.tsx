@@ -1,10 +1,6 @@
 import * as React from 'react'
 
-import {
-  Text,
-  StyleSheet,
-  TouchableOpacity
-} from 'react-native'
+import { Text, StyleSheet, TouchableOpacity } from 'react-native'
 
 import { COLORS } from '../constants/styleGuides'
 
@@ -14,7 +10,7 @@ interface Props {
 }
 
 export default class Button extends React.Component<Props> {
-  public render() {
+  public render () {
     return (
       <TouchableOpacity style={styles.container} onPress={this.props.onPress}>
         <Text>{this.props.children}</Text>
@@ -27,5 +23,4 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: COLORS.P500
   }
-
 })
