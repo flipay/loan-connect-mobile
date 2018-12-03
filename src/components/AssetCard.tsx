@@ -5,6 +5,7 @@ import {
   View,
   StyleSheet,
   Image,
+  Animated,
   TouchableOpacity,
   ImageSourcePropType
 } from 'react-native'
@@ -25,9 +26,49 @@ interface Props {
   onPress: () => void
 }
 
+interface State {
+  cardHeight: Animated.Value
+  cardHorizontalMargin: Animated.Value
+}
+
 export default class AssetCard extends React.Component<
-  Props & NavigationScreenProps
+  Props & NavigationScreenProps,
+  State
 > {
+  public constructor (props: Props & NavigationScreenProps) {
+    super(props)
+    this.state = {
+      cardHeight: new Animated.Value(80),
+      cardHorizontalMargin: new Animated.Value(8)
+    }
+  }
+
+  public componentDidUpdate (prevProps: Props & NavigationScreenProps) {
+    if (!prevProps.expanded && this.props.expanded) {
+      Animated.parallel([
+        Animated.timing(this.state.cardHeight, {
+          toValue: 194,
+          duration: 300
+        }),
+        Animated.timing(this.state.cardHorizontalMargin, {
+          toValue: 8,
+          duration: 300
+        })
+      ]).start()
+    } else if (prevProps.expanded && !this.props.expanded) {
+      Animated.parallel([
+        Animated.timing(this.state.cardHeight, {
+          toValue: 80,
+          duration: 300
+        }),
+        Animated.timing(this.state.cardHorizontalMargin, {
+          toValue: 12,
+          duration: 300
+        })
+      ]).start()
+    }
+  }
+
   public onPressButton = (side: 'buy' | 'sell') => {
     this.props.navigation.navigate('Trade', {
       side,
@@ -71,44 +112,47 @@ export default class AssetCard extends React.Component<
     )
   }
 
-  public renderExpandedCard () {
-    return (
-      <TouchableOpacity
-        style={styles.expandedContainer}
-        onPress={this.props.onPress}
-      >
-        {this.renderLabel()}
-        {this.renderExpandedCardMainContent()}
-        {this.renderExpandedCardDescription()}
-        <FontAwesome name='angle-up' size={16} color={COLORS.N400} style={styles.upIcon} />
-      </TouchableOpacity>
-    )
-  }
-
-  public renderNormalCard () {
-    return (
-      <TouchableOpacity style={styles.container} onPress={this.props.onPress}>
-        {this.renderLabel()}
-        <View style={styles.rightSection}>
-          <View style={styles.valueContainer}>
-            <Text type='headline'>{`${this.props.amount} ${this.props.unit ||
-              'THB'}`}</Text>
-            {!this.props.isFiat && (
-              <Text type='caption' style={styles.bahtPrice}>
-                {`${(this.props.price || 0) * this.props.amount} THB`}
-              </Text>
-            )}
-          </View>
-          <FontAwesome name='angle-down' size={16} color={COLORS.N400} />
-        </View>
-      </TouchableOpacity>
-    )
-  }
-
   public render () {
-    return this.props.expanded
-      ? this.renderExpandedCard()
-      : this.renderNormalCard()
+    return (
+      <TouchableOpacity onPress={this.props.onPress}>
+        <Animated.View
+          style={[
+            this.props.expanded ? styles.expandedContainer : styles.container,
+            {
+              height: this.state.cardHeight,
+              marginHorizontal: this.state.cardHorizontalMargin
+            }
+          ]}
+        >
+          {this.renderLabel()}
+          {!this.props.expanded && (
+            <View style={styles.rightSection}>
+              <View style={styles.valueContainer}>
+                <Text type='headline'>
+                  {`${this.props.amount} ${this.props.unit || 'THB'}`}
+                </Text>
+                {!this.props.isFiat && (
+                  <Text type='caption' style={styles.bahtPrice}>
+                    {`${(this.props.price || 0) * this.props.amount} THB`}
+                  </Text>
+                )}
+              </View>
+              <FontAwesome name='angle-down' size={16} color={COLORS.N400} />
+            </View>
+          )}
+          {this.props.expanded && this.renderExpandedCardMainContent()}
+          {this.props.expanded && this.renderExpandedCardDescription()}
+          {this.props.expanded && (
+            <FontAwesome
+              name='angle-up'
+              size={16}
+              color={COLORS.N400}
+              style={styles.upIcon}
+            />
+          )}
+        </Animated.View>
+      </TouchableOpacity>
+    )
   }
 }
 
@@ -119,11 +163,9 @@ const styles = StyleSheet.create({
     shadowOffset: { height: 4, width: 0 },
     shadowOpacity: 0.2,
     shadowRadius: 2,
-    marginHorizontal: 8,
     padding: 20,
     justifyContent: 'space-between',
     alignItems: 'center',
-    height: 194,
     position: 'relative'
   },
   container: {
@@ -132,12 +174,10 @@ const styles = StyleSheet.create({
     shadowOffset: { height: 4, width: 0 },
     shadowOpacity: 0.2,
     shadowRadius: 2,
-    marginHorizontal: 12,
     padding: 20,
     alignItems: 'center',
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    height: 80
+    justifyContent: 'space-between'
   },
   labelContainer: {
     flexDirection: 'row',
