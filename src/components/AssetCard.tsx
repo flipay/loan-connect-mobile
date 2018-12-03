@@ -3,12 +3,12 @@ import { NavigationScreenProps } from 'react-navigation'
 
 import {
   View,
-  Text,
   StyleSheet,
   Image,
   TouchableOpacity,
   ImageSourcePropType
 } from 'react-native'
+import Text from './Text'
 
 import { COLORS } from '../constants/styleGuides'
 import Button from './Button'
@@ -35,35 +35,52 @@ export default class AssetCard extends React.Component<
     })
   }
 
-  public renderBuySellButton () {
-    return (
-      <View style={styles.buttonsContainer}>
-        <Button onPress={() => this.onPressButton('buy')}>Buy</Button>
-        <View style={styles.spacing} />
-        <Button onPress={() => this.onPressButton('sell')}>Sell</Button>
-      </View>
-    )
-  }
-
   public renderLabel () {
     return (
       <View style={styles.labelContainer}>
         <Image source={this.props.image} style={styles.icon} />
-        <Text>{this.props.name}</Text>
+        <Text type='headline'>{this.props.name}</Text>
       </View>
     )
+  }
+
+  public renderExpandedCardMainContent () {
+    return this.props.isFiat
+      ? (
+        <Text type='title'>
+          {`${this.props.amount} THB`}
+        </Text>
+      ) : (
+        <View style={styles.coinMainContent}>
+          <Text type='title'>{`${this.props.amount} ${this.props.unit}`}</Text>
+          <Text style={styles.bahtPrice}>
+            {`${(this.props.price || 0) * this.props.amount} THB`}
+          </Text>
+        </View>
+      )
+  }
+
+  public renderExpandedCardDescription () {
+    return this.props.isFiat
+      ? (
+        <Text numberOfLines={2} style={styles.contactUs}>
+          To deposit cash in Thai baht, please contact us
+        </Text>
+      ) : (
+        <View style={styles.buttonsContainer}>
+          <Button onPress={() => this.onPressButton('buy')}>Buy</Button>
+          <View style={styles.spacing} />
+          <Button onPress={() => this.onPressButton('sell')}>Sell</Button>
+        </View>
+      )
   }
 
   public renderExpandedCard () {
     return (
       <View style={styles.expandedContainer}>
         {this.renderLabel()}
-        <Text>{`${this.props.amount} ${this.props.unit || 'THB'}`}</Text>
-        {!this.props.isFiat && (
-          <Text style={styles.bahtPrice}>{`${(this.props.price || 0) *
-            this.props.amount} THB`}</Text>
-        )}
-        {this.renderBuySellButton()}
+        {this.renderExpandedCardMainContent()}
+        {this.renderExpandedCardDescription()}
       </View>
     )
   }
@@ -73,10 +90,11 @@ export default class AssetCard extends React.Component<
       <TouchableOpacity style={styles.container} onPress={this.props.onPress}>
         {this.renderLabel()}
         <View style={styles.valueContainer}>
-          <Text>{`${this.props.amount} ${this.props.unit || 'THB'}`}</Text>
+          <Text type='headline'>{`${this.props.amount} ${this.props.unit || 'THB'}`}</Text>
           {!this.props.isFiat && (
-            <Text style={styles.bahtPrice}>{`${(this.props.price || 0) *
-              this.props.amount} THB`}</Text>
+            <Text type='caption' style={styles.bahtPrice}>
+              {`${(this.props.price || 0) * this.props.amount} THB`}
+            </Text>
           )}
         </View>
       </TouchableOpacity>
@@ -100,8 +118,9 @@ const styles = StyleSheet.create({
     marginHorizontal: 12,
     marginBottom: 8,
     padding: 20,
-    justifyContent: 'center',
-    alignItems: 'center'
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    height: 194
   },
   container: {
     backgroundColor: COLORS.WHITE,
@@ -121,6 +140,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center'
   },
+  coinMainContent: {
+    alignItems: 'center'
+  },
   icon: {
     width: 16,
     height: 16,
@@ -130,13 +152,15 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end'
   },
   bahtPrice: {
-    color: COLORS.N500,
-    fontSize: 11
+    color: COLORS.N500
   },
   buttonsContainer: {
     flexDirection: 'row'
   },
   spacing: {
     width: 9
+  },
+  contactUs: {
+    paddingHorizontal: 20
   }
 })

@@ -24,11 +24,11 @@ interface Font {
   fontFamily: 'nunito' | 'nunito-semibold'
 }
 
-export type FontType = 'large_title' | 'title' | 'head_line' | 'body' | 'caption' | 'button'
+export type FontType = 'large-title' | 'title' | 'headline' | 'body' | 'caption' | 'button'
 type FontTypes = { [key in FontType]: Font }
 
 export const FONT_TYPES: FontTypes = {
-  large_title: {
+  ['large-title']: {
     fontSize: 34,
     fontFamily: 'nunito'
   },
@@ -36,7 +36,7 @@ export const FONT_TYPES: FontTypes = {
     fontSize: 22,
     fontFamily: 'nunito-semibold'
   },
-  head_line: {
+  headline: {
     fontSize: 17,
     fontFamily: 'nunito-semibold'
   },

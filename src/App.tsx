@@ -23,7 +23,17 @@ const AppNavigator = createStackNavigator({
 
 const AppContainer = createAppContainer(AppNavigator)
 
-export default class App extends React.Component {
+interface State {
+  fontLoaded: boolean
+}
+
+export default class App extends React.Component<{}, State> {
+  constructor (props: {}) {
+    super(props)
+    this.state = {
+      fontLoaded: false
+    }
+  }
   public async componentDidMount () {
     await Font.loadAsync({
       'nunito': require('../assets/fonts/Nunito-Regular.ttf'),
@@ -33,6 +43,8 @@ export default class App extends React.Component {
   }
 
   public render () {
-    return <AppContainer />
+    return this.state.fontLoaded
+      ? <AppContainer />
+      : null
   }
 }

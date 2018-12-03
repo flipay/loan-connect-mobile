@@ -1,5 +1,6 @@
 import * as React from 'react'
-import { ScrollView, StatusBar, Text, View, StyleSheet } from 'react-native'
+import { ScrollView, StatusBar, View, StyleSheet } from 'react-native'
+import Text from '../components/Text'
 import { LinearGradient } from 'expo'
 import { NavigationScreenProps } from 'react-navigation'
 import AssetCard from '../components/AssetCard'
@@ -74,10 +75,10 @@ export default class MainScreen extends React.Component<
         end={[2, -0.8]}
         style={styles.header}
       >
-        <Text style={styles.totalLabel}>TOTAL VALUE</Text>
+        <Text type='caption' color={COLORS.P100}>TOTAL VALUE</Text>
         <Text style={styles.totalValueContainer}>
           <Text>฿</Text>
-          <Text style={styles.totalValue}> 203,000</Text>
+          <Text type='large-title' style={styles.totalValue}> 203,000</Text>
         </Text>
       </LinearGradient>
     )
@@ -123,21 +124,16 @@ export default class MainScreen extends React.Component<
 const styles = StyleSheet.create({
   header: {
     backgroundColor: 'blue',
-    height: 172,
+    height: 236,
     alignItems: 'center',
     justifyContent: 'center'
-  },
-  totalLabel: {
-    fontSize: 11,
-    color: COLORS.P100
   },
   totalValueContainer: {
     color: COLORS.WHITE,
     marginTop: 8
   },
   totalValue: {
-    marginLeft: 8,
-    fontSize: 32
+    marginLeft: 8
   },
   cardsContainer: {
     position: 'relative',
