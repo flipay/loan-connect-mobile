@@ -38,7 +38,7 @@ export default class AssetCard extends React.Component<
   public renderLabel () {
     return (
       <View style={styles.labelContainer}>
-        <Image source={this.props.image} style={styles.icon} />
+        <Image source={this.props.image} style={styles.coinIcon} />
         <Text type='headline'>{this.props.name}</Text>
       </View>
     )
@@ -80,6 +80,7 @@ export default class AssetCard extends React.Component<
         {this.renderLabel()}
         {this.renderExpandedCardMainContent()}
         {this.renderExpandedCardDescription()}
+        <FontAwesome name='angle-up' size={16} color={COLORS.N400} style={styles.upIcon} />
       </TouchableOpacity>
     )
   }
@@ -123,7 +124,8 @@ const styles = StyleSheet.create({
     padding: 20,
     justifyContent: 'space-between',
     alignItems: 'center',
-    height: 194
+    height: 194,
+    position: 'relative'
   },
   container: {
     backgroundColor: COLORS.WHITE,
@@ -150,10 +152,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center'
   },
-  icon: {
+  coinIcon: {
     width: 16,
     height: 16,
     marginRight: 8
+  },
+  upIcon: {
+    position: 'absolute',
+    right: 22,
+    top: 24
   },
   valueContainer: {
     alignItems: 'flex-end',
