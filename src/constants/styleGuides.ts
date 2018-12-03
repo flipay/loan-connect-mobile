@@ -21,7 +21,7 @@ export const COLORS = {
 }
 interface Font {
   fontSize: number
-  fontWeight: number
+  fontFamily: 'nunito' | 'nunito-semibold'
 }
 
 export type FontType = 'large_title' | 'title' | 'head_line' | 'body' | 'caption' | 'button'
@@ -30,26 +30,26 @@ type FontTypes = { [key in FontType]: Font }
 export const FONT_TYPES: FontTypes = {
   large_title: {
     fontSize: 34,
-    fontWeight: 400
+    fontFamily: 'nunito'
   },
   title: {
     fontSize: 22,
-    fontWeight: 600
+    fontFamily: 'nunito-semibold'
   },
   head_line: {
     fontSize: 17,
-    fontWeight: 600
+    fontFamily: 'nunito-semibold'
   },
   body: {
     fontSize: 15,
-    fontWeight: 400
+    fontFamily: 'nunito'
   },
   caption: {
     fontSize: 12,
-    fontWeight: 400
+    fontFamily: 'nunito'
   },
   button: {
     fontSize: 15,
-    fontWeight: 600
+    fontFamily: 'nunito-semibold'
   }
 }
