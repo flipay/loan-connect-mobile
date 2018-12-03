@@ -44,8 +44,7 @@
     "prefer-conditional-expression": false,
     "quotemark": [
       true,
-      "single",
-      "jsx-double"
+      "single"
     ],
     "semicolon": [
       true,
@@ -84,7 +83,7 @@
     ],
     "brace-style": [
       true,
-      "stroustrup",
+      "1tbs",
       {
         "allowSingleLine": true
       }
