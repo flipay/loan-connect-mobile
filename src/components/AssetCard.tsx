@@ -59,7 +59,7 @@ export default class AssetCard extends React.Component<
 
   public renderExpandedCardDescription () {
     return this.props.isFiat ? (
-      <Text numberOfLines={2} style={styles.contactUs}>
+      <Text numberOfLines={2} style={styles.contactUs} color={COLORS.N500}>
         To deposit cash in Thai baht, please contact us
       </Text>
     ) : (
@@ -119,8 +119,7 @@ const styles = StyleSheet.create({
     shadowOffset: { height: 4, width: 0 },
     shadowOpacity: 0.2,
     shadowRadius: 2,
-    marginHorizontal: 12,
-    marginBottom: 8,
+    marginHorizontal: 8,
     padding: 20,
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -134,7 +133,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 2,
     marginHorizontal: 12,
-    marginBottom: 8,
     padding: 20,
     alignItems: 'center',
     flexDirection: 'row',
@@ -176,6 +174,7 @@ const styles = StyleSheet.create({
     width: 9
   },
   contactUs: {
-    paddingHorizontal: 20
+    paddingHorizontal: 40,
+    textAlign: 'center'
   }
 })

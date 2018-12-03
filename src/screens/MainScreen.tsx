@@ -75,10 +75,15 @@ export default class MainScreen extends React.Component<
         end={[2, -0.8]}
         style={styles.header}
       >
-        <Text type='caption' color={COLORS.P100}>TOTAL VALUE</Text>
+        <Text type='caption' color={COLORS.P100}>
+          TOTAL VALUE
+        </Text>
         <Text style={styles.totalValueContainer}>
           <Text>฿</Text>
-          <Text type='large-title' style={styles.totalValue}> 203,000</Text>
+          <Text type='large-title' style={styles.totalValue}>
+            {' '}
+            203,000
+          </Text>
         </Text>
       </LinearGradient>
     )
@@ -96,24 +101,37 @@ export default class MainScreen extends React.Component<
         >
           {this.renderHeader()}
           <View style={styles.cardsContainer}>
-            {cards.map(card => (
-              <AssetCard
-                key={card.id}
-                id={card.id}
-                name={card.name}
-                image={card.image}
-                amount={card.amount}
-                unit={card.unit}
-                price={card.price}
-                isFiat={card.isFiat}
-                expanded={
-                  !!this.state.selectedCoin &&
-                  this.state.selectedCoin === card.id
-                }
-                onPress={() => this.onPress(card.id)}
-                navigation={this.props.navigation}
-              />
-            ))}
+            {cards.map((card, index) => {
+              const expanded =
+                !!this.state.selectedCoin &&
+                this.state.selectedCoin === card.id
+              return (
+                <View key={card.id}>
+                  {index !== 0 && (
+                    <View
+                      style={expanded ? styles.bigSpace : styles.smallSpace}
+                    />
+                  )}
+                  <AssetCard
+                    id={card.id}
+                    name={card.name}
+                    image={card.image}
+                    amount={card.amount}
+                    unit={card.unit}
+                    price={card.price}
+                    isFiat={card.isFiat}
+                    expanded={expanded}
+                    onPress={() => this.onPress(card.id)}
+                    navigation={this.props.navigation}
+                  />
+                  {index !== cards.length - 1 && (
+                    <View
+                      style={expanded ? styles.bigSpace : styles.smallSpace}
+                    />
+                  )}
+                </View>
+              )
+            })}
           </View>
         </ScrollView>
       </View>
@@ -138,5 +156,11 @@ const styles = StyleSheet.create({
   cardsContainer: {
     position: 'relative',
     top: -24
+  },
+  bigSpace: {
+    height: 12
+  },
+  smallSpace: {
+    height: 4
   }
 })
