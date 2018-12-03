@@ -32,7 +32,8 @@
       false
     ],
     "no-bitwise": false,
-    "no-duplicate-imports": false,
+    "no-duplicate-imports": true,
+    "no-implicit-dependencies": false,
     "no-switch-case-fall-through": true,
     "object-literal-shorthand": false,
     "one-line": [

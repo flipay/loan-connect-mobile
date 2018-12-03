@@ -9,7 +9,7 @@ import {
   ImageSourcePropType
 } from 'react-native'
 import Text from './Text'
-
+import { FontAwesome } from '@expo/vector-icons'
 import { COLORS } from '../constants/styleGuides'
 import Button from './Button'
 
@@ -45,43 +45,42 @@ export default class AssetCard extends React.Component<
   }
 
   public renderExpandedCardMainContent () {
-    return this.props.isFiat
-      ? (
-        <Text type='title'>
-          {`${this.props.amount} THB`}
+    return this.props.isFiat ? (
+      <Text type='title'>{`${this.props.amount} THB`}</Text>
+    ) : (
+      <View style={styles.coinMainContent}>
+        <Text type='title'>{`${this.props.amount} ${this.props.unit}`}</Text>
+        <Text style={styles.bahtPrice}>
+          {`${(this.props.price || 0) * this.props.amount} THB`}
         </Text>
-      ) : (
-        <View style={styles.coinMainContent}>
-          <Text type='title'>{`${this.props.amount} ${this.props.unit}`}</Text>
-          <Text style={styles.bahtPrice}>
-            {`${(this.props.price || 0) * this.props.amount} THB`}
-          </Text>
-        </View>
-      )
+      </View>
+    )
   }
 
   public renderExpandedCardDescription () {
-    return this.props.isFiat
-      ? (
-        <Text numberOfLines={2} style={styles.contactUs}>
-          To deposit cash in Thai baht, please contact us
-        </Text>
-      ) : (
-        <View style={styles.buttonsContainer}>
-          <Button onPress={() => this.onPressButton('buy')}>Buy</Button>
-          <View style={styles.spacing} />
-          <Button onPress={() => this.onPressButton('sell')}>Sell</Button>
-        </View>
-      )
+    return this.props.isFiat ? (
+      <Text numberOfLines={2} style={styles.contactUs}>
+        To deposit cash in Thai baht, please contact us
+      </Text>
+    ) : (
+      <View style={styles.buttonsContainer}>
+        <Button onPress={() => this.onPressButton('buy')}>Buy</Button>
+        <View style={styles.spacing} />
+        <Button onPress={() => this.onPressButton('sell')}>Sell</Button>
+      </View>
+    )
   }
 
   public renderExpandedCard () {
     return (
-      <View style={styles.expandedContainer}>
+      <TouchableOpacity
+        style={styles.expandedContainer}
+        onPress={this.props.onPress}
+      >
         {this.renderLabel()}
         {this.renderExpandedCardMainContent()}
         {this.renderExpandedCardDescription()}
-      </View>
+      </TouchableOpacity>
     )
   }
 
@@ -89,13 +88,17 @@ export default class AssetCard extends React.Component<
     return (
       <TouchableOpacity style={styles.container} onPress={this.props.onPress}>
         {this.renderLabel()}
-        <View style={styles.valueContainer}>
-          <Text type='headline'>{`${this.props.amount} ${this.props.unit || 'THB'}`}</Text>
-          {!this.props.isFiat && (
-            <Text type='caption' style={styles.bahtPrice}>
-              {`${(this.props.price || 0) * this.props.amount} THB`}
-            </Text>
-          )}
+        <View style={styles.rightSection}>
+          <View style={styles.valueContainer}>
+            <Text type='headline'>{`${this.props.amount} ${this.props.unit ||
+              'THB'}`}</Text>
+            {!this.props.isFiat && (
+              <Text type='caption' style={styles.bahtPrice}>
+                {`${(this.props.price || 0) * this.props.amount} THB`}
+              </Text>
+            )}
+          </View>
+          <FontAwesome name='angle-down' size={16} color={COLORS.N400} />
         </View>
       </TouchableOpacity>
     )
@@ -143,13 +146,18 @@ const styles = StyleSheet.create({
   coinMainContent: {
     alignItems: 'center'
   },
+  rightSection: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
   icon: {
     width: 16,
     height: 16,
     marginRight: 8
   },
   valueContainer: {
-    alignItems: 'flex-end'
+    alignItems: 'flex-end',
+    marginRight: 12
   },
   bahtPrice: {
     color: COLORS.N500
