@@ -14,7 +14,9 @@ export default class Button extends React.Component<Props> {
   public render () {
     return (
       <TouchableOpacity style={styles.container} onPress={this.props.onPress}>
-        <Text color={COLORS.P400}>{this.props.children}</Text>
+        <Text color={COLORS.P400} type='button'>
+          {this.props.children}
+        </Text>
       </TouchableOpacity>
     )
   }
@@ -22,6 +24,10 @@ export default class Button extends React.Component<Props> {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    height: 42,
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: COLORS.N100
   }
 })

@@ -39,6 +39,7 @@ export default class AssetCard extends React.Component<
     return (
       <View style={styles.buttonsContainer}>
         <Button onPress={() => this.onPressButton('buy')}>Buy</Button>
+        <View style={styles.spacing} />
         <Button onPress={() => this.onPressButton('sell')}>Sell</Button>
       </View>
     )
@@ -113,7 +114,8 @@ const styles = StyleSheet.create({
     padding: 20,
     alignItems: 'center',
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    height: 80
   },
   labelContainer: {
     flexDirection: 'row',
@@ -133,5 +135,8 @@ const styles = StyleSheet.create({
   },
   buttonsContainer: {
     flexDirection: 'row'
+  },
+  spacing: {
+    width: 9
   }
 })

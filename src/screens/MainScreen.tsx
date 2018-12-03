@@ -51,7 +51,7 @@ export default class MainScreen extends React.Component<
   // public static navigationOptions = {
   //   title: 'Home'
   // }
-  constructor(props: NavigationScreenProps) {
+  constructor (props: NavigationScreenProps) {
     super(props)
     this.state = {
       selectedCoin: null
@@ -66,7 +66,7 @@ export default class MainScreen extends React.Component<
     }
   }
 
-  public renderHeader() {
+  public renderHeader () {
     return (
       <LinearGradient
         colors={[COLORS.P400, COLORS.C500]}
@@ -83,10 +83,10 @@ export default class MainScreen extends React.Component<
     )
   }
 
-  public render() {
+  public render () {
     return (
       <View style={{ flex: 1 }}>
-        <StatusBar barStyle="light-content" />
+        <StatusBar barStyle='light-content' />
         <ScrollView
           style={{
             backgroundColor: '#fff',
