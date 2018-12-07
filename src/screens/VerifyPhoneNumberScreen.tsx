@@ -43,7 +43,7 @@ export default class VerifyPhoneNumberScreen extends React.Component<
     this.state.no3.length === 1 &&
     this.state.no4.length === 1 &&
     this.state.no5.length === 1) {
-      this.props.navigation.navigate('PinScreen')
+      this.props.navigation.navigate('CreatePin')
     }
   }
 
