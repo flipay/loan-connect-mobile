@@ -7,6 +7,7 @@ import MainScreen from './screens/MainScreen'
 import SignUpScreen from './screens/SignUpScreen'
 import VerifyPhoneNumberScreen from './screens/VerifyPhoneNumberScreen'
 import CreatePinScreen from './screens/CreatePinScreen'
+import ConfirmPinScreen from './screens/ConfirmPinScreen'
 import TradeScreen from './screens/TradeScreen'
 import { ManifestScreen } from './constants/ManifestScreen'
 import { PlatformScreen } from './constants/PlatformScreen'
@@ -15,6 +16,7 @@ import { Font } from 'expo'
 
 const AppNavigator = createStackNavigator({
   CreatePin: { screen: CreatePinScreen },
+  ConfirmPin: { screen: ConfirmPinScreen },
   VerifyPhoneNumber: { screen: VerifyPhoneNumberScreen },
   SignUp: { screen: SignUpScreen },
   Main: { screen: MainScreen, navigationOptions: {

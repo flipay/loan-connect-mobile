@@ -24,23 +24,24 @@ export default class PinScreen extends React.Component<
 
   public static navigationOptions = (props: NavigationScreenProps) => {
     return {
-      title: 'Create PIN'
+      title: 'Confirm PIN'
     }
   }
 
   public onPinChange = (pin: string) => {
     this.setState({ pin })
     if (pin.length === 6) {
-      this.props.navigation.navigate('ConfirmPin', {
-        firstPin: this.state.pin
-      })
+      if (this.state.pin === this.props.navigation.getParam('firstPin')) {
+        this.props.navigation.navigate('Main')
+      } else {
+        this.props.navigation.goBack()
+      }
     }
   }
-
   public render () {
     return (
       <View style={styles.screen}>
-        <Text>PIN will be used for login</Text>
+        <Text>Please insert PIN again</Text>
         <Pin
           pin={this.state.pin}
           onPinChange={this.onPinChange}
@@ -59,5 +60,8 @@ const styles = StyleSheet.create({
   screen: {
     backgroundColor: COLORS.WHITE,
     flex: 1
+  },
+  modal: {
+
   }
 })
