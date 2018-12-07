@@ -5,6 +5,7 @@ import { createAppContainer, createStackNavigator } from 'react-navigation'
 import { ConstantsScreen } from './constants/ConstantsScreen'
 import MainScreen from './screens/MainScreen'
 import SignUpScreen from './screens/SignUpScreen'
+import VerifyPhoneNumberScreen from './screens/VerifyPhoneNumberScreen'
 import TradeScreen from './screens/TradeScreen'
 import { ManifestScreen } from './constants/ManifestScreen'
 import { PlatformScreen } from './constants/PlatformScreen'
@@ -13,6 +14,7 @@ import { Font } from 'expo'
 
 const AppNavigator = createStackNavigator({
   SignUp: { screen: SignUpScreen },
+  VerifyPhoneNumber: { screen: VerifyPhoneNumberScreen },
   Main: { screen: MainScreen, navigationOptions: {
     header: null
   }},

@@ -29,6 +29,8 @@ export default class SignUpScreen extends React.Component<
   public onChangeText = (text: string) => {
     if ((text.length === 4 || text.length === 8) && _.last(text) !== '-') {
       this.setState({ phoneNumber: this.state.phoneNumber + '-' + _.last(text) })
+    } else if (text.length === 12) {
+      this.props.navigation.navigate('VerifyPhoneNumber')
     } else {
       this.setState({ phoneNumber: text })
     }
@@ -40,6 +42,7 @@ export default class SignUpScreen extends React.Component<
         <Text>Phone Numver</Text>
         <View>
           <TextInput
+            autoFocus={true}
             keyboardType='number-pad'
             textContentType='telephoneNumber'
             placeholder='089-999-9999'
