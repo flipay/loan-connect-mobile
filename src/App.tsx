@@ -13,8 +13,8 @@ import { SystemFontsScreen } from './constants/SystemFontsScreen'
 import { Font } from 'expo'
 
 const AppNavigator = createStackNavigator({
-  SignUp: { screen: SignUpScreen },
   VerifyPhoneNumber: { screen: VerifyPhoneNumberScreen },
+  SignUp: { screen: SignUpScreen },
   Main: { screen: MainScreen, navigationOptions: {
     header: null
   }},
