@@ -6,8 +6,10 @@ import { NavigationScreenProps } from 'react-navigation'
 import { COLORS } from '../constants/styleGuides'
 import _ from 'lodash'
 
+type No = 0 | 1 | 2 | 3 | 4 | 5
+
 interface State {
-  phoneNumber: string
+  [no: string]: string
 }
 
 export default class VerifyPhoneNumberScreen extends React.Component<
@@ -18,7 +20,12 @@ export default class VerifyPhoneNumberScreen extends React.Component<
   public constructor (props: NavigationScreenProps) {
     super(props)
     this.state = {
-      phoneNumber: ''
+      no0: '',
+      no1: '',
+      no2: '',
+      no3: '',
+      no4: '',
+      no5: ''
     }
   }
   private input: Array<TextInput | null> = []
@@ -29,14 +36,37 @@ export default class VerifyPhoneNumberScreen extends React.Component<
     }
   }
 
-  public onChangeText = (index: number, text: string) => {
+  public submitOTP = () => {
+    if (this.state.no0.length === 1 &&
+    this.state.no1.length === 1 &&
+    this.state.no2.length === 1 &&
+    this.state.no3.length === 1 &&
+    this.state.no4.length === 1 &&
+    this.state.no5.length === 1) {
+      this.props.navigation.navigate('PinScreen')
+    }
+  }
+
+  public onPressButton = () => {
+    this.submitOTP()
+  }
+
+  public onChangeText = (index: No, text: string) => {
+    this.setState({ [`no${index}`]: text })
+
+    // move cursor
     const nextInput = this.input[index + 1]
     if (text.length === 1 && nextInput) {
       nextInput.focus()
     }
+
+    // complete
+    if (index === 5) {
+      this.submitOTP()
+    }
   }
 
-  public renderBox (index: number) {
+  public renderBox (index: No) {
     return (
       <View style={styles.box}>
         <TextInput
@@ -46,6 +76,7 @@ export default class VerifyPhoneNumberScreen extends React.Component<
           autoFocus={index === 0}
           onChangeText={(text: string) => this.onChangeText(index, text)}
           maxLength={1}
+          value={this.state[`no${index}`]}
         />
       </View>
     )
@@ -70,7 +101,7 @@ export default class VerifyPhoneNumberScreen extends React.Component<
         <Text>Plese check you SMS to get One Time Password (OTP)</Text>
         <Text>Insert OTP</Text>
         {this.renderBoxes()}
-        <TouchableHighlight style={styles.kak} onPress={this.onPress}>
+        <TouchableHighlight style={styles.kak} onPress={this.onPressButton}>
           <Text>
             Verify
           </Text>
