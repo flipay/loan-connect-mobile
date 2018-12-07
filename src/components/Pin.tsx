@@ -42,7 +42,7 @@ export default class PinScreen extends React.Component<Props> {
 
   public render () {
     return (
-      <View>
+      <View style={styles.screen}>
         {this.renderDots()}
         <TextInput
           keyboardType='number-pad'
@@ -57,8 +57,9 @@ export default class PinScreen extends React.Component<Props> {
 }
 
 const styles = StyleSheet.create({
-  invisibleTextInput: {
-    backfaceVisibility: 'hidden'
+  screen: {
+    flex: 1,
+    position: 'relative'
   },
   dots: {
     flexDirection: 'row'
@@ -72,5 +73,10 @@ const styles = StyleSheet.create({
   },
   activeDot: {
     backgroundColor: COLORS.P500
+  },
+  invisibleTextInput: {
+    position: 'absolute',
+    top: -1000,
+    left: -1000
   }
 })
