@@ -4,6 +4,7 @@ import * as React from 'react'
 import { createAppContainer, createStackNavigator } from 'react-navigation'
 import { ConstantsScreen } from './constants/ConstantsScreen'
 import MainScreen from './screens/MainScreen'
+import SignUpScreen from './screens/SignUpScreen'
 import TradeScreen from './screens/TradeScreen'
 import { ManifestScreen } from './constants/ManifestScreen'
 import { PlatformScreen } from './constants/PlatformScreen'
@@ -11,6 +12,7 @@ import { SystemFontsScreen } from './constants/SystemFontsScreen'
 import { Font } from 'expo'
 
 const AppNavigator = createStackNavigator({
+  SignUp: { screen: SignUpScreen },
   Main: { screen: MainScreen, navigationOptions: {
     header: null
   }},
