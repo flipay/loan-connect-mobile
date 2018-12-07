@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "Expo and TypeScript",
-    "description": "Showcase of an Expo app coded in TypeScript.",
-    "slug": "expo-and-typescript",
+    "name": "Flipay",
+    "description": "",
+    "slug": "flipay",
     "privacy": "public",
     "sdkVersion": "31.0.0",
     "version": "1.0.0",
@@ -19,8 +19,11 @@
       ]
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "co.flipay.flipay"
     },
-    "githubUrl": "https://github.com/janaagaard75/expo-and-typescript"
+    "android": {
+      "package": "co.flipay.flipay"
+    }
   }
 }
