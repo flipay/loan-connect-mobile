@@ -16,7 +16,9 @@ export default class PinScreen extends React.Component<
   NavigationScreenProps,
   State
 > {
-  private didBlurSubscription: any
+  private willFocusSubscription: any
+  private didFocusSubscription: any
+  private textInput: TextInput | null = null
   public constructor (props: NavigationScreenProps) {
     super(props)
     this.state = {
@@ -31,22 +33,31 @@ export default class PinScreen extends React.Component<
   }
 
   public componentDidMount () {
-    this.didBlurSubscription = this.props.navigation.addListener(
-    'didBlur',
+    this.willFocusSubscription = this.props.navigation.addListener(
+      'willFocus',
       payload => {
         this.setState({ pin: '' })
+      }
+    )
+    this.didFocusSubscription = this.props.navigation.addListener(
+      'didFocus',
+      payload => {
+        if (this.textInput) {
+          this.textInput.focus()
+        }
       }
     )
   }
 
   public componentWillUnmount () {
-    this.didBlurSubscription.remove()
+    this.willFocusSubscription.remove()
+    this.didFocusSubscription.remove()
   }
 
   public onPinChange = (pin: string) => {
     this.setState({ pin })
     if (pin.length === 6) {
-      this.props.navigation.getParam('onSuccess')({ navigation: this.props.navigation })
+      this.props.navigation.getParam('onSuccess')(this.state.pin)
     }
   }
 
@@ -77,11 +88,13 @@ export default class PinScreen extends React.Component<
         <Text>{this.props.navigation.getParam('description')}</Text>
         {this.renderDots()}
         <TextInput
+          ref={(element) => this.textInput = element}
           keyboardType='number-pad'
           onChangeText={this.onPinChange}
           autoFocus={true}
           maxLength={6}
           style={styles.invisibleTextInput}
+          value={this.state.pin}
         />
       </View>
     )
