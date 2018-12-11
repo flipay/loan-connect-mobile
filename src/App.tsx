@@ -13,14 +13,13 @@ import TradeScreen from './screens/TradeScreen'
 import PinScreen from './screens/PinScreen'
 import { Font } from 'expo'
 
-const AuthenticationNavigator = createStackNavigator({
-  Starter: { screen: Starter },
+const AuthStack = createStackNavigator({
   Pin: { screen: PinScreen },
   VerifyPhoneNumber: { screen: VerifyPhoneNumberScreen },
   SignUp: { screen: SignUpScreen }
 })
 
-const UnauthenticationNavigator = createStackNavigator({
+const AppStack = createStackNavigator({
   Main: {
     screen: MainScreen,
     navigationOptions: {
@@ -31,8 +30,9 @@ const UnauthenticationNavigator = createStackNavigator({
 })
 
 const AppNavigator = createSwitchNavigator({
-  Auth: AuthenticationNavigator,
-  Home: UnauthenticationNavigator
+  Starter: Starter,
+  Auth: AuthStack,
+  Home: AppStack
 })
 
 const AppContainer = createAppContainer(AppNavigator)

@@ -57,7 +57,7 @@ export default class PinScreen extends React.Component<
   public onPinChange = (pin: string) => {
     this.setState({ pin })
     if (pin.length === 6) {
-      this.props.navigation.getParam('onSuccess')(this.state.pin)
+      this.props.navigation.getParam('onSuccess')(this.state.pin, this.props.navigation)
     }
   }
 
