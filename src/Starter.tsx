@@ -27,7 +27,7 @@ export default class Start extends React.Component<
             if (firstPin === secondPin) {
               this.props.navigation.push('Main')
             } else {
-              this.props.navigation.goBack()
+              this.props.navigation.pop()
             }
           }
         })

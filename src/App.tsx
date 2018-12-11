@@ -1,32 +1,38 @@
-
 import * as React from 'react'
 
-import { createAppContainer, createStackNavigator } from 'react-navigation'
-import { ConstantsScreen } from './constants/ConstantsScreen'
+import {
+  createAppContainer,
+  createStackNavigator,
+  createSwitchNavigator
+} from 'react-navigation'
 import Starter from './Starter'
 import MainScreen from './screens/MainScreen'
 import SignUpScreen from './screens/SignUpScreen'
 import VerifyPhoneNumberScreen from './screens/VerifyPhoneNumberScreen'
 import TradeScreen from './screens/TradeScreen'
 import PinScreen from './screens/PinScreen'
-import { ManifestScreen } from './constants/ManifestScreen'
-import { PlatformScreen } from './constants/PlatformScreen'
-import { SystemFontsScreen } from './constants/SystemFontsScreen'
 import { Font } from 'expo'
 
-const AppNavigator = createStackNavigator({
+const AuthenticationNavigator = createStackNavigator({
   Starter: { screen: Starter },
   Pin: { screen: PinScreen },
   VerifyPhoneNumber: { screen: VerifyPhoneNumberScreen },
-  SignUp: { screen: SignUpScreen },
-  Main: { screen: MainScreen, navigationOptions: {
-    header: null
-  }},
-  Trade: { screen: TradeScreen },
-  Constants: { screen: ConstantsScreen },
-  Manifest: { screen: ManifestScreen },
-  Platform: { screen: PlatformScreen },
-  SystemFonts: { screen: SystemFontsScreen }
+  SignUp: { screen: SignUpScreen }
+})
+
+const UnauthenticationNavigator = createStackNavigator({
+  Main: {
+    screen: MainScreen,
+    navigationOptions: {
+      header: null
+    }
+  },
+  Trade: { screen: TradeScreen }
+})
+
+const AppNavigator = createSwitchNavigator({
+  Auth: AuthenticationNavigator,
+  Home: UnauthenticationNavigator
 })
 
 const AppContainer = createAppContainer(AppNavigator)
@@ -44,15 +50,13 @@ export default class App extends React.Component<{}, State> {
   }
   public async componentDidMount () {
     await Font.loadAsync({
-      'nunito': require('../assets/fonts/Nunito-Regular.ttf'),
+      nunito: require('../assets/fonts/Nunito-Regular.ttf'),
       'nunito-semibold': require('../assets/fonts/Nunito-Regular.ttf')
     })
     this.setState({ fontLoaded: true })
   }
 
   public render () {
-    return this.state.fontLoaded
-      ? <AppContainer />
-      : null
+    return this.state.fontLoaded ? <AppContainer /> : null
   }
 }
