@@ -43,7 +43,23 @@ export default class VerifyPhoneNumberScreen extends React.Component<
     this.state.no3.length === 1 &&
     this.state.no4.length === 1 &&
     this.state.no5.length === 1) {
-      this.props.navigation.navigate('CreatePin')
+      this.props.navigation.navigate('Pin', {
+        screenName: 'Create PIN',
+        description: 'PIN will be used for login',
+        onSuccess: (firstPin: string, stackNavigationCreatePin: any) => {
+          stackNavigationCreatePin.push('Pin', {
+            screenName: 'Confirm PIN',
+            description: 'Please insert PIN again',
+            onSuccess: (secondPin: string, stackNavigationConmfirmPin: any) => {
+              if (firstPin === secondPin) {
+                stackNavigationConmfirmPin.navigate('Main')
+              } else {
+                stackNavigationConmfirmPin.pop()
+              }
+            }
+          })
+        }
+      })
     }
   }
 

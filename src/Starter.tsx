@@ -16,23 +16,26 @@ export default class Start extends React.Component<
 > {
 
   public componentDidMount () {
-    this.props.navigation.navigate('Pin', {
-      screenName: 'Create PIN',
-      description: 'PIN will be used for login',
-      onSuccess: (firstPin: string, stackNavigationCreatePin: any) => {
-        stackNavigationCreatePin.push('Pin', {
-          screenName: 'Confirm PIN',
-          description: 'Please insert PIN again',
-          onSuccess: (secondPin: string, stackNavigationConmfirmPin: any) => {
-            if (firstPin === secondPin) {
-              stackNavigationConmfirmPin.navigate('Main')
-            } else {
-              stackNavigationConmfirmPin.pop()
-            }
-          }
-        })
-      }
-    })
+
+    this.props.navigation.navigate('SignUp')
+
+    // this.props.navigation.navigate('Pin', {
+    //   screenName: 'Create PIN',
+    //   description: 'PIN will be used for login',
+    //   onSuccess: (firstPin: string, stackNavigationCreatePin: any) => {
+    //     stackNavigationCreatePin.push('Pin', {
+    //       screenName: 'Confirm PIN',
+    //       description: 'Please insert PIN again',
+    //       onSuccess: (secondPin: string, stackNavigationConmfirmPin: any) => {
+    //         if (firstPin === secondPin) {
+    //           stackNavigationConmfirmPin.navigate('Main')
+    //         } else {
+    //           stackNavigationConmfirmPin.pop()
+    //         }
+    //       }
+    //     })
+    //   }
+    // })
   }
 
   public render () {

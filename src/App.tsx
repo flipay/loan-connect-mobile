@@ -14,9 +14,12 @@ import PinScreen from './screens/PinScreen'
 import { Font } from 'expo'
 
 const AuthStack = createStackNavigator({
-  Pin: { screen: PinScreen },
+  Pin: { screen: PinScreen }
+})
+
+const VerificationStack = createStackNavigator({
+  SignUp: { screen: SignUpScreen },
   VerifyPhoneNumber: { screen: VerifyPhoneNumberScreen },
-  SignUp: { screen: SignUpScreen }
 })
 
 const AppStack = createStackNavigator({
@@ -31,6 +34,7 @@ const AppStack = createStackNavigator({
 
 const AppNavigator = createSwitchNavigator({
   Starter: Starter,
+  Verification: VerificationStack,
   Auth: AuthStack,
   Home: AppStack
 })
