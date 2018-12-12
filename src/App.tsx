@@ -19,7 +19,7 @@ const AuthStack = createStackNavigator({
 
 const VerificationStack = createStackNavigator({
   SignUp: { screen: SignUpScreen },
-  VerifyPhoneNumber: { screen: VerifyPhoneNumberScreen },
+  VerifyPhoneNumber: { screen: VerifyPhoneNumberScreen }
 })
 
 const AppStack = createStackNavigator({
