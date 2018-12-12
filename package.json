@@ -17,6 +17,7 @@
     "validate": "npm run lint --scripts-prepend-node-path && tsc --noEmit"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "expo": "31.0.4",
     "lodash": "^4.17.11",
     "react": "16.5.0",

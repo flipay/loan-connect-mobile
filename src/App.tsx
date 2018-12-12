@@ -1,5 +1,5 @@
 import * as React from 'react'
-
+import axios from 'axios'
 import {
   createAppContainer,
   createStackNavigator,
@@ -12,6 +12,8 @@ import VerifyPhoneNumberScreen from './screens/VerifyPhoneNumberScreen'
 import TradeScreen from './screens/TradeScreen'
 import PinScreen from './screens/PinScreen'
 import { Font } from 'expo'
+
+axios.defaults.baseURL = 'http://localhost:3000'
 
 const AuthStack = createStackNavigator({
   Pin: { screen: PinScreen }
