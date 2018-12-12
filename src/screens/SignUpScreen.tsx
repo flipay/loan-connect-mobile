@@ -1,9 +1,10 @@
 import * as React from 'react'
+import _ from 'lodash'
+import { NavigationScreenProps } from 'react-navigation'
+import { signUp } from '../requests'
 import { View, TextInput, StyleSheet } from 'react-native'
 import Text from '../components/Text'
-import { NavigationScreenProps } from 'react-navigation'
 import { COLORS } from '../constants/styleGuides'
-import _ from 'lodash'
 
 interface State {
   phoneNumber: string
@@ -26,11 +27,16 @@ export default class SignUpScreen extends React.Component<
     }
   }
 
-  public onChangeText = (text: string) => {
+  public onChangeText = async (text: string) => {
     if ((text.length === 4 || text.length === 8) && _.last(text) !== '-') {
       this.setState({ phoneNumber: this.state.phoneNumber + '-' + _.last(text) })
     } else if (text.length === 12) {
-      this.props.navigation.navigate('VerifyPhoneNumber')
+      this.setState({ phoneNumber: text })
+      const phoneNumberWithoutDash = _.replace(text, /-/g, '')
+      const user = await signUp(phoneNumberWithoutDash)
+      this.props.navigation.navigate('VerifyPhoneNumber', {
+        accountNumber: user.id
+      })
     } else {
       this.setState({ phoneNumber: text })
     }
@@ -39,7 +45,7 @@ export default class SignUpScreen extends React.Component<
   public render () {
     return (
       <View style={styles.screen}>
-        <Text>Phone Numver</Text>
+        <Text>Phone Number</Text>
         <View>
           <TextInput
             autoFocus={true}

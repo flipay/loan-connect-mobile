@@ -13,7 +13,7 @@ import TradeScreen from './screens/TradeScreen'
 import PinScreen from './screens/PinScreen'
 import { Font } from 'expo'
 
-axios.defaults.baseURL = 'http://localhost:3000'
+axios.defaults.baseURL = 'http://192.168.1.2:3000'
 
 const AuthStack = createStackNavigator({
   Pin: { screen: PinScreen }

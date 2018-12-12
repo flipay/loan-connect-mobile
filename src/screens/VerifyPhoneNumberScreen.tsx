@@ -5,6 +5,7 @@ import Text from '../components/Text'
 import { NavigationScreenProps } from 'react-navigation'
 import { COLORS } from '../constants/styleGuides'
 import _ from 'lodash'
+import { submitOTP } from '../requests'
 
 type No = 0 | 1 | 2 | 3 | 4 | 5
 
@@ -50,8 +51,13 @@ export default class VerifyPhoneNumberScreen extends React.Component<
           stackNavigationCreatePin.push('Pin', {
             screenName: 'Confirm PIN',
             description: 'Please insert PIN again',
-            onSuccess: (secondPin: string, stackNavigationConmfirmPin: any) => {
+            onSuccess: async (secondPin: string, stackNavigationConmfirmPin: any) => {
               if (firstPin === secondPin) {
+                await submitOTP(
+                  this.props.navigation.getParam('accountNumber'),
+                  secondPin
+                )
+
                 stackNavigationConmfirmPin.navigate('Main')
               } else {
                 stackNavigationConmfirmPin.pop()
