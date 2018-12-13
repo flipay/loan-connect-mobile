@@ -1,10 +1,14 @@
 const jsonServer = require('json-server')
+var bodyParser = require('body-parser');
 const server = jsonServer.create()
 const router = jsonServer.router('db.json')
+
 const middlewares = jsonServer.defaults()
 
 server.use(middlewares)
 
+server.use(bodyParser.json()); // for parsing application/json
+server.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
 server.post('/sign_up', (req, res) => {
   res.jsonp({ user: { 
@@ -12,18 +16,18 @@ server.post('/sign_up', (req, res) => {
   }})
 })
 
-server.post('/account/:account_id/verify', (req, res) => {
+server.post('/accounts/:account_id/verify', (req, res) => {
   if (req.body && req.body.otp_number === '555555') {
     res.jsonp({ user: { 
       id: '222222' 
     }})
   } else {
-    res.sendSatus(500)
+    res.sendStatus(500)
   }
 })
 
 server.post('/account/:account_id/create_pin', (req, res) => {
-  res.sendSatus(200)
+  res.sendStatus(200)
 })
 
 server.use(router)

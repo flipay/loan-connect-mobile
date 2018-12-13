@@ -67,8 +67,7 @@ export default class VerifyPhoneNumberScreen extends React.Component<
     })
   }
 
-  public submitOTP = async (otp) => {
-
+  public submitOTP = async (otp: string) => {
     if (otp.length === 6) {
       try {
         this.setState({ loading: true })
@@ -99,12 +98,11 @@ export default class VerifyPhoneNumberScreen extends React.Component<
     if (text.length === 1 && nextInput) {
       nextInput.focus()
     }
-
+    const otp = this.state.no0 + this.state.no1 +
+      this.state.no2 + this.state.no3 +
+      this.state.no4 + text
     // complete
-    if (index === 5) {
-      const otp = this.state.no0 + this.state.no1 +
-        this.state.no2 + this.state.no3 +
-        this.state.no4 + text
+    if (index === 5 && otp.length === 6) {
       this.submitOTP(otp)
     }
   }
@@ -139,8 +137,6 @@ export default class VerifyPhoneNumberScreen extends React.Component<
   }
 
   public render () {
-    console.log('kendo jaa eiei typeof kak', typeof this.state.kak)
-    console.log('kendo jaa eiei typeof loading', typeof this.state.loading)
     return (
       <View style={styles.screen}>
         <Text>Plese check you SMS to get One Time Password (OTP)</Text>
@@ -151,6 +147,7 @@ export default class VerifyPhoneNumberScreen extends React.Component<
             Verify
           </Text>
         </TouchableHighlight>
+        {this.state.loading && <Text>Loading</Text>}
         <DropdownAlert ref={(ref: any) => this.dropdown = ref} />
       </View>
     )
