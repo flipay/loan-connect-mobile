@@ -1,14 +1,8 @@
 import axios from 'axios'
 
 export async function signUp (phoneNumber: string) {
-  try {
-    console.log('kendo jaa inside before')
-    const response = await axios.post('/sign_up', { phone_number: phoneNumber })
-    return response.data.user
-
-  } catch (err) {
-    console.error('error', err)
-  }
+  const response = await axios.post('/sign_up', { phone_number: phoneNumber })
+  return response.data.user
 }
 
 export async function submitOtp (accountNumber: string, otpNumber: string) {

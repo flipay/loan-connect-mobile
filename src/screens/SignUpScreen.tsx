@@ -1,6 +1,7 @@
 import * as React from 'react'
 import _ from 'lodash'
 import { NavigationScreenProps } from 'react-navigation'
+import DropdownAlert from 'react-native-dropdownalert';
 import { signUp } from '../requests'
 import { View, TextInput, StyleSheet } from 'react-native'
 import Text from '../components/Text'
@@ -15,6 +16,7 @@ export default class SignUpScreen extends React.Component<
   NavigationScreenProps,
   State
 > {
+  private dropdown = null
   public constructor (props: NavigationScreenProps) {
     super(props)
     this.state = {
@@ -34,11 +36,18 @@ export default class SignUpScreen extends React.Component<
       this.setState({ phoneNumber: text })
       const phoneNumberWithoutDash = _.replace(text, /-/g, '')
       this.setState({ loading: true })
-      const user = await signUp(phoneNumberWithoutDash)
-      this.props.navigation.navigate('VerifyPhoneNumber', {
-        accountNumber: user.id
-      })
-      this.setState({ loading: false })
+      try {
+        const user = await signUp(phoneNumberWithoutDash)
+        this.props.navigation.navigate('VerifyPhoneNumber', {
+          accountNumber: user.id
+        })
+        this.setState({ loading: false })
+      } catch (err) {
+        this.setState({ loading: false })
+        if (this.dropdown) {
+          this.dropdown.alertWithType('error', 'Error', err.message)
+        }
+      }
     } else {
       this.setState({ phoneNumber: text })
     }
@@ -55,11 +64,12 @@ export default class SignUpScreen extends React.Component<
             textContentType='telephoneNumber'
             placeholder='0899999999'
             onChangeText={this.onChangeText}
-            maxLength={12}
+            maxLength={10}
             value={this.state.phoneNumber}
           />
         </View>
-        {this.state.loading && <Text>Loading...</Text>}
+        {this.state.loading && !this.state.error && <Text>Loading...</Text>}
+        <DropdownAlert ref={(ref: any) => this.dropdown = ref} />
       </View>
     )
   }

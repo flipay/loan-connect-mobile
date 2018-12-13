@@ -22,6 +22,7 @@
     "lodash": "^4.17.11",
     "react": "16.5.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-31.0.1.tar.gz",
+    "react-native-dropdownalert": "^3.7.1",
     "react-navigation": "^3.0.4",
     "react-redux": "^6.0.0",
     "recompose": "^0.30.0",
