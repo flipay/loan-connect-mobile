@@ -1,11 +1,12 @@
 import * as React from 'react'
 import _ from 'lodash'
 import { NavigationScreenProps } from 'react-navigation'
-import DropdownAlert from 'react-native-dropdownalert';
 import { signUp } from '../requests'
 import { View, TextInput, StyleSheet } from 'react-native'
 import Text from '../components/Text'
 import { COLORS } from '../constants/styleGuides'
+// @ts-ignore don't have type definition
+import DropdownAlert from 'react-native-dropdownalert'
 
 interface State {
   phoneNumber: string
@@ -68,7 +69,7 @@ export default class SignUpScreen extends React.Component<
             value={this.state.phoneNumber}
           />
         </View>
-        {this.state.loading && !this.state.error && <Text>Loading...</Text>}
+        {this.state.loading && <Text>Loading...</Text>}
         <DropdownAlert ref={(ref: any) => this.dropdown = ref} />
       </View>
     )

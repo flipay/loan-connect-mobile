@@ -5,22 +5,29 @@ import Text from '../components/Text'
 import { NavigationScreenProps } from 'react-navigation'
 import { COLORS } from '../constants/styleGuides'
 import _ from 'lodash'
-import { submitOTP } from '../requests'
+import { submitOtp } from '../requests'
+// @ts-ignore don't have type definition
+import DropdownAlert from 'react-native-dropdownalert'
 
 type No = 0 | 1 | 2 | 3 | 4 | 5
 
 interface State {
-  [no: string]: string
+  [x: string]: string
+}
+interface LoadingState {
+  loading: boolean
 }
 
 export default class VerifyPhoneNumberScreen extends React.Component<
   NavigationScreenProps,
-  State
+  State & LoadingState
 > {
+  private dropdown = null
 
   public constructor (props: NavigationScreenProps) {
     super(props)
     this.state = {
+      loading: false,
       no0: '',
       no1: '',
       no2: '',
@@ -37,40 +44,51 @@ export default class VerifyPhoneNumberScreen extends React.Component<
     }
   }
 
-  public submitOTP = () => {
-    if (this.state.no0.length === 1 &&
-    this.state.no1.length === 1 &&
-    this.state.no2.length === 1 &&
-    this.state.no3.length === 1 &&
-    this.state.no4.length === 1 &&
-    this.state.no5.length === 1) {
-      this.props.navigation.navigate('Pin', {
-        screenName: 'Create PIN',
-        description: 'PIN will be used for login',
-        onSuccess: (firstPin: string, stackNavigationCreatePin: any) => {
-          stackNavigationCreatePin.push('Pin', {
-            screenName: 'Confirm PIN',
-            description: 'Please insert PIN again',
-            onSuccess: async (secondPin: string, stackNavigationConmfirmPin: any) => {
-              if (firstPin === secondPin) {
-                await submitOTP(
-                  this.props.navigation.getParam('accountNumber'),
-                  secondPin
-                )
+  public navigateToCreatePinScreen () {
+    this.props.navigation.navigate('Pin', {
+      screenName: 'Create PIN',
+      description: 'PIN will be used for login',
+      onSuccess: this.navigateToConfirmPinScreen
+    })
+  }
 
-                stackNavigationConmfirmPin.navigate('Main')
-              } else {
-                stackNavigationConmfirmPin.pop()
-              }
-            }
-          })
+  public navigateToConfirmPinScreen (firstPin: string, stackNavigationCreatePin: any) {
+    stackNavigationCreatePin.push('Pin', {
+      screenName: 'Confirm PIN',
+      description: 'Please insert PIN again',
+      onSuccess: async (secondPin: string, stackNavigationConmfirmPin: any) => {
+        if (firstPin === secondPin) {
+
+          stackNavigationConmfirmPin.navigate('Main')
+        } else {
+          stackNavigationConmfirmPin.pop()
         }
-      })
+      }
+    })
+  }
+
+  public submitOTP = async (otp) => {
+
+    if (otp.length === 6) {
+      try {
+        this.setState({ loading: true })
+        await submitOtp(this.props.navigation.getParam('accountNumber'), otp)
+        this.navigateToCreatePinScreen()
+        this.setState({ loading: false })
+      } catch (err) {
+        this.setState({ loading: false })
+        this.dropdown.alertWithType('error', 'Error', err.message)
+      }
+    } else {
+      this.dropdown.alertWithType('error', 'Error', 'fill in the form')
     }
   }
 
   public onPressButton = () => {
-    this.submitOTP()
+    const otp = this.state.no0 + this.state.no1 +
+      this.state.no2 + this.state.no3 +
+      this.state.no4 + this.state.no5
+    this.submitOTP(otp)
   }
 
   public onChangeText = (index: No, text: string) => {
@@ -84,7 +102,10 @@ export default class VerifyPhoneNumberScreen extends React.Component<
 
     // complete
     if (index === 5) {
-      this.submitOTP()
+      const otp = this.state.no0 + this.state.no1 +
+        this.state.no2 + this.state.no3 +
+        this.state.no4 + text
+      this.submitOTP(otp)
     }
   }
 
@@ -118,6 +139,8 @@ export default class VerifyPhoneNumberScreen extends React.Component<
   }
 
   public render () {
+    console.log('kendo jaa eiei typeof kak', typeof this.state.kak)
+    console.log('kendo jaa eiei typeof loading', typeof this.state.loading)
     return (
       <View style={styles.screen}>
         <Text>Plese check you SMS to get One Time Password (OTP)</Text>
@@ -128,6 +151,7 @@ export default class VerifyPhoneNumberScreen extends React.Component<
             Verify
           </Text>
         </TouchableHighlight>
+        <DropdownAlert ref={(ref: any) => this.dropdown = ref} />
       </View>
     )
   }
