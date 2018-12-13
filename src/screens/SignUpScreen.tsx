@@ -8,6 +8,7 @@ import { COLORS } from '../constants/styleGuides'
 
 interface State {
   phoneNumber: string
+  loading: boolean
 }
 
 export default class SignUpScreen extends React.Component<
@@ -17,7 +18,8 @@ export default class SignUpScreen extends React.Component<
   public constructor (props: NavigationScreenProps) {
     super(props)
     this.state = {
-      phoneNumber: ''
+      phoneNumber: '',
+      loading: false
     }
   }
 
@@ -28,15 +30,15 @@ export default class SignUpScreen extends React.Component<
   }
 
   public onChangeText = async (text: string) => {
-    if ((text.length === 4 || text.length === 8) && _.last(text) !== '-') {
-      this.setState({ phoneNumber: this.state.phoneNumber + '-' + _.last(text) })
-    } else if (text.length === 12) {
+    if (text.length === 10) {
       this.setState({ phoneNumber: text })
       const phoneNumberWithoutDash = _.replace(text, /-/g, '')
+      this.setState({ loading: true })
       const user = await signUp(phoneNumberWithoutDash)
       this.props.navigation.navigate('VerifyPhoneNumber', {
         accountNumber: user.id
       })
+      this.setState({ loading: false })
     } else {
       this.setState({ phoneNumber: text })
     }
@@ -51,12 +53,13 @@ export default class SignUpScreen extends React.Component<
             autoFocus={true}
             keyboardType='number-pad'
             textContentType='telephoneNumber'
-            placeholder='089-999-9999'
+            placeholder='0899999999'
             onChangeText={this.onChangeText}
             maxLength={12}
             value={this.state.phoneNumber}
           />
         </View>
+        {this.state.loading && <Text>Loading...</Text>}
       </View>
     )
   }
