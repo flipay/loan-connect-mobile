@@ -2,7 +2,7 @@ import * as React from 'react'
 import { ScrollView, StyleSheet, View } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { FontAwesome } from '@expo/vector-icons'
-import { Text } from '../components'
+import { Text, TradeBox } from '../components'
 
 export default class TradeScreen extends React.Component<
   NavigationScreenProps
@@ -24,15 +24,17 @@ export default class TradeScreen extends React.Component<
     )
   }
 
-  public renderHeader () {
+  public renderBody () {
     return (
-      <View style={styles.headerContainer}>
+      <View style={styles.bodyContainer}>
         <Text type='title'>
           {`${this.props.navigation.getParam('side')} ${this.props.navigation.getParam('coinId')}`}
         </Text>
         <Text type='body'>
           3,000 THB available
         </Text>
+        <TradeBox />
+        <TradeBox />
       </View>
     )
   }
@@ -46,7 +48,8 @@ export default class TradeScreen extends React.Component<
         }}
       >
         {this.renderCloseButton()}
-        {this.renderHeader()}
+        {this.renderBody()}
+
       </ScrollView>
     )
   }
@@ -57,7 +60,7 @@ const styles = StyleSheet.create({
     alignContent: 'flex-start',
     marginLeft: 18
   },
-  headerContainer: {
+  bodyContainer: {
     alignItems: 'center'
   }
 })
