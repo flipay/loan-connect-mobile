@@ -32,13 +32,15 @@ const AppStack = createStackNavigator({
     }
   },
   Trade: { screen: TradeScreen }
+}, {
+  mode: 'modal'
 })
 
 const AppNavigator = createSwitchNavigator({
+  Home: AppStack,
   Starter: Starter,
   Verification: VerificationStack,
-  Auth: AuthStack,
-  Home: AppStack
+  Auth: AuthStack
 })
 
 const AppContainer = createAppContainer(AppNavigator)
