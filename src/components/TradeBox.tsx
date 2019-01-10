@@ -1,28 +1,47 @@
 import * as React from 'react'
-import { View, StyleSheet, TextInput } from 'react-native'
+import { View, StyleSheet, TextInput, TouchableOpacity } from 'react-native'
 import Text from './Text'
 import { COLORS } from '../constants/styleGuides'
 
 interface Props {
   description: string
+  onPress: () => void
+  onChangeValue: (value: string) => void
+  active: boolean
+  value?: string
 }
 
 export default class TradeBox extends React.Component<Props> {
+  private input: TextInput | null = null
+
+  public onPress = () => {
+    if (this.input) {
+      this.input.focus()
+    }
+  }
+
   public render () {
     return (
-      <View style={styles.container}>
+      <TouchableOpacity style={styles.container} onPress={this.onPress}>
         <View style={styles.leftContainer}>
           <Text color={COLORS.N500}>
             {this.props.description}
           </Text>
-          <TextInput />
+          <TextInput
+            ref={(element) => { this.input = element }}
+            onChangeText={(text) => this.props.onChangeValue(text)}
+            value={this.props.value}
+            keyboardType='number-pad'
+            placeholder='0'
+            onFocus={this.props.onPress}
+          />
         </View>
         <View style={styles.rightContainer}>
           <Text>
             $ DOL
           </Text>
         </View>
-      </View>
+      </TouchableOpacity>
     )
   }
 }
