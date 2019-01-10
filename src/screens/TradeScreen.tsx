@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { ScrollView, StyleSheet, View } from 'react-native'
+import { ScrollView, StyleSheet, View, TouchableHighlight } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { FontAwesome } from '@expo/vector-icons'
 import { Text, TradeBox } from '../components'
@@ -47,11 +47,15 @@ export default class TradeScreen extends React.Component<
     this.setState({ currentTradeBoxValue: value })
   }
 
+  public onClose = () => {
+    this.props.navigation.goBack()
+  }
+
   public renderCloseButton () {
     return (
-      <View style={styles.closeButtonContainer}>
+      <TouchableHighlight style={styles.closeButtonContainer} onPress={this.onClose}>
         <FontAwesome name='times' size={16} />
-      </View>
+      </TouchableHighlight>
     )
   }
 
@@ -92,21 +96,20 @@ export default class TradeScreen extends React.Component<
 
   public render () {
     return (
-      <ScrollView
-        style={{
-          backgroundColor: '#fff',
-          flex: 1
-        }}
-      >
+      <ScrollView style={styles.container}>
         {this.renderCloseButton()}
         {this.renderBody()}
-
       </ScrollView>
     )
   }
 }
 
 const styles = StyleSheet.create({
+  container: {
+    backgroundColor: COLORS.WHITE,
+    flex: 1,
+    paddingTop: 50
+  },
   closeButtonContainer: {
     alignContent: 'flex-start',
     marginLeft: 18
