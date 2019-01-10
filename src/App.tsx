@@ -24,17 +24,16 @@ const VerificationStack = createStackNavigator({
   VerifyPhoneNumber: { screen: VerifyPhoneNumberScreen }
 })
 
-const AppStack = createStackNavigator({
-  Main: {
-    screen: MainScreen,
-    navigationOptions: {
-      header: null
-    }
+const AppStack = createStackNavigator(
+  {
+    Main: { screen: MainScreen },
+    Trade: { screen: TradeScreen }
   },
-  Trade: { screen: TradeScreen }
-}, {
-  mode: 'modal'
-})
+  {
+    mode: 'modal',
+    headerMode: 'none'
+  }
+)
 
 const AppNavigator = createSwitchNavigator({
   Home: AppStack,
