@@ -3,6 +3,7 @@ import { ScrollView, StyleSheet, View } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { FontAwesome } from '@expo/vector-icons'
 import { Text, TradeBox } from '../components'
+import { COLORS } from '../constants/styleGuides';
 
 export default class TradeScreen extends React.Component<
   NavigationScreenProps
@@ -30,11 +31,17 @@ export default class TradeScreen extends React.Component<
         <Text type='title'>
           {`${this.props.navigation.getParam('side')} ${this.props.navigation.getParam('coinId')}`}
         </Text>
-        <Text type='body'>
+        <Text type='body' color={COLORS.N500}>
           3,000 THB available
         </Text>
-        <TradeBox />
-        <TradeBox />
+        <View style={styles.tradeBoxesContainer}>
+          <TradeBox
+            description='You buy with'
+          />
+          <TradeBox
+            description='You will receive'
+          />
+        </View>
       </View>
     )
   }
@@ -62,5 +69,10 @@ const styles = StyleSheet.create({
   },
   bodyContainer: {
     alignItems: 'center'
+  },
+  tradeBoxesContainer: {
+    marginTop: 42,
+    paddingHorizontal: 20,
+    width: '100%'
   }
 })
