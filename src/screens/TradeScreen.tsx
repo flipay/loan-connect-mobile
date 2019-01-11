@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as _ from 'lodash'
-import { ScrollView, StyleSheet, View, TouchableHighlight } from 'react-native'
+import { ScrollView, StyleSheet, View, TouchableHighlight, TouchableHighlightBase } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { FontAwesome } from '@expo/vector-icons'
 import { Text, TradeBox } from '../components'
@@ -42,6 +42,10 @@ export default class TradeScreen extends React.Component<
 
   public onClose = () => {
     this.props.navigation.goBack()
+  }
+
+  public onPressPriceComparison = () => {
+    console.log('onPress Price comparison')
   }
 
   public renderCloseButton () {
@@ -92,6 +96,14 @@ export default class TradeScreen extends React.Component<
             }
           />
         </View>
+        <Text color={COLORS.N500}>
+          {side === 'buy' ? 'You save up to ' : 'You earn up to '}
+          <Text color={COLORS.N800}>500 THB</Text>
+          {side === 'buy' ? '' : ' more'}
+        </Text>
+        <TouchableHighlight onPress={this.onPressPriceComparison}>
+          <Text color={COLORS.P400}>See price comparison</Text>
+        </TouchableHighlight>
       </View>
     )
   }
