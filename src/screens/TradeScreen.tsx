@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as _ from 'lodash'
-import { KeyboardAvoidingView, StyleSheet, View, TouchableHighlight } from 'react-native'
+import { KeyboardAvoidingView, StyleSheet, View, TouchableHighlight, ScrollView } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { FontAwesome } from '@expo/vector-icons'
 import { Text, TradeBox } from '../components'
@@ -153,8 +153,8 @@ export default class TradeScreen extends React.Component<
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: COLORS.WHITE,
     flex: 1,
+    justifyContent: 'space-between',
     paddingTop: 50
   },
   bodyContainer: {
