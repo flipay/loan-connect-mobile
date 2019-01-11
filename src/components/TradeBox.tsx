@@ -11,6 +11,7 @@ import { COLORS } from '../constants/styleGuides'
 import { ASSETS } from '../constants/assets'
 
 interface Props {
+  autoFocus?: boolean
   description: string
   assetId: string
   onPress: () => void
@@ -41,6 +42,7 @@ export default class TradeBox extends React.Component<Props> {
             ref={element => {
               this.input = element
             }}
+            autoFocus={this.props.autoFocus}
             onChangeText={text => this.props.onChangeValue(text)}
             value={this.props.value}
             keyboardType='number-pad'

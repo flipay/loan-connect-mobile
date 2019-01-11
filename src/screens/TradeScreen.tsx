@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as _ from 'lodash'
-import { ScrollView, StyleSheet, View, TouchableHighlight, TouchableHighlightBase } from 'react-native'
+import { KeyboardAvoidingView, StyleSheet, View, TouchableHighlight } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { FontAwesome } from '@expo/vector-icons'
 import { Text, TradeBox } from '../components'
@@ -33,7 +33,12 @@ export default class TradeScreen extends React.Component<
   }
 
   public onPressTradeBox = (tradeBoxIndex: number) => {
-    this.setState({ activeTradeBoxIndex: tradeBoxIndex })
+    if (tradeBoxIndex !== this.state.activeTradeBoxIndex) {
+      this.setState({
+        activeTradeBoxIndex: tradeBoxIndex,
+        currentTradeBoxValue: ''
+      })
+    }
   }
 
   public onChangeValue = (value: string) => {
@@ -48,41 +53,40 @@ export default class TradeScreen extends React.Component<
     console.log('onPress Price comparison')
   }
 
+  public onPressSubmit = () => {
+    console.log('press submit')
+  }
+
   public renderCloseButton () {
     return (
-      <TouchableHighlight
+      <View
         style={styles.closeButtonContainer}
-        onPress={this.onClose}
       >
-        <FontAwesome name='times' size={16} />
-      </TouchableHighlight>
+        <TouchableHighlight
+          style={styles.closeButton}
+          onPress={this.onClose}
+        >
+          <FontAwesome name='times' size={16} />
+        </TouchableHighlight>
+      </View>
     )
   }
 
   public renderSubmitButton () {
     const content = (
-      <Text type='button'>
+      <Text type='button' color={COLORS.WHITE}>
         {_.capitalize(this.props.navigation.getParam('side'))}
       </Text>
     )
     const submitable = this.state.currentTradeBoxValue !== ''
 
-    if (submitable) {
-      return (
-        <TouchableHighlight
-          style={styles.submitButton}
-        >
-          {content}
-        </TouchableHighlight>
-      )
-    }
-
     return (
-      <View
-        style={[styles.submitButton, styles.inactiveSubmitButton]}
+      <TouchableHighlight
+        style={[styles.submitButton, !submitable && styles.inactiveSubmitButton]}
+        onPress={submitable ? this.onPressSubmit : undefined}
       >
         {content}
-      </View>
+      </TouchableHighlight>
     )
   }
 
@@ -91,6 +95,7 @@ export default class TradeScreen extends React.Component<
     const assetId = this.props.navigation.getParam('assetId')
     return (
       <View style={styles.bodyContainer}>
+        {this.renderCloseButton()}
         <Text type='title'>
           {`${_.capitalize(side)} ${ASSETS[assetId].name}`}
         </Text>
@@ -99,6 +104,7 @@ export default class TradeScreen extends React.Component<
         </Text>
         <View style={styles.tradeBoxesContainer}>
           <TradeBox
+            autoFocus={true}
             description={side === 'buy' ? 'You buy with' : 'You sell'}
             assetId={side === 'buy' ? 'cash' : assetId}
             onPress={() => this.onPressTradeBox(0)}
@@ -137,11 +143,10 @@ export default class TradeScreen extends React.Component<
 
   public render () {
     return (
-      <ScrollView style={styles.container}>
-        {this.renderCloseButton()}
+      <View style={styles.container}>
         {this.renderBody()}
         {this.renderSubmitButton()}
-      </ScrollView>
+      </View>
     )
   }
 }
@@ -152,12 +157,17 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 50
   },
+  bodyContainer: {
+    alignItems: 'center'
+  },
   closeButtonContainer: {
+    width: '100%',
     alignContent: 'flex-start',
     marginLeft: 18
   },
-  bodyContainer: {
-    alignItems: 'center'
+  closeButton: {
+    width: 40,
+    height: 40
   },
   tradeBoxesContainer: {
     marginTop: 42,
@@ -166,6 +176,7 @@ const styles = StyleSheet.create({
   },
   submitButton: {
     width: '100%',
+    height: 50,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: COLORS.P400
