@@ -143,10 +143,13 @@ export default class TradeScreen extends React.Component<
 
   public render () {
     return (
-      <View style={styles.container}>
+      <KeyboardAvoidingView
+        behavior='height'
+        style={styles.container}
+      >
         {this.renderBody()}
         {this.renderSubmitButton()}
-      </View>
+      </KeyboardAvoidingView>
     )
   }
 }
