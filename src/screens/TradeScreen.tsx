@@ -59,6 +59,33 @@ export default class TradeScreen extends React.Component<
     )
   }
 
+  public renderSubmitButton () {
+    const content = (
+      <Text type='button'>
+        {_.capitalize(this.props.navigation.getParam('side'))}
+      </Text>
+    )
+    const submitable = this.state.currentTradeBoxValue !== ''
+
+    if (submitable) {
+      return (
+        <TouchableHighlight
+          style={styles.submitButton}
+        >
+          {content}
+        </TouchableHighlight>
+      )
+    }
+
+    return (
+      <View
+        style={[styles.submitButton, styles.inactiveSubmitButton]}
+      >
+        {content}
+      </View>
+    )
+  }
+
   public renderBody () {
     const side = this.props.navigation.getParam('side')
     const assetId = this.props.navigation.getParam('assetId')
@@ -113,6 +140,7 @@ export default class TradeScreen extends React.Component<
       <ScrollView style={styles.container}>
         {this.renderCloseButton()}
         {this.renderBody()}
+        {this.renderSubmitButton()}
       </ScrollView>
     )
   }
@@ -135,5 +163,14 @@ const styles = StyleSheet.create({
     marginTop: 42,
     paddingHorizontal: 20,
     width: '100%'
+  },
+  submitButton: {
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: COLORS.P400
+  },
+  inactiveSubmitButton: {
+    opacity: 0.35
   }
 })
