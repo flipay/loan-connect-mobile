@@ -72,7 +72,7 @@ export default class AssetCard extends React.Component<
   public onPressButton = (side: 'buy' | 'sell') => {
     this.props.navigation.navigate('Trade', {
       side,
-      coinId: this.props.id
+      assetId: this.props.id
     })
   }
 

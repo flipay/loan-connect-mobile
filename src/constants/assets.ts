@@ -1,7 +1,8 @@
+import { ImageSourcePropType } from 'react-native'
 
 interface ASSET {
   name: string
-  image: string
+  image: ImageSourcePropType
   unit: string
 }
 

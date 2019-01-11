@@ -56,19 +56,20 @@ export default class TradeScreen extends React.Component<
   }
 
   public renderBody () {
+    const side = this.props.navigation.getParam('side')
+    const assetId = this.props.navigation.getParam('assetId')
     return (
       <View style={styles.bodyContainer}>
         <Text type='title'>
-          {`${_.capitalize(this.props.navigation.getParam('side'))} ${
-            ASSETS[this.props.navigation.getParam('coinId')].name
-          }`}
+          {`${_.capitalize(side)} ${ASSETS[assetId].name}`}
         </Text>
         <Text type='body' color={COLORS.N500}>
           3,000 THB available
         </Text>
         <View style={styles.tradeBoxesContainer}>
           <TradeBox
-            description='You buy with'
+            description={side === 'buy' ? 'You buy with' : 'You sell'}
+            assetId={side === 'buy' ? 'cash' : assetId}
             onPress={() => this.onPressTradeBox(0)}
             onChangeValue={this.onChangeValue}
             active={this.state.activeTradeBoxIndex === 0}
@@ -79,7 +80,8 @@ export default class TradeScreen extends React.Component<
             }
           />
           <TradeBox
-            description='You will receive'
+            description={side === 'sell' ? 'You will receive' : 'You will receive'}
+            assetId={side === 'sell' ? 'cash' : assetId}
             onPress={() => this.onPressTradeBox(1)}
             onChangeValue={this.onChangeValue}
             active={this.state.activeTradeBoxIndex === 1}
