@@ -31,7 +31,10 @@ export default class TradeBox extends React.Component<Props> {
   public render () {
     const { image, unit } = ASSETS[this.props.assetId]
     return (
-      <TouchableOpacity style={styles.container} onPress={this.onPress}>
+      <TouchableOpacity
+        style={[styles.container, this.props.active && styles.activeContainer]}
+        onPress={this.onPress}
+      >
         <View style={styles.leftContainer}>
           <Text color={COLORS.N500}>{this.props.description}</Text>
           <TextInput
@@ -61,6 +64,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '100%',
     marginBottom: 16
+  },
+  activeContainer: {
+    shadowColor: 'black',
+    shadowOffset: { height: 4, width: 0 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2
   },
   leftContainer: {
     flex: 2,
