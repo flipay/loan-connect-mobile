@@ -1,9 +1,11 @@
 import * as React from 'react'
+import * as _ from 'lodash'
 import { ScrollView, StyleSheet, View, TouchableHighlight } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { FontAwesome } from '@expo/vector-icons'
 import { Text, TradeBox } from '../components'
 import { COLORS } from '../constants/styleGuides'
+import { ASSETS } from '../constants/assets'
 
 interface State {
   activeTradeBoxIndex: number
@@ -19,15 +21,6 @@ export default class TradeScreen extends React.Component<
     this.state = {
       activeTradeBoxIndex: 0,
       currentTradeBoxValue: ''
-    }
-  }
-
-  public static navigationOptions = (props: NavigationScreenProps) => {
-    return {
-      title: `${props.navigation.getParam(
-        'side',
-        'Buy'
-      )} ${props.navigation.getParam('coinId', 'Bitcoin')}`
     }
   }
 
@@ -53,7 +46,10 @@ export default class TradeScreen extends React.Component<
 
   public renderCloseButton () {
     return (
-      <TouchableHighlight style={styles.closeButtonContainer} onPress={this.onClose}>
+      <TouchableHighlight
+        style={styles.closeButtonContainer}
+        onPress={this.onClose}
+      >
         <FontAwesome name='times' size={16} />
       </TouchableHighlight>
     )
@@ -63,7 +59,9 @@ export default class TradeScreen extends React.Component<
     return (
       <View style={styles.bodyContainer}>
         <Text type='title'>
-          {`${this.props.navigation.getParam('side')} ${this.props.navigation.getParam('coinId')}`}
+          {`${_.capitalize(this.props.navigation.getParam('side'))} ${
+            ASSETS[this.props.navigation.getParam('coinId')].name
+          }`}
         </Text>
         <Text type='body' color={COLORS.N500}>
           3,000 THB available
@@ -74,9 +72,10 @@ export default class TradeScreen extends React.Component<
             onPress={() => this.onPressTradeBox(0)}
             onChangeValue={this.onChangeValue}
             active={this.state.activeTradeBoxIndex === 0}
-            value={this.state.activeTradeBoxIndex === 0
-              ? this.state.currentTradeBoxValue
-              : this.calculateValue()
+            value={
+              this.state.activeTradeBoxIndex === 0
+                ? this.state.currentTradeBoxValue
+                : this.calculateValue()
             }
           />
           <TradeBox
@@ -84,9 +83,10 @@ export default class TradeScreen extends React.Component<
             onPress={() => this.onPressTradeBox(1)}
             onChangeValue={this.onChangeValue}
             active={this.state.activeTradeBoxIndex === 1}
-            value={this.state.activeTradeBoxIndex === 1
-              ? this.state.currentTradeBoxValue
-              : this.calculateValue()
+            value={
+              this.state.activeTradeBoxIndex === 1
+                ? this.state.currentTradeBoxValue
+                : this.calculateValue()
             }
           />
         </View>
