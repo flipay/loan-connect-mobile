@@ -39,7 +39,7 @@ export default class AssetCard extends React.Component<
     super(props)
     this.state = {
       cardHeight: new Animated.Value(80),
-      cardHorizontalMargin: new Animated.Value(8)
+      cardHorizontalMargin: new Animated.Value(12)
     }
   }
 
@@ -117,7 +117,7 @@ export default class AssetCard extends React.Component<
       <TouchableOpacity onPress={this.props.onPress}>
         <Animated.View
           style={[
-            this.props.expanded ? styles.expandedContainer : styles.container,
+            styles.container, this.props.expanded && styles.expandedContainer,
             {
               height: this.state.cardHeight,
               marginHorizontal: this.state.cardHorizontalMargin
@@ -158,14 +158,7 @@ export default class AssetCard extends React.Component<
 
 const styles = StyleSheet.create({
   expandedContainer: {
-    backgroundColor: COLORS.WHITE,
-    shadowColor: 'black',
-    shadowOffset: { height: 4, width: 0 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
-    padding: 20,
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: 'column',
     position: 'relative'
   },
   container: {
