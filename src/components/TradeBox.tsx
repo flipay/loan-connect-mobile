@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
   },
   leftContainer: {
     flex: 2,
-    padding: 16
+    padding: 10
   },
   textInput: {
     fontSize: FONT_TYPES['large-title'].fontSize,

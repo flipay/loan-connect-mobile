@@ -1,6 +1,12 @@
 import * as React from 'react'
 import * as _ from 'lodash'
-import { KeyboardAvoidingView, StyleSheet, View, TouchableHighlight, ScrollView, StatusBar } from 'react-native'
+import {
+  KeyboardAvoidingView,
+  StyleSheet,
+  View,
+  TouchableHighlight,
+  StatusBar
+} from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { AntDesign } from '@expo/vector-icons'
 import { Text, TradeBox } from '../components'
@@ -66,10 +72,7 @@ export default class TradeScreen extends React.Component<
 
   public renderCloseButton () {
     return (
-      <TouchableHighlight
-        style={styles.closeButton}
-        onPress={this.onClose}
-      >
+      <TouchableHighlight style={styles.closeButton} onPress={this.onClose}>
         <AntDesign name='close' size={32} />
       </TouchableHighlight>
     )
@@ -78,12 +81,15 @@ export default class TradeScreen extends React.Component<
   public renderSubmitButton () {
     const content = (
       <Text type='button' color={COLORS.WHITE}>
-        {_.capitalize(this.props.navigation.getParam('side'))}
+        {_.capitalize(this.props.navigation.getParam('side', 'buy'))}
       </Text>
     )
     return (
       <TouchableHighlight
-        style={[styles.submitButton, !this.isSubmitable() && styles.inactiveSubmitButton]}
+        style={[
+          styles.submitButton,
+          !this.isSubmitable() && styles.inactiveSubmitButton
+        ]}
         onPress={this.isSubmitable() ? this.onPressSubmit : undefined}
       >
         {content}
@@ -93,17 +99,19 @@ export default class TradeScreen extends React.Component<
 
   public renderFooter () {
     const side = this.props.navigation.getParam('side', 'buy')
-    return this.isSubmitable() && (
-      <View style={styles.footer}>
-        <Text color={COLORS.N500}>
-          {side === 'buy' ? 'You save up to ' : 'You earn up to '}
-          <Text color={COLORS.N800}>500 THB</Text>
-          {side === 'buy' ? '' : ' more'}
-        </Text>
-        <TouchableHighlight onPress={this.onPressPriceComparison}>
-          <Text color={COLORS.P400}>See price comparison</Text>
-        </TouchableHighlight>
-      </View>
+    return (
+      this.isSubmitable() && (
+        <View style={styles.footer}>
+          <Text color={COLORS.N500}>
+            {side === 'buy' ? 'You save up to ' : 'You earn up to '}
+            <Text color={COLORS.N800}>500 THB</Text>
+            {side === 'buy' ? '' : ' more'}
+          </Text>
+          <TouchableHighlight onPress={this.onPressPriceComparison}>
+            <Text color={COLORS.P400}>See price comparison</Text>
+          </TouchableHighlight>
+        </View>
+      )
     )
   }
 
@@ -121,7 +129,7 @@ export default class TradeScreen extends React.Component<
         </Text>
         <View style={styles.tradeBoxesContainer}>
           <TradeBox
-            autoFocus={true}
+            // autoFocus={true}
             description={side === 'buy' ? 'You buy with' : 'You sell'}
             assetId={side === 'buy' ? 'cash' : assetId}
             onPress={() => this.onPressTradeBox(0)}
@@ -134,7 +142,9 @@ export default class TradeScreen extends React.Component<
             }
           />
           <TradeBox
-            description={side === 'sell' ? 'You will receive' : 'You will receive'}
+            description={
+              side === 'sell' ? 'You will receive' : 'You will receive'
+            }
             assetId={side === 'sell' ? 'cash' : assetId}
             onPress={() => this.onPressTradeBox(1)}
             onChangeValue={this.onChangeValue}
@@ -153,13 +163,8 @@ export default class TradeScreen extends React.Component<
 
   public render () {
     return (
-      <KeyboardAvoidingView
-        behavior='height'
-        style={styles.container}
-      >
-        <StatusBar
-          barStyle='dark-content'
-        />
+      <KeyboardAvoidingView style={styles.container} behavior='height'>
+        <StatusBar barStyle='dark-content' />
         {this.renderBody()}
         {this.renderSubmitButton()}
       </KeyboardAvoidingView>
@@ -184,7 +189,7 @@ const styles = StyleSheet.create({
     padding: 6
   },
   tradeBoxesContainer: {
-    marginTop: 42,
+    marginTop: 20,
     paddingHorizontal: 20,
     width: '100%'
   },
