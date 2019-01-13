@@ -49,9 +49,41 @@ export default class TradeScreen extends React.Component<
   }
 
   public onChangeValue = (value: string) => {
-    const numberInString = Number(_.replace(value, /,/g, '')).toLocaleString()
-    const showingText = numberInString === '0' ? '' : numberInString
-    this.setState({ currentTradeBoxValue: showingText })
+    let valueInString = value
+    let haveDot = false
+    let endingZero = 0
+
+    if (value === '.') {
+      valueInString = '0.'
+    } else if (value !== '') {
+      const valueInStringWithoutComma = _.replace(value, /,/g, '')
+      const { length } = valueInStringWithoutComma
+      if (valueInStringWithoutComma[length - 1] === '.') {
+        haveDot = true
+      } else if (
+        _.includes(valueInStringWithoutComma, '.') &&
+        valueInStringWithoutComma[length - 1] === '0'
+      ) {
+        const valueWithoutZero = _.trimEnd(valueInStringWithoutComma, '0')
+        if (valueWithoutZero[valueWithoutZero.length - 1] === '.') {
+          haveDot = true
+        }
+        endingZero = length - _.trimEnd(valueInStringWithoutComma, '0').length
+      }
+      valueInString = Number(valueInStringWithoutComma).toLocaleString(
+        undefined,
+        { maximumFractionDigits: 8 }
+      )
+      if (haveDot) {
+        valueInString += '.'
+      }
+      if (endingZero > 0) {
+        for (let i = 0; i < endingZero; i++) {
+          valueInString += '0'
+        }
+      }
+    }
+    this.setState({ currentTradeBoxValue: valueInString })
   }
 
   public onClose = () => {
