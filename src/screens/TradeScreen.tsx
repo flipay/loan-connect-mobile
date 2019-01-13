@@ -2,7 +2,7 @@ import * as React from 'react'
 import * as _ from 'lodash'
 import { KeyboardAvoidingView, StyleSheet, View, TouchableHighlight, ScrollView } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
-import { FontAwesome } from '@expo/vector-icons'
+import { AntDesign } from '@expo/vector-icons'
 import { Text, TradeBox } from '../components'
 import { COLORS } from '../constants/styleGuides'
 import { ASSETS } from '../constants/assets'
@@ -25,8 +25,8 @@ export default class TradeScreen extends React.Component<
   }
 
   public calculateValue = () => {
-    if (this.state.activeTradeBoxIndex === 0) {
-      return '1000'
+    if (this.state.currentTradeBoxValue === '') {
+      return ''
     } else {
       return '1000'
     }
@@ -66,7 +66,7 @@ export default class TradeScreen extends React.Component<
           style={styles.closeButton}
           onPress={this.onClose}
         >
-          <FontAwesome name='times' size={16} />
+          <AntDesign name='close' size={32} />
         </TouchableHighlight>
       </View>
     )

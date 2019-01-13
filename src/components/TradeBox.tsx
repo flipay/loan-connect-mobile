@@ -7,7 +7,7 @@ import {
   Image
 } from 'react-native'
 import Text from './Text'
-import { COLORS } from '../constants/styleGuides'
+import { COLORS, FONT_TYPES } from '../constants/styleGuides'
 import { ASSETS } from '../constants/assets'
 
 interface Props {
@@ -42,7 +42,10 @@ export default class TradeBox extends React.Component<Props> {
             ref={element => {
               this.input = element
             }}
+            style={[styles.textInput, this.props.active && styles.activeTextInput]}
             autoFocus={this.props.autoFocus}
+            placeholderTextColor={this.props.active ? COLORS.P100 : COLORS.N300}
+            selectionColor={COLORS.P400}
             onChangeText={text => this.props.onChangeValue(text)}
             value={this.props.value}
             keyboardType='number-pad'
@@ -76,6 +79,14 @@ const styles = StyleSheet.create({
   leftContainer: {
     flex: 2,
     padding: 16
+  },
+  textInput: {
+    fontSize: FONT_TYPES['large-title'].fontSize,
+    fontFamily: FONT_TYPES['large-title'].fontFamily,
+    color: COLORS.N800
+  },
+  activeTextInput: {
+    color: COLORS.P400
   },
   rightContainer: {
     flex: 1,
