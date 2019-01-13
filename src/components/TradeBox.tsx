@@ -37,7 +37,7 @@ export default class TradeBox extends React.Component<Props> {
         onPress={this.onPress}
       >
         <View style={styles.leftContainer}>
-          <Text color={COLORS.N500}>{this.props.description}</Text>
+          <Text type='caption' color={COLORS.N500}>{this.props.description}</Text>
           <TextInput
             ref={element => {
               this.input = element

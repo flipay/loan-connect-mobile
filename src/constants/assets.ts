@@ -15,7 +15,7 @@ export const ASSETS: { [key in string]: ASSET } = {
   bitcoin: {
     name: 'Bitcoin',
     image: require('../img/btc.png'),
-    unit: 'BTC'
+    unit: 'Bitcoin'
   },
   ethereum: {
     name: 'Ethereum',
