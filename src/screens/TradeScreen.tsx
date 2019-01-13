@@ -28,7 +28,8 @@ export default class TradeScreen extends React.Component<
     if (this.state.currentTradeBoxValue === '') {
       return ''
     } else {
-      return '1000'
+      const calculatedNumber = 1000
+      return calculatedNumber.toLocaleString()
     }
   }
 
