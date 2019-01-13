@@ -8,9 +8,8 @@ import {
   StatusBar
 } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
-import { AntDesign } from '@expo/vector-icons'
 import { Constants } from 'expo'
-import { Text, TradeBox } from '../components'
+import { Text, TradeBox, CloseButton } from '../components'
 import { COLORS } from '../constants/styleGuides'
 import { ASSETS } from '../constants/assets'
 
@@ -103,14 +102,6 @@ export default class TradeScreen extends React.Component<
     return this.state.currentTradeBoxValue !== ''
   }
 
-  public renderCloseButton () {
-    return (
-      <TouchableHighlight style={styles.closeButton} onPress={this.onClose}>
-        <AntDesign name='close' size={28} />
-      </TouchableHighlight>
-    )
-  }
-
   public renderSubmitButton () {
     const content = (
       <Text type='button' color={COLORS.WHITE}>
@@ -153,7 +144,9 @@ export default class TradeScreen extends React.Component<
     const assetId = this.props.navigation.getParam('assetId', 'bitcoin')
     return (
       <View style={styles.bodyContainer}>
-        {this.renderCloseButton()}
+        <CloseButton
+          onPress={this.onClose}
+        />
         <Text type='title'>
           {`${_.capitalize(side)} ${ASSETS[assetId].name}`}
         </Text>
@@ -218,12 +211,6 @@ const styles = StyleSheet.create({
   bodyContainer: {
     paddingTop: 50,
     alignItems: 'center'
-  },
-  closeButton: {
-    position: 'absolute',
-    left: 12,
-    top: 24,
-    padding: 6
   },
   tradeBoxesContainer: {
     marginTop: 20,
