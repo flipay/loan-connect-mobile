@@ -91,8 +91,8 @@ export default class TradeScreen extends React.Component<
   }
 
   public renderBody () {
-    const side = this.props.navigation.getParam('side')
-    const assetId = this.props.navigation.getParam('assetId')
+    const side = this.props.navigation.getParam('side', 'buy')
+    const assetId = this.props.navigation.getParam('assetId', 'bitcoin')
     return (
       <View style={styles.bodyContainer}>
         {this.renderCloseButton()}

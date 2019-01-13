@@ -66,6 +66,7 @@ const styles = StyleSheet.create({
   container: {
     borderWidth: 1,
     borderColor: COLORS.N100,
+    backgroundColor: COLORS.WHITE,
     flexDirection: 'row',
     width: '100%',
     marginBottom: 16
