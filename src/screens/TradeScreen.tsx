@@ -92,7 +92,7 @@ export default class TradeScreen extends React.Component<
   }
 
   public onPressPriceComparison = () => {
-    console.log('onPress Price comparison')
+    this.props.navigation.navigate('Comparison')
   }
 
   public onPressSubmit = () => {

@@ -10,6 +10,7 @@ import MainScreen from './screens/MainScreen'
 import SignUpScreen from './screens/SignUpScreen'
 import VerifyPhoneNumberScreen from './screens/VerifyPhoneNumberScreen'
 import TradeScreen from './screens/TradeScreen'
+import ComparisonScreen from './screens/ComparisonScreen'
 import PinScreen from './screens/PinScreen'
 import { Font } from 'expo'
 
@@ -27,7 +28,8 @@ const VerificationStack = createStackNavigator({
 const AppStack = createStackNavigator(
   {
     Main: { screen: MainScreen },
-    Trade: { screen: TradeScreen }
+    Trade: { screen: TradeScreen },
+    Comparison: { screen: ComparisonScreen }
   },
   {
     mode: 'modal',
