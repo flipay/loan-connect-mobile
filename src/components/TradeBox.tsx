@@ -65,7 +65,7 @@ export default class TradeBox extends React.Component<Props> {
 const styles = StyleSheet.create({
   container: {
     borderWidth: 1,
-    borderColor: COLORS.N100,
+    borderColor: COLORS.N200,
     backgroundColor: COLORS.WHITE,
     flexDirection: 'row',
     width: '100%',

@@ -9,6 +9,7 @@ import {
 } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { AntDesign } from '@expo/vector-icons'
+import { Constants } from 'expo'
 import { Text, TradeBox } from '../components'
 import { COLORS } from '../constants/styleGuides'
 import { ASSETS } from '../constants/assets'
@@ -105,7 +106,7 @@ export default class TradeScreen extends React.Component<
   public renderCloseButton () {
     return (
       <TouchableHighlight style={styles.closeButton} onPress={this.onClose}>
-        <AntDesign name='close' size={32} />
+        <AntDesign name='close' size={28} />
       </TouchableHighlight>
     )
   }
@@ -195,7 +196,11 @@ export default class TradeScreen extends React.Component<
 
   public render () {
     return (
-      <KeyboardAvoidingView style={styles.container} behavior='height'>
+      <KeyboardAvoidingView
+        style={styles.container}
+        keyboardVerticalOffset={Constants.statusBarHeight === 40 ? 20 : 0}
+        behavior='height'
+      >
         <StatusBar barStyle='dark-content' />
         {this.renderBody()}
         {this.renderSubmitButton()}
