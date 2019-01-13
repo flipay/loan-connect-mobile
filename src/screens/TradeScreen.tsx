@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as _ from 'lodash'
-import { KeyboardAvoidingView, StyleSheet, View, TouchableHighlight, ScrollView } from 'react-native'
+import { KeyboardAvoidingView, StyleSheet, View, TouchableHighlight, ScrollView, StatusBar } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { AntDesign } from '@expo/vector-icons'
 import { Text, TradeBox } from '../components'
@@ -42,7 +42,8 @@ export default class TradeScreen extends React.Component<
   }
 
   public onChangeValue = (value: string) => {
-    this.setState({ currentTradeBoxValue: value })
+    const valueInNumber = Number(_.replace(value, /,/g, ''))
+    this.setState({ currentTradeBoxValue: valueInNumber.toLocaleString() })
   }
 
   public onClose = () => {
@@ -59,16 +60,12 @@ export default class TradeScreen extends React.Component<
 
   public renderCloseButton () {
     return (
-      <View
-        style={styles.closeButtonContainer}
+      <TouchableHighlight
+        style={styles.closeButton}
+        onPress={this.onClose}
       >
-        <TouchableHighlight
-          style={styles.closeButton}
-          onPress={this.onClose}
-        >
-          <AntDesign name='close' size={32} />
-        </TouchableHighlight>
-      </View>
+        <AntDesign name='close' size={32} />
+      </TouchableHighlight>
     )
   }
 
@@ -87,6 +84,22 @@ export default class TradeScreen extends React.Component<
       >
         {content}
       </TouchableHighlight>
+    )
+  }
+
+  public renderFooter () {
+    const side = this.props.navigation.getParam('side', 'buy')
+    return this.state.currentTradeBoxValue && (
+      <View>
+        <Text color={COLORS.N500}>
+          {side === 'buy' ? 'You save up to ' : 'You earn up to '}
+          <Text color={COLORS.N800}>500 THB</Text>
+          {side === 'buy' ? '' : ' more'}
+        </Text>
+        <TouchableHighlight onPress={this.onPressPriceComparison}>
+          <Text color={COLORS.P400}>See price comparison</Text>
+        </TouchableHighlight>
+      </View>
     )
   }
 
@@ -129,14 +142,6 @@ export default class TradeScreen extends React.Component<
             }
           />
         </View>
-        <Text color={COLORS.N500}>
-          {side === 'buy' ? 'You save up to ' : 'You earn up to '}
-          <Text color={COLORS.N800}>500 THB</Text>
-          {side === 'buy' ? '' : ' more'}
-        </Text>
-        <TouchableHighlight onPress={this.onPressPriceComparison}>
-          <Text color={COLORS.P400}>See price comparison</Text>
-        </TouchableHighlight>
       </View>
     )
   }
@@ -147,6 +152,9 @@ export default class TradeScreen extends React.Component<
         behavior='height'
         style={styles.container}
       >
+        <StatusBar
+          barStyle='dark-content'
+        />
         {this.renderBody()}
         {this.renderSubmitButton()}
       </KeyboardAvoidingView>
@@ -158,19 +166,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'space-between',
-    paddingTop: 50
+    position: 'relative'
   },
   bodyContainer: {
+    paddingTop: 50,
     alignItems: 'center'
   },
-  closeButtonContainer: {
-    width: '100%',
-    alignContent: 'flex-start',
-    marginLeft: 18
-  },
   closeButton: {
-    width: 40,
-    height: 40
+    position: 'absolute',
+    left: 12,
+    top: 24,
+    padding: 6
   },
   tradeBoxesContainer: {
     marginTop: 42,

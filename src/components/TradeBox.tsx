@@ -48,7 +48,7 @@ export default class TradeBox extends React.Component<Props> {
             selectionColor={COLORS.P400}
             onChangeText={text => this.props.onChangeValue(text)}
             value={this.props.value}
-            keyboardType='number-pad'
+            keyboardType='decimal-pad'
             placeholder='0'
             onFocus={this.props.onPress}
           />
