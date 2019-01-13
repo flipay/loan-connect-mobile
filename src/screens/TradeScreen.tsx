@@ -42,8 +42,9 @@ export default class TradeScreen extends React.Component<
   }
 
   public onChangeValue = (value: string) => {
-    const valueInNumber = Number(_.replace(value, /,/g, ''))
-    this.setState({ currentTradeBoxValue: valueInNumber.toLocaleString() })
+    const numberInString = Number(_.replace(value, /,/g, '')).toLocaleString()
+    const showingText = numberInString === '0' ? '' : numberInString
+    this.setState({ currentTradeBoxValue: showingText })
   }
 
   public onClose = () => {
@@ -56,6 +57,10 @@ export default class TradeScreen extends React.Component<
 
   public onPressSubmit = () => {
     console.log('press submit')
+  }
+
+  public isSubmitable = () => {
+    return this.state.currentTradeBoxValue !== ''
   }
 
   public renderCloseButton () {
@@ -75,12 +80,10 @@ export default class TradeScreen extends React.Component<
         {_.capitalize(this.props.navigation.getParam('side'))}
       </Text>
     )
-    const submitable = this.state.currentTradeBoxValue !== ''
-
     return (
       <TouchableHighlight
-        style={[styles.submitButton, !submitable && styles.inactiveSubmitButton]}
-        onPress={submitable ? this.onPressSubmit : undefined}
+        style={[styles.submitButton, !this.isSubmitable() && styles.inactiveSubmitButton]}
+        onPress={this.isSubmitable() ? this.onPressSubmit : undefined}
       >
         {content}
       </TouchableHighlight>
@@ -89,8 +92,8 @@ export default class TradeScreen extends React.Component<
 
   public renderFooter () {
     const side = this.props.navigation.getParam('side', 'buy')
-    return this.state.currentTradeBoxValue && (
-      <View>
+    return this.isSubmitable() && (
+      <View style={styles.footer}>
         <Text color={COLORS.N500}>
           {side === 'buy' ? 'You save up to ' : 'You earn up to '}
           <Text color={COLORS.N800}>500 THB</Text>
@@ -142,6 +145,7 @@ export default class TradeScreen extends React.Component<
             }
           />
         </View>
+        {this.renderFooter()}
       </View>
     )
   }
@@ -182,6 +186,9 @@ const styles = StyleSheet.create({
     marginTop: 42,
     paddingHorizontal: 20,
     width: '100%'
+  },
+  footer: {
+    alignItems: 'center'
   },
   submitButton: {
     width: '100%',
