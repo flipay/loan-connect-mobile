@@ -91,7 +91,12 @@ export default class TradeScreen extends React.Component<
   }
 
   public onPressPriceComparison = () => {
-    this.props.navigation.navigate('Comparison')
+    this.props.navigation.navigate('Comparison', {
+      side: this.props.navigation.getParam('side'),
+      asset: this.props.navigation.getParam('assetId'),
+      AmountType: this.state.activeTradeBoxIndex === 0 ? 'give' : 'take',
+      amount: this.state.currentTradeBoxValue
+    })
   }
 
   public onPressSubmit = () => {

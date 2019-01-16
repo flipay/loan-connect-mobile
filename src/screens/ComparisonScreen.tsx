@@ -11,34 +11,94 @@ import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { Text, CloseButton } from '../components'
 import { COLORS } from '../constants/styleGuides'
 
-interface State {
-  activeTradeBoxIndex: number
-  currentTradeBoxValue: string
+interface RequestedRecord {
+  name: string
+  image: string
+  amount: number
 }
 
-interface Record {
+interface FormattedRecord {
   name: string
+  image: string
   amount: number
   difference: number
+}
+
+type RequestedRecords = Array<RequestedRecord>
+
+interface State {
+  requestedData: RequestedRecords
 }
 
 export default class TradeScreen extends React.Component<
   NavigationScreenProps,
   State
 > {
+  private interval: any = null
+
   public constructor (props: NavigationScreenProps) {
     super(props)
     this.state = {
-      activeTradeBoxIndex: 0,
-      currentTradeBoxValue: ''
+      requestedData: []
     }
+  }
+  public componentDidMount () {
+    this.requestData()
+    this.interval = setInterval(() => {
+      this.requestData()
+    }, 5000)
+  }
+
+  public componentWillUnmount () {
+    clearInterval(this.interval)
+  }
+
+  public requestData () {
+    const mockData = [
+      {
+        name: 'flipay',
+        amount: 0.0099,
+        image: 'flipay'
+      }, {
+        name: 'BX Thailand',
+        amount: 0.0097,
+        image: 'bx'
+      }, {
+        name: 'Bitkub',
+        amount: 0.0097,
+        image: 'bitkub'
+      }, {
+        name: 'Satang',
+        amount: 0.0093,
+        image: 'satang'
+      }
+    ]
+
+    this.setState({
+      requestedData: mockData
+    })
   }
 
   public onClose = () => {
     this.props.navigation.goBack()
   }
 
-  public renderRecord (data: Record, index: number) {
+  public formatData = (data: RequestedRecords) => {
+    const type = this.props.navigation.getParam('amountType')
+    // type = Give value: small -> big
+    // type = Take value: big -> small
+    const sortedRecords = _.sortBy(data, (record) => record.amount * (type === 'give' ? 1 : -1))
+    const bestAmount = sortedRecords[0].amount
+    const formatedRecords = _.map(sortedRecords, (record) => {
+      return {
+        ...record,
+        difference: record.amount - bestAmount
+      }
+    })
+    return formatedRecords
+  }
+
+  public renderRecord (data: FormattedRecord, index: number) {
     return (
       <View style={styles.tableRecord} key={data.name}>
         <Text>{data.name}</Text>
@@ -49,7 +109,7 @@ export default class TradeScreen extends React.Component<
           ) : (
             <View style={styles.captionRow}>
               <MaterialCommunityIcons name='trending-down' color='#FE4747' style={styles.downTrendIcon} />
-              <Text type='caption' color={COLORS.N500}>{`- ${data.difference}`}</Text>
+              <Text type='caption' color={COLORS.N500}>{data.difference}</Text>
             </View>
           )}
         </View>
@@ -57,29 +117,12 @@ export default class TradeScreen extends React.Component<
     )
   }
   public renderTableBody () {
-    const mockData = [
-      {
-        name: 'flipay',
-        amount: 0.0099,
-        difference: 0
-      }, {
-        name: 'BX Thailand',
-        amount: 0.0097,
-        difference: 0.0013
-      }, {
-        name: 'Bitkub',
-        amount: 0.0099,
-        difference: 0.0013
-      }, {
-        name: 'Satang',
-        amount: 0.0099,
-        difference: 0.0013
-      }
-    ]
+    if (_.isEmpty(this.state.requestedData)) { return }
+    const formattedData = this.formatData(this.state.requestedData)
 
     return (
       <View>
-        {mockData.map((data, index) => this.renderRecord(data, index))}
+        {formattedData.map((data, index) => this.renderRecord(data, index))}
       </View>
     )
   }
