@@ -92,7 +92,7 @@ export default class ComparisonScreen extends React.Component<
   }
 
   public renderRecord (data: FormattedRecord, index: number) {
-    const side = this.props.navigation.getParam('side', 'buy')
+    const side = this.props.navigation.getParam('side', 'sell')
     return (
       <View style={styles.tableRecord} key={data.name}>
         <Image source={data.image} />
@@ -113,7 +113,7 @@ export default class ComparisonScreen extends React.Component<
                 style={styles.downTrendIcon}
               />
               <Text type='caption' color={COLORS.N500}>
-                {side ? '+ ' : '- '}
+                {side === 'buy' ? '+ ' : '- '}
                 <Number>{data.difference}</Number>
                 {` THB`}
               </Text>
@@ -131,7 +131,7 @@ export default class ComparisonScreen extends React.Component<
     const formatedRecords = _.map(sortedRecords, record => {
       return {
         ...record,
-        difference: record.amount - bestAmount
+        difference: Math.abs(record.amount - bestAmount)
       }
     })
     return (
@@ -144,13 +144,13 @@ export default class ComparisonScreen extends React.Component<
   }
 
   public renderTable (sortedRecords: Array<RequestedRecord>) {
-    const side = this.props.navigation.getParam('side', 'buy')
+    const side = this.props.navigation.getParam('side', 'sell')
     return (
       <View style={styles.table}>
         <View style={styles.header}>
           <Text color={COLORS.N500}>If you use</Text>
           <Text color={COLORS.N500}>
-            {`You will ${side ? 'spend' : 'receive'}`}
+            {`You will ${side === 'buy' ? 'spend' : 'receive'}`}
           </Text>
         </View>
         {this.renderTableBody(sortedRecords)}
@@ -172,7 +172,7 @@ export default class ComparisonScreen extends React.Component<
   }
 
   public render () {
-    const side = this.props.navigation.getParam('side', 'buy')
+    const side = this.props.navigation.getParam('side', 'sell')
     const assetId = this.props.navigation.getParam('assetId', 'bitcoin')
     const assetName = ASSETS[assetId].name
     const amount = this.props.navigation.getParam('amount', 1000)
@@ -188,6 +188,7 @@ export default class ComparisonScreen extends React.Component<
     const sortedRecords = _.sortBy(this.state.requestedData, record => {
       return record.amount * (side === 'sell' ? -1 : 1)
     })
+    const bestCompany = sortedRecords[0].name
     const worstAmount = sortedRecords[sortedRecords.length - 1].amount
     return (
       <LinearGradient
@@ -200,7 +201,7 @@ export default class ComparisonScreen extends React.Component<
         <CloseButton onPress={this.onClose} color={COLORS.WHITE} />
         {this.renderTitle(side, Math.abs(flipayAmount - worstAmount))}
         <Text color={COLORS.WHITE}>
-          {`Looks like Flipay is the best way to ${side}`}
+          {`Looks like ${bestCompany} is the best way to ${side}`}
         </Text>
         <Text color={COLORS.WHITE}>
           <Number>{amount}</Number>
