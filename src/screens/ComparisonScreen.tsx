@@ -10,7 +10,7 @@ import {
 import { NavigationScreenProps } from 'react-navigation'
 import { LinearGradient } from 'expo'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
-import { Text, CloseButton } from '../components'
+import { Text, Number, CloseButton } from '../components'
 import { COLORS } from '../constants/styleGuides'
 import { ASSETS } from '../constants/assets'
 
@@ -97,7 +97,10 @@ export default class ComparisonScreen extends React.Component<
       <View style={styles.tableRecord} key={data.name}>
         <Image source={data.image} />
         <View style={styles.rightPartRecord}>
-          <Text>{`${data.amount} THB`}</Text>
+          <Text>
+            <Number>{data.amount}</Number>
+            {` THB`}
+          </Text>
           {index === 0 ? (
             <Text type='caption' color={COLORS.N500}>
               Best Price
@@ -109,9 +112,10 @@ export default class ComparisonScreen extends React.Component<
                 color='#FE4747'
                 style={styles.downTrendIcon}
               />
-              <Text type='caption' color={COLORS.N500}>{`${
-                data.difference
-              } THB`}</Text>
+              <Text type='caption' color={COLORS.N500}>
+                <Number>{data.difference}</Number>
+                {` THB`}
+              </Text>
             </View>
           )}
         </View>
@@ -192,7 +196,10 @@ export default class ComparisonScreen extends React.Component<
         <Text color={COLORS.WHITE}>
           {`Looks like Flipay is the cheapest way to ${side}`}
         </Text>
-        <Text color={COLORS.WHITE}>{`${amount} ${assetName}`}</Text>
+        <Text color={COLORS.WHITE}>
+          <Number>{amount}</Number>
+          {` ${assetName}`}
+        </Text>
         {this.renderTable(sortedRecords)}
       </LinearGradient>
     )
