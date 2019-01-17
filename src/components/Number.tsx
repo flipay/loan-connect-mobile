@@ -12,6 +12,7 @@ class FlipNumber extends React.Component<Props> {
     return (
       <Text
         style={this.props.style}
+        type='inherit'
         {...otherProps}
       >
         {this.props.children.toLocaleString(

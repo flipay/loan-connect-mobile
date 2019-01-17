@@ -4,9 +4,10 @@ import { FONT_TYPES, FontType } from '../constants/styleGuides'
 
 interface Props {
   children: any
-  type: FontType
+  type: FontType | 'inherit'
   color?: string
   style?: any
+  inherit?: boolean
 }
 
 class FlipText extends React.Component<Props> {
@@ -20,8 +21,8 @@ class FlipText extends React.Component<Props> {
       <Text
         style={[
           {
-            fontFamily: FONT_TYPES[this.props.type].fontFamily,
-            fontSize: FONT_TYPES[this.props.type].fontSize,
+            fontFamily: this.props.type === 'inherit' ? undefined : FONT_TYPES[this.props.type].fontFamily,
+            fontSize: this.props.type === 'inherit' ? undefined : FONT_TYPES[this.props.type].fontSize,
             color: this.props.color
           },
           style

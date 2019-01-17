@@ -61,23 +61,23 @@ export default class ComparisonScreen extends React.Component<
   public requestData () {
     const mockData = [
       {
-        name: 'flipay',
-        amount: 0.0099,
+        name: 'Satang',
+        amount: 1400,
         image: require('../img/btc.png')
       },
       {
         name: 'BX Thailand',
-        amount: 0.0097,
+        amount: 3000,
         image: require('../img/btc.png')
       },
       {
         name: 'Bitkub',
-        amount: 0.0097,
+        amount: 2000,
         image: require('../img/btc.png')
       },
       {
-        name: 'Satang',
-        amount: 0.0093,
+        name: 'flipay',
+        amount: 1000,
         image: require('../img/btc.png')
       }
     ]
@@ -143,11 +143,14 @@ export default class ComparisonScreen extends React.Component<
   }
 
   public renderTable (sortedRecords: Array<RequestedRecord>) {
+    const side = this.props.navigation.getParam('side', 'buy')
     return (
       <View style={styles.table}>
         <View style={styles.header}>
           <Text color={COLORS.N500}>If you use</Text>
-          <Text color={COLORS.N500}>You will receive</Text>
+          <Text color={COLORS.N500}>
+            {`You will ${side ? 'spend' : 'receive'}`}
+          </Text>
         </View>
         {this.renderTableBody(sortedRecords)}
       </View>
@@ -155,13 +158,16 @@ export default class ComparisonScreen extends React.Component<
   }
 
   public renderTitle (side: Side, gain: number) {
-    return (
-      <Text type='title' color={COLORS.WHITE}>
-        {side === 'buy'
-          ? `Save ${gain} THB with us!`
-          : `Earn ${gain} THB more with us!`}
-      </Text>
-    )
+    return side === 'buy'
+      ? (
+        <Text type='title' color={COLORS.WHITE}>
+          Save <Number>{gain}</Number> THB with us!
+        </Text>
+      ) : (
+        <Text type='title' color={COLORS.WHITE}>
+           Earn ${gain} THB more with us!
+        </Text>
+      )
   }
 
   public render () {
@@ -182,7 +188,6 @@ export default class ComparisonScreen extends React.Component<
       return record.amount * (side === 'sell' ? -1 : 1)
     })
     const worstAmount = sortedRecords[sortedRecords.length - 1].amount
-
     return (
       <LinearGradient
         colors={[COLORS.P400, COLORS.C500]}
@@ -194,7 +199,7 @@ export default class ComparisonScreen extends React.Component<
         <CloseButton onPress={this.onClose} color={COLORS.WHITE} />
         {this.renderTitle(side, Math.abs(flipayAmount - worstAmount))}
         <Text color={COLORS.WHITE}>
-          {`Looks like Flipay is the cheapest way to ${side}`}
+          {`Looks like Flipay is the best way to ${side}`}
         </Text>
         <Text color={COLORS.WHITE}>
           <Number>{amount}</Number>
