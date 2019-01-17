@@ -3,23 +3,26 @@ import * as _ from 'lodash'
 import {
   View,
   StyleSheet,
-  StatusBar
+  StatusBar,
+  Image,
+  ImageSourcePropType
 } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { LinearGradient } from 'expo'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { Text, CloseButton } from '../components'
 import { COLORS } from '../constants/styleGuides'
+import { ASSETS } from '../constants/assets'
 
 interface RequestedRecord {
   name: string
-  image: string
+  image: ImageSourcePropType
   amount: number
 }
 
 interface FormattedRecord {
   name: string
-  image: string
+  image: ImageSourcePropType
   amount: number
   difference: number
 }
@@ -30,7 +33,9 @@ interface State {
   requestedData: RequestedRecords
 }
 
-export default class TradeScreen extends React.Component<
+type Side = 'buy' | 'sell'
+
+export default class ComparisonScreen extends React.Component<
   NavigationScreenProps,
   State
 > {
@@ -58,19 +63,22 @@ export default class TradeScreen extends React.Component<
       {
         name: 'flipay',
         amount: 0.0099,
-        image: 'flipay'
-      }, {
+        image: require('../img/btc.png')
+      },
+      {
         name: 'BX Thailand',
         amount: 0.0097,
-        image: 'bx'
-      }, {
+        image: require('../img/btc.png')
+      },
+      {
         name: 'Bitkub',
         amount: 0.0097,
-        image: 'bitkub'
-      }, {
+        image: require('../img/btc.png')
+      },
+      {
         name: 'Satang',
         amount: 0.0093,
-        image: 'satang'
+        image: require('../img/btc.png')
       }
     ]
 
@@ -83,63 +91,94 @@ export default class TradeScreen extends React.Component<
     this.props.navigation.goBack()
   }
 
-  public formatData = (data: RequestedRecords) => {
-    const type = this.props.navigation.getParam('amountType')
-    // type = Give value: small -> big
-    // type = Take value: big -> small
-    const sortedRecords = _.sortBy(data, (record) => record.amount * (type === 'give' ? 1 : -1))
-    const bestAmount = sortedRecords[0].amount
-    const formatedRecords = _.map(sortedRecords, (record) => {
-      return {
-        ...record,
-        difference: record.amount - bestAmount
-      }
-    })
-    return formatedRecords
-  }
-
   public renderRecord (data: FormattedRecord, index: number) {
+    const side = this.props.navigation.getParam('side', 'buy')
     return (
       <View style={styles.tableRecord} key={data.name}>
-        <Text>{data.name}</Text>
+        <Image source={data.image} />
         <View style={styles.rightPartRecord}>
-          <Text>{data.amount}</Text>
+          <Text>{`${data.amount} THB`}</Text>
           {index === 0 ? (
-            <Text type='caption' color={COLORS.N500}>Best Price</Text>
+            <Text type='caption' color={COLORS.N500}>
+              Best Price
+            </Text>
           ) : (
             <View style={styles.captionRow}>
-              <MaterialCommunityIcons name='trending-down' color='#FE4747' style={styles.downTrendIcon} />
-              <Text type='caption' color={COLORS.N500}>{data.difference}</Text>
+              <MaterialCommunityIcons
+                name={side ? 'trending-up' : 'trending-down'}
+                color='#FE4747'
+                style={styles.downTrendIcon}
+              />
+              <Text type='caption' color={COLORS.N500}>{`${
+                data.difference
+              } THB`}</Text>
             </View>
           )}
         </View>
       </View>
     )
   }
-  public renderTableBody () {
-    if (_.isEmpty(this.state.requestedData)) { return }
-    const formattedData = this.formatData(this.state.requestedData)
-
+  public renderTableBody (sortedRecords: Array<RequestedRecord>) {
+    if (_.isEmpty(sortedRecords)) {
+      return
+    }
+    const bestAmount = sortedRecords[0].amount
+    const formatedRecords = _.map(sortedRecords, record => {
+      return {
+        ...record,
+        difference: record.amount - bestAmount
+      }
+    })
     return (
       <View>
-        {formattedData.map((data, index) => this.renderRecord(data, index))}
+        {formatedRecords.map((record, index) =>
+          this.renderRecord(record, index)
+        )}
       </View>
     )
   }
 
-  public renderTable () {
+  public renderTable (sortedRecords: Array<RequestedRecord>) {
     return (
       <View style={styles.table}>
         <View style={styles.header}>
           <Text color={COLORS.N500}>If you use</Text>
           <Text color={COLORS.N500}>You will receive</Text>
         </View>
-        {this.renderTableBody()}
+        {this.renderTableBody(sortedRecords)}
       </View>
     )
   }
 
+  public renderTitle (side: Side, gain: number) {
+    return (
+      <Text type='title' color={COLORS.WHITE}>
+        {side === 'buy'
+          ? `Save ${gain} THB with us!`
+          : `Earn ${gain} THB more with us!`}
+      </Text>
+    )
+  }
+
   public render () {
+    const side = this.props.navigation.getParam('side', 'buy')
+    const assetId = this.props.navigation.getParam('assetId', 'bitcoin')
+    const assetName = ASSETS[assetId].name
+    const amount = this.props.navigation.getParam('amount', 1000)
+
+    const flipayRecord = _.find(
+      this.state.requestedData,
+      record => record.name === 'flipay'
+    )
+    if (!flipayRecord) {
+      return <View />
+    }
+    const flipayAmount = flipayRecord.amount
+    const sortedRecords = _.sortBy(this.state.requestedData, record => {
+      return record.amount * (side === 'sell' ? -1 : 1)
+    })
+    const worstAmount = sortedRecords[sortedRecords.length - 1].amount
+
     return (
       <LinearGradient
         colors={[COLORS.P400, COLORS.C500]}
@@ -149,10 +188,12 @@ export default class TradeScreen extends React.Component<
       >
         <StatusBar barStyle='light-content' />
         <CloseButton onPress={this.onClose} color={COLORS.WHITE} />
-        <Text type='title' color={COLORS.WHITE}>Save 500 THB with us!</Text>
-        <Text color={COLORS.WHITE}>Looks like Flipay is the cheapest way to buy</Text>
-        <Text color={COLORS.WHITE}>Bitcoin with 1,000 THB</Text>
-        {this.renderTable()}
+        {this.renderTitle(side, Math.abs(flipayAmount - worstAmount))}
+        <Text color={COLORS.WHITE}>
+          {`Looks like Flipay is the cheapest way to ${side}`}
+        </Text>
+        <Text color={COLORS.WHITE}>{`${amount} ${assetName}`}</Text>
+        {this.renderTable(sortedRecords)}
       </LinearGradient>
     )
   }
