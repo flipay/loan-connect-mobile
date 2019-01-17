@@ -1,21 +1,32 @@
 import * as React from 'react'
-import { ScrollView, StatusBar, View, StyleSheet } from 'react-native'
+import { ScrollView, StatusBar, View, StyleSheet, ImageSourcePropType } from 'react-native'
 import Text from '../components/Text'
 import { LinearGradient } from 'expo'
 import { NavigationScreenProps } from 'react-navigation'
 import AssetCard from '../components/AssetCard'
 import { COLORS } from '../constants/styleGuides'
+import { AssetId } from '../constants/assets'
 
-const cards = [
+interface Card {
+  id: AssetId,
+  name: string,
+  image: ImageSourcePropType,
+  amount: number,
+  price?: number,
+  isFiat?: boolean,
+  unit?: string
+}
+
+const cards: Array<Card> = [
   {
-    id: 'cash',
+    id: 'THB',
     name: 'Cash',
     image: require('../img/btc.png'),
     amount: 3000,
     isFiat: true
   },
   {
-    id: 'bitcoin',
+    id: 'BTC',
     name: 'Bitcoin',
     image: require('../img/btc.png'),
     amount: 1,
@@ -23,7 +34,7 @@ const cards = [
     unit: 'BTC'
   },
   {
-    id: 'ethereum',
+    id: 'ETH',
     name: 'Ethereum',
     image: require('../img/btc.png'),
     amount: 0,
@@ -31,7 +42,7 @@ const cards = [
     unit: 'ETH'
   },
   {
-    id: 'omisego',
+    id: 'OMG',
     name: 'OmiseGo',
     image: require('../img/btc.png'),
     amount: 0,
@@ -41,29 +52,25 @@ const cards = [
 ]
 
 interface State {
-  selectedCoin: string | null
+  selectedAsset?: AssetId | null
 }
 
-// tslint:disable-next-line:max-classes-per-file
 export default class MainScreen extends React.Component<
   NavigationScreenProps,
   State
 > {
-  // public static navigationOptions = {
-  //   title: 'Home'
-  // }
   constructor (props: NavigationScreenProps) {
     super(props)
     this.state = {
-      selectedCoin: null
+      selectedAsset: null
     }
   }
 
-  public onPress = (coinId: string) => {
-    if (this.state.selectedCoin === coinId) {
-      this.setState({ selectedCoin: null })
+  public onPress = (assetId: AssetId) => {
+    if (this.state.selectedAsset === assetId) {
+      this.setState({ selectedAsset: null })
     } else {
-      this.setState({ selectedCoin: coinId })
+      this.setState({ selectedAsset: assetId })
     }
   }
 
@@ -101,10 +108,10 @@ export default class MainScreen extends React.Component<
         >
           {this.renderHeader()}
           <View style={styles.cardsContainer}>
-            {cards.map((card, index) => {
+            {cards.map((card: Card, index) => {
               const expanded =
-                !!this.state.selectedCoin &&
-                this.state.selectedCoin === card.id
+                !!this.state.selectedAsset &&
+                this.state.selectedAsset === card.id
               return (
                 <View key={card.id}>
                   {index !== 0 && (

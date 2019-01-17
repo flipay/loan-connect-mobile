@@ -13,9 +13,10 @@ import Text from './Text'
 import { FontAwesome } from '@expo/vector-icons'
 import { COLORS } from '../constants/styleGuides'
 import Button from './Button'
+import { AssetId } from '../constants/assets'
 
 interface Props {
-  id: string
+  id: AssetId
   image: ImageSourcePropType
   name: string
   amount: number
@@ -72,7 +73,8 @@ export default class AssetCard extends React.Component<
   public onPressButton = (side: 'buy' | 'sell') => {
     this.props.navigation.navigate('Trade', {
       side,
-      assetId: this.props.id
+      assetId: this.props.id,
+      remainingBalance: side ? 3000 : 1
     })
   }
 

@@ -1,12 +1,16 @@
 import React from 'react'
 import Text from './Text'
+import { AssetId, ASSETS } from '../constants/assets'
 
 interface Props {
   children: number
+  asset: AssetId
+  full?: boolean
+  hidden?: boolean
   style?: any
 }
 
-class FlipNumber extends React.Component<Props> {
+class FlipValue extends React.Component<Props> {
   public render () {
     const { style, ...otherProps } = this.props
     return (
@@ -19,9 +23,10 @@ class FlipNumber extends React.Component<Props> {
           undefined,
           { maximumFractionDigits: 8 }
         )}
+        {` ${this.props.full ? ASSETS[this.props.asset].name : ASSETS[this.props.asset].unit}`}
       </Text>
     )
   }
 }
 
-export default FlipNumber
+export default FlipValue

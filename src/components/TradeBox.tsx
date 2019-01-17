@@ -8,12 +8,12 @@ import {
 } from 'react-native'
 import Text from './Text'
 import { COLORS, FONT_TYPES } from '../constants/styleGuides'
-import { ASSETS } from '../constants/assets'
+import { ASSETS, AssetId } from '../constants/assets'
 
 interface Props {
   autoFocus?: boolean
   description: string
-  assetId: string
+  assetId: AssetId
   onPress: () => void
   onChangeValue: (value: string) => void
   active: boolean

@@ -10,9 +10,9 @@ import {
 import { NavigationScreenProps } from 'react-navigation'
 import { LinearGradient } from 'expo'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
-import { Text, Number, CloseButton } from '../components'
+import { Text, Value, CloseButton } from '../components'
 import { COLORS } from '../constants/styleGuides'
-import { ASSETS } from '../constants/assets'
+import { AssetId } from '../constants/assets'
 
 interface RequestedRecord {
   name: string
@@ -97,10 +97,7 @@ export default class ComparisonScreen extends React.Component<
       <View style={styles.tableRecord} key={data.name}>
         <Image source={data.image} />
         <View style={styles.rightPartRecord}>
-          <Text>
-            <Number>{data.amount}</Number>
-            {` THB`}
-          </Text>
+          <Value asset='THB'>{data.amount}</Value>
           {index === 0 ? (
             <Text type='caption' color={COLORS.N500}>
               Best Price
@@ -114,8 +111,7 @@ export default class ComparisonScreen extends React.Component<
               />
               <Text type='caption' color={COLORS.N500}>
                 {side === 'buy' ? '+ ' : '- '}
-                <Number>{data.difference}</Number>
-                {` THB`}
+                <Value asset='THB'>{data.difference}</Value>
               </Text>
             </View>
           )}
@@ -162,19 +158,18 @@ export default class ComparisonScreen extends React.Component<
     return side === 'buy'
       ? (
         <Text type='title' color={COLORS.WHITE}>
-          Save <Number>{gain}</Number> THB with us!
+          Save <Value asset='THB'>{gain}</Value> with us!
         </Text>
       ) : (
         <Text type='title' color={COLORS.WHITE}>
-           Earn <Number>{gain}</Number> THB more with us!
+           Earn <Value asset='THB'>{gain}</Value> more with us!
         </Text>
       )
   }
 
   public render () {
     const side = this.props.navigation.getParam('side', 'sell')
-    const assetId = this.props.navigation.getParam('assetId', 'bitcoin')
-    const assetName = ASSETS[assetId].name
+    const assetId: AssetId = this.props.navigation.getParam('assetId', 'bitcoin')
     const amount = this.props.navigation.getParam('amount', 1000)
 
     const flipayRecord = _.find(
@@ -204,8 +199,7 @@ export default class ComparisonScreen extends React.Component<
           {`Looks like ${bestCompany} is the best way to ${side}`}
         </Text>
         <Text color={COLORS.WHITE}>
-          <Number>{amount}</Number>
-          {` ${assetName}`}
+          <Value asset={assetId} full={true}>{amount}</Value>
         </Text>
         {this.renderTable(sortedRecords)}
       </LinearGradient>

@@ -9,9 +9,9 @@ import {
 } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { Constants } from 'expo'
-import { Text, TradeBox, CloseButton } from '../components'
+import { Text, Value, TradeBox, CloseButton } from '../components'
 import { COLORS } from '../constants/styleGuides'
-import { ASSETS } from '../constants/assets'
+import { ASSETS, AssetId } from '../constants/assets'
 
 interface State {
   activeTradeBoxIndex: number
@@ -145,7 +145,8 @@ export default class TradeScreen extends React.Component<
 
   public renderBody () {
     const side = this.props.navigation.getParam('side', 'buy')
-    const assetId = this.props.navigation.getParam('assetId', 'bitcoin')
+    const assetId: AssetId = this.props.navigation.getParam('assetId', 'BTC')
+    const remainingBalance = this.props.navigation.getParam('remainingBalance', 0)
     return (
       <View style={styles.bodyContainer}>
         <CloseButton
@@ -155,13 +156,14 @@ export default class TradeScreen extends React.Component<
           {`${_.capitalize(side)} ${ASSETS[assetId].name}`}
         </Text>
         <Text type='body' color={COLORS.N500}>
-          3,000 THB available
+          <Value asset={assetId}>{remainingBalance}</Value>
+          {` available`}
         </Text>
         <View style={styles.tradeBoxesContainer}>
           <TradeBox
             // autoFocus={true}
             description={side === 'buy' ? 'You buy with' : 'You sell'}
-            assetId={side === 'buy' ? 'cash' : assetId}
+            assetId={side === 'buy' ? 'THB' : assetId}
             onPress={() => this.onPressTradeBox(0)}
             onChangeValue={this.onChangeValue}
             active={this.state.activeTradeBoxIndex === 0}
@@ -175,7 +177,7 @@ export default class TradeScreen extends React.Component<
             description={
               side === 'sell' ? 'You will receive' : 'You will receive'
             }
-            assetId={side === 'sell' ? 'cash' : assetId}
+            assetId={side === 'sell' ? 'THB' : assetId}
             onPress={() => this.onPressTradeBox(1)}
             onChangeValue={this.onChangeValue}
             active={this.state.activeTradeBoxIndex === 1}

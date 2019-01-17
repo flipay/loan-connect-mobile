@@ -6,23 +6,27 @@ interface ASSET {
   unit: string
 }
 
-export const ASSETS: { [key in string]: ASSET } = {
-  cash: {
+export type AssetId = 'THB' | 'BTC' | 'ETH' | 'OMG'
+
+type AssetTypes = { [key in AssetId]: ASSET }
+
+export const ASSETS: AssetTypes = {
+  THB: {
     name: 'Cash',
     image: require('../img/btc.png'),
     unit: 'THB'
   },
-  bitcoin: {
+  BTC: {
     name: 'Bitcoin',
     image: require('../img/btc.png'),
-    unit: 'Bitcoin'
+    unit: 'BTC'
   },
-  ethereum: {
+  ETH: {
     name: 'Ethereum',
     image: require('../img/btc.png'),
     unit: 'ETH'
   },
-  omisego: {
+  OMG: {
     name: 'OmiseGo',
     image: require('../img/btc.png'),
     unit: 'OMG'
