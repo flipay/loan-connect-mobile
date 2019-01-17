@@ -113,6 +113,7 @@ export default class ComparisonScreen extends React.Component<
                 style={styles.downTrendIcon}
               />
               <Text type='caption' color={COLORS.N500}>
+                {side ? '+ ' : '- '}
                 <Number>{data.difference}</Number>
                 {` THB`}
               </Text>
@@ -165,7 +166,7 @@ export default class ComparisonScreen extends React.Component<
         </Text>
       ) : (
         <Text type='title' color={COLORS.WHITE}>
-           Earn ${gain} THB more with us!
+           Earn <Number>{gain}</Number> THB more with us!
         </Text>
       )
   }
