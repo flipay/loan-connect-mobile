@@ -93,7 +93,7 @@ export default class TradeScreen extends React.Component<
   public onPressPriceComparison = () => {
     this.props.navigation.navigate('Comparison', {
       side: this.props.navigation.getParam('side'),
-      asset: this.props.navigation.getParam('assetId'),
+      assetId: this.props.navigation.getParam('assetId'),
       amount: this.state.currentTradeBoxValue
     })
   }
