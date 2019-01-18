@@ -118,40 +118,39 @@ export default class AssetCard extends React.Component<
     return (
       <TouchableWithoutFeedback onPress={this.props.onPress}>
         <Animated.View
-          style={[
-            styles.container, this.props.expanded && styles.expandedContainer,
-            {
-              height: this.state.cardHeight,
-              marginHorizontal: this.state.cardHorizontalMargin
-            }
-          ]}
+          style={{
+            height: this.state.cardHeight,
+            marginHorizontal: this.state.cardHorizontalMargin
+          }}
         >
-          {this.renderLabel()}
-          {!this.props.expanded && (
-            <View style={styles.rightSection}>
-              <View style={styles.valueContainer}>
-                <Text type='headline'>
-                  {`${this.props.amount} ${this.props.unit || 'THB'}`}
-                </Text>
-                {!this.props.isFiat && (
-                  <Text type='caption' style={styles.bahtPrice}>
-                    {`${(this.props.price || 0) * this.props.amount} THB`}
+          <View style={[styles.container, this.props.expanded && styles.expandedContainer]}>
+            {this.renderLabel()}
+            {!this.props.expanded && (
+              <View style={styles.rightSection}>
+                <View style={styles.valueContainer}>
+                  <Text type='headline'>
+                    {`${this.props.amount} ${this.props.unit || 'THB'}`}
                   </Text>
-                )}
+                  {!this.props.isFiat && (
+                    <Text type='caption' style={styles.bahtPrice}>
+                      {`${(this.props.price || 0) * this.props.amount} THB`}
+                    </Text>
+                  )}
+                </View>
+                <FontAwesome name='angle-down' size={16} color={COLORS.N400} />
               </View>
-              <FontAwesome name='angle-down' size={16} color={COLORS.N400} />
-            </View>
-          )}
-          {this.props.expanded && this.renderExpandedCardMainContent()}
-          {this.props.expanded && this.renderExpandedCardDescription()}
-          {this.props.expanded && (
-            <FontAwesome
-              name='angle-up'
-              size={16}
-              color={COLORS.N400}
-              style={styles.upIcon}
-            />
-          )}
+            )}
+            {this.props.expanded && this.renderExpandedCardMainContent()}
+            {this.props.expanded && this.renderExpandedCardDescription()}
+            {this.props.expanded && (
+              <FontAwesome
+                name='angle-up'
+                size={16}
+                color={COLORS.N400}
+                style={styles.upIcon}
+              />
+            )}
+          </View>
         </Animated.View>
       </TouchableWithoutFeedback>
     )
@@ -164,6 +163,7 @@ const styles = StyleSheet.create({
     position: 'relative'
   },
   container: {
+    height: '100%',
     backgroundColor: COLORS.WHITE,
     shadowColor: 'black',
     shadowOffset: { height: 4, width: 0 },
