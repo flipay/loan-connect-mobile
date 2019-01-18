@@ -6,7 +6,7 @@ import {
   StyleSheet,
   Image,
   Animated,
-  TouchableOpacity,
+  TouchableWithoutFeedback,
   ImageSourcePropType
 } from 'react-native'
 import Text from './Text'
@@ -116,7 +116,7 @@ export default class AssetCard extends React.Component<
 
   public render () {
     return (
-      <TouchableOpacity onPress={this.props.onPress}>
+      <TouchableWithoutFeedback onPress={this.props.onPress}>
         <Animated.View
           style={[
             styles.container, this.props.expanded && styles.expandedContainer,
@@ -153,7 +153,7 @@ export default class AssetCard extends React.Component<
             />
           )}
         </Animated.View>
-      </TouchableOpacity>
+      </TouchableWithoutFeedback>
     )
   }
 }
