@@ -13,9 +13,12 @@ import { Text, Value, TradeBox, CloseButton } from '../components'
 import { COLORS } from '../constants/styleGuides'
 import { ASSETS, AssetId } from '../constants/assets'
 
+type TradeBoxType = 'give' | 'take'
+
 interface State {
-  activeTradeBoxIndex: number
-  currentTradeBoxValue: string
+  activeTradeBox: TradeBoxType
+  giveTradeBoxValue: string
+  takeTradeBoxValue: string
 }
 
 export default class TradeScreen extends React.Component<
@@ -25,30 +28,21 @@ export default class TradeScreen extends React.Component<
   public constructor (props: NavigationScreenProps) {
     super(props)
     this.state = {
-      activeTradeBoxIndex: 0,
-      currentTradeBoxValue: ''
+      activeTradeBox: 'give',
+      giveTradeBoxValue: '',
+      takeTradeBoxValue: ''
     }
   }
 
-  public calculateValue = () => {
-    if (this.state.currentTradeBoxValue === '') {
-      return ''
-    } else {
-      const calculatedNumber = 1000
-      return calculatedNumber.toLocaleString()
-    }
-  }
-
-  public onPressTradeBox = (tradeBoxIndex: number) => {
-    if (tradeBoxIndex !== this.state.activeTradeBoxIndex) {
+  public onPressTradeBox = (tradeBox: TradeBoxType) => {
+    if (tradeBox !== this.state.activeTradeBox) {
       this.setState({
-        activeTradeBoxIndex: tradeBoxIndex,
-        currentTradeBoxValue: ''
+        activeTradeBox: tradeBox
       })
     }
   }
 
-  public onChangeValue = (value: string) => {
+  public onChangeValue = (tradeBox: TradeBoxType, value: string) => {
     let valueInString = value
     let haveDot = false
     let endingZero = 0
@@ -83,7 +77,11 @@ export default class TradeScreen extends React.Component<
         }
       }
     }
-    this.setState({ currentTradeBoxValue: valueInString })
+    if (tradeBox === 'give') {
+      this.setState({ giveTradeBoxValue: valueInString })
+    } else {
+      this.setState({ takeTradeBoxValue: valueInString })
+    }
   }
 
   public onClose = () => {
@@ -161,31 +159,23 @@ export default class TradeScreen extends React.Component<
         </Text>
         <View style={styles.tradeBoxesContainer}>
           <TradeBox
-            // autoFocus={true}
+            autoFocus={true}
             description={side === 'buy' ? 'You buy with' : 'You sell'}
             assetId={side === 'buy' ? 'THB' : assetId}
-            onPress={() => this.onPressTradeBox(0)}
-            onChangeValue={this.onChangeValue}
-            active={this.state.activeTradeBoxIndex === 0}
-            value={
-              this.state.activeTradeBoxIndex === 0
-                ? this.state.currentTradeBoxValue
-                : this.calculateValue()
-            }
+            onPress={() => this.onPressTradeBox('give')}
+            onChangeValue={(value: string) => this.onChangeValue('give', value)}
+            active={this.state.activeTradeBox === 'give'}
+            value={this.state.giveTradeBoxValue}
           />
           <TradeBox
             description={
               side === 'sell' ? 'You will receive' : 'You will receive'
             }
             assetId={side === 'sell' ? 'THB' : assetId}
-            onPress={() => this.onPressTradeBox(1)}
-            onChangeValue={this.onChangeValue}
-            active={this.state.activeTradeBoxIndex === 1}
-            value={
-              this.state.activeTradeBoxIndex === 1
-                ? this.state.currentTradeBoxValue
-                : this.calculateValue()
-            }
+            onPress={() => this.onPressTradeBox('take')}
+            onChangeValue={(value: string) => this.onChangeValue('take', value)}
+            active={this.state.activeTradeBox === 'take'}
+            value={this.state.takeTradeBoxValue}
           />
         </View>
         {this.renderFooter()}
