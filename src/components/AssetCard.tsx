@@ -160,13 +160,14 @@ export default class AssetCard extends React.Component<
 const styles = StyleSheet.create({
   expandedContainer: {
     flexDirection: 'column',
-    position: 'relative'
+    position: 'relative',
+    shadowOffset: { height: 4, width: 0 }
   },
   container: {
     height: '100%',
     backgroundColor: COLORS.WHITE,
     shadowColor: 'black',
-    shadowOffset: { height: 4, width: 0 },
+    shadowOffset: { height: 2, width: 0 },
     shadowOpacity: 0.2,
     shadowRadius: 2,
     padding: 20,
