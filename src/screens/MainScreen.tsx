@@ -4,8 +4,8 @@ import Text from '../components/Text'
 import { LinearGradient } from 'expo'
 import { NavigationScreenProps } from 'react-navigation'
 import AssetCard from '../components/AssetCard'
-import { COLORS } from '../constants/styleGuides'
-import { AssetId } from '../constants/assets'
+import { COLORS } from '../constants'
+import { AssetId } from '../types'
 
 interface Card {
   id: AssetId,

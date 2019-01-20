@@ -11,8 +11,8 @@ import { NavigationScreenProps } from 'react-navigation'
 import { LinearGradient } from 'expo'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { Text, Value, CloseButton } from '../components'
-import { COLORS } from '../constants/styleGuides'
-import { AssetId } from '../constants/assets'
+import { COLORS } from '../constants'
+import { AssetId, OrderType } from '../types'
 
 interface RequestedRecord {
   name: string
@@ -33,7 +33,7 @@ interface State {
   requestedData: RequestedRecords
 }
 
-type Side = 'buy' | 'sell'
+type Side = OrderType
 
 export default class ComparisonScreen extends React.Component<
   NavigationScreenProps,

@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { OrderType, OrderPart, AssetId } from './types'
 
 export async function signUp (phoneNumber: string) {
   const response = await axios.post('/sign_up', { phone_number: phoneNumber })
@@ -17,4 +18,20 @@ export async function createPin (accountNumber: string, pin: string) {
     pin
   })
   return response.data.user
+}
+
+export async function getAmount (
+  orderType: OrderType,
+  assetId: AssetId,
+  specifiedPart: OrderPart,
+  amount: number
+) {
+  const response = await axios.get('rates', {
+    params: {
+      asset_give: orderType === 'buy' ? 'THB' : assetId,
+      asset_take: orderType === 'sell' ? 'THB' : assetId,
+      [`amount_${specifiedPart}`]: amount
+    }
+  })
+  return response
 }

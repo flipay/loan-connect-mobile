@@ -10,10 +10,10 @@ import {
 import { NavigationScreenProps } from 'react-navigation'
 import { Constants } from 'expo'
 import { Text, Value, TradeBox, CloseButton } from '../components'
-import { COLORS } from '../constants/styleGuides'
-import { ASSETS, AssetId } from '../constants/assets'
+import { COLORS, ASSETS } from '../constants'
+import { AssetId, OrderPart } from '../types'
 
-type TradeBoxType = 'give' | 'take'
+type TradeBoxType = OrderPart
 
 interface State {
   activeTradeBox: TradeBoxType
@@ -92,7 +92,9 @@ export default class TradeScreen extends React.Component<
     this.props.navigation.navigate('Comparison', {
       side: this.props.navigation.getParam('side'),
       assetId: this.props.navigation.getParam('assetId'),
-      amount: this.state.currentTradeBoxValue
+      amount: this.props.navigation.getParam('side') === 'buy'
+        ? this.state.takeTradeBoxValue
+        : this.state.giveTradeBoxValue
     })
   }
 
@@ -101,7 +103,8 @@ export default class TradeScreen extends React.Component<
   }
 
   public isSubmitable = () => {
-    return this.state.currentTradeBoxValue !== ''
+    return this.state.giveTradeBoxValue !== ''
+      && this.state.takeTradeBoxValue !== ''
   }
 
   public renderSubmitButton () {

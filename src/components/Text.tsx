@@ -1,6 +1,7 @@
 import React from 'react'
 import { Text } from 'react-native'
-import { FONT_TYPES, FontType } from '../constants/styleGuides'
+import { FONT_TYPES } from '../constants'
+import { FontType } from '../types'
 
 interface Props {
   children: any

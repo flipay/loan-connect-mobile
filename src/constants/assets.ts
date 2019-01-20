@@ -1,14 +1,13 @@
 import { ImageSourcePropType } from 'react-native'
+import { AssetId } from '../types'
 
-interface ASSET {
+type AssetTypes = { [key in AssetId]: Asset }
+
+interface Asset {
   name: string
   image: ImageSourcePropType
   unit: string
 }
-
-export type AssetId = 'THB' | 'BTC' | 'ETH' | 'OMG'
-
-type AssetTypes = { [key in AssetId]: ASSET }
 
 export const ASSETS: AssetTypes = {
   THB: {

@@ -1,3 +1,6 @@
+
+import { FontType } from '../types'
+
 export const COLORS = {
   P100: '#DAD1FF',
   P200: '#B4A2FE',
@@ -19,12 +22,12 @@ export const COLORS = {
   N800: '#091E42',
   WHITE: '#FFFFFF'
 }
+
 interface Font {
   fontSize: number
   fontFamily: 'nunito' | 'nunito-semibold'
 }
 
-export type FontType = 'large-title' | 'title' | 'headline' | 'body' | 'caption' | 'button'
 type FontTypes = { [key in FontType]: Font }
 
 export const FONT_TYPES: FontTypes = {
