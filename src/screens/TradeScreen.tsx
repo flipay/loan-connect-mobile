@@ -4,34 +4,63 @@ import {
   KeyboardAvoidingView,
   StyleSheet,
   View,
+  TouchableWithoutFeedback,
   TouchableHighlight,
-  StatusBar
+  StatusBar,
+  Keyboard,
+  Platform
 } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { Constants } from 'expo'
 import { Text, Value, TradeBox, CloseButton } from '../components'
 import { COLORS, ASSETS } from '../constants'
 import { AssetId, OrderPart } from '../types'
+import { getAmount } from '../requests'
 
 type TradeBoxType = OrderPart
 
 interface State {
+  keyboardAvoidingViewKey: string
   activeTradeBox: TradeBoxType
   giveTradeBoxValue: string
   takeTradeBoxValue: string
+  loading: boolean
 }
+
+const DEFAULT_KEYBOARD_KEY = 'keyboardAvoidingViewKey'
 
 export default class TradeScreen extends React.Component<
   NavigationScreenProps,
   State
 > {
+  private keyboardHideListener: any
   public constructor (props: NavigationScreenProps) {
     super(props)
     this.state = {
+      keyboardAvoidingViewKey: DEFAULT_KEYBOARD_KEY,
       activeTradeBox: 'give',
       giveTradeBoxValue: '',
-      takeTradeBoxValue: ''
+      takeTradeBoxValue: '',
+      loading: false
     }
+  }
+
+  public componentDidMount () {
+    // using keyboardWillHide is better but it does not work for android
+    this.keyboardHideListener = Keyboard.addListener(
+      Platform.OS === 'android' ? 'keyboardDidHide' : 'keyboardWillHide',
+      this.handleKeyboardHide.bind(this)
+    )
+  }
+
+  public componentWillUnmount () {
+    this.keyboardHideListener.remove()
+  }
+
+  public handleKeyboardHide () {
+    this.setState({
+      keyboardAvoidingViewKey: 'keyboardAvoidingViewKey' + new Date().getTime()
+    })
   }
 
   public onPressTradeBox = (tradeBox: TradeBoxType) => {
@@ -42,32 +71,34 @@ export default class TradeScreen extends React.Component<
     }
   }
 
-  public onChangeValue = (tradeBox: TradeBoxType, value: string) => {
-    let valueInString = value
+  public toNumber (value: string) {
+    const valueInStringWithoutComma = _.replace(value, /,/g, '')
+    return Number(valueInStringWithoutComma)
+  }
+
+  public formatNumberInString (valueInString: string) {
     let haveDot = false
     let endingZero = 0
-
-    if (value === '.') {
+    const valueInNumber = this.toNumber(valueInString)
+    if (valueInString === '.') {
       valueInString = '0.'
-    } else if (value !== '') {
-      const valueInStringWithoutComma = _.replace(value, /,/g, '')
-      const { length } = valueInStringWithoutComma
-      if (valueInStringWithoutComma[length - 1] === '.') {
+    } else if (valueInString !== '') {
+      const { length } = valueInString
+      if (valueInString[length - 1] === '.') {
         haveDot = true
       } else if (
-        _.includes(valueInStringWithoutComma, '.') &&
-        valueInStringWithoutComma[length - 1] === '0'
+        _.includes(valueInString, '.') &&
+        valueInString[length - 1] === '0'
       ) {
-        const valueWithoutZero = _.trimEnd(valueInStringWithoutComma, '0')
+        const valueWithoutZero = _.trimEnd(valueInString, '0')
         if (valueWithoutZero[valueWithoutZero.length - 1] === '.') {
           haveDot = true
         }
-        endingZero = length - _.trimEnd(valueInStringWithoutComma, '0').length
+        endingZero = length - _.trimEnd(valueInString, '0').length
       }
-      valueInString = Number(valueInStringWithoutComma).toLocaleString(
-        undefined,
-        { maximumFractionDigits: 8 }
-      )
+      valueInString = valueInNumber.toLocaleString(undefined, {
+        maximumFractionDigits: 8
+      })
       if (haveDot) {
         valueInString += '.'
       }
@@ -77,11 +108,46 @@ export default class TradeScreen extends React.Component<
         }
       }
     }
+    return valueInString
+  }
+
+  public onChangeValue = async (tradeBox: TradeBoxType, value: string) => {
+    const formattedNumberInString = this.formatNumberInString(value)
     if (tradeBox === 'give') {
-      this.setState({ giveTradeBoxValue: valueInString })
+      this.setState({
+        giveTradeBoxValue: formattedNumberInString,
+        loading: true
+      })
     } else {
-      this.setState({ takeTradeBoxValue: valueInString })
+      this.setState({
+        takeTradeBoxValue: formattedNumberInString,
+        loading: true
+      })
     }
+
+    // const amount = await getAmount(
+    //   this.props.navigation.getParam('side', 'buy'),
+    //   this.props.navigation.getParam('assetId', 'BTC'),
+    //   tradeBox,
+    //   this.toNumber(value)
+    // )
+
+    // const valueInString = amount.toLocaleString(
+    //   undefined,
+    //   { maximumFractionDigits: 8 }
+    // )
+
+    // if (tradeBox === 'give') {
+    //   this.setState({
+    //     takeTradeBoxValue: valueInString,
+    //     loading: false
+    //   })
+    // } else {
+    //   this.setState({
+    //     giveTradeBoxValue: valueInString,
+    //     loading: false
+    //   })
+    // }
   }
 
   public onClose = () => {
@@ -92,9 +158,10 @@ export default class TradeScreen extends React.Component<
     this.props.navigation.navigate('Comparison', {
       side: this.props.navigation.getParam('side'),
       assetId: this.props.navigation.getParam('assetId'),
-      amount: this.props.navigation.getParam('side') === 'buy'
-        ? this.state.takeTradeBoxValue
-        : this.state.giveTradeBoxValue
+      amount:
+        this.props.navigation.getParam('side') === 'buy'
+          ? this.state.takeTradeBoxValue
+          : this.state.giveTradeBoxValue
     })
   }
 
@@ -103,8 +170,9 @@ export default class TradeScreen extends React.Component<
   }
 
   public isSubmitable = () => {
-    return this.state.giveTradeBoxValue !== ''
-      && this.state.takeTradeBoxValue !== ''
+    return (
+      this.state.giveTradeBoxValue !== '' && this.state.takeTradeBoxValue !== ''
+    )
   }
 
   public renderSubmitButton () {
@@ -147,12 +215,13 @@ export default class TradeScreen extends React.Component<
   public renderBody () {
     const side = this.props.navigation.getParam('side', 'buy')
     const assetId: AssetId = this.props.navigation.getParam('assetId', 'BTC')
-    const remainingBalance = this.props.navigation.getParam('remainingBalance', 0)
+    const remainingBalance = this.props.navigation.getParam(
+      'remainingBalance',
+      0
+    )
     return (
       <View style={styles.bodyContainer}>
-        <CloseButton
-          onPress={this.onClose}
-        />
+        <CloseButton onPress={this.onClose} />
         <Text type='title'>
           {`${_.capitalize(side)} ${ASSETS[assetId].name}`}
         </Text>
@@ -162,7 +231,9 @@ export default class TradeScreen extends React.Component<
         </Text>
         <View style={styles.tradeBoxesContainer}>
           <TradeBox
-            autoFocus={true}
+            autoFocus={
+              this.state.keyboardAvoidingViewKey === DEFAULT_KEYBOARD_KEY
+            }
             description={side === 'buy' ? 'You buy with' : 'You sell'}
             assetId={side === 'buy' ? 'THB' : assetId}
             onPress={() => this.onPressTradeBox('give')}
@@ -189,19 +260,31 @@ export default class TradeScreen extends React.Component<
   public render () {
     return (
       <KeyboardAvoidingView
-        style={styles.container}
+        key={this.state.keyboardAvoidingViewKey}
+        style={styles.outsideContainer}
         keyboardVerticalOffset={Constants.statusBarHeight === 40 ? 20 : 0}
         behavior='height'
       >
-        <StatusBar barStyle='dark-content' />
-        {this.renderBody()}
-        {this.renderSubmitButton()}
+        <TouchableWithoutFeedback
+          style={styles.outsideContainer}
+          onPress={Keyboard.dismiss}
+          accessible={false}
+        >
+          <View style={styles.container}>
+            <StatusBar barStyle='dark-content' />
+            {this.renderBody()}
+            {this.renderSubmitButton()}
+          </View>
+        </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
     )
   }
 }
 
 const styles = StyleSheet.create({
+  outsideContainer: {
+    flex: 1
+  },
   container: {
     flex: 1,
     justifyContent: 'space-between',

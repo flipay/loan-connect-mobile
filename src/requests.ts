@@ -33,5 +33,6 @@ export async function getAmount (
       [`amount_${specifiedPart}`]: amount
     }
   })
-  return response
+  const { data } = response
+  return data.amount
 }
