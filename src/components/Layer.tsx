@@ -3,16 +3,17 @@ import { TouchableOpacity, StyleSheet } from 'react-native'
 import { COLORS } from '../constants'
 
 interface Props {
-  children: React.Component
+  children: Element
   onPress?: () => void
-  active?: boolean
+  active?: boolean,
+  style?: any
 }
 
 export default class Layer extends React.Component<Props> {
   public render () {
     return (
       <TouchableOpacity
-        style={[styles.container, this.props.active && styles.activeContainer]}
+        style={[styles.container, this.props.active && styles.activeContainer, this.props.style]}
         onPress={this.props.onPress}
       >
         {this.props.children}
@@ -26,7 +27,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.N200,
     backgroundColor: COLORS.WHITE,
-    flexDirection: 'row',
     width: '100%',
     marginBottom: 16
   },

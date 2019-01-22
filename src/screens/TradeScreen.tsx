@@ -12,7 +12,7 @@ import {
 } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { Constants } from 'expo'
-import { Text, Value, TradeBox, CloseButton } from '../components'
+import { Text, Value, TradeBox, CloseButton, TradeResult, SubmitButton } from '../components'
 import { COLORS, ASSETS } from '../constants'
 import { AssetId, OrderPart } from '../types'
 import { getAmount } from '../requests'
@@ -25,6 +25,7 @@ interface State {
   giveTradeBoxValue: string
   takeTradeBoxValue: string
   loading: boolean
+  executed: boolean
 }
 
 const DEFAULT_KEYBOARD_KEY = 'keyboardAvoidingViewKey'
@@ -41,7 +42,8 @@ export default class TradeScreen extends React.Component<
       activeTradeBox: 'give',
       giveTradeBoxValue: '',
       takeTradeBoxValue: '',
-      loading: false
+      loading: false,
+      executed: false
     }
   }
 
@@ -176,22 +178,22 @@ export default class TradeScreen extends React.Component<
   }
 
   public renderSubmitButton () {
-    const content = (
-      <Text type='button' color={COLORS.WHITE}>
-        {_.capitalize(this.props.navigation.getParam('side', 'buy'))}
-      </Text>
-    )
-    return (
-      <TouchableHighlight
-        style={[
-          styles.submitButton,
-          !this.isSubmitable() && styles.inactiveSubmitButton
-        ]}
-        onPress={this.isSubmitable() ? this.onPressSubmit : undefined}
-      >
-        {content}
-      </TouchableHighlight>
-    )
+    return this.state.executed
+      ? (
+        <SubmitButton
+          onPress={() => this.props.navigation.goBack()}
+        >
+          Done
+        </SubmitButton>
+      )
+      : (
+        <SubmitButton
+          onPress={() => this.setState({ executed: true })}
+          active={this.isSubmitable()}
+        >
+          {_.capitalize(this.props.navigation.getParam('side', 'buy'))}
+        </SubmitButton>
+      )
   }
 
   public renderFooter () {
@@ -212,7 +214,7 @@ export default class TradeScreen extends React.Component<
     )
   }
 
-  public renderBody () {
+  public renderTradeBody () {
     const side = this.props.navigation.getParam('side', 'buy')
     const assetId: AssetId = this.props.navigation.getParam('assetId', 'BTC')
     const remainingBalance = this.props.navigation.getParam(
@@ -220,7 +222,7 @@ export default class TradeScreen extends React.Component<
       0
     )
     return (
-      <View style={styles.bodyContainer}>
+      <View style={styles.body}>
         <CloseButton onPress={this.onClose} />
         <Text type='title'>
           {`${_.capitalize(side)} ${ASSETS[assetId].name}`}
@@ -257,6 +259,18 @@ export default class TradeScreen extends React.Component<
     )
   }
 
+  public renderBody () {
+    return this.state.executed
+      ? (
+        <TradeResult
+          assetId='BTC'
+          amount={0.0099}
+          price={950}
+          fee={50}
+        />
+      ) : this.renderTradeBody()
+  }
+
   public render () {
     return (
       <KeyboardAvoidingView
@@ -272,7 +286,9 @@ export default class TradeScreen extends React.Component<
         >
           <View style={styles.container}>
             <StatusBar barStyle='dark-content' />
-            {this.renderBody()}
+            <View style={styles.bodyContainer}>
+              {this.renderBody()}
+            </View>
             {this.renderSubmitButton()}
           </View>
         </TouchableWithoutFeedback>
@@ -287,29 +303,21 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    justifyContent: 'space-between',
-    position: 'relative'
+    justifyContent: 'space-between'
   },
   bodyContainer: {
+    flex: 1,
+    paddingHorizontal: 20
+  },
+  body: {
     paddingTop: 50,
     alignItems: 'center'
   },
   tradeBoxesContainer: {
     marginTop: 20,
-    paddingHorizontal: 20,
     width: '100%'
   },
   footer: {
     alignItems: 'center'
-  },
-  submitButton: {
-    width: '100%',
-    height: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: COLORS.P400
-  },
-  inactiveSubmitButton: {
-    opacity: 0.35
   }
 })

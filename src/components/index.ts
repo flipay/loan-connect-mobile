@@ -5,6 +5,8 @@ import CloseButton from './CloseButton'
 import Text from './Text'
 import Value from './Value'
 import TradeBox from './TradeBox'
+import TradeResult from './TradeResult'
+import SubmitButton from './SubmitButton'
 
 export {
   AssetCard,
@@ -12,5 +14,7 @@ export {
   CloseButton,
   Text,
   Value,
-  TradeBox
+  TradeBox,
+  TradeResult,
+  SubmitButton
 }
