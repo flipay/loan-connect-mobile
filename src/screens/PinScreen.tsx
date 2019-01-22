@@ -10,7 +10,7 @@ interface State {
   pin: string
 }
 
-type Index = 0 | 1 | 2 | 3 | 4 | 5
+type Index = 0 | 1 | 2 | 3
 
 export default class PinScreen extends React.Component<
   NavigationScreenProps,
@@ -56,7 +56,7 @@ export default class PinScreen extends React.Component<
 
   public onPinChange = (pin: string) => {
     this.setState({ pin })
-    if (pin.length === 6) {
+    if (pin.length === 4) {
       this.props.navigation.getParam('onSuccess')(this.state.pin, this.props.navigation)
     }
   }
@@ -69,15 +69,22 @@ export default class PinScreen extends React.Component<
     )
   }
 
+  public renderSpacing () {
+    return (
+      <View style={styles.spacing} />
+    )
+  }
+
   public renderDots () {
     return (
       <View style={styles.dots}>
         {this.renderDot(0)}
+        {this.renderSpacing()}
         {this.renderDot(1)}
+        {this.renderSpacing()}
         {this.renderDot(2)}
+        {this.renderSpacing()}
         {this.renderDot(3)}
-        {this.renderDot(4)}
-        {this.renderDot(5)}
       </View>
     )
   }
@@ -87,10 +94,12 @@ export default class PinScreen extends React.Component<
       <View style={styles.screen}>
         <StatusBar barStyle='dark-content' />
         <Image
-          style={{ width: 96, height: 35.6 }}
+          style={{ width: 96, height: 35.6, marginTop: 72 }}
           source={require('../img/flipay_horizontal_logo.png')}
         />
-        <Text>{this.props.navigation.getParam('description')}</Text>
+        <Text type='title' style={styles.title}>
+          {this.props.navigation.getParam('title', 'Create a PIN')}
+        </Text>
         {this.renderDots()}
         <TextInput
           ref={(element) => this.textInput = element}
@@ -113,18 +122,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     position: 'relative'
   },
+  title: {
+    marginTop: 60
+  },
   dots: {
+    marginTop: 42,
     flexDirection: 'row'
   },
   dot: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    borderColor: COLORS.P500,
-    borderWidth: 1
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    backgroundColor: COLORS.N200
   },
   activeDot: {
     backgroundColor: COLORS.P500
+  },
+  spacing: {
+    width: 32
   },
   invisibleTextInput: {
     position: 'absolute',
