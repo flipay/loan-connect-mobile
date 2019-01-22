@@ -7,6 +7,7 @@ import Value from './Value'
 import TradeBox from './TradeBox'
 import TradeResult from './TradeResult'
 import SubmitButton from './SubmitButton'
+import Layer from './Layer'
 
 export {
   AssetCard,
@@ -16,5 +17,6 @@ export {
   Value,
   TradeBox,
   TradeResult,
-  SubmitButton
+  SubmitButton,
+  Layer
 }

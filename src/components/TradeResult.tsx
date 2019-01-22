@@ -6,8 +6,7 @@ import {
   TouchableOpacity,
   Image
 } from 'react-native'
-import Layer from './Layer'
-import Text from './Text'
+import { Layer, Text, Value } from '../components'
 import { COLORS, FONT_TYPES } from '../constants/styleGuides'
 import { AssetId } from '../types'
 
@@ -44,9 +43,7 @@ export default class TradeResult extends React.Component<Props> {
             />
             <Text>Bitcoin</Text>
           </View>
-          <Text>
-            0.0099 BTC
-          </Text>
+          <Value assetId={this.props.assetId}>{this.props.amount}</Value>
         </View>
       </View>
     )
@@ -57,15 +54,15 @@ export default class TradeResult extends React.Component<Props> {
       <View style={styles.paymentPart}>
         <View style={styles.row}>
           <Text type='caption'>Exchange price</Text>
-          <Text type='caption'>950 THB</Text>
+          <Value assetId='THB'>{this.props.price}</Value>
         </View>
         <View style={styles.row}>
           <Text type='caption'>Transaction Fee</Text>
-          <Text type='caption'>950 THB</Text>
+          <Value assetId='THB'>{this.props.fee}</Value>
         </View>
         <View style={styles.row}>
           <Text type='headline'>Total expense</Text>
-          <Text type='headline'>950 THB</Text>
+          <Value assetId='THB'>{this.props.price + this.props.fee}</Value>
         </View>
       </View>
     )

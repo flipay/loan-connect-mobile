@@ -97,7 +97,7 @@ export default class ComparisonScreen extends React.Component<
       <View style={styles.tableRecord} key={data.name}>
         <Image source={data.image} />
         <View style={styles.rightPartRecord}>
-          <Value asset='THB'>{data.amount}</Value>
+          <Value assetId='THB'>{data.amount}</Value>
           {index === 0 ? (
             <Text type='caption' color={COLORS.N500}>
               Best Price
@@ -111,7 +111,7 @@ export default class ComparisonScreen extends React.Component<
               />
               <Text type='caption' color={COLORS.N500}>
                 {side === 'buy' ? '+ ' : '- '}
-                <Value asset='THB'>{data.difference}</Value>
+                <Value assetId='THB'>{data.difference}</Value>
               </Text>
             </View>
           )}
@@ -158,11 +158,11 @@ export default class ComparisonScreen extends React.Component<
     return side === 'buy'
       ? (
         <Text type='title' color={COLORS.WHITE}>
-          Save <Value asset='THB'>{gain}</Value> with us!
+          Save <Value assetId='THB'>{gain}</Value> with us!
         </Text>
       ) : (
         <Text type='title' color={COLORS.WHITE}>
-           Earn <Value asset='THB'>{gain}</Value> more with us!
+           Earn <Value assetId='THB'>{gain}</Value> more with us!
         </Text>
       )
   }
@@ -199,7 +199,7 @@ export default class ComparisonScreen extends React.Component<
           {`Looks like ${bestCompany} is the best way to ${side}`}
         </Text>
         <Text color={COLORS.WHITE}>
-          <Value asset={assetId} full={true}>{amount}</Value>
+          <Value assetId={assetId} full={true}>{amount}</Value>
         </Text>
         {this.renderTable(sortedRecords)}
       </LinearGradient>
