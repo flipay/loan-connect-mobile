@@ -8,45 +8,29 @@ import { AssetId } from '../types'
 
 interface Card {
   id: AssetId,
-  name: string,
-  image: ImageSourcePropType,
   amount: number,
   price?: number,
-  isFiat?: boolean,
-  unit?: string
 }
 
 const cards: Array<Card> = [
   {
     id: 'THB',
-    name: 'Cash',
-    image: require('../img/btc.png'),
-    amount: 3000,
-    isFiat: true
+    amount: 3000
   },
   {
     id: 'BTC',
-    name: 'Bitcoin',
-    image: require('../img/btc.png'),
     amount: 1,
-    price: 200000,
-    unit: 'BTC'
+    price: 200000
   },
   {
     id: 'ETH',
-    name: 'Ethereum',
-    image: require('../img/btc.png'),
     amount: 0,
-    price: 3000,
-    unit: 'ETH'
+    price: 3000
   },
   {
     id: 'OMG',
-    name: 'OmiseGo',
-    image: require('../img/btc.png'),
     amount: 0,
-    price: 300,
-    unit: 'OMG'
+    price: 300
   }
 ]
 
@@ -120,12 +104,8 @@ export default class MainScreen extends React.Component<
                   )}
                   <AssetCard
                     id={card.id}
-                    name={card.name}
-                    image={card.image}
                     amount={card.amount}
-                    unit={card.unit}
                     price={card.price}
-                    isFiat={card.isFiat}
                     expanded={expanded}
                     onPress={() => this.onPress(card.id)}
                     navigation={this.props.navigation}
