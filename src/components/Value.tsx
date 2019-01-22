@@ -1,4 +1,5 @@
 import React from 'react'
+import { TextStyle } from 'react-native'
 import Text from './Text'
 import { AssetId, FontType } from '../types'
 import { ASSETS } from '../constants'
@@ -8,7 +9,7 @@ interface Props {
   assetId: AssetId
   full?: boolean
   hidden?: boolean
-  style?: any
+  style?: TextStyle
   fontType?: FontType
 }
 

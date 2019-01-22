@@ -8,6 +8,7 @@ import TradeBox from './TradeBox'
 import TradeResult from './TradeResult'
 import SubmitButton from './SubmitButton'
 import Layer from './Layer'
+import Asset from './Asset'
 
 export {
   AssetCard,
@@ -18,5 +19,6 @@ export {
   TradeBox,
   TradeResult,
   SubmitButton,
-  Layer
+  Layer,
+  Asset
 }

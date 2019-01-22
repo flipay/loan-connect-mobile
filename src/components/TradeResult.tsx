@@ -4,7 +4,7 @@ import {
   StyleSheet,
   Image
 } from 'react-native'
-import { Layer, Text, Value } from '../components'
+import { Layer, Text, Value, Asset } from '../components'
 import { COLORS } from '../constants/styleGuides'
 import { AssetId } from '../types'
 
@@ -34,13 +34,8 @@ export default class TradeResult extends React.Component<Props> {
     return (
       <View style={styles.assetPart}>
         <Text>You received</Text>
-        <View style={styles.row}>
-          <View style={styles.asset}>
-            <Image
-              source={require('../img/btc.png')}
-            />
-            <Text>Bitcoin</Text>
-          </View>
+        <View style={[styles.row, styles.assetRow]}>
+          <Asset id={this.props.assetId} />
           <Value assetId={this.props.assetId}>{this.props.amount}</Value>
         </View>
       </View>
@@ -102,7 +97,7 @@ const styles = StyleSheet.create({
     paddingTop: 24,
     backgroundColor: COLORS.WHITE
   },
-  asset: {
+  assetRow: {
     flexDirection: 'row',
     marginTop: 8
   },
@@ -113,7 +108,8 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    alignItems: 'center'
   },
   fee: {
     marginTop: 8,

@@ -1,10 +1,10 @@
 import React from 'react'
-import { Text } from 'react-native'
+import { Text, TextStyle } from 'react-native'
 import { FONT_TYPES } from '../constants'
 import { FontType } from '../types'
 
 interface Props {
-  children: any
+  children: JSX.Element | Array<JSX.Element> | string | Array<string>
   type: FontType | 'inherit'
   color?: string
   style?: any
