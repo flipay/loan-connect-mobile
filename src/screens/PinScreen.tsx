@@ -4,7 +4,7 @@ import _ from 'lodash'
 import { View, Image, TextInput, StatusBar, StyleSheet } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { COLORS } from '../constants/styleGuides'
-import { Text } from '../components'
+import { Text, Key } from '../components'
 
 interface State {
   pin: string
@@ -61,6 +61,10 @@ export default class PinScreen extends React.Component<
     }
   }
 
+  public onAddPin = (digit: number) => {
+    this.setState({ pin: this.state.pin + String(digit) })
+  }
+
   public renderDot (index: Index) {
     return (
       <View
@@ -89,6 +93,31 @@ export default class PinScreen extends React.Component<
     )
   }
 
+  public renderNumPad () {
+    return (
+      <View>
+        <View style={styles.numPadRow}>
+          <Key onPress={() => this.onAddPin(1)}>1</Key>
+          <Key onPress={() => this.onAddPin(1)}>2</Key>
+          <Key onPress={() => this.onAddPin(1)}>3</Key>
+        </View>
+        <View style={styles.numPadRow}>
+          <Key onPress={() => this.onAddPin(1)}>4</Key>
+          <Key onPress={() => this.onAddPin(1)}>5</Key>
+          <Key onPress={() => this.onAddPin(1)}>6</Key>
+        </View>
+        <View style={styles.numPadRow}>
+          <Key onPress={() => this.onAddPin(1)}>7</Key>
+          <Key onPress={() => this.onAddPin(1)}>8</Key>
+          <Key onPress={() => this.onAddPin(1)}>9</Key>
+        </View>
+        <View style={styles.numPadRow}>
+          <Key onPress={() => this.onAddPin(1)}>0</Key>
+        </View>
+      </View>
+    )
+  }
+
   public render () {
     return (
       <View style={styles.screen}>
@@ -101,15 +130,7 @@ export default class PinScreen extends React.Component<
           {this.props.navigation.getParam('title', 'Create a PIN')}
         </Text>
         {this.renderDots()}
-        <TextInput
-          ref={(element) => this.textInput = element}
-          keyboardType='number-pad'
-          onChangeText={this.onPinChange}
-          autoFocus={true}
-          maxLength={6}
-          style={styles.invisibleTextInput}
-          value={this.state.pin}
-        />
+        {this.renderNumPad()}
       </View>
     )
   }
@@ -136,14 +157,12 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.N200
   },
   activeDot: {
-    backgroundColor: COLORS.P500
+    backgroundColor: COLORS.P400
   },
   spacing: {
     width: 32
   },
-  invisibleTextInput: {
-    position: 'absolute',
-    top: -1000,
-    left: -1000
+  numPadRow: {
+    flexDirection: 'row'
   }
 })
