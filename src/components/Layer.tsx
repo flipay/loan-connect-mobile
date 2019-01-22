@@ -28,12 +28,13 @@ const styles = StyleSheet.create({
     borderColor: COLORS.N200,
     backgroundColor: COLORS.WHITE,
     width: '100%',
-    marginBottom: 16
-  },
-  activeContainer: {
+    marginBottom: 16,
     shadowColor: 'black',
-    shadowOffset: { height: 4, width: 0 },
+    shadowOffset: { height: 2, width: 0 },
     shadowOpacity: 0.2,
     shadowRadius: 2
+  },
+  activeContainer: {
+    shadowOffset: { height: 4, width: 0 }
   }
 })
