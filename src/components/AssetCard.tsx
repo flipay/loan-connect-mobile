@@ -9,11 +9,10 @@ import {
   TouchableWithoutFeedback,
   ImageSourcePropType
 } from 'react-native'
-import Text from './Text'
 import { FontAwesome } from '@expo/vector-icons'
-import { COLORS } from '../constants/styleGuides'
-import Button from './Button'
-import { AssetId } from '../constants/assets'
+import { Text, Button, Layer } from '../components'
+import { COLORS } from '../constants'
+import { AssetId } from '../types'
 
 interface Props {
   id: AssetId
@@ -123,7 +122,7 @@ export default class AssetCard extends React.Component<
             marginHorizontal: this.state.cardHorizontalMargin
           }}
         >
-          <View style={[styles.container, this.props.expanded && styles.expandedContainer]}>
+          <Layer style={[styles.container, this.props.expanded && styles.expandedContainer]}>
             {this.renderLabel()}
             {!this.props.expanded && (
               <View style={styles.rightSection}>
@@ -150,7 +149,7 @@ export default class AssetCard extends React.Component<
                 style={styles.upIcon}
               />
             )}
-          </View>
+          </Layer>
         </Animated.View>
       </TouchableWithoutFeedback>
     )
@@ -165,11 +164,6 @@ const styles = StyleSheet.create({
   },
   container: {
     height: '100%',
-    backgroundColor: COLORS.WHITE,
-    shadowColor: 'black',
-    shadowOffset: { height: 2, width: 0 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
     padding: 20,
     alignItems: 'center',
     flexDirection: 'row',

@@ -1,9 +1,8 @@
 import * as React from 'react'
 import { ScrollView, StatusBar, View, StyleSheet, ImageSourcePropType } from 'react-native'
-import Text from '../components/Text'
 import { LinearGradient } from 'expo'
 import { NavigationScreenProps } from 'react-navigation'
-import AssetCard from '../components/AssetCard'
+import { Text, AssetCard } from '../components'
 import { COLORS } from '../constants'
 import { AssetId } from '../types'
 
