@@ -1,8 +1,8 @@
-
 import * as React from 'react'
 import _ from 'lodash'
 import { View, Image, TextInput, StatusBar, StyleSheet } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
+import { Ionicons } from '@expo/vector-icons'
 import { COLORS } from '../constants/styleGuides'
 import { Text, Key } from '../components'
 
@@ -57,12 +57,21 @@ export default class PinScreen extends React.Component<
   public onPinChange = (pin: string) => {
     this.setState({ pin })
     if (pin.length === 4) {
-      this.props.navigation.getParam('onSuccess')(this.state.pin, this.props.navigation)
+      this.props.navigation.getParam('onSuccess')(
+        this.state.pin,
+        this.props.navigation
+      )
     }
   }
 
-  public onAddPin = (digit: number) => {
-    this.setState({ pin: this.state.pin + String(digit) })
+  public onPressNum = (digit: string) => {
+    this.setState({ pin: this.state.pin + digit })
+  }
+
+  public onBackSpace = () => {
+    if (this.state.pin.length > 0) {
+      this.setState({ pin: this.state.pin.slice(0, this.state.pin.length - 1) })
+    }
   }
 
   public renderDot (index: Index) {
@@ -74,9 +83,7 @@ export default class PinScreen extends React.Component<
   }
 
   public renderSpacing () {
-    return (
-      <View style={styles.spacing} />
-    )
+    return <View style={styles.spacing} />
   }
 
   public renderDots () {
@@ -94,26 +101,22 @@ export default class PinScreen extends React.Component<
   }
 
   public renderNumPad () {
+    const array = Array(9).fill('', 0)
+    const zero = '0'
     return (
-      <View>
-        <View style={styles.numPadRow}>
-          <Key onPress={() => this.onAddPin(1)}>1</Key>
-          <Key onPress={() => this.onAddPin(1)}>2</Key>
-          <Key onPress={() => this.onAddPin(1)}>3</Key>
-        </View>
-        <View style={styles.numPadRow}>
-          <Key onPress={() => this.onAddPin(1)}>4</Key>
-          <Key onPress={() => this.onAddPin(1)}>5</Key>
-          <Key onPress={() => this.onAddPin(1)}>6</Key>
-        </View>
-        <View style={styles.numPadRow}>
-          <Key onPress={() => this.onAddPin(1)}>7</Key>
-          <Key onPress={() => this.onAddPin(1)}>8</Key>
-          <Key onPress={() => this.onAddPin(1)}>9</Key>
-        </View>
-        <View style={styles.numPadRow}>
-          <Key onPress={() => this.onAddPin(1)}>0</Key>
-        </View>
+      <View style={styles.numPad}>
+        {array.map((empty, index) => {
+          const digit = String(index + 1)
+          return (
+            <Key key={digit} onPress={() => this.onPressNum(digit)}>
+              {digit}
+            </Key>
+          )
+        })}
+        <Key onPress={() => this.onPressNum(zero)}>{zero}</Key>
+        <Key onPress={this.onBackSpace}>
+          <Ionicons name='md-arrow-round-back' />
+        </Key>
       </View>
     )
   }
@@ -162,7 +165,8 @@ const styles = StyleSheet.create({
   spacing: {
     width: 32
   },
-  numPadRow: {
-    flexDirection: 'row'
+  numPad: {
+    flexDirection: 'row',
+    flexWrap: 'wrap'
   }
 })
