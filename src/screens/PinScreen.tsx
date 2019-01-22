@@ -1,6 +1,6 @@
 import * as React from 'react'
 import _ from 'lodash'
-import { View, Image, TextInput, StatusBar, StyleSheet } from 'react-native'
+import { View, Image, StatusBar, StyleSheet } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { Ionicons } from '@expo/vector-icons'
 import { COLORS } from '../constants/styleGuides'
@@ -17,8 +17,6 @@ export default class PinScreen extends React.Component<
   State
 > {
   private willFocusSubscription: any
-  private didFocusSubscription: any
-  private textInput: TextInput | null = null
   public constructor (props: NavigationScreenProps) {
     super(props)
     this.state = {
@@ -39,19 +37,10 @@ export default class PinScreen extends React.Component<
         this.setState({ pin: '' })
       }
     )
-    this.didFocusSubscription = this.props.navigation.addListener(
-      'didFocus',
-      payload => {
-        if (this.textInput) {
-          this.textInput.focus()
-        }
-      }
-    )
   }
 
   public componentWillUnmount () {
     this.willFocusSubscription.remove()
-    this.didFocusSubscription.remove()
   }
 
   public onPinChange = (pin: string) => {
