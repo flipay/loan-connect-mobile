@@ -24,12 +24,6 @@ export default class PinScreen extends React.Component<
     }
   }
 
-  public static navigationOptions = (props: NavigationScreenProps) => {
-    return {
-      title: props.navigation.getParam('screenName')
-    }
-  }
-
   public componentDidMount () {
     this.willFocusSubscription = this.props.navigation.addListener(
       'willFocus',
