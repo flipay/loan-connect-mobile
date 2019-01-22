@@ -2,12 +2,10 @@ import * as React from 'react'
 import {
   View,
   StyleSheet,
-  TextInput,
-  TouchableOpacity,
   Image
 } from 'react-native'
 import { Layer, Text, Value } from '../components'
-import { COLORS, FONT_TYPES } from '../constants/styleGuides'
+import { COLORS } from '../constants/styleGuides'
 import { AssetId } from '../types'
 
 interface Props {
@@ -25,7 +23,7 @@ export default class TradeResult extends React.Component<Props> {
           style={{ width: 48, height: 48 }}
           source={require('../img/confirm_icon.png')}
         />
-        <Text type='title' color={COLORS.N800}>
+        <Text type='title' color={COLORS.N800} style={styles.title}>
           Transaction Completed
         </Text>
       </View>
@@ -56,7 +54,7 @@ export default class TradeResult extends React.Component<Props> {
           <Text type='caption'>Exchange price</Text>
           <Value fontType='caption' assetId='THB'>{this.props.price}</Value>
         </View>
-        <View style={styles.row}>
+        <View style={[styles.row, styles.fee]}>
           <Text type='caption'>Transaction Fee</Text>
           <Value fontType='caption' assetId='THB'>{this.props.fee}</Value>
         </View>
@@ -95,13 +93,18 @@ const styles = StyleSheet.create({
   header: {
     alignItems: 'center'
   },
+  title: {
+    marginTop: 12,
+    marginBottom: 32
+  },
   assetPart: {
     padding: 16,
     paddingTop: 24,
     backgroundColor: COLORS.WHITE
   },
   asset: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    marginTop: 8
   },
   paymentPart: {
     padding: 16,
@@ -111,5 +114,9 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between'
+  },
+  fee: {
+    marginTop: 8,
+    marginBottom: 16
   }
 })
