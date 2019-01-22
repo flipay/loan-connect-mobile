@@ -4,24 +4,19 @@ import { NavigationScreenProps } from 'react-navigation'
 import {
   View,
   StyleSheet,
-  Image,
   Animated,
-  TouchableWithoutFeedback,
-  ImageSourcePropType
+  TouchableWithoutFeedback
 } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
-import { Text, Button, Layer } from '../components'
+import { Text, Button, Asset, Value, Layer } from '../components'
 import { COLORS } from '../constants'
 import { AssetId } from '../types'
 
 interface Props {
   id: AssetId
-  image: ImageSourcePropType
-  name: string
   amount: number
   price?: number
   unit?: string
-  isFiat?: boolean
   expanded: boolean
   onPress: () => void
 }
@@ -77,30 +72,25 @@ export default class AssetCard extends React.Component<
     })
   }
 
-  public renderLabel () {
-    return (
-      <View style={styles.labelContainer}>
-        <Image source={this.props.image} style={styles.coinIcon} />
-        <Text type='headline'>{this.props.name}</Text>
-      </View>
-    )
-  }
-
   public renderExpandedCardMainContent () {
-    return this.props.isFiat ? (
-      <Text type='title'>{`${this.props.amount} THB`}</Text>
+    return this.props.id === 'THB' ? (
+      <Value assetId='THB' fontType='title'>
+        {this.props.amount}
+      </Value>
     ) : (
       <View style={styles.coinMainContent}>
-        <Text type='title'>{`${this.props.amount} ${this.props.unit}`}</Text>
-        <Text style={styles.bahtPrice}>
-          {`${(this.props.price || 0) * this.props.amount} THB`}
-        </Text>
+        <Value assetId={this.props.id} fontType='title'>
+          {this.props.amount}
+        </Value>
+        <Value assetId='THB' fontType='body'>
+          {(this.props.price || 0) * this.props.amount}
+        </Value>
       </View>
     )
   }
 
   public renderExpandedCardDescription () {
-    return this.props.isFiat ? (
+    return this.props.id === 'THB' ? (
       <Text numberOfLines={2} style={styles.contactUs} color={COLORS.N500}>
         To deposit cash in Thai baht, please contact us
       </Text>
@@ -122,18 +112,23 @@ export default class AssetCard extends React.Component<
             marginHorizontal: this.state.cardHorizontalMargin
           }}
         >
-          <Layer style={[styles.container, this.props.expanded && styles.expandedContainer]}>
-            {this.renderLabel()}
+          <Layer
+            style={[
+              styles.container,
+              this.props.expanded && styles.expandedContainer
+            ]}
+          >
+            <Asset id={this.props.id} />
             {!this.props.expanded && (
               <View style={styles.rightSection}>
                 <View style={styles.valueContainer}>
-                  <Text type='headline'>
-                    {`${this.props.amount} ${this.props.unit || 'THB'}`}
-                  </Text>
-                  {!this.props.isFiat && (
-                    <Text type='caption' style={styles.bahtPrice}>
-                      {`${(this.props.price || 0) * this.props.amount} THB`}
-                    </Text>
+                  <Value assetId={this.props.id} fontType='headline'>
+                    {this.props.amount}
+                  </Value>
+                  {!(this.props.id === 'THB') && (
+                    <Value assetId='THB' fontType='caption'>
+                      {(this.props.price || 0) * this.props.amount}
+                    </Value>
                   )}
                 </View>
                 <FontAwesome name='angle-down' size={16} color={COLORS.N400} />
@@ -168,10 +163,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between'
-  },
-  labelContainer: {
-    flexDirection: 'row',
-    alignItems: 'center'
   },
   coinMainContent: {
     alignItems: 'center'

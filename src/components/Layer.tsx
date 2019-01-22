@@ -1,12 +1,12 @@
 import * as React from 'react'
-import { TouchableOpacity, StyleSheet, View, ViewStyle } from 'react-native'
+import { TouchableOpacity, StyleSheet, View } from 'react-native'
 import { COLORS } from '../constants'
 
 interface Props {
   children: Element
   onPress?: () => void
   active?: boolean,
-  style?: ViewStyle
+  style?: any
 }
 
 export default class Layer extends React.Component<Props> {

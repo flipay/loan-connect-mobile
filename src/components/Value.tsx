@@ -13,7 +13,7 @@ interface Props {
   fontType?: FontType
 }
 
-class FlipValue extends React.Component<Props> {
+class Value extends React.Component<Props> {
   public render () {
     const { style, ...otherProps } = this.props
     return (
@@ -31,4 +31,4 @@ class FlipValue extends React.Component<Props> {
   }
 }
 
-export default FlipValue
+export default Value
