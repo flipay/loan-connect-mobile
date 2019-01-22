@@ -64,13 +64,15 @@ export default class PinScreen extends React.Component<
     }
   }
 
-  public onPressNum = (digit: string) => {
-    this.setState({ pin: this.state.pin + digit })
+  public onPressNum = (digit: number) => {
+    this.setState({ pin: this.state.pin + String(digit) })
   }
 
   public onBackSpace = () => {
     if (this.state.pin.length > 0) {
-      this.setState({ pin: this.state.pin.slice(0, this.state.pin.length - 1) })
+      this.setState({
+        pin: this.state.pin.slice(0, this.state.pin.length - 1)
+      })
     }
   }
 
@@ -100,19 +102,25 @@ export default class PinScreen extends React.Component<
     )
   }
 
+  public renderNumRow (digits: Array<number>) {
+    return (
+      <View style={styles.numRow}>
+        {digits.map(digit => (
+          <Key key={digit} onPress={() => this.onPressNum(digit)}>
+            {digit}
+          </Key>
+        ))}
+      </View>
+    )
+  }
+
   public renderNumPad () {
-    const array = Array(9).fill('', 0)
-    const zero = '0'
+    const zero = 0
     return (
       <View style={styles.numPad}>
-        {array.map((empty, index) => {
-          const digit = String(index + 1)
-          return (
-            <Key key={digit} onPress={() => this.onPressNum(digit)}>
-              {digit}
-            </Key>
-          )
-        })}
+        {this.renderNumRow([1, 2, 3])}
+        {this.renderNumRow([4, 5, 6])}
+        {this.renderNumRow([7, 8, 9])}
         <Key onPress={() => this.onPressNum(zero)}>{zero}</Key>
         <Key onPress={this.onBackSpace}>
           <Ionicons name='md-arrow-round-back' />
@@ -166,7 +174,9 @@ const styles = StyleSheet.create({
     width: 32
   },
   numPad: {
-    flexDirection: 'row',
-    flexWrap: 'wrap'
+
+  },
+  numRow: {
+    flexDirection: 'row'
   }
 })

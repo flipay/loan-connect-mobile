@@ -4,7 +4,7 @@ import { TouchableHighlight, StyleSheet } from 'react-native'
 import { Text } from '../components'
 
 interface Props {
-  children: string | JSX.Element
+  children: number | JSX.Element
   onPress: () => void
 }
 
@@ -12,10 +12,10 @@ export default class Key extends React.Component<Props>{
   public render () {
     return (
       <TouchableHighlight onPress={this.props.onPress} style={styles.container}>
-        {typeof this.props.children === 'string'
+        {typeof this.props.children === 'number'
           ? (
             <Text type='title'>
-              {this.props.children}
+              {String(this.props.children)}
             </Text>
           ) : (
             this.props.children
