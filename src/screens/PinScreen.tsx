@@ -65,7 +65,9 @@ export default class PinScreen extends React.Component<
   }
 
   public onPressNum = (digit: number) => {
-    this.setState({ pin: this.state.pin + String(digit) })
+    if (this.state.pin.length < 4) {
+      this.setState({ pin: this.state.pin + String(digit) })
+    }
   }
 
   public onBackSpace = () => {
@@ -121,10 +123,13 @@ export default class PinScreen extends React.Component<
         {this.renderNumRow([1, 2, 3])}
         {this.renderNumRow([4, 5, 6])}
         {this.renderNumRow([7, 8, 9])}
-        <Key onPress={() => this.onPressNum(zero)}>{zero}</Key>
-        <Key onPress={this.onBackSpace}>
-          <Ionicons name='md-arrow-round-back' />
-        </Key>
+        <View style={styles.numRow}>
+          <Key />
+          <Key onPress={() => this.onPressNum(zero)}>{zero}</Key>
+          <Key onPress={this.onBackSpace}>
+            <Ionicons name='md-arrow-round-back' color={COLORS.N800} size={16} />
+          </Key>
+        </View>
       </View>
     )
   }
@@ -152,10 +157,10 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.WHITE,
     flex: 1,
     alignItems: 'center',
-    position: 'relative'
+    marginHorizontal: 62
   },
   title: {
-    marginTop: 60
+    marginTop: 30
   },
   dots: {
     marginTop: 42,
@@ -174,9 +179,11 @@ const styles = StyleSheet.create({
     width: 32
   },
   numPad: {
-
+    marginTop: 50,
+    width: '100%'
   },
   numRow: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    justifyContent: 'space-between'
   }
 })
