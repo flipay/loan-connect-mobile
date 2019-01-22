@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { ScrollView, StatusBar, View, StyleSheet, ImageSourcePropType } from 'react-native'
+import { ScrollView, StatusBar, View, StyleSheet } from 'react-native'
 import { LinearGradient } from 'expo'
 import { NavigationScreenProps } from 'react-navigation'
 import { Text, AssetCard } from '../components'
