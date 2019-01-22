@@ -54,11 +54,11 @@ export default class TradeResult extends React.Component<Props> {
       <View style={styles.paymentPart}>
         <View style={styles.row}>
           <Text type='caption'>Exchange price</Text>
-          <Value assetId='THB'>{this.props.price}</Value>
+          <Value fontType='caption' assetId='THB'>{this.props.price}</Value>
         </View>
         <View style={styles.row}>
           <Text type='caption'>Transaction Fee</Text>
-          <Value assetId='THB'>{this.props.fee}</Value>
+          <Value fontType='caption' assetId='THB'>{this.props.fee}</Value>
         </View>
         <View style={styles.row}>
           <Text type='headline'>Total expense</Text>

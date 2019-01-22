@@ -1,6 +1,6 @@
 import React from 'react'
 import Text from './Text'
-import { AssetId } from '../types'
+import { AssetId, FontType } from '../types'
 import { ASSETS } from '../constants'
 
 interface Props {
@@ -9,13 +9,14 @@ interface Props {
   full?: boolean
   hidden?: boolean
   style?: any
+  fontType?: FontType
 }
 
 class FlipValue extends React.Component<Props> {
   public render () {
     const { style, ...otherProps } = this.props
     return (
-      <Text style={this.props.style} type='inherit' {...otherProps}>
+      <Text style={this.props.style} type={this.props.fontType || 'inherit'} {...otherProps}>
         {this.props.children.toLocaleString(undefined, {
           maximumFractionDigits: 8
         })}

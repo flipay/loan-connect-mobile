@@ -22,9 +22,18 @@ class FlipText extends React.Component<Props> {
       <Text
         style={[
           {
-            fontFamily: this.props.type === 'inherit' ? undefined : FONT_TYPES[this.props.type].fontFamily,
-            fontSize: this.props.type === 'inherit' ? undefined : FONT_TYPES[this.props.type].fontSize,
-            color: this.props.color
+            fontFamily:
+              this.props.type === 'inherit'
+                ? undefined
+                : FONT_TYPES[this.props.type].fontFamily,
+            fontSize:
+              this.props.type === 'inherit'
+                ? undefined
+                : FONT_TYPES[this.props.type].fontSize,
+            color:
+              this.props.type === 'inherit'
+                ? undefined
+                : this.props.color || FONT_TYPES[this.props.type].defaultColor
           },
           style
         ]}

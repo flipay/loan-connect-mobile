@@ -86,8 +86,8 @@ export default class MainScreen extends React.Component<
           TOTAL VALUE
         </Text>
         <Text style={styles.totalValueContainer}>
-          <Text>฿</Text>
-          <Text type='large-title' style={styles.totalValue}>
+          <Text color={COLORS.WHITE}>฿</Text>
+          <Text type='large-title' style={styles.totalValue} color={COLORS.WHITE}>
             {' '}
             203,000
           </Text>
