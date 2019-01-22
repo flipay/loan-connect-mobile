@@ -16,7 +16,6 @@ interface Props {
   id: AssetId
   amount: number
   price?: number
-  unit?: string
   expanded: boolean
   onPress: () => void
 }
