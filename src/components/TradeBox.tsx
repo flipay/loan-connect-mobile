@@ -7,6 +7,7 @@ import {
   Image
 } from 'react-native'
 import Text from './Text'
+import Layer from './Layer'
 import { COLORS, FONT_TYPES } from '../constants/styleGuides'
 import { ASSETS, AssetId } from '../constants/assets'
 
@@ -32,9 +33,10 @@ export default class TradeBox extends React.Component<Props> {
   public render () {
     const { image, unit } = ASSETS[this.props.assetId]
     return (
-      <TouchableOpacity
-        style={[styles.container, this.props.active && styles.activeContainer]}
+      <Layer
+        style={styles.container}
         onPress={this.onPress}
+        active={this.props.active}
       >
         <View style={styles.leftContainer}>
           <Text type='caption' color={COLORS.N500}>{this.props.description}</Text>
@@ -57,25 +59,14 @@ export default class TradeBox extends React.Component<Props> {
           <Image source={image} style={styles.image} />
           <Text>{unit}</Text>
         </View>
-      </TouchableOpacity>
+      </Layer>
     )
   }
 }
 
 const styles = StyleSheet.create({
   container: {
-    borderWidth: 1,
-    borderColor: COLORS.N200,
-    backgroundColor: COLORS.WHITE,
-    flexDirection: 'row',
-    width: '100%',
-    marginBottom: 16
-  },
-  activeContainer: {
-    shadowColor: 'black',
-    shadowOffset: { height: 4, width: 0 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2
+    flexDirection: 'row'
   },
   leftContainer: {
     flex: 2,
