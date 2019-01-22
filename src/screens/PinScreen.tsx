@@ -1,7 +1,7 @@
 
 import * as React from 'react'
 import _ from 'lodash'
-import { View, TextInput, StyleSheet } from 'react-native'
+import { View, Image, TextInput, StatusBar, StyleSheet } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { COLORS } from '../constants/styleGuides'
 import { Text } from '../components'
@@ -85,6 +85,11 @@ export default class PinScreen extends React.Component<
   public render () {
     return (
       <View style={styles.screen}>
+        <StatusBar barStyle='dark-content' />
+        <Image
+          style={{ width: 96, height: 35.6 }}
+          source={require('../img/flipay_horizontal_logo.png')}
+        />
         <Text>{this.props.navigation.getParam('description')}</Text>
         {this.renderDots()}
         <TextInput
@@ -105,6 +110,7 @@ const styles = StyleSheet.create({
   screen: {
     backgroundColor: COLORS.WHITE,
     flex: 1,
+    alignItems: 'center',
     position: 'relative'
   },
   dots: {
