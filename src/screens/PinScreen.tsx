@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.WHITE,
     flex: 1,
     alignItems: 'center',
-    marginHorizontal: 62
+    marginHorizontal: 40
   },
   title: {
     marginTop: 30
