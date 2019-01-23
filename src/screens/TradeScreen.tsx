@@ -1,18 +1,8 @@
 import * as React from 'react'
 import _ from 'lodash'
-import {
-  KeyboardAvoidingView,
-  StyleSheet,
-  View,
-  TouchableWithoutFeedback,
-  TouchableHighlight,
-  StatusBar,
-  Keyboard,
-  Platform
-} from 'react-native'
+import { StyleSheet, View, TouchableHighlight } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
-import { Constants } from 'expo'
-import { Text, Value, TradeBox, CloseButton, TradeResult, SubmitButton } from '../components'
+import { Text, Value, TradeBox, TradeResult, Screen } from '../components'
 import { COLORS, ASSETS } from '../constants'
 import { AssetId, OrderPart } from '../types'
 import { getAmount } from '../requests'
@@ -20,7 +10,6 @@ import { getAmount } from '../requests'
 type TradeBoxType = OrderPart
 
 interface State {
-  keyboardAvoidingViewKey: string
   activeTradeBox: TradeBoxType
   giveTradeBoxValue: string
   takeTradeBoxValue: string
@@ -28,41 +17,19 @@ interface State {
   executed: boolean
 }
 
-const DEFAULT_KEYBOARD_KEY = 'keyboardAvoidingViewKey'
-
 export default class TradeScreen extends React.Component<
   NavigationScreenProps,
   State
 > {
-  private keyboardHideListener: any
   public constructor (props: NavigationScreenProps) {
     super(props)
     this.state = {
-      keyboardAvoidingViewKey: DEFAULT_KEYBOARD_KEY,
       activeTradeBox: 'give',
       giveTradeBoxValue: '',
       takeTradeBoxValue: '',
       loading: false,
       executed: false
     }
-  }
-
-  public componentDidMount () {
-    // using keyboardWillHide is better but it does not work for android
-    this.keyboardHideListener = Keyboard.addListener(
-      Platform.OS === 'android' ? 'keyboardDidHide' : 'keyboardWillHide',
-      this.handleKeyboardHide.bind(this)
-    )
-  }
-
-  public componentWillUnmount () {
-    this.keyboardHideListener.remove()
-  }
-
-  public handleKeyboardHide () {
-    this.setState({
-      keyboardAvoidingViewKey: 'keyboardAvoidingViewKey' + new Date().getTime()
-    })
   }
 
   public onPressTradeBox = (tradeBox: TradeBoxType) => {
@@ -152,6 +119,10 @@ export default class TradeScreen extends React.Component<
     // }
   }
 
+  public execute = () => {
+    this.setState({ executed: true })
+  }
+
   public onClose = () => {
     this.props.navigation.goBack()
   }
@@ -177,25 +148,6 @@ export default class TradeScreen extends React.Component<
     )
   }
 
-  public renderSubmitButton () {
-    return this.state.executed
-      ? (
-        <SubmitButton
-          onPress={() => this.props.navigation.goBack()}
-        >
-          Done
-        </SubmitButton>
-      )
-      : (
-        <SubmitButton
-          onPress={() => this.setState({ executed: true })}
-          active={this.isSubmitable()}
-        >
-          {_.capitalize(this.props.navigation.getParam('side', 'buy'))}
-        </SubmitButton>
-      )
-  }
-
   public renderFooter () {
     const side = this.props.navigation.getParam('side', 'buy')
     return (
@@ -214,7 +166,7 @@ export default class TradeScreen extends React.Component<
     )
   }
 
-  public renderTradeBody () {
+  public renderTradeBody (autoFocus: boolean) {
     const side = this.props.navigation.getParam('side', 'buy')
     const assetId: AssetId = this.props.navigation.getParam('assetId', 'BTC')
     const remainingBalance = this.props.navigation.getParam(
@@ -223,7 +175,6 @@ export default class TradeScreen extends React.Component<
     )
     return (
       <View style={styles.body}>
-        <CloseButton onPress={this.onClose} />
         <Text type='title'>
           {`${_.capitalize(side)} ${ASSETS[assetId].name}`}
         </Text>
@@ -233,9 +184,7 @@ export default class TradeScreen extends React.Component<
         </Text>
         <View style={styles.tradeBoxesContainer}>
           <TradeBox
-            autoFocus={
-              this.state.keyboardAvoidingViewKey === DEFAULT_KEYBOARD_KEY
-            }
+            autoFocus={autoFocus}
             description={side === 'buy' ? 'You buy with' : 'You sell'}
             assetId={side === 'buy' ? 'THB' : assetId}
             onPress={() => this.onPressTradeBox('give')}
@@ -259,55 +208,37 @@ export default class TradeScreen extends React.Component<
     )
   }
 
-  public renderBody () {
-    return this.state.executed
-      ? (
-        <TradeResult
-          assetId='BTC'
-          amount={0.0099}
-          price={950}
-          fee={50}
-        />
-      ) : this.renderTradeBody()
-  }
-
   public render () {
+    const orderType = _.capitalize(
+      this.props.navigation.getParam('side', 'buy')
+    )
     return (
-      <KeyboardAvoidingView
-        key={this.state.keyboardAvoidingViewKey}
-        style={styles.outsideContainer}
-        keyboardVerticalOffset={Constants.statusBarHeight === 40 ? 20 : 0}
-        behavior='height'
+      <Screen
+        backButtonType='close'
+        onPressBackButton={this.state.executed ? undefined : this.onClose}
+        submitButtonText={this.state.executed ? 'Done' : orderType}
+        activeSubmitButton={this.isSubmitable()}
+        onPessSubmitButton={
+          this.state.executed ? this.props.navigation.goBack : this.execute
+        }
       >
-        <TouchableWithoutFeedback
-          style={styles.outsideContainer}
-          onPress={Keyboard.dismiss}
-          accessible={false}
-        >
-          <View style={styles.container}>
-            <StatusBar barStyle='dark-content' />
-            <View style={styles.bodyContainer}>
-              {this.renderBody()}
-            </View>
-            {this.renderSubmitButton()}
+        {autoFocus => (
+          <View style={styles.bodyContainer}>
+            {this.state.executed ? (
+              <TradeResult assetId='BTC' amount={0.0099} price={950} fee={50} />
+            ) : (
+              this.renderTradeBody(autoFocus)
+            )}
           </View>
-        </TouchableWithoutFeedback>
-      </KeyboardAvoidingView>
+        )}
+      </Screen>
     )
   }
 }
 
 const styles = StyleSheet.create({
-  outsideContainer: {
-    flex: 1
-  },
-  container: {
-    flex: 1,
-    justifyContent: 'space-between'
-  },
   bodyContainer: {
-    flex: 1,
-    paddingHorizontal: 20
+    flex: 1
   },
   body: {
     paddingTop: 50,

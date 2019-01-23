@@ -18,7 +18,7 @@ import { SubmitButton } from '../components'
 interface Props {
   children: (autoFocus: boolean) => any
   statusBar?: 'white' | 'black'
-  onPressBackButton: () => void
+  onPressBackButton?: () => void
   backButtonType?: 'arrowleft' | 'close'
   activeSubmitButton: boolean
   submitButtonText?: string
@@ -133,6 +133,7 @@ const styles = StyleSheet.create({
     padding: 6
   },
   content: {
+    flex: 1,
     paddingHorizontal: 20
   }
 })
