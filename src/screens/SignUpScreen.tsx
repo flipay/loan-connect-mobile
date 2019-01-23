@@ -23,51 +23,48 @@ export default class SignUpScreen extends React.Component<
     }
   }
 
-  public static navigationOptions = (props: NavigationScreenProps) => {
-    return {
-      title: 'Sign Up'
+  public onPressSubmit = async () => {
+    this.setState({ loading: true })
+    try {
+      const user = await signUp(this.state.phoneNumber)
+      this.props.navigation.navigate('VerifyPhoneNumber', {
+        accountNumber: user.id
+      })
+      this.setState({ loading: false })
+    } catch (err) {
+      this.setState({ loading: false })
     }
   }
 
   public onChangeText = async (text: string) => {
-    if (text.length === 10) {
-      this.setState({ phoneNumber: text })
-      const phoneNumberWithoutDash = _.replace(text, /-/g, '')
-      this.setState({ loading: true })
-      try {
-        const user = await signUp(phoneNumberWithoutDash)
-        this.props.navigation.navigate('VerifyPhoneNumber', {
-          accountNumber: user.id
-        })
-        this.setState({ loading: false })
-      } catch (err) {
-        this.setState({ loading: false })
-      }
-    } else {
-      this.setState({ phoneNumber: text })
-    }
+    this.setState({ phoneNumber: text })
   }
 
   public render () {
     return (
       <Screen
-        navigation={this.props.navigation}
+        backButtonType='arrowleft'
+        onPressBackButton={() => this.props.navigation.goBack()}
+        activeSubmitButton={this.state.phoneNumber.length === 10}
+        onPessSubmitButton={this.onPressSubmit}
       >
-        <Text type='title'>Enter your mobile number</Text>
-        <View>
-          <Layer style={styles.layer}>
-            <TextInput
-              autoFocus={true}
-              keyboardType='number-pad'
-              textContentType='telephoneNumber'
-              placeholder='0899999999'
-              onChangeText={this.onChangeText}
-              maxLength={10}
-              value={this.state.phoneNumber}
-            />
-          </Layer>
-        </View>
-        {this.state.loading && <Text>Loading...</Text>}
+        {(autoFocus: boolean) => (
+          <View>
+            <Text type='title' style={styles.title}>Enter your mobile number</Text>
+              <Layer style={styles.layer}>
+                <TextInput
+                  autoFocus={autoFocus}
+                  keyboardType='number-pad'
+                  textContentType='telephoneNumber'
+                  placeholder='0899999999'
+                  onChangeText={this.onChangeText}
+                  maxLength={10}
+                  value={this.state.phoneNumber}
+                />
+              </Layer>
+            {this.state.loading && <Text>Loading...</Text>}
+          </View>
+        )}
       </Screen>
     )
   }
@@ -77,6 +74,9 @@ const styles = StyleSheet.create({
   screen: {
     backgroundColor: COLORS.WHITE,
     flex: 1
+  },
+  title: {
+    marginTop: 40
   },
   layer: {
     marginTop: 44,
