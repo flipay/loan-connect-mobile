@@ -30,7 +30,8 @@ export default class SignUpScreen extends React.Component<
     try {
       const user = await signUp(this.state.phoneNumber)
       this.props.navigation.navigate('VerifyPhoneNumber', {
-        accountNumber: user.id
+        accountNumber: user.id,
+        phoneNumber: this.state.phoneNumber
       })
       this.setState({ loading: false })
     } catch (err) {

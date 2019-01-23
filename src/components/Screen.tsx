@@ -23,6 +23,7 @@ interface Props {
   activeSubmitButton: boolean
   submitButtonText?: string
   onPessSubmitButton?: () => void
+  disableTouchOutside?: boolean
 }
 
 interface State {
@@ -73,7 +74,7 @@ export default class Screen extends React.Component<Props, State> {
       >
         <TouchableWithoutFeedback
           style={styles.outsideContainer}
-          onPress={Keyboard.dismiss}
+          onPress={this.props.disableTouchOutside ? _.noop : Keyboard.dismiss}
           accessible={false}
         >
           <View style={styles.container}>
@@ -128,7 +129,7 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
-    left: 0,
+    left: 12,
     top: 24,
     padding: 6
   },
