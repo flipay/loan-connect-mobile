@@ -2,7 +2,7 @@ import * as React from 'react'
 import _ from 'lodash'
 import { StyleSheet, View, TouchableHighlight } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
-import { Text, Value, TradeBox, TradeResult, Screen } from '../components'
+import { Text, Value, TradeBox, TradeResult, Screen, Link } from '../components'
 import { COLORS, ASSETS } from '../constants'
 import { AssetId, OrderPart } from '../types'
 import { getAmount } from '../requests'
@@ -158,9 +158,9 @@ export default class TradeScreen extends React.Component<
             <Text color={COLORS.N800}>500 THB</Text>
             {side === 'buy' ? '' : ' more'}
           </Text>
-          <TouchableHighlight onPress={this.onPressPriceComparison}>
-            <Text color={COLORS.P400}>See price comparison</Text>
-          </TouchableHighlight>
+          <Link onPress={this.onPressPriceComparison}>
+            See price comparison
+          </Link>
         </View>
       )
     )
