@@ -1,37 +1,55 @@
 import * as React from 'react'
 import _ from 'lodash'
 import { View, TextInput, StyleSheet } from 'react-native'
+import { AntDesign } from '@expo/vector-icons'
 import { NavigationScreenProps } from 'react-navigation'
-import { COLORS } from '../constants'
 import { submitOtp } from '../requests'
-import { Text, Screen, Layer } from '../components'
+import { COLORS } from '../constants'
+import { Text, Screen, Layer, Link } from '../components'
 
 type No = 0 | 1 | 2 | 3 | 4 | 5
 
 interface State {
   otp: string
-  loading: boolean
+  stage: 'counting' | 'loading' | 'success' | 'error'
+  timer: number
 }
+
+const DEFAULT_TIMER = 5
 
 export default class VerifyPhoneNumberScreen extends React.Component<
   NavigationScreenProps,
   State
 > {
+
+  private input: TextInput | null
+  private interval: any
+
   public constructor (props: NavigationScreenProps) {
     super(props)
     this.state = {
       otp: '',
-      loading: false
+      stage: 'counting',
+      timer: DEFAULT_TIMER
     }
   }
-  private input: TextInput | null
 
-  public navigateToCreatePinScreen () {
-    this.props.navigation.navigate('Pin', {
-      screenName: 'Create PIN',
-      description: 'PIN will be used for login',
-      onSuccess: this.navigateToConfirmPinScreen
-    })
+  public componentDidMount () {
+    this.interval = setInterval(() => {
+      if (this.state.timer > 0) {
+        this.setState({ timer: this.state.timer - 1 })
+      }
+    }, 1000)
+  }
+
+  public componentWillUnmount () {
+    clearInterval(this.interval)
+  }
+
+  public componentDidUpdate (prevProps: NavigationScreenProps, prevState: State) {
+    if (prevState.stage !== this.state.stage && this.state.stage === 'counting') {
+      this.setState({ timer: DEFAULT_TIMER })
+    }
   }
 
   public navigateToConfirmPinScreen (
@@ -51,22 +69,24 @@ export default class VerifyPhoneNumberScreen extends React.Component<
     })
   }
 
-  public submitOTP = async () => {
-    const otp = this.state.otp
-    if (otp.length === 6) {
+  public onChangeText = async (text: string) => {
+    this.setState({ otp: text })
+    if (text.length === 6) {
       try {
-        this.setState({ loading: true })
-        await submitOtp(this.props.navigation.getParam('accountNumber'), otp)
-        this.navigateToCreatePinScreen()
-        this.setState({ loading: false })
+        this.setState({ stage: 'loading' })
+        await submitOtp(this.props.navigation.getParam('accountNumber'), text)
+        this.setState({ stage: 'success' })
       } catch (err) {
-        this.setState({ loading: false })
+        this.setState({ stage: 'error' })
       }
     }
   }
 
-  public onChangeText = (text: string) => {
-    this.setState({ otp: text })
+  public onNextStep = () => {
+    this.props.navigation.navigate('Pin', {
+      title: 'Create a PIN',
+      onSuccess: this.navigateToConfirmPinScreen
+    })
   }
 
   public renderBox (index: No) {
@@ -96,6 +116,63 @@ export default class VerifyPhoneNumberScreen extends React.Component<
     )
   }
 
+  public renderStageMessage () {
+    switch (this.state.stage) {
+      case 'counting':
+        return this.state.timer === 0
+        ? (
+          <Text>
+            Code expired
+          </Text>
+        ) : (
+          <Text>
+            Codes expired in
+            <Text color='#FBB328'>{` ${this.state.timer}s`}</Text>
+          </Text>
+        )
+      case 'loading':
+        return (
+          <Text>
+            Loading...
+          </Text>
+        )
+      case 'success':
+        const successColor = '#41DC89'
+        return (
+          <View style={styles.stageMessage}>
+            <AntDesign name='checkcircle' color={successColor} style={styles.stageIcon} />
+            <Text color={successColor}>Your mobile phone number is verified.</Text>
+          </View>
+        )
+      case 'error':
+        const errorColor = '#FE4747'
+        return (
+          <View style={styles.stageMessage}>
+            <AntDesign name='closecircle' color={errorColor} style={styles.stageIcon} />
+            <Text color={errorColor}>The SMS code you entered is incorrect.</Text>
+          </View>
+        )
+    }
+  }
+
+  public shouldShowResendLink () {
+    return (this.state.stage === 'counting' && this.state.timer === 0) ||
+      this.state.stage === 'error'
+  }
+
+  public renderFooter () {
+    return (
+      <View style={styles.footer}>
+        {this.renderStageMessage()}
+        {this.shouldShowResendLink() && (
+          <Link onPress={_.noop} style={styles.resendLink}>
+            Resend codes
+          </Link>
+        )}
+      </View>
+    )
+  }
+
   public renderHiddenTextInput (autoFocus: boolean) {
     return (
       <TextInput
@@ -119,8 +196,8 @@ export default class VerifyPhoneNumberScreen extends React.Component<
         disableTouchOutside={true}
         backButtonType='arrowleft'
         onPressBackButton={this.props.navigation.goBack}
-        onPessSubmitButton={this.submitOTP}
-        activeSubmitButton={this.state.otp.length === 6}
+        onPessSubmitButton={this.onNextStep}
+        activeSubmitButton={this.state.stage === 'success'}
       >
         {autoFocus => (
           <View style={styles.content}>
@@ -129,7 +206,7 @@ export default class VerifyPhoneNumberScreen extends React.Component<
               '08XXXXXXXX'
             )}`}</Text>
             {this.renderBoxes()}
-            {this.state.loading && <Text>Loading</Text>}
+            {this.renderFooter()}
             {this.renderHiddenTextInput(autoFocus)}
           </View>
         )}
@@ -153,6 +230,19 @@ const styles = StyleSheet.create({
     height: 48,
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  footer: {
+    marginTop: 24,
+    alignItems: 'center'
+  },
+  stageMessage: {
+    flexDirection: 'row'
+  },
+  stageIcon: {
+    marginRight: 4
+  },
+  resendLink: {
+    marginTop: 8
   },
   hiddenTextInput: {
     position: 'absolute',

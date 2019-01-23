@@ -11,6 +11,7 @@ import Layer from './Layer'
 import Asset from './Asset'
 import Key from './Key'
 import Screen from './Screen'
+import Link from './Link'
 
 export {
   AssetCard,
@@ -24,5 +25,6 @@ export {
   Layer,
   Asset,
   Key,
-  Screen
+  Screen,
+  Link
 }
