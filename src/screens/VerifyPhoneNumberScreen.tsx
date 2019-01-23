@@ -15,14 +15,13 @@ interface State {
   timer: number
 }
 
-const DEFAULT_TIMER = 5
+const DEFAULT_TIMER = 60
 
 export default class VerifyPhoneNumberScreen extends React.Component<
   NavigationScreenProps,
   State
 > {
-
-  private input: TextInput | null
+  private input: TextInput | null = null
   private interval: any
 
   public constructor (props: NavigationScreenProps) {
@@ -42,14 +41,24 @@ export default class VerifyPhoneNumberScreen extends React.Component<
     }, 1000)
   }
 
-  public componentWillUnmount () {
-    clearInterval(this.interval)
+  public componentDidUpdate (
+    prevProps: NavigationScreenProps,
+    prevState: State
+  ) {
+    if (
+      prevState.stage === 'counting' &&
+      this.state.stage === 'counting' &&
+      prevState.timer === 1 &&
+      this.state.timer === 0
+    ) {
+      if (this.input) {
+        this.input.blur()
+      }
+    }
   }
 
-  public componentDidUpdate (prevProps: NavigationScreenProps, prevState: State) {
-    if (prevState.stage !== this.state.stage && this.state.stage === 'counting') {
-      this.setState({ timer: DEFAULT_TIMER })
-    }
+  public componentWillUnmount () {
+    clearInterval(this.interval)
   }
 
   public navigateToConfirmPinScreen (
@@ -72,6 +81,9 @@ export default class VerifyPhoneNumberScreen extends React.Component<
   public onChangeText = async (text: string) => {
     this.setState({ otp: text })
     if (text.length === 6) {
+      if (this.input) {
+        this.input.blur()
+      }
       try {
         this.setState({ stage: 'loading' })
         await submitOtp(this.props.navigation.getParam('accountNumber'), text)
@@ -79,6 +91,17 @@ export default class VerifyPhoneNumberScreen extends React.Component<
       } catch (err) {
         this.setState({ stage: 'error' })
       }
+    }
+  }
+
+  public onPressResend = () => {
+    if (this.input) {
+      this.input.focus()
+      this.setState({
+        otp: '',
+        stage: 'counting',
+        timer: DEFAULT_TIMER
+      })
     }
   }
 
@@ -92,10 +115,7 @@ export default class VerifyPhoneNumberScreen extends React.Component<
   public renderBox (index: No) {
     const length = this.state.otp.length
     return (
-      <Layer
-        style={styles.box}
-        active={length === index || (index === 5 && length === 6)}
-      >
+      <Layer style={styles.box} active={length === index}>
         <Text color={COLORS.N800}>
           {index < this.state.otp.length ? this.state.otp[index] : ''}
         </Text>
@@ -119,45 +139,52 @@ export default class VerifyPhoneNumberScreen extends React.Component<
   public renderStageMessage () {
     switch (this.state.stage) {
       case 'counting':
-        return this.state.timer === 0
-        ? (
-          <Text>
-            Code expired
-          </Text>
+        return this.state.timer === 0 ? (
+          <Text>Code expired</Text>
         ) : (
           <Text>
-            Codes expired in
+            Code expired in
             <Text color='#FBB328'>{` ${this.state.timer}s`}</Text>
           </Text>
         )
       case 'loading':
-        return (
-          <Text>
-            Loading...
-          </Text>
-        )
+        return <Text>Loading...</Text>
       case 'success':
         const successColor = '#41DC89'
         return (
           <View style={styles.stageMessage}>
-            <AntDesign name='checkcircle' color={successColor} style={styles.stageIcon} />
-            <Text color={successColor}>Your mobile phone number is verified.</Text>
+            <AntDesign
+              name='checkcircle'
+              color={successColor}
+              style={styles.stageIcon}
+            />
+            <Text color={successColor}>
+              Your mobile phone number is verified.
+            </Text>
           </View>
         )
       case 'error':
         const errorColor = '#FE4747'
         return (
           <View style={styles.stageMessage}>
-            <AntDesign name='closecircle' color={errorColor} style={styles.stageIcon} />
-            <Text color={errorColor}>The SMS code you entered is incorrect.</Text>
+            <AntDesign
+              name='closecircle'
+              color={errorColor}
+              style={styles.stageIcon}
+            />
+            <Text color={errorColor}>
+              The SMS code you entered is incorrect.
+            </Text>
           </View>
         )
     }
   }
 
   public shouldShowResendLink () {
-    return (this.state.stage === 'counting' && this.state.timer === 0) ||
+    return (
+      (this.state.stage === 'counting' && this.state.timer === 0) ||
       this.state.stage === 'error'
+    )
   }
 
   public renderFooter () {
@@ -165,8 +192,8 @@ export default class VerifyPhoneNumberScreen extends React.Component<
       <View style={styles.footer}>
         {this.renderStageMessage()}
         {this.shouldShowResendLink() && (
-          <Link onPress={_.noop} style={styles.resendLink}>
-            Resend codes
+          <Link onPress={this.onPressResend} style={styles.resendLink}>
+            Resend code
           </Link>
         )}
       </View>
@@ -236,13 +263,14 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   stageMessage: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   stageIcon: {
     marginRight: 4
   },
   resendLink: {
-    marginTop: 8
+    marginTop: 14
   },
   hiddenTextInput: {
     position: 'absolute',
