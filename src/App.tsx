@@ -16,14 +16,24 @@ import { Font } from 'expo'
 
 axios.defaults.baseURL = 'http://192.168.1.2:3000'
 
-const AuthStack = createStackNavigator({
-  Pin: { screen: PinScreen }
-})
+const AuthStack = createStackNavigator(
+  {
+    Pin: { screen: PinScreen }
+  },
+  {
+    headerMode: 'none'
+  }
+)
 
-const VerificationStack = createStackNavigator({
-  SignUp: { screen: SignUpScreen },
-  VerifyPhoneNumber: { screen: VerifyPhoneNumberScreen }
-})
+const VerificationStack = createStackNavigator(
+  {
+    SignUp: { screen: SignUpScreen },
+    VerifyPhoneNumber: { screen: VerifyPhoneNumberScreen }
+  },
+  {
+    headerMode: 'none'
+  }
+)
 
 const AppStack = createStackNavigator(
   {
@@ -38,10 +48,10 @@ const AppStack = createStackNavigator(
 )
 
 const AppNavigator = createSwitchNavigator({
-  Home: AppStack,
   Starter: Starter,
-  Verification: VerificationStack,
-  Auth: AuthStack
+  Auth: AuthStack,
+  Home: AppStack,
+  Verification: VerificationStack
 })
 
 const AppContainer = createAppContainer(AppNavigator)

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import * as _ from 'lodash'
+import _ from 'lodash'
 import { TouchableHighlight, StyleSheet } from 'react-native'
 import Text from './Text'
 import { COLORS } from '../constants'

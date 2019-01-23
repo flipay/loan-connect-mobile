@@ -10,6 +10,7 @@ import SubmitButton from './SubmitButton'
 import Layer from './Layer'
 import Asset from './Asset'
 import Key from './Key'
+import Screen from './Screen'
 
 export {
   AssetCard,
@@ -22,5 +23,6 @@ export {
   SubmitButton,
   Layer,
   Asset,
-  Key
+  Key,
+  Screen
 }

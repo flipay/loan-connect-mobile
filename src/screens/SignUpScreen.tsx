@@ -1,12 +1,10 @@
 import * as React from 'react'
 import _ from 'lodash'
 import { NavigationScreenProps } from 'react-navigation'
-import { signUp } from '../requests'
 import { View, TextInput, StyleSheet } from 'react-native'
-import Text from '../components/Text'
-import { COLORS } from '../constants/styleGuides'
-// @ts-ignore don't have type definition
-import DropdownAlert from 'react-native-dropdownalert'
+import { signUp } from '../requests'
+import { COLORS } from '../constants'
+import { Screen, Text, Layer } from '../components'
 
 interface State {
   phoneNumber: string
@@ -17,7 +15,6 @@ export default class SignUpScreen extends React.Component<
   NavigationScreenProps,
   State
 > {
-  private dropdown = null
   public constructor (props: NavigationScreenProps) {
     super(props)
     this.state = {
@@ -45,9 +42,6 @@ export default class SignUpScreen extends React.Component<
         this.setState({ loading: false })
       } catch (err) {
         this.setState({ loading: false })
-        if (this.dropdown) {
-          this.dropdown.alertWithType('error', 'Error', err.message)
-        }
       }
     } else {
       this.setState({ phoneNumber: text })
@@ -56,22 +50,25 @@ export default class SignUpScreen extends React.Component<
 
   public render () {
     return (
-      <View style={styles.screen}>
-        <Text>Phone Number</Text>
+      <Screen
+        navigation={this.props.navigation}
+      >
+        <Text type='title'>Enter your mobile number</Text>
         <View>
-          <TextInput
-            autoFocus={true}
-            keyboardType='number-pad'
-            textContentType='telephoneNumber'
-            placeholder='0899999999'
-            onChangeText={this.onChangeText}
-            maxLength={10}
-            value={this.state.phoneNumber}
-          />
+          <Layer style={styles.layer}>
+            <TextInput
+              autoFocus={true}
+              keyboardType='number-pad'
+              textContentType='telephoneNumber'
+              placeholder='0899999999'
+              onChangeText={this.onChangeText}
+              maxLength={10}
+              value={this.state.phoneNumber}
+            />
+          </Layer>
         </View>
         {this.state.loading && <Text>Loading...</Text>}
-        <DropdownAlert ref={(ref: any) => this.dropdown = ref} />
-      </View>
+      </Screen>
     )
   }
 }
@@ -80,5 +77,9 @@ const styles = StyleSheet.create({
   screen: {
     backgroundColor: COLORS.WHITE,
     flex: 1
+  },
+  layer: {
+    marginTop: 44,
+    padding: 19
   }
 })
