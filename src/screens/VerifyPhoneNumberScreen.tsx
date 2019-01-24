@@ -5,7 +5,7 @@ import { AntDesign } from '@expo/vector-icons'
 import { NavigationScreenProps } from 'react-navigation'
 import { submitOtp } from '../requests'
 import { COLORS } from '../constants'
-import { Text, Screen, Layer, Link } from '../components'
+import { Text, ScreenWithKeyboard, Layer, Link } from '../components'
 
 type No = 0 | 1 | 2 | 3 | 4 | 5
 
@@ -219,14 +219,14 @@ export default class VerifyPhoneNumberScreen extends React.Component<
 
   public render () {
     return (
-      <Screen
+      <ScreenWithKeyboard
         disableTouchOutside={true}
         backButtonType='arrowleft'
         onPressBackButton={this.props.navigation.goBack}
         onPessSubmitButton={this.onNextStep}
         activeSubmitButton={this.state.stage === 'success'}
       >
-        {autoFocus => (
+        {(autoFocus: boolean) => (
           <View style={styles.content}>
             <Text type='title'>{`Enter the 6-digit code sent to ${this.props.navigation.getParam(
               'phoneNumber',
@@ -237,7 +237,7 @@ export default class VerifyPhoneNumberScreen extends React.Component<
             {this.renderHiddenTextInput(autoFocus)}
           </View>
         )}
-      </Screen>
+      </ScreenWithKeyboard>
     )
   }
 }
