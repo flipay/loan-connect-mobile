@@ -213,7 +213,6 @@ const styles = StyleSheet.create({
     paddingTop: 86,
     paddingHorizontal: 16,
     alignItems: 'center',
-    backgroundColor: 'blue',
     position: 'relative'
   },
   table: {
