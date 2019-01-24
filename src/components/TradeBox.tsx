@@ -3,13 +3,12 @@ import {
   View,
   StyleSheet,
   TextInput,
-  TouchableOpacity,
   Image
 } from 'react-native'
 import Text from './Text'
 import Layer from './Layer'
-import { COLORS, FONT_TYPES } from '../constants/styleGuides'
-import { ASSETS, AssetId } from '../constants/assets'
+import { COLORS, FONT_TYPES, ASSETS } from '../constants'
+import { AssetId } from '../types'
 
 interface Props {
   autoFocus?: boolean

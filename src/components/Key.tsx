@@ -1,7 +1,7 @@
 
 import * as React from 'react'
 import { TouchableHighlight, StyleSheet, View } from 'react-native'
-import { Text } from '../components'
+import Text from './Text'
 
 interface Props {
   children?: number | JSX.Element

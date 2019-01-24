@@ -2,7 +2,7 @@ import React from 'react'
 import { View, Image, StyleSheet } from 'react-native'
 import { AssetId } from '../types'
 import { ASSETS } from '../constants'
-import { Text } from '../components'
+import Text from './Text'
 
 interface Props {
   id: AssetId,

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { TouchableOpacity } from 'react-native'
-import { Text } from '../components'
+import Text from './Text'
 import { COLORS } from '../constants'
 
 interface Props {

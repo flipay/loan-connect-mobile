@@ -4,7 +4,10 @@ import {
   StyleSheet,
   Image
 } from 'react-native'
-import { Layer, Text, Value, Asset } from '../components'
+import Layer from './Layer'
+import Text from './Text'
+import Value from './Value'
+import Asset from './Asset'
 import { COLORS } from '../constants/styleGuides'
 import { AssetId } from '../types'
 

@@ -8,7 +8,11 @@ import {
   TouchableWithoutFeedback
 } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
-import { Text, Button, Asset, Value, Layer } from '../components'
+import Text from './Text'
+import Button from './Button'
+import Asset from './Asset'
+import Value from './Value'
+import Layer from './Layer'
 import { COLORS } from '../constants'
 import { AssetId } from '../types'
 

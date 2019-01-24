@@ -13,7 +13,7 @@ import {
 import { Constants } from 'expo'
 import { AntDesign } from '@expo/vector-icons'
 import { COLORS } from '../constants'
-import { SubmitButton } from '../components'
+import SubmitButton from './SubmitButton'
 
 interface Props {
   children: (autoFocus: boolean) => any
@@ -85,7 +85,7 @@ export default class Screen extends React.Component<Props, State> {
                   : 'light-content'
               }
             />
-            {this.props.onPressBackButton && (
+          {this.props.onPressBackButton && (
               <TouchableOpacity
                 style={styles.backButton}
                 onPress={this.props.onPressBackButton}
@@ -131,7 +131,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 12,
     top: 24,
-    padding: 6
+    padding: 20,
+    backgroundColor: 'red'
   },
   content: {
     flex: 1,
