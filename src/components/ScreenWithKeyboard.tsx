@@ -85,7 +85,7 @@ export default class Screen extends React.Component<Props, State> {
                   : 'light-content'
               }
             />
-          {this.props.onPressBackButton && (
+            {this.props.onPressBackButton && (
               <TouchableOpacity
                 style={styles.backButton}
                 onPress={this.props.onPressBackButton}
@@ -128,11 +128,11 @@ const styles = StyleSheet.create({
     position: 'relative'
   },
   backButton: {
+    zIndex: 1,
     position: 'absolute',
     left: 12,
     top: 24,
-    padding: 20,
-    backgroundColor: 'red'
+    padding: 10
   },
   content: {
     flex: 1,
