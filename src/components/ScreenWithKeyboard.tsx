@@ -20,7 +20,7 @@ interface Props {
   statusBar?: 'white' | 'black'
   onPressBackButton?: () => void
   backButtonType?: 'arrowleft' | 'close'
-  activeSubmitButton: boolean
+  activeSubmitButton?: boolean
   submitButtonText?: string
   onPessSubmitButton?: () => void
   disableTouchOutside?: boolean

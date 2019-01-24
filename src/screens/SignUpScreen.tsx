@@ -4,7 +4,7 @@ import { NavigationScreenProps } from 'react-navigation'
 import { View, TextInput, StyleSheet } from 'react-native'
 import { signUp } from '../requests'
 import { COLORS } from '../constants'
-import { Screen, Text, Layer } from '../components'
+import { ScreenWithKeyboard, Text, Layer } from '../components'
 
 interface State {
   phoneNumber: string
@@ -45,7 +45,7 @@ export default class SignUpScreen extends React.Component<
 
   public render () {
     return (
-      <Screen
+      <ScreenWithKeyboard
         backButtonType='arrowleft'
         onPressBackButton={() => this.props.navigation.goBack()}
         activeSubmitButton={this.state.phoneNumber.length === 10}
@@ -73,7 +73,7 @@ export default class SignUpScreen extends React.Component<
             {this.state.loading && <Text>Loading...</Text>}
           </View>
         )}
-      </Screen>
+      </ScreenWithKeyboard>
     )
   }
 }

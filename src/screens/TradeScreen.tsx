@@ -2,7 +2,7 @@ import * as React from 'react'
 import _ from 'lodash'
 import { StyleSheet, View, TouchableHighlight } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
-import { Text, Value, TradeBox, TradeResult, Screen, Link } from '../components'
+import { Text, Value, TradeBox, TradeResult, ScreenWithKeyboard, Link } from '../components'
 import { COLORS, ASSETS } from '../constants'
 import { AssetId, OrderPart } from '../types'
 import { getAmount } from '../requests'
@@ -213,7 +213,7 @@ export default class TradeScreen extends React.Component<
       this.props.navigation.getParam('side', 'buy')
     )
     return (
-      <Screen
+      <ScreenWithKeyboard
         backButtonType='close'
         onPressBackButton={this.state.executed ? undefined : this.onClose}
         submitButtonText={this.state.executed ? 'Done' : orderType}
@@ -231,7 +231,7 @@ export default class TradeScreen extends React.Component<
             )}
           </View>
         )}
-      </Screen>
+      </ScreenWithKeyboard>
     )
   }
 }
