@@ -1,10 +1,22 @@
 import * as React from 'react'
-import { View, Image, StatusBar, StyleSheet } from 'react-native'
+import {
+  View,
+  TouchableOpacity,
+  Image,
+  StatusBar,
+  StyleSheet
+} from 'react-native'
+import { NavigationScreenProps } from 'react-navigation'
 import { LinearGradient } from 'expo'
 import { Text } from '../components'
 import { COLORS } from '../constants'
 
-export default class WelcomeScreen extends React.Component {
+export default class WelcomeScreen extends React.Component<
+  NavigationScreenProps
+> {
+  public onPressSignUp = () => {
+    this.props.navigation.navigate('SignUp')
+  }
 
   public renderBody () {
     return (
@@ -13,10 +25,7 @@ export default class WelcomeScreen extends React.Component {
           style={{ width: 165, height: 42 }}
           source={require('../img/flipay_horizontal_logo_reverse.png')}
         />
-        <Text
-          style={styles.description}
-          color={COLORS.WHITE}
-        >
+        <Text style={styles.description} color={COLORS.WHITE}>
           Creating the Borderless world of Banking
         </Text>
       </View>
@@ -25,9 +34,11 @@ export default class WelcomeScreen extends React.Component {
 
   public renderButton () {
     return (
-      <View style={styles.button}>
-        <Text type='button' color={COLORS.P400}>Create a new account</Text>
-      </View>
+      <TouchableOpacity style={styles.button} onPress={this.onPressSignUp}>
+        <Text type='button' color={COLORS.P400}>
+          Create a new account
+        </Text>
+      </TouchableOpacity>
     )
   }
 
