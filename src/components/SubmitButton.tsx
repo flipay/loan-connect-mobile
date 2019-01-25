@@ -35,7 +35,7 @@ export default class SubmitButton extends React.Component<Props> {
 const styles = StyleSheet.create({
   submitButton: {
     width: '100%',
-    height: 50,
+    height: 60,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: COLORS.P400
