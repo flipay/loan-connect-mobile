@@ -217,12 +217,16 @@ export default class VerifyPhoneNumberScreen extends React.Component<
     )
   }
 
+  public onPressBackButon = () => {
+    this.props.navigation.goBack()
+  }
+
   public render () {
     return (
       <ScreenWithKeyboard
         disableTouchOutside={true}
         backButtonType='arrowleft'
-        onPressBackButton={this.props.navigation.goBack}
+        onPressBackButton={this.onPressBackButon}
         onPessSubmitButton={this.onNextStep}
         activeSubmitButton={this.state.stage === 'success'}
       >
