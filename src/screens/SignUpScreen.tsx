@@ -1,7 +1,7 @@
 import * as React from 'react'
 import _ from 'lodash'
 import { NavigationScreenProps } from 'react-navigation'
-import { View, TextInput, StyleSheet } from 'react-native'
+import { View, TextInput, StyleSheet, Keyboard } from 'react-native'
 import { signUp } from '../requests'
 import { COLORS } from '../constants'
 import { ScreenWithKeyboard, Text, Layer } from '../components'
@@ -26,6 +26,9 @@ export default class SignUpScreen extends React.Component<
   }
 
   public onPressSubmit = async () => {
+    // NOTE: I have to close the Keyboard first otherwise
+    // it will not work on the next page.
+    Keyboard.dismiss()
     this.setState({ loading: true })
     try {
       const user = await signUp(this.state.phoneNumber)
@@ -42,12 +45,14 @@ export default class SignUpScreen extends React.Component<
   public onChangeText = async (text: string) => {
     this.setState({ phoneNumber: text })
   }
-
+  public onPressBackButton = () => {
+    this.props.navigation.goBack()
+  }
   public render () {
     return (
       <ScreenWithKeyboard
         backButtonType='arrowleft'
-        onPressBackButton={() => this.props.navigation.goBack()}
+        onPressBackButton={this.onPressBackButton}
         activeSubmitButton={this.state.phoneNumber.length === 10}
         onPessSubmitButton={this.onPressSubmit}
       >
