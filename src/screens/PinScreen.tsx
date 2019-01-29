@@ -2,15 +2,18 @@ import * as React from 'react'
 import _ from 'lodash'
 import { View, Image, StatusBar, StyleSheet } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
-import { Ionicons } from '@expo/vector-icons'
+import { AntDesign, Ionicons } from '@expo/vector-icons'
 import { COLORS } from '../constants/styleGuides'
 import { Text, Key } from '../components'
 
 interface State {
   pin: string
+  errorMessage: string
 }
 
 type Index = 0 | 1 | 2 | 3
+
+const errorColor = '#FE4747'
 
 export default class PinScreen extends React.Component<
   NavigationScreenProps,
@@ -20,7 +23,8 @@ export default class PinScreen extends React.Component<
   public constructor (props: NavigationScreenProps) {
     super(props)
     this.state = {
-      pin: ''
+      pin: '',
+      errorMessage: ''
     }
   }
 
@@ -37,7 +41,8 @@ export default class PinScreen extends React.Component<
     if (prevState.pin.length === 3 && this.state.pin.length === 4) {
       this.props.navigation.getParam('onSuccess')(
         this.state.pin,
-        this.props.navigation
+        this.props.navigation,
+        this.setError
       )
     }
   }
@@ -58,10 +63,22 @@ export default class PinScreen extends React.Component<
     }
   }
 
+  public setError = (errorMessage: string) => {
+    this.setState({ errorMessage })
+  }
+
+  public getDotColor = (index: Index) => {
+    if (this.state.errorMessage) {
+      return styles.errorDot
+    } else if (this.state.pin.length > index) {
+      return styles.filledDot
+    }
+  }
+
   public renderDot (index: Index) {
     return (
       <View
-        style={[styles.dot, this.state.pin.length > index && styles.activeDot]}
+        style={[styles.dot, this.getDotColor(index)]}
       />
     )
   }
@@ -96,6 +113,19 @@ export default class PinScreen extends React.Component<
     )
   }
 
+  public renderErrorMessage () {
+    return (
+      <View style={styles.errorMessageRow}>
+        <AntDesign
+          name='closecircle'
+          color={errorColor}
+          style={styles.closeIcon}
+        />
+        <Text color={errorColor}>The PIN doesn't matched</Text>
+      </View>
+    )
+  }
+
   public renderNumPad () {
     const zero = 0
     return (
@@ -126,6 +156,9 @@ export default class PinScreen extends React.Component<
           {this.props.navigation.getParam('title', 'Create a PIN')}
         </Text>
         {this.renderDots()}
+        <View style={styles.errorArea}>
+          {!!this.state.errorMessage && this.renderErrorMessage()}
+        </View>
         {this.renderNumPad()}
       </View>
     )
@@ -152,14 +185,28 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: COLORS.N200
   },
-  activeDot: {
+  filledDot: {
     backgroundColor: COLORS.P400
+  },
+  errorDot: {
+    backgroundColor: errorColor
   },
   spacing: {
     width: 32
   },
+  errorArea: {
+    height: 24,
+    marginTop: 20,
+    marginBottom: 35
+  },
+  errorMessageRow: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  closeIcon: {
+    marginRight: 8
+  },
   numPad: {
-    marginTop: 50,
     width: '100%'
   },
   numRow: {
