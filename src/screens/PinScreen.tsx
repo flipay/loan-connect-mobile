@@ -33,13 +33,8 @@ export default class PinScreen extends React.Component<
     )
   }
 
-  public componentWillUnmount () {
-    this.willFocusSubscription.remove()
-  }
-
-  public onPinChange = (pin: string) => {
-    this.setState({ pin })
-    if (pin.length === 4) {
+  public componentDidUpdate (prevProps: NavigationScreenProps, prevState: State) {
+    if (prevState.pin.length === 3 && this.state.pin.length === 4) {
       this.props.navigation.getParam('onSuccess')(
         this.state.pin,
         this.props.navigation
@@ -47,10 +42,12 @@ export default class PinScreen extends React.Component<
     }
   }
 
+  public componentWillUnmount () {
+    this.willFocusSubscription.remove()
+  }
+
   public onPressNum = (digit: number) => {
-    if (this.state.pin.length < 4) {
-      this.setState({ pin: this.state.pin + String(digit) })
-    }
+    this.setState({ pin: this.state.pin + String(digit) })
   }
 
   public onBackSpace = () => {
