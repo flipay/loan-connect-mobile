@@ -26,9 +26,18 @@ server.post('/accounts/:account_id/verify', (req, res) => {
   }
 })
 
-server.post('/account/:account_id/create_pin', (req, res) => {
+server.post('/accounts/:account_id/create_pin', (req, res) => {
   res.sendStatus(200)
 })
+
+server.post('/log_in', (req, res) => {
+  if (req.body && req.body.pin === '5555') {
+    res.sendStatus(200)
+  } else {
+    res.sendStatus(500)
+  }
+})
+
 
 server.use(router)
 

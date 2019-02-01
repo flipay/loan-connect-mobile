@@ -58,6 +58,7 @@ export default class PinScreen extends React.Component<
   public onBackSpace = () => {
     if (this.state.pin.length > 0) {
       this.setState({
+        errorMessage: '',
         pin: this.state.pin.slice(0, this.state.pin.length - 1)
       })
     }

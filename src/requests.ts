@@ -20,6 +20,14 @@ export async function createPin (accountId: string, pin: string) {
   return response.data.user
 }
 
+export async function logIn (accountId: string, pin: string) {
+  const response = await axios.post(`log_in`, {
+    account_id: accountId,
+    pin
+  })
+  return response.data.user
+}
+
 export async function getAmount (
   orderType: OrderType,
   assetId: AssetId,

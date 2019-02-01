@@ -3,6 +3,7 @@ import * as React from 'react'
 import _ from 'lodash'
 import { View, StyleSheet, AsyncStorage } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
+import { logIn } from './requests'
 import { COLORS } from './constants/styleGuides'
 import { Text } from './components'
 
@@ -19,7 +20,17 @@ export default class Start extends React.Component<
 
     const accountId = await AsyncStorage.getItem('account_id')
     if (accountId) {
-      this.props.navigation.navigate('Pin')
+      this.props.navigation.navigate('Pin', {
+        title: 'Log in with PIN',
+        onSuccess: async (pin: string, stackNavigationLogInPin: any, setErrorConfirm: (errorMessage: string) => void) => {
+          try {
+            await logIn(accountId, pin)
+            stackNavigationLogInPin.navigate('Main')
+          } catch (error) {
+            setErrorConfirm('Wrong PIN')
+          }
+        }
+      })
     } else {
       this.props.navigation.navigate('Welcome')
     }
