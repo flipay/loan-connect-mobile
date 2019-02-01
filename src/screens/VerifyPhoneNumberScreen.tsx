@@ -75,7 +75,7 @@ export default class VerifyPhoneNumberScreen extends React.Component<
           setErrorConfirm('The PIN doesn not match')
           setTimeout(() => {
             stackNavigationConmfirmPin.pop()
-          }, 1500)
+          }, 1000)
         }
       }
     })
