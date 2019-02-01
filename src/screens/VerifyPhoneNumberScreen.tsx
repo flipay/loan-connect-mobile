@@ -1,9 +1,9 @@
 import * as React from 'react'
 import _ from 'lodash'
-import { View, TextInput, StyleSheet } from 'react-native'
+import { View, TextInput, StyleSheet, AsyncStorage } from 'react-native'
 import { AntDesign } from '@expo/vector-icons'
 import { NavigationScreenProps } from 'react-navigation'
-import { submitOtp } from '../requests'
+import { submitOtp, createPin } from '../requests'
 import { COLORS } from '../constants'
 import { Text, ScreenWithKeyboard, Layer, Link } from '../components'
 
@@ -61,18 +61,25 @@ export default class VerifyPhoneNumberScreen extends React.Component<
     clearInterval(this.interval)
   }
 
-  public navigateToConfirmPinScreen (
+  public navigateToConfirmPinScreen = (
     firstPin: string,
     stackNavigationCreatePin: any,
     setErrorCreate: (errorMessage: string) => void
-  ) {
+  ) => {
     stackNavigationCreatePin.push('Pin', {
       title: 'Confirm your PIN',
       onSuccess: async (secondPin: string, stackNavigationConmfirmPin: any, setErrorConfirm: (errorMessage: string) => void) => {
         if (firstPin === secondPin) {
-          stackNavigationConmfirmPin.navigate('Main')
+          try {
+            const accountId = this.props.navigation.getParam('accountId')
+            await createPin(accountId, secondPin)
+            await AsyncStorage.setItem('account_id', accountId)
+            stackNavigationConmfirmPin.navigate('Main')
+          } catch (error) {
+            setErrorConfirm(error.message)
+          }
         } else {
-          setErrorConfirm('The PIN doesn not match')
+          setErrorConfirm('The PIN does not match')
           setTimeout(() => {
             stackNavigationConmfirmPin.pop()
           }, 1000)
@@ -89,7 +96,7 @@ export default class VerifyPhoneNumberScreen extends React.Component<
       }
       try {
         this.setState({ stage: 'loading' })
-        await submitOtp(this.props.navigation.getParam('accountNumber'), text)
+        await submitOtp(this.props.navigation.getParam('accountId'), text)
         this.setState({ stage: 'success' })
       } catch (err) {
         this.setState({ stage: 'error' })

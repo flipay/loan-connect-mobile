@@ -121,7 +121,7 @@ export default class PinScreen extends React.Component<
           color={errorColor}
           style={styles.closeIcon}
         />
-        <Text color={errorColor}>The PIN doesn't matched</Text>
+        <Text color={errorColor}>{this.state.errorMessage}</Text>
       </View>
     )
   }

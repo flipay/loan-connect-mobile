@@ -7,6 +7,7 @@ import {
 } from 'react-navigation'
 import Starter from './Starter'
 import MainScreen from './screens/MainScreen'
+import WelcomeScreen from './screens/WelcomeScreen'
 import SignUpScreen from './screens/SignUpScreen'
 import VerifyPhoneNumberScreen from './screens/VerifyPhoneNumberScreen'
 import TradeScreen from './screens/TradeScreen'
@@ -14,7 +15,7 @@ import ComparisonScreen from './screens/ComparisonScreen'
 import PinScreen from './screens/PinScreen'
 import { Font } from 'expo'
 
-axios.defaults.baseURL = 'http://192.168.1.2:3000'
+axios.defaults.baseURL = 'http://10.1.211.20:3000'
 
 const AuthStack = createStackNavigator(
   {
@@ -27,6 +28,7 @@ const AuthStack = createStackNavigator(
 
 const VerificationStack = createStackNavigator(
   {
+    Welcome: { screen: WelcomeScreen },
     SignUp: { screen: SignUpScreen },
     VerifyPhoneNumber: { screen: VerifyPhoneNumberScreen }
   },
@@ -49,9 +51,9 @@ const AppStack = createStackNavigator(
 
 const AppNavigator = createSwitchNavigator({
   Starter: Starter,
-  Auth: AuthStack,
+  Verification: VerificationStack,
   Home: AppStack,
-  Verification: VerificationStack
+  Auth: AuthStack
 })
 
 const AppContainer = createAppContainer(AppNavigator)

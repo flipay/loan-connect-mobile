@@ -1,7 +1,7 @@
 
 import * as React from 'react'
 import _ from 'lodash'
-import { View, StyleSheet } from 'react-native'
+import { View, StyleSheet, AsyncStorage } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { COLORS } from './constants/styleGuides'
 import { Text } from './components'
@@ -15,9 +15,14 @@ export default class Start extends React.Component<
   State
 > {
 
-  public componentDidMount () {
+  public async componentDidMount () {
 
-    this.props.navigation.navigate('SignUp')
+    const accountId = await AsyncStorage.getItem('account_id')
+    if (accountId) {
+      this.props.navigation.navigate('Pin')
+    } else {
+      this.props.navigation.navigate('Welcome')
+    }
   }
 
   public render () {

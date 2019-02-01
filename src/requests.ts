@@ -6,15 +6,15 @@ export async function signUp (phoneNumber: string) {
   return response.data.user
 }
 
-export async function submitOtp (accountNumber: string, otpNumber: string) {
-  const response = await axios.post(`accounts/${accountNumber}/verify`, {
+export async function submitOtp (accountId: string, otpNumber: string) {
+  const response = await axios.post(`accounts/${accountId}/verify`, {
     otp_number: otpNumber
   })
   return response.data.user
 }
 
-export async function createPin (accountNumber: string, pin: string) {
-  const response = await axios.post(`accounts/${accountNumber}/create_pin`, {
+export async function createPin (accountId: string, pin: string) {
+  const response = await axios.post(`accounts/${accountId}/create_pin`, {
     pin
   })
   return response.data.user
