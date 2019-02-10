@@ -23,7 +23,8 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "co.flipay.flipay"
+      "bundleIdentifier": "co.flipay.flipay",
+      "buildNumber": "2"
     },
     "android": {
       "package": "co.flipay.flipay"
