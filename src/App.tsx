@@ -15,7 +15,7 @@ import ComparisonScreen from './screens/ComparisonScreen'
 import PinScreen from './screens/PinScreen'
 import { Font } from 'expo'
 
-axios.defaults.baseURL = 'http://10.1.211.20:3000'
+axios.defaults.baseURL = 'https://flipay-mock-backend.herokuapp.com/'
 
 const AuthStack = createStackNavigator(
   {
