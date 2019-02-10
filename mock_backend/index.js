@@ -10,6 +10,10 @@ server.use(middlewares)
 server.use(bodyParser.json()); // for parsing application/json
 server.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
+server.get('/test', function (req, res) {
+  res.send('Hello World')
+})
+
 server.post('/sign_up', (req, res) => {
   res.jsonp({ user: { 
     id: '222222' 
@@ -41,8 +45,8 @@ server.post('/log_in', (req, res) => {
 
 server.use(router)
 
+const port = process.env.PORT || 8000;
 
-
-server.listen(3000, () => {
-  console.log('JSON Server is running')
+server.listen(port, () => {
+  console.log("App is running on port " + port);
 })

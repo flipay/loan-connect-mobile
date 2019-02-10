@@ -1,13 +1,16 @@
 {
-  "name": "mockbackend",
-  "version": "1",
-  "description": "mock of backend",
+  "name": "kak",
+  "version": "1.0.0",
+  "description": "",
   "main": "index.js",
-  "license": "MIT",
-  "scripts": {
-    "start": "node index.js"
-  },
   "dependencies": {
     "json-server": "^0.14.0"
-  }
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
 }
