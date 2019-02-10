@@ -17,7 +17,8 @@ export default class Start extends React.Component<
 > {
 
   public async componentDidMount () {
-
+    // for testing
+    AsyncStorage.clear()
     const accountId = await AsyncStorage.getItem('account_id')
     if (accountId) {
       this.props.navigation.navigate('Pin', {
