@@ -10,6 +10,10 @@ server.use(middlewares)
 server.use(bodyParser.json()); // for parsing application/json
 server.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
+server.get('/', function (req, res) {
+  res.send('suck main')
+})
+
 server.get('/test', function (req, res) {
   res.send('Hello World')
 })
