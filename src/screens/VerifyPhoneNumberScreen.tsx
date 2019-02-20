@@ -11,8 +11,10 @@ type No = 0 | 1 | 2 | 3 | 4 | 5
 
 interface State {
   otp: string
-  stage: 'counting' | 'loading' | 'success' | 'error'
+  verified: boolean
   timer: number
+  loading: boolean
+  errorMessage: string
 }
 
 const DEFAULT_TIMER = 60
@@ -28,8 +30,10 @@ export default class VerifyPhoneNumberScreen extends React.Component<
     super(props)
     this.state = {
       otp: '',
-      stage: 'counting',
-      timer: DEFAULT_TIMER
+      timer: DEFAULT_TIMER,
+      verified: false,
+      loading: false,
+      errorMessage: ''
     }
   }
 
@@ -46,8 +50,8 @@ export default class VerifyPhoneNumberScreen extends React.Component<
     prevState: State
   ) {
     if (
-      prevState.stage === 'counting' &&
-      this.state.stage === 'counting' &&
+      !prevState.verified &&
+      !this.state.verified &&
       prevState.timer === 1 &&
       this.state.timer === 0
     ) {
@@ -59,6 +63,10 @@ export default class VerifyPhoneNumberScreen extends React.Component<
 
   public componentWillUnmount () {
     clearInterval(this.interval)
+  }
+
+  public isExpired () {
+    return !this.state.verified && this.state.timer === 0
   }
 
   public navigateToConfirmPinScreen = (
@@ -95,11 +103,11 @@ export default class VerifyPhoneNumberScreen extends React.Component<
         this.input.blur()
       }
       try {
-        this.setState({ stage: 'loading' })
+        this.setState({ loading: true })
         await submitOtp(this.props.navigation.getParam('accountId'), text)
-        this.setState({ stage: 'success' })
+        this.setState({ verified: true })
       } catch (err) {
-        this.setState({ stage: 'error' })
+        this.setState({ errorMessage: 'The SMS code you entered is incorrect' })
       }
     }
   }
@@ -109,8 +117,8 @@ export default class VerifyPhoneNumberScreen extends React.Component<
       this.input.focus()
       this.setState({
         otp: '',
-        stage: 'counting',
-        timer: DEFAULT_TIMER
+        timer: DEFAULT_TIMER,
+        errorMessage: ''
       })
     }
   }
@@ -146,23 +154,56 @@ export default class VerifyPhoneNumberScreen extends React.Component<
     )
   }
 
-  public renderStageMessage () {
-    switch (this.state.stage) {
-      case 'counting':
-        return this.state.timer === 0 ? (
+  public renderError (errorMessage: string) {
+    const errorColor = '#FE4747'
+    return (
+      <View style={styles.errorRow}>
+        <AntDesign
+          name='closecircle'
+          color={errorColor}
+          style={styles.stageIcon}
+        />
+        <Text color={errorColor}>
+          {errorMessage}
+        </Text>
+      </View>
+    )
+  }
+
+  public renderResendLink () {
+    return (
+      <Link onPress={this.onPressResend} style={styles.resendLink}>
+        Resend code
+      </Link>
+    )
+  }
+
+  public renderBody () {
+    // we have 3 main stages => 1.Counting 2.Expired 3.Verified
+    if (!this.state.verified) {
+      return this.state.timer === 0 ? (
+        // Expired stage
+        <View style={styles.body}>
           <Text>Code expired</Text>
-        ) : (
+          {this.renderResendLink()}
+        </View>
+      ) : (
+        // Counting stage
+        <View style={styles.body}>
           <Text>
             Code expired in
             <Text color='#FBB328'>{` ${this.state.timer}s`}</Text>
           </Text>
-        )
-      case 'loading':
-        return <Text>Loading...</Text>
-      case 'success':
-        const successColor = '#41DC89'
-        return (
-          <View style={styles.stageMessage}>
+          {!!this.state.errorMessage && this.renderError(this.state.errorMessage)}
+          {!!this.state.errorMessage && this.renderResendLink()}
+        </View>
+      )
+    } else {
+      // Verified stage
+      const successColor = '#41DC89'
+      return (
+        <View style={styles.body}>
+          <View style={styles.successRow}>
             <AntDesign
               name='checkcircle'
               color={successColor}
@@ -172,42 +213,9 @@ export default class VerifyPhoneNumberScreen extends React.Component<
               Your mobile phone number is verified.
             </Text>
           </View>
-        )
-      case 'error':
-        const errorColor = '#FE4747'
-        return (
-          <View style={styles.stageMessage}>
-            <AntDesign
-              name='closecircle'
-              color={errorColor}
-              style={styles.stageIcon}
-            />
-            <Text color={errorColor}>
-              The SMS code you entered is incorrect.
-            </Text>
-          </View>
-        )
+        </View>
+      )
     }
-  }
-
-  public shouldShowResendLink () {
-    return (
-      (this.state.stage === 'counting' && this.state.timer === 0) ||
-      this.state.stage === 'error'
-    )
-  }
-
-  public renderFooter () {
-    return (
-      <View style={styles.footer}>
-        {this.renderStageMessage()}
-        {this.shouldShowResendLink() && (
-          <Link onPress={this.onPressResend} style={styles.resendLink}>
-            Resend code
-          </Link>
-        )}
-      </View>
-    )
   }
 
   public renderHiddenTextInput (autoFocus: boolean) {
@@ -238,7 +246,7 @@ export default class VerifyPhoneNumberScreen extends React.Component<
         backButtonType='arrowleft'
         onPressBackButton={this.onPressBackButon}
         onPessSubmitButton={this.onNextStep}
-        activeSubmitButton={this.state.stage === 'success'}
+        activeSubmitButton={this.state.verified}
       >
         {(autoFocus: boolean) => (
           <View style={styles.content}>
@@ -247,7 +255,7 @@ export default class VerifyPhoneNumberScreen extends React.Component<
               '08XXXXXXXX'
             )}`}</Text>
             {this.renderBoxes()}
-            {this.renderFooter()}
+            {this.renderBody()}
             {this.renderHiddenTextInput(autoFocus)}
           </View>
         )}
@@ -272,11 +280,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
-  footer: {
+  body: {
     marginTop: 24,
     alignItems: 'center'
   },
-  stageMessage: {
+  errorRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 14
+  },
+  successRow: {
     flexDirection: 'row',
     alignItems: 'center'
   },
