@@ -55,7 +55,7 @@ export default class TradeBox extends React.Component<Props> {
           />
         </View>
         <View style={styles.rightContainer}>
-          <Image source={image} style={styles.image} />
+          <Image source={image} style={[{ width: 16, height: 16 }, styles.image]} />
           <Text>{unit}</Text>
         </View>
       </Layer>

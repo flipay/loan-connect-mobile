@@ -63,22 +63,22 @@ export default class ComparisonScreen extends React.Component<
       {
         name: 'Satang',
         amount: 1400,
-        image: require('../img/btc.png')
+        image: require('../img/company_bx.png')
       },
       {
         name: 'BX Thailand',
         amount: 3000,
-        image: require('../img/btc.png')
+        image: require('../img/company_bx.png')
       },
       {
         name: 'Bitkub',
         amount: 2000,
-        image: require('../img/btc.png')
+        image: require('../img/company_bx.png')
       },
       {
         name: 'flipay',
         amount: 1000,
-        image: require('../img/btc.png')
+        image: require('../img/company_flipay.png')
       }
     ]
 
