@@ -8,6 +8,7 @@ import {
   ImageSourcePropType
 } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
+import resolveAssetSource from 'resolveAssetSource'
 import { LinearGradient } from 'expo'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { Text, Value, CloseButton } from '../components'
@@ -63,7 +64,7 @@ export default class ComparisonScreen extends React.Component<
       {
         name: 'Satang',
         amount: 1400,
-        image: require('../img/company_bx.png')
+        image: require('../img/company_bx.png') 
       },
       {
         name: 'BX Thailand',
@@ -93,9 +94,11 @@ export default class ComparisonScreen extends React.Component<
 
   public renderRecord (data: FormattedRecord, index: number) {
     const side = this.props.navigation.getParam('side', 'sell')
+    const image = data.image
+    const source = resolveAssetSource(image)
     return (
       <View style={styles.tableRecord} key={data.name}>
-        <Image source={data.image} />
+        <Image source={image} style={{ width: source.width / 2, height: source.height / 2 }} />
         <View style={styles.rightPartRecord}>
           <Value assetId='THB'>{data.amount}</Value>
           {index === 0 ? (
