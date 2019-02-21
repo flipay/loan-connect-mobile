@@ -155,15 +155,14 @@ export default class VerifyPhoneNumberScreen extends React.Component<
   }
 
   public renderError (errorMessage: string) {
-    const errorColor = '#FE4747'
     return (
       <View style={styles.errorRow}>
         <AntDesign
           name='closecircle'
-          color={errorColor}
+          color={COLORS.R400}
           style={styles.stageIcon}
         />
-        <Text color={errorColor}>
+        <Text color={COLORS.R400}>
           {errorMessage}
         </Text>
       </View>
@@ -192,7 +191,7 @@ export default class VerifyPhoneNumberScreen extends React.Component<
         <View style={styles.body}>
           <Text>
             Code expired in
-            <Text color='#FBB328'>{` ${this.state.timer}s`}</Text>
+            <Text color={COLORS.Y400}>{` ${this.state.timer}s`}</Text>
           </Text>
           {!!this.state.errorMessage && this.renderError(this.state.errorMessage)}
           {!!this.state.errorMessage && this.renderResendLink()}
@@ -200,16 +199,15 @@ export default class VerifyPhoneNumberScreen extends React.Component<
       )
     } else {
       // Verified stage
-      const successColor = '#41DC89'
       return (
         <View style={styles.body}>
           <View style={styles.successRow}>
             <AntDesign
               name='checkcircle'
-              color={successColor}
+              color={COLORS.G400}
               style={styles.stageIcon}
             />
-            <Text color={successColor}>
+            <Text color={COLORS.G400}>
               Your mobile phone number is verified.
             </Text>
           </View>
