@@ -4,11 +4,12 @@ import { View, Image, StatusBar, StyleSheet } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { AntDesign, Ionicons } from '@expo/vector-icons'
 import { COLORS } from '../constants/styleGuides'
-import { Text, Key } from '../components'
+import { Text, Key, FullScreenLoading } from '../components'
 
 interface State {
   pin: string
   errorMessage: string
+  loading: boolean
 }
 
 type Index = 0 | 1 | 2 | 3
@@ -24,7 +25,8 @@ export default class PinScreen extends React.Component<
     super(props)
     this.state = {
       pin: '',
-      errorMessage: ''
+      errorMessage: '',
+      loading: false
     }
   }
 
@@ -37,13 +39,15 @@ export default class PinScreen extends React.Component<
     )
   }
 
-  public componentDidUpdate (prevProps: NavigationScreenProps, prevState: State) {
+  public async componentDidUpdate (prevProps: NavigationScreenProps, prevState: State) {
     if (prevState.pin.length === 3 && this.state.pin.length === 4) {
-      this.props.navigation.getParam('onSuccess')(
+      this.setState({ loading: true })
+      await this.props.navigation.getParam('onSuccess')(
         this.state.pin,
         this.props.navigation,
         this.setError
       )
+      this.setState({ loading: false })
     }
   }
 
@@ -149,6 +153,7 @@ export default class PinScreen extends React.Component<
     return (
       <View style={styles.screen}>
         <StatusBar barStyle='dark-content' />
+        <FullScreenLoading visible={this.state.loading} />
         <Image
           style={{ width: 96, height: 35.6, marginTop: 72 }}
           source={require('../img/flipay_horizontal_logo.png')}

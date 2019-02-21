@@ -12,6 +12,7 @@ import Asset from './Asset'
 import Key from './Key'
 import ScreenWithKeyboard from './ScreenWithKeyboard'
 import Link from './Link'
+import FullScreenLoading from './FullScreenLoading'
 
 export {
   AssetCard,
@@ -26,5 +27,6 @@ export {
   Asset,
   Key,
   ScreenWithKeyboard,
-  Link
+  Link,
+  FullScreenLoading
 }
