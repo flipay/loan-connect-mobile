@@ -56,7 +56,9 @@ export default class PinScreen extends React.Component<
   }
 
   public onPressNum = (digit: number) => {
-    this.setState({ pin: this.state.pin + String(digit) })
+    if (this.state.pin.length < 4) {
+      this.setState({ pin: this.state.pin + String(digit) })
+    }
   }
 
   public onBackSpace = () => {
