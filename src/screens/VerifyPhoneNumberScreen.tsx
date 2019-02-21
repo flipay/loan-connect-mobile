@@ -1,6 +1,6 @@
 import * as React from 'react'
 import _ from 'lodash'
-import { View, TextInput, StyleSheet, AsyncStorage } from 'react-native'
+import { View, TextInput, StyleSheet, AsyncStorage, TouchableOpacity } from 'react-native'
 import { AntDesign } from '@expo/vector-icons'
 import { NavigationScreenProps } from 'react-navigation'
 import { submitOtp, createPin } from '../requests'
@@ -97,6 +97,9 @@ export default class VerifyPhoneNumberScreen extends React.Component<
   }
 
   public onChangeText = async (text: string) => {
+    if (text.length < this.state.otp.length) {
+      this.setState({ errorMessage: '' })
+    }
     this.setState({ otp: text })
     if (text.length === 6) {
       if (this.input) {
@@ -130,6 +133,12 @@ export default class VerifyPhoneNumberScreen extends React.Component<
     })
   }
 
+  public onPressBoxes = () => {
+    if (this.input) {
+      this.input.focus()
+    }
+  }
+
   public renderBox (index: No) {
     const length = this.state.otp.length
     return (
@@ -143,14 +152,14 @@ export default class VerifyPhoneNumberScreen extends React.Component<
 
   public renderBoxes () {
     return (
-      <View style={styles.boxes}>
+      <TouchableOpacity style={styles.boxes} onPress={this.onPressBoxes}>
         {this.renderBox(0)}
         {this.renderBox(1)}
         {this.renderBox(2)}
         {this.renderBox(3)}
         {this.renderBox(4)}
         {this.renderBox(5)}
-      </View>
+      </TouchableOpacity>
     )
   }
 
@@ -224,7 +233,7 @@ export default class VerifyPhoneNumberScreen extends React.Component<
           this.input = element
         }}
         keyboardType='number-pad'
-        selectTextOnFocus={true}
+        selectTextOnFocus={false}
         autoFocus={autoFocus}
         onChangeText={this.onChangeText}
         maxLength={6}
