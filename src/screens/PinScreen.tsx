@@ -39,7 +39,6 @@ export default class PinScreen extends React.Component<
 
   public async componentDidUpdate (prevProps: NavigationScreenProps, prevState: State) {
     if (prevState.pin.length === 3 && this.state.pin.length === 4) {
-      this.setState({ loading: true })
       await this.props.navigation.getParam('onSuccess')(
         this.state.pin,
         this.props.navigation,
