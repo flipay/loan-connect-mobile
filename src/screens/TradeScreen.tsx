@@ -245,7 +245,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   body: {
-    paddingTop: 50,
+    paddingTop: 10,
     alignItems: 'center'
   },
   tradeBoxesContainer: {
