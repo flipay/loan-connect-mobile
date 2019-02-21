@@ -14,7 +14,7 @@ export default class Asset extends React.Component<Props> {
     const { image, name } = ASSETS[this.props.id]
     return (
       <View style={[styles.container, this.props.style]}>
-        <Image source={image} />
+        <Image source={image} style={{ width: 16, height: 16 }} />
         <Text type='headline' style={styles.text}>{name}</Text>
       </View>
     )
