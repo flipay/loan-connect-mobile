@@ -34,6 +34,6 @@ const styles = StyleSheet.create({
     height,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(60, 69, 88, 0.8)'
+    backgroundColor: 'rgba(223, 227, 235, 0.8)'
   }
 })

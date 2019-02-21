@@ -2,6 +2,7 @@
 import * as React from 'react'
 import { TouchableHighlight, StyleSheet, View } from 'react-native'
 import Text from './Text'
+import { COLORS } from '../constants'
 
 interface Props {
   children?: number | JSX.Element
@@ -18,7 +19,11 @@ export default class Key extends React.Component<Props>{
       )
     }
     return (
-      <TouchableHighlight onPress={this.props.onPress} style={styles.container}>
+      <TouchableHighlight
+        underlayColor={COLORS.N200}
+        onPress={this.props.onPress}
+        style={styles.container}
+      >
         {typeof this.props.children === 'number'
           ? (
             <Text type='title'>
