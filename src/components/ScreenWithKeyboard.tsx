@@ -14,6 +14,7 @@ import { Constants } from 'expo'
 import { AntDesign } from '@expo/vector-icons'
 import { COLORS } from '../constants'
 import SubmitButton from './SubmitButton'
+import FullScreenLoading from './FullScreenLoading'
 
 interface Props {
   children: (autoFocus: boolean) => any
@@ -24,6 +25,7 @@ interface Props {
   submitButtonText?: string
   onPessSubmitButton?: () => void
   disableTouchOutside?: boolean
+  fullScreenLoading?: boolean
 }
 
 interface State {
@@ -66,53 +68,56 @@ export default class Screen extends React.Component<Props, State> {
 
   public render () {
     return (
-      <KeyboardAvoidingView
-        key={this.state.keyboardAvoidingViewKey}
-        style={styles.outsideContainer}
-        keyboardVerticalOffset={Constants.statusBarHeight === 40 ? 20 : 0}
-        behavior='height'
-      >
-        <TouchableWithoutFeedback
+      <View style={styles.outsideContainer}>
+        <KeyboardAvoidingView
+          key={this.state.keyboardAvoidingViewKey}
           style={styles.outsideContainer}
-          onPress={this.props.disableTouchOutside ? _.noop : Keyboard.dismiss}
-          accessible={false}
+          keyboardVerticalOffset={Constants.statusBarHeight === 40 ? 20 : 0}
+          behavior='height'
         >
-          <View style={styles.container}>
-            <StatusBar
-              barStyle={
-                this.props.statusBar === 'black'
-                  ? 'dark-content'
-                  : 'light-content'
-              }
-            />
-            {this.props.onPressBackButton && (
-              <TouchableOpacity
-                style={styles.backButton}
-                onPress={this.props.onPressBackButton}
-              >
-                <AntDesign
-                  name={this.props.backButtonType}
-                  size={28}
-                  color={COLORS.N800}
-                />
-              </TouchableOpacity>
-            )}
-            <View style={styles.content}>
-              {this.props.children(
-                this.state.keyboardAvoidingViewKey === DEFAULT_KEYBOARD_KEY
+          <TouchableWithoutFeedback
+            style={styles.outsideContainer}
+            onPress={this.props.disableTouchOutside ? _.noop : Keyboard.dismiss}
+            accessible={false}
+          >
+            <View style={styles.container}>
+              <StatusBar
+                barStyle={
+                  this.props.statusBar === 'black'
+                    ? 'dark-content'
+                    : 'light-content'
+                }
+              />
+              {this.props.onPressBackButton && (
+                <TouchableOpacity
+                  style={styles.backButton}
+                  onPress={this.props.onPressBackButton}
+                >
+                  <AntDesign
+                    name={this.props.backButtonType}
+                    size={28}
+                    color={COLORS.N800}
+                  />
+                </TouchableOpacity>
+              )}
+              <View style={styles.content}>
+                {this.props.children(
+                  this.state.keyboardAvoidingViewKey === DEFAULT_KEYBOARD_KEY
+                )}
+              </View>
+              {this.props.onPessSubmitButton && (
+                <SubmitButton
+                  onPress={this.props.onPessSubmitButton}
+                  active={this.props.activeSubmitButton}
+                >
+                  {this.props.submitButtonText || 'Next'}
+                </SubmitButton>
               )}
             </View>
-            {this.props.onPessSubmitButton && (
-              <SubmitButton
-                onPress={this.props.onPessSubmitButton}
-                active={this.props.activeSubmitButton}
-              >
-                {this.props.submitButtonText || 'Next'}
-              </SubmitButton>
-            )}
-          </View>
-        </TouchableWithoutFeedback>
-      </KeyboardAvoidingView>
+          </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
+        {this.props.fullScreenLoading && <FullScreenLoading visible={this.props.fullScreenLoading} />}
+      </View>
     )
   }
 }

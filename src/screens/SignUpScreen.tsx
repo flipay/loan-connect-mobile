@@ -55,6 +55,7 @@ export default class SignUpScreen extends React.Component<
         onPressBackButton={this.onPressBackButton}
         activeSubmitButton={this.state.phoneNumber.length === 10}
         onPessSubmitButton={this.onPressSubmit}
+        fullScreenLoading={this.state.loading}
       >
         {(autoFocus: boolean) => (
           <View>
@@ -75,7 +76,6 @@ export default class SignUpScreen extends React.Component<
                   value={this.state.phoneNumber}
                 />
               </Layer>
-            {this.state.loading && <Text>Loading...</Text>}
           </View>
         )}
       </ScreenWithKeyboard>
