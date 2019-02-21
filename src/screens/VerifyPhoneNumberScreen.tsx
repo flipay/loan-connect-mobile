@@ -108,9 +108,12 @@ export default class VerifyPhoneNumberScreen extends React.Component<
       try {
         this.setState({ loading: true })
         await submitOtp(this.props.navigation.getParam('accountId'), text)
-        this.setState({ verified: true })
+        this.setState({ verified: true, loading: false })
       } catch (err) {
-        this.setState({ errorMessage: 'The SMS code you entered is incorrect' })
+        this.setState({
+          errorMessage: 'The SMS code you entered is incorrect',
+          loading: false
+        })
       }
     }
   }
@@ -254,6 +257,7 @@ export default class VerifyPhoneNumberScreen extends React.Component<
         onPressBackButton={this.onPressBackButon}
         onPessSubmitButton={this.onNextStep}
         activeSubmitButton={this.state.verified}
+        fullScreenLoading={this.state.loading}
       >
         {(autoFocus: boolean) => (
           <View style={styles.content}>
