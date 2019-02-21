@@ -208,6 +208,10 @@ export default class TradeScreen extends React.Component<
     )
   }
 
+  public pressDone = () => {
+    this.props.navigation.goBack()
+  }
+
   public render () {
     const orderType = _.capitalize(
       this.props.navigation.getParam('side', 'buy')
@@ -219,7 +223,7 @@ export default class TradeScreen extends React.Component<
         submitButtonText={this.state.executed ? 'Done' : orderType}
         activeSubmitButton={this.isSubmitable()}
         onPessSubmitButton={
-          this.state.executed ? this.props.navigation.goBack : this.execute
+          this.state.executed ? this.pressDone : this.execute
         }
       >
         {autoFocus => (
