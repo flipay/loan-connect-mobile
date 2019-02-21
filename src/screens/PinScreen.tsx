@@ -14,8 +14,6 @@ interface State {
 
 type Index = 0 | 1 | 2 | 3
 
-const errorColor = '#FE4747'
-
 export default class PinScreen extends React.Component<
   NavigationScreenProps,
   State
@@ -125,10 +123,10 @@ export default class PinScreen extends React.Component<
       <View style={styles.errorMessageRow}>
         <AntDesign
           name='closecircle'
-          color={errorColor}
+          color={COLORS.R400}
           style={styles.closeIcon}
         />
-        <Text color={errorColor}>{this.state.errorMessage}</Text>
+        <Text color={COLORS.R400}>{this.state.errorMessage}</Text>
       </View>
     )
   }
@@ -197,7 +195,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.P400
   },
   errorDot: {
-    backgroundColor: errorColor
+    backgroundColor: COLORS.R400
   },
   spacing: {
     width: 32
