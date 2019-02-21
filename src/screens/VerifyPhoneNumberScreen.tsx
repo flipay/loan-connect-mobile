@@ -71,14 +71,19 @@ export default class VerifyPhoneNumberScreen extends React.Component<
 
   public navigateToConfirmPinScreen = (
     firstPin: string,
-    stackNavigationCreatePin: any,
-    setErrorCreate: (errorMessage: string) => void
+    stackNavigationCreatePin: any
   ) => {
     stackNavigationCreatePin.push('Pin', {
       title: 'Confirm your PIN',
-      onSuccess: async (secondPin: string, stackNavigationConmfirmPin: any, setErrorConfirm: (errorMessage: string) => void) => {
+      onSuccess: async (
+        secondPin: string,
+        stackNavigationConmfirmPin: any,
+        setErrorConfirm: (errorMessage: string) => void,
+        startLoading: () => void
+      ) => {
         if (firstPin === secondPin) {
           try {
+            startLoading()
             const accountId = this.props.navigation.getParam('accountId')
             await createPin(accountId, secondPin)
             await AsyncStorage.setItem('account_id', accountId)
