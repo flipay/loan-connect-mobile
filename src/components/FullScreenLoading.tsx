@@ -27,12 +27,13 @@ const { height, width } = Dimensions.get('window')
 
 const styles = StyleSheet.create({
   container: {
+    zIndex: 10,
     position: 'absolute',
     flex: 1,
     width,
     height,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(180, 188, 202, 0.8)'
+    backgroundColor: 'rgba(60, 69, 88, 0.8)'
   }
 })
