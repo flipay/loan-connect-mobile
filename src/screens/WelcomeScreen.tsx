@@ -22,7 +22,7 @@ export default class WelcomeScreen extends React.Component<
     return (
       <View style={styles.body}>
         <Image
-          style={{ width: 165, height: 42 }}
+          style={{ width: 164, height: 41 }}
           source={require('../img/flipay_horizontal_logo_reverse.png')}
         />
         <Text style={styles.description} color={COLORS.WHITE}>
