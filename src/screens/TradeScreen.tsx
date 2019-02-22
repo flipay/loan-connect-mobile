@@ -1,6 +1,6 @@
 import * as React from 'react'
 import _ from 'lodash'
-import { StyleSheet, View, TouchableHighlight } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { Text, Value, TradeBox, TradeResult, ScreenWithKeyboard, Link } from '../components'
 import { COLORS, ASSETS } from '../constants'
@@ -135,10 +135,6 @@ export default class TradeScreen extends React.Component<
           ? this.state.takeTradeBoxValue
           : this.state.giveTradeBoxValue
     })
-  }
-
-  public onPressSubmit = () => {
-    console.log('press submit')
   }
 
   public isSubmitable = () => {

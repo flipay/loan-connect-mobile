@@ -6,7 +6,7 @@ import { COLORS } from '../constants'
 interface Props {
   onPress: () => void
   children: string
-  style: any
+  style?: any
 }
 
 export default class Link extends React.Component<Props> {
