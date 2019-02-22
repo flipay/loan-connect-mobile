@@ -2,7 +2,14 @@ import * as React from 'react'
 import _ from 'lodash'
 import { StyleSheet, View } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
-import { Text, Value, TradeBox, TradeResult, ScreenWithKeyboard, Link } from '../components'
+import {
+  Text,
+  Value,
+  TradeBox,
+  TradeResult,
+  ScreenWithKeyboard,
+  Link
+} from '../components'
 import { COLORS, ASSETS } from '../constants'
 import { AssetId, OrderPart } from '../types'
 import { getAmount } from '../requests'
@@ -13,6 +20,7 @@ interface State {
   activeTradeBox: TradeBoxType
   giveTradeBoxValue: string
   takeTradeBoxValue: string
+  typing: boolean
   loading: boolean
   executed: boolean
 }
@@ -21,14 +29,59 @@ export default class TradeScreen extends React.Component<
   NavigationScreenProps,
   State
 > {
+  private interval: any
   public constructor (props: NavigationScreenProps) {
     super(props)
     this.state = {
       activeTradeBox: 'give',
       giveTradeBoxValue: '',
       takeTradeBoxValue: '',
+      typing: false,
       loading: false,
       executed: false
+    }
+  }
+
+  public componentDidUpdate (
+    prevProps: NavigationScreenProps,
+    prevState: State
+  ) {
+    if (!prevState.typing && this.state.typing) {
+      clearInterval(this.interval)
+    } else if (prevState.typing && !this.state.typing) {
+      this.interval = setInterval(async () => {
+        await this.getAmount(
+          this.state.activeTradeBox,
+          this.state.activeTradeBox === 'give'
+            ? this.state.giveTradeBoxValue
+            : this.state.takeTradeBoxValue
+        )
+      }, 5000)
+    }
+  }
+
+  public getAmount = async (tradeBox: TradeBoxType, value: string) => {
+    const amount = await getAmount(
+      this.props.navigation.getParam('side', 'buy'),
+      this.props.navigation.getParam('assetId', 'BTC'),
+      tradeBox,
+      this.toNumber(value)
+    )
+
+    const valueInString = amount.toLocaleString(undefined, {
+      maximumFractionDigits: 8
+    })
+
+    if (tradeBox === 'give') {
+      this.setState({
+        takeTradeBoxValue: valueInString,
+        loading: false
+      })
+    } else {
+      this.setState({
+        giveTradeBoxValue: valueInString,
+        loading: false
+      })
     }
   }
 
@@ -84,38 +137,19 @@ export default class TradeScreen extends React.Component<
     const formattedNumberInString = this.formatNumberInString(value)
     if (tradeBox === 'give') {
       this.setState({
-        giveTradeBoxValue: formattedNumberInString,
-        loading: true
+        typing: true,
+        giveTradeBoxValue: formattedNumberInString
       })
-    } else {
+    } else if (tradeBox === 'take') {
       this.setState({
-        takeTradeBoxValue: formattedNumberInString,
-        loading: true
+        typing: true,
+        takeTradeBoxValue: formattedNumberInString
       })
     }
-    const amount = await getAmount(
-      this.props.navigation.getParam('side', 'buy'),
-      this.props.navigation.getParam('assetId', 'BTC'),
-      tradeBox,
-      this.toNumber(value)
-    )
 
-    const valueInString = amount.toLocaleString(
-      undefined,
-      { maximumFractionDigits: 8 }
-    )
-
-    if (tradeBox === 'give') {
-      this.setState({
-        takeTradeBoxValue: valueInString,
-        loading: false
-      })
-    } else {
-      this.setState({
-        giveTradeBoxValue: valueInString,
-        loading: false
-      })
-    }
+    _.debounce(() => {
+      this.setState({ typing: false })
+    }, 250)
   }
 
   public execute = () => {
@@ -217,9 +251,7 @@ export default class TradeScreen extends React.Component<
         onPressBackButton={this.state.executed ? undefined : this.onClose}
         submitButtonText={this.state.executed ? 'Done' : orderType}
         activeSubmitButton={this.isSubmitable()}
-        onPessSubmitButton={
-          this.state.executed ? this.pressDone : this.execute
-        }
+        onPessSubmitButton={this.state.executed ? this.pressDone : this.execute}
       >
         {autoFocus => (
           <View style={styles.bodyContainer}>
