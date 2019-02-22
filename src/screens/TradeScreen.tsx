@@ -29,6 +29,7 @@ export default class TradeScreen extends React.Component<
   NavigationScreenProps,
   State
 > {
+  private timeout: any
   private interval: any
   public constructor (props: NavigationScreenProps) {
     super(props)
@@ -49,18 +50,18 @@ export default class TradeScreen extends React.Component<
     if (!prevState.typing && this.state.typing) {
       clearInterval(this.interval)
     } else if (prevState.typing && !this.state.typing) {
-      this.interval = setInterval(async () => {
-        await this.getAmount(
-          this.state.activeTradeBox,
-          this.state.activeTradeBox === 'give'
-            ? this.state.giveTradeBoxValue
-            : this.state.takeTradeBoxValue
-        )
-      }, 5000)
+      this.getAmount()
+      this.interval = setInterval(() => {
+        this.getAmount()
+      }, 1000)
     }
   }
 
-  public getAmount = async (tradeBox: TradeBoxType, value: string) => {
+  public getAmount = async () => {
+    const tradeBox = this.state.activeTradeBox
+    const value = this.state.activeTradeBox === 'give'
+      ? this.state.giveTradeBoxValue
+      : this.state.takeTradeBoxValue
     const amount = await getAmount(
       this.props.navigation.getParam('side', 'buy'),
       this.props.navigation.getParam('assetId', 'BTC'),
@@ -147,9 +148,10 @@ export default class TradeScreen extends React.Component<
       })
     }
 
-    _.debounce(() => {
+    clearTimeout(this.timeout)
+    this.timeout = setTimeout(() => {
       this.setState({ typing: false })
-    }, 250)
+    }, 500)
   }
 
   public execute = () => {
