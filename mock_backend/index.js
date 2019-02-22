@@ -29,24 +29,55 @@ server.post('/sign_up', (req, res) => {
 })
 
 server.get('/rates', (req, res) => {
-  const price = 121790 + getRandomInt(100)
-  const { amount_give, amount_take } = req.query
-  if (amount_give) {
-    const amount = amount_give / price
-    const saved_amount = amount_give / 1000
-    res.jsonp({
-      amount,
-      saved_amount
-    })
-  } else if (amount_take) {
-    const amount = amount_take * price
-    const saved_amount = amount / 1000
-    res.jsonp({
-      amount,
-      saved_amount
-    })
-  } else {
-    res.sendStatus(500)
+  const { asset_give, asset_take } = req.query
+  const asset = asset_give === 'THB' ? asset_take : asset_give
+  let price = 0
+  if (asset === 'BTC') {
+    price = 121790 + getRandomInt(100) 
+  } else if (asset === 'ETH') {
+    price = 4485 + getRandomInt(10) 
+  } else if (asset === 'OMG') {
+    price = 39.77 + getRandomInt(2) 
+  } 
+  
+  if (asset_give === 'THB') {   // Buy
+    const { amount_give, amount_take } = req.query
+    if (amount_give) {
+      const amount = amount_give / price
+      const saved_amount = amount_give / 1000
+      res.jsonp({
+        amount,
+        saved_amount
+      })
+    } else if (amount_take) {
+      const amount = amount_take * price
+      const saved_amount = amount / 1000
+      res.jsonp({
+        amount,
+        saved_amount
+      })
+    } else {
+      res.sendStatus(500)
+    }
+  } else { // Sell
+    const { amount_give, amount_take } = req.query
+    if (amount_give) {
+      const amount = amount_give * price
+      const saved_amount = amount / 1000
+      res.jsonp({
+        amount,
+        saved_amount
+      })
+    } else if (amount_take) {
+      const amount = amount_take / price
+      const saved_amount = amount_take / 1000
+      res.jsonp({
+        amount,
+        saved_amount
+      })
+    } else {
+      res.sendStatus(500)
+    }
   }
 })
 
