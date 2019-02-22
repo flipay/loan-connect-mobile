@@ -55,7 +55,7 @@ export default class TradeBox extends React.Component<Props> {
           />
         </View>
         <View style={styles.rightContainer}>
-          <Image source={image} style={[{ width: 16, height: 16 }, styles.image]} />
+          <Image source={image} style={{ width: 16, height: 16, marginRight: 8 }} />
           <Text>{unit}</Text>
         </View>
       </Layer>
@@ -87,8 +87,5 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     paddingLeft: 16
-  },
-  image: {
-    marginRight: 8
   }
 })

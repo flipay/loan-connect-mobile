@@ -93,30 +93,29 @@ export default class TradeScreen extends React.Component<
         loading: true
       })
     }
+    const amount = await getAmount(
+      this.props.navigation.getParam('side', 'buy'),
+      this.props.navigation.getParam('assetId', 'BTC'),
+      tradeBox,
+      this.toNumber(value)
+    )
 
-    // const amount = await getAmount(
-    //   this.props.navigation.getParam('side', 'buy'),
-    //   this.props.navigation.getParam('assetId', 'BTC'),
-    //   tradeBox,
-    //   this.toNumber(value)
-    // )
+    const valueInString = amount.toLocaleString(
+      undefined,
+      { maximumFractionDigits: 8 }
+    )
 
-    // const valueInString = amount.toLocaleString(
-    //   undefined,
-    //   { maximumFractionDigits: 8 }
-    // )
-
-    // if (tradeBox === 'give') {
-    //   this.setState({
-    //     takeTradeBoxValue: valueInString,
-    //     loading: false
-    //   })
-    // } else {
-    //   this.setState({
-    //     giveTradeBoxValue: valueInString,
-    //     loading: false
-    //   })
-    // }
+    if (tradeBox === 'give') {
+      this.setState({
+        takeTradeBoxValue: valueInString,
+        loading: false
+      })
+    } else {
+      this.setState({
+        giveTradeBoxValue: valueInString,
+        loading: false
+      })
+    }
   }
 
   public execute = () => {

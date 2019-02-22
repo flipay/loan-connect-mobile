@@ -5,6 +5,10 @@ const router = jsonServer.router('db.json')
 
 const middlewares = jsonServer.defaults()
 
+function getRandomInt(max) {
+  return Math.floor(Math.random() * Math.floor(max));
+}
+
 server.use(middlewares)
 
 server.use(bodyParser.json()); // for parsing application/json
@@ -22,6 +26,28 @@ server.post('/sign_up', (req, res) => {
   res.jsonp({ user: { 
     id: '222222' 
   }})
+})
+
+server.get('/rates', (req, res) => {
+  const price = 121790 + getRandomInt(100)
+  const { amount_give, amount_take } = req.query
+  if (amount_give) {
+    const amount = amount_give / price
+    const saved_amount = amount_give / 1000
+    res.jsonp({
+      amount,
+      saved_amount
+    })
+  } else if (amount_take) {
+    const amount = amount_take * price
+    const saved_amount = amount / 1000
+    res.jsonp({
+      amount,
+      saved_amount
+    })
+  } else {
+    res.sendStatus(500)
+  }
 })
 
 server.post('/accounts/:account_id/verify', (req, res) => {
