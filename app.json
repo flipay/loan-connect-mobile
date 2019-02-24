@@ -5,7 +5,7 @@
     "slug": "flipay",
     "privacy": "public",
     "sdkVersion": "31.0.0",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "orientation": "portrait",
     "primaryColor": "#fff",
     "icon": "./assets/icons/app-icon.png",
@@ -24,7 +24,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "co.flipay.flipay",
-      "buildNumber": "2"
+      "buildNumber": "3"
     },
     "android": {
       "package": "co.flipay.flipay"
