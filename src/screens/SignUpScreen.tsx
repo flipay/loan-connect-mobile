@@ -47,9 +47,12 @@ export default class SignUpScreen extends React.Component<
   public onChangeText = async (text: string) => {
     this.setState({ phoneNumber: text })
   }
+
   public onPressBackButton = () => {
+    Amplitude.logEvent('sign-up/press-back-button')
     this.props.navigation.goBack()
   }
+
   public render () {
     return (
       <ScreenWithKeyboard

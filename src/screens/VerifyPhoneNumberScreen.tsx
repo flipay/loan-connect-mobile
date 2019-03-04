@@ -56,6 +56,7 @@ export default class VerifyPhoneNumberScreen extends React.Component<
       prevState.timer === 1 &&
       this.state.timer === 0
     ) {
+      Amplitude.logEvent('verify-phone-number/timeout')
       if (this.input) {
         this.input.blur()
       }
@@ -74,6 +75,7 @@ export default class VerifyPhoneNumberScreen extends React.Component<
     firstPin: string,
     stackNavigationCreatePin: any
   ) => {
+    Amplitude.logEvent('create-pin/finish-creating-pin')
     stackNavigationCreatePin.push('Pin', {
       title: 'Confirm your PIN',
       onSuccess: async (
@@ -83,16 +85,20 @@ export default class VerifyPhoneNumberScreen extends React.Component<
         startLoading: () => void
       ) => {
         if (firstPin === secondPin) {
+          Amplitude.logEvent('confirm-pin/pin-match')
           try {
             startLoading()
             const accountId = this.props.navigation.getParam('accountId')
             await createPin(accountId, secondPin)
+            Amplitude.logEvent('confirm-pin/successfully-setting-pin')
             await AsyncStorage.setItem('account_id', accountId)
             stackNavigationConmfirmPin.navigate('Main')
           } catch (error) {
+            Amplitude.logEvent('confirm-pin/error-setting-pin')
             setErrorConfirm(error.message)
           }
         } else {
+          Amplitude.logEvent('confirm-pin/pin-does-not-match')
           setErrorConfirm('The PIN does not match')
           setTimeout(() => {
             stackNavigationConmfirmPin.pop()
@@ -115,8 +121,10 @@ export default class VerifyPhoneNumberScreen extends React.Component<
       try {
         this.setState({ loading: true })
         await submitOtp(this.props.navigation.getParam('accountId'), text)
+        Amplitude.logEvent('verify-phone-number/successfully-verified')
         this.setState({ verified: true, loading: false })
       } catch (err) {
+        Amplitude.logEvent('verify-phone-number/sms-code-incorrect')
         this.setState({
           errorMessage: 'The SMS code you entered is incorrect',
           loading: false
@@ -256,6 +264,7 @@ export default class VerifyPhoneNumberScreen extends React.Component<
   }
 
   public onPressBackButon = () => {
+    Amplitude.logEvent('verify-phone-number/press-back-button')
     this.props.navigation.goBack()
   }
 
