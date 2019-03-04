@@ -5,6 +5,7 @@ import {
   createStackNavigator,
   createSwitchNavigator
 } from 'react-navigation'
+
 import Starter from './Starter'
 import MainScreen from './screens/MainScreen'
 import WelcomeScreen from './screens/WelcomeScreen'
@@ -13,9 +14,10 @@ import VerifyPhoneNumberScreen from './screens/VerifyPhoneNumberScreen'
 import TradeScreen from './screens/TradeScreen'
 import ComparisonScreen from './screens/ComparisonScreen'
 import PinScreen from './screens/PinScreen'
-import { Font } from 'expo'
+import { Font, Amplitude } from 'expo'
 
 axios.defaults.baseURL = 'https://flipay-mock-backend.herokuapp.com/'
+// axios.defaults.baseURL = 'http://192.168.0.4:8000'
 
 const AuthStack = createStackNavigator(
   {
@@ -70,6 +72,8 @@ export default class App extends React.Component<{}, State> {
     }
   }
   public async componentDidMount () {
+    Amplitude.initialize('ca298c390e996d2d0ca61eeabf1a7756')
+    Amplitude.logEvent('open-the-app')
     await Font.loadAsync({
       nunito: require('../assets/fonts/Nunito-Regular.ttf'),
       'nunito-semibold': require('../assets/fonts/Nunito-Regular.ttf')

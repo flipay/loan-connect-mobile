@@ -7,7 +7,7 @@ import {
   StyleSheet
 } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
-import { LinearGradient } from 'expo'
+import { LinearGradient, Amplitude } from 'expo'
 import { Text } from '../components'
 import { COLORS } from '../constants'
 
@@ -15,6 +15,7 @@ export default class WelcomeScreen extends React.Component<
   NavigationScreenProps
 > {
   public onPressSignUp = () => {
+    Amplitude.logEvent('welcome/press-create-account-button')
     this.props.navigation.navigate('SignUp')
   }
 

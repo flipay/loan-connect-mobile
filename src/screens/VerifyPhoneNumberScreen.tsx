@@ -1,6 +1,7 @@
 import * as React from 'react'
 import _ from 'lodash'
 import { View, TextInput, StyleSheet, AsyncStorage, TouchableOpacity } from 'react-native'
+import { Amplitude } from 'expo'
 import { AntDesign } from '@expo/vector-icons'
 import { NavigationScreenProps } from 'react-navigation'
 import { submitOtp, createPin } from '../requests'
@@ -103,6 +104,7 @@ export default class VerifyPhoneNumberScreen extends React.Component<
 
   public onChangeText = async (text: string) => {
     if (text.length < this.state.otp.length) {
+      Amplitude.logEvent('verify-phone-number/press-backspace')
       this.setState({ errorMessage: '' })
     }
     this.setState({ otp: text })
@@ -124,6 +126,7 @@ export default class VerifyPhoneNumberScreen extends React.Component<
   }
 
   public onPressResend = () => {
+    Amplitude.logEvent('verify-phone-number/press-resend-code-link')
     if (this.input) {
       this.input.focus()
       this.setState({
@@ -135,6 +138,7 @@ export default class VerifyPhoneNumberScreen extends React.Component<
   }
 
   public onNextStep = () => {
+    Amplitude.logEvent('verify-phone-number/press-next-button')
     this.props.navigation.navigate('Pin', {
       title: 'Create a PIN',
       onSuccess: this.navigateToConfirmPinScreen
@@ -142,6 +146,7 @@ export default class VerifyPhoneNumberScreen extends React.Component<
   }
 
   public onPressBoxes = () => {
+    Amplitude.logEvent('verify-phone-number/press-boxes')
     if (this.input) {
       this.input.focus()
     }

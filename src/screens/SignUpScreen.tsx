@@ -1,5 +1,6 @@
 import * as React from 'react'
 import _ from 'lodash'
+import { Amplitude } from 'expo'
 import { NavigationScreenProps } from 'react-navigation'
 import { View, TextInput, StyleSheet, Keyboard } from 'react-native'
 import { signUp } from '../requests'
@@ -26,6 +27,7 @@ export default class SignUpScreen extends React.Component<
   }
 
   public onPressSubmit = async () => {
+    Amplitude.logEvent('sign-up/submit-phone-number')
     // NOTE: I have to close the Keyboard first otherwise
     // it will not work on the next page.
     Keyboard.dismiss()
