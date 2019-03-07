@@ -13,6 +13,7 @@ import {
 import { COLORS, ASSETS } from '../constants'
 import { AssetId, OrderPart } from '../types'
 import { getAmount } from '../requests'
+import { Amplitude } from 'expo';
 
 type TradeBoxType = OrderPart
 
@@ -86,7 +87,16 @@ export default class TradeScreen extends React.Component<
     }
   }
 
+  public logEvent = (eventName: string, params?: object) => {
+    Amplitude.logEventWithProperties(`trade/${eventName}`, {
+      side: this.props.navigation.getParam('side'),
+      assetId: this.props.navigation.getParam('assetId'),
+      ...(params || {})
+    })
+  }
+
   public onPressTradeBox = (tradeBox: TradeBoxType) => {
+    this.logEvent('press-trade-box', { tradeSide: tradeBox })
     if (tradeBox !== this.state.activeTradeBox) {
       this.setState({
         activeTradeBox: tradeBox
@@ -155,14 +165,17 @@ export default class TradeScreen extends React.Component<
   }
 
   public execute = () => {
+    this.logEvent('preee-submit-button')
     this.setState({ executed: true })
   }
 
   public onClose = () => {
+    this.logEvent('press-back-button')
     this.props.navigation.goBack()
   }
 
   public onPressPriceComparison = () => {
+    this.logEvent('press-price-comparison-link')
     this.props.navigation.navigate('Comparison', {
       side: this.props.navigation.getParam('side'),
       assetId: this.props.navigation.getParam('assetId'),
@@ -240,6 +253,7 @@ export default class TradeScreen extends React.Component<
   }
 
   public pressDone = () => {
+    this.logEvent('press-done-button')
     this.props.navigation.goBack()
   }
 
