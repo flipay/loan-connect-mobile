@@ -43,7 +43,8 @@ export default class PinScreen extends React.Component<
         this.state.pin,
         this.props.navigation,
         this.setError,
-        this.startLoading
+        () => this.setState({ loading: true }),
+        () => this.setState({ loading: false })
       )
     }
   }
@@ -69,10 +70,6 @@ export default class PinScreen extends React.Component<
 
   public setError = (errorMessage: string) => {
     this.setState({ errorMessage })
-  }
-
-  public startLoading = () => {
-    this.setState({ loading: true })
   }
 
   public getDotColor = (index: Index) => {

@@ -24,12 +24,14 @@ export default class Start extends React.Component<
     if (accountId) {
       this.props.navigation.navigate('Pin', {
         title: 'Log in with PIN',
-        onSuccess: async (pin: string, stackNavigationLogInPin: any, setErrorConfirm: (errorMessage: string) => void) => {
+        onSuccess: async (pin: string, stackNavigationLogInPin: any, setErrorConfirm: (errorMessage: string) => void, startLoading: () => void, stopLoading: () => void) => {
           try {
+            startLoading()
             await logIn(accountId, pin)
             Amplitude.logEvent('login/successfully-login')
             stackNavigationLogInPin.navigate('Main')
           } catch (error) {
+            stopLoading()
             Amplitude.logEvent('login/wrong-pin')
             setErrorConfirm('Wrong PIN')
           }
