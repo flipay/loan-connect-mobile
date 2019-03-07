@@ -34,13 +34,16 @@ export async function getAmount (
   specifiedPart: OrderPart,
   amount: number
 ) {
-  const response = await axios.get('rates', {
-    params: {
-      asset_give: orderType === 'buy' ? 'THB' : assetId,
-      asset_take: orderType === 'sell' ? 'THB' : assetId,
-      [`amount_${specifiedPart}`]: amount
+  const response = await axios.get(
+    `/rates/${orderType === 'buy' ? 'THB' : assetId}/${orderType === 'sell' ? 'THB' : assetId}`,
+    {
+      baseURL: 'http://api.flipay.co/v1/symmetry/',
+      params: {
+        provider: 'liquid',
+        [`amount_${specifiedPart}`]: amount
+      }
     }
-  })
+  )
   const { data } = response
-  return data.amount
+  return data.data[`amount_${specifiedPart === 'give' ? 'take' : 'give'}`]
 }
