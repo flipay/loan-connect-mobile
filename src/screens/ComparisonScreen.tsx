@@ -9,7 +9,7 @@ import {
 } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import resolveAssetSource from 'resolveAssetSource'
-import { LinearGradient } from 'expo'
+import { LinearGradient, Amplitude } from 'expo'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { Text, Value, CloseButton } from '../components'
 import { COLORS } from '../constants'
@@ -89,6 +89,7 @@ export default class ComparisonScreen extends React.Component<
   }
 
   public onClose = () => {
+    Amplitude.logEvent('comparison/press-close-button')
     this.props.navigation.goBack()
   }
 
