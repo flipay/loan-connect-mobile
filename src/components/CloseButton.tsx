@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import { StyleSheet, TouchableHighlight } from 'react-native'
+import { StyleSheet, TouchableOpacity } from 'react-native'
 import { AntDesign } from '@expo/vector-icons'
 
 interface Props {
@@ -11,9 +11,9 @@ interface Props {
 export default class Button extends React.Component<Props> {
   public render () {
     return (
-      <TouchableHighlight style={styles.closeButton} onPress={this.props.onPress}>
+      <TouchableOpacity style={styles.closeButton} onPress={this.props.onPress}>
         <AntDesign name='close' size={28} color={this.props.color} />
-      </TouchableHighlight>
+      </TouchableOpacity>
     )
   }
 }
