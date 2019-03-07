@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { ScrollView, StatusBar, View, StyleSheet } from 'react-native'
-import { LinearGradient } from 'expo'
+import { LinearGradient, Amplitude } from 'expo'
 import { NavigationScreenProps } from 'react-navigation'
 import { Text, AssetCard } from '../components'
 import { COLORS } from '../constants'
@@ -51,8 +51,10 @@ export default class MainScreen extends React.Component<
 
   public onPress = (assetId: AssetId) => {
     if (this.state.selectedAsset === assetId) {
+      Amplitude.logEventWithProperties('main/close-asset-card', { assetId: assetId })
       this.setState({ selectedAsset: null })
     } else {
+      Amplitude.logEventWithProperties('main/open-asset-card', { assetId: assetId })
       this.setState({ selectedAsset: assetId })
     }
   }
