@@ -13,7 +13,7 @@ import {
 import { COLORS, ASSETS } from '../constants'
 import { AssetId, OrderPart } from '../types'
 import { getAmount } from '../requests'
-import { Amplitude } from 'expo';
+import { Amplitude } from 'expo'
 
 type TradeBoxType = OrderPart
 
