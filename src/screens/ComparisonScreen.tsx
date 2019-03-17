@@ -14,6 +14,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { Text, Value, CloseButton } from '../components'
 import { COLORS } from '../constants'
 import { AssetId, OrderType } from '../types'
+import { getAllAmounts } from '../requests'
 
 interface RequestedRecord {
   name: string
@@ -59,12 +60,16 @@ export default class ComparisonScreen extends React.Component<
     clearInterval(this.interval)
   }
 
-  public requestData () {
+  public async requestData () {
+    const side = this.props.navigation.getParam('side', 'sell')
+    const assetId: AssetId = this.props.navigation.getParam('assetId', 'bitcoin')
+    const cryptoAmount = this.props.navigation.getParam('cryptoAmount', 1000)
+    await getAllAmounts(side, assetId, cryptoAmount)
     const mockData = [
       {
         name: 'Satang',
         amount: 1400,
-        image: require('../img/company_bx.png') 
+        image: require('../img/company_bx.png')
       },
       {
         name: 'BX Thailand',
@@ -174,7 +179,7 @@ export default class ComparisonScreen extends React.Component<
   public render () {
     const side = this.props.navigation.getParam('side', 'sell')
     const assetId: AssetId = this.props.navigation.getParam('assetId', 'bitcoin')
-    const amount = this.props.navigation.getParam('amount', 1000)
+    const cryptoAmount = this.props.navigation.getParam('cryptoAmount', 1000)
 
     const flipayRecord = _.find(
       this.state.requestedData,
@@ -203,7 +208,7 @@ export default class ComparisonScreen extends React.Component<
           {`Looks like ${bestCompany} is the best way to ${side}`}
         </Text>
         <Text color={COLORS.WHITE}>
-          <Value assetId={assetId} full={true}>{amount}</Value>
+          <Value assetId={assetId} full={true}>{cryptoAmount}</Value>
         </Text>
         {this.renderTable(sortedRecords)}
       </LinearGradient>

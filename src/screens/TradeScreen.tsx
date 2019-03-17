@@ -63,12 +63,16 @@ export default class TradeScreen extends React.Component<
     const value = this.state.activeTradeBox === 'give'
       ? this.state.giveTradeBoxValue
       : this.state.takeTradeBoxValue
-    const amount = await getAmount(
+    const response = await getAmount(
       this.props.navigation.getParam('side', 'buy'),
       this.props.navigation.getParam('assetId', 'BTC'),
       tradeBox,
-      this.toNumber(value)
+      this.toNumber(value),
+      'liquid'
     )
+
+    const { data } = response
+    const amount = data.data[`amount_${tradeBox === 'give' ? 'take' : 'give'}`]
 
     const valueInString = amount.toLocaleString(undefined, {
       maximumFractionDigits: 8
@@ -179,7 +183,7 @@ export default class TradeScreen extends React.Component<
     this.props.navigation.navigate('Comparison', {
       side: this.props.navigation.getParam('side'),
       assetId: this.props.navigation.getParam('assetId'),
-      amount:
+      cryptoAmount:
         this.props.navigation.getParam('side') === 'buy'
           ? this.state.takeTradeBoxValue
           : this.state.giveTradeBoxValue
