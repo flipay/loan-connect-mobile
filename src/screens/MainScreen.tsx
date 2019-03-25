@@ -9,13 +9,14 @@ import { AssetId } from '../types'
 interface Card {
   id: AssetId,
   amount: number,
-  price?: number,
+  price: number,
 }
 
 const cards: Array<Card> = [
   {
     id: 'THB',
-    amount: 3000
+    amount: 3000,
+    price: 1
   },
   {
     id: 'BTC',

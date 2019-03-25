@@ -87,11 +87,11 @@ export default class AssetCard extends React.Component<
       </Value>
     ) : (
       <View style={styles.coinMainContent}>
-        <Value assetId={this.props.id} fontType='title'>
-          {this.props.amount}
-        </Value>
-        <Value assetId='THB' fontType='body'>
+        <Value assetId='THB' fontType='title'>
           {(this.props.price || 0) * this.props.amount}
+        </Value>
+        <Value assetId={this.props.id} fontType='body'>
+          {this.props.amount}
         </Value>
       </View>
     )
@@ -130,12 +130,12 @@ export default class AssetCard extends React.Component<
             {!this.props.expanded && (
               <View style={styles.rightSection}>
                 <View style={styles.valueContainer}>
-                  <Value assetId={this.props.id} fontType='headline'>
-                    {this.props.amount}
+                  <Value assetId='THB' fontType='headline'>
+                    {(this.props.price || 0) * this.props.amount}
                   </Value>
                   {!(this.props.id === 'THB') && (
-                    <Value assetId='THB' fontType='caption'>
-                      {(this.props.price || 0) * this.props.amount}
+                    <Value assetId={this.props.id} fontType='caption'>
+                      {this.props.amount}
                     </Value>
                   )}
                 </View>
