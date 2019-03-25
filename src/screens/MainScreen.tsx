@@ -30,12 +30,12 @@ export default class MainScreen extends React.Component<
       const assets = await getPortfolio()
       this.setState({ assets })
     } catch (error) {
-      console.log('======= error ========', error) 
+      console.log('======= error ========', error)
     }
   }
 
   public getSumBalance () {
-    return _.sumBy(this.state.assets, (asset) => asset.price * asset.amount)
+    return _.sumBy(this.state.assets, (asset) => (asset.price || 1) * (asset.amount || 0))
   }
 
   public onPress = (assetId: AssetId) => {
