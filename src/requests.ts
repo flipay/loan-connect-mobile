@@ -64,7 +64,7 @@ export async function getAmount (
   return axios.get(
     `/rates/${orderType === 'buy' ? 'THB' : assetId}/${orderType === 'sell' ? 'THB' : assetId}`,
     {
-      baseURL: 'http://api.flipay.co/v1/flipay/',
+      baseURL: 'https://api.flipay.co/v1/flipay/',
       params: {
         provider,
         [`amount_${specifiedPart}`]: amount
