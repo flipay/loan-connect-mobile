@@ -7,12 +7,6 @@ import { COLORS } from '../constants'
 import { AssetId, Asset } from '../types'
 import { getPortfolio } from '../requests'
 
-interface Card {
-  id: AssetId,
-  amount: number,
-  price: number,
-}
-
 interface State {
   selectedAsset?: AssetId | null
   assets: Array<Asset>
