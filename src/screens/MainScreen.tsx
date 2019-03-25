@@ -1,4 +1,5 @@
 import * as React from 'react'
+import _ from 'lodash'
 import { ScrollView, StatusBar, View, StyleSheet } from 'react-native'
 import { LinearGradient, Amplitude } from 'expo'
 import { NavigationScreenProps } from 'react-navigation'
@@ -33,6 +34,10 @@ export default class MainScreen extends React.Component<
     }
   }
 
+  public getSumBalance () {
+    return _.sumBy(this.state.assets, (asset) => asset.price * asset.amount)
+  }
+
   public onPress = (assetId: AssetId) => {
     if (this.state.selectedAsset === assetId) {
       Amplitude.logEventWithProperties('main/close-asset-card', { assetId: assetId })
@@ -57,8 +62,7 @@ export default class MainScreen extends React.Component<
         <Text style={styles.totalValueContainer}>
           <Text color={COLORS.WHITE}>฿</Text>
           <Text type='large-title' style={styles.totalValue} color={COLORS.WHITE}>
-            {' '}
-            203,000
+            {` ${this.getSumBalance()}`}
           </Text>
         </Text>
       </LinearGradient>

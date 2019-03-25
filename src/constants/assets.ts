@@ -8,14 +8,16 @@ export const ASSETS: AssetTypes = {
     name: 'Cash',
     image: require('../img/icon_cash.png'),
     unit: 'THB',
-    order: 0
+    order: 0,
+    price: 1
   },
   BTC: {
     id: 'BTC',
     name: 'Bitcoin',
     image: require('../img/icon_btc.png'),
     unit: 'BTC',
-    order: 1
+    order: 1,
+    price: 100000
   }
   // ETH: {
   //   name: 'Ethereum',
