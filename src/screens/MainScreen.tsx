@@ -1,6 +1,6 @@
 import * as React from 'react'
 import _ from 'lodash'
-import { ScrollView, StatusBar, View, StyleSheet } from 'react-native'
+import { ScrollView, RefreshControl, StatusBar, View, StyleSheet } from 'react-native'
 import { LinearGradient, Amplitude } from 'expo'
 import { NavigationScreenProps } from 'react-navigation'
 import { Text, AssetCard } from '../components'
@@ -11,6 +11,7 @@ import { getPortfolio } from '../requests'
 interface State {
   selectedAsset?: AssetId | null
   assets: Array<Asset>
+  refreshing: boolean
 }
 
 export default class MainScreen extends React.Component<
@@ -21,18 +22,23 @@ export default class MainScreen extends React.Component<
     super(props)
     this.state = {
       selectedAsset: null,
-      assets: []
+      assets: [],
+      refreshing: false
     }
   }
 
-  public async componentDidMount () {
+  public componentDidMount () {
+    this.fetchData()
+  }
+
+  public async fetchData () {
     try {
       const assets = await getPortfolio()
       this.setState({ assets })
     } catch (error) {
       console.log('======= error ========', error)
     }
-  }
+  } 
 
   public getSumBalance () {
     return _.sumBy(this.state.assets, (asset) => (asset.price || 1) * (asset.amount || 0))
@@ -69,15 +75,29 @@ export default class MainScreen extends React.Component<
     )
   }
 
+  public onRefresh = async () => {
+    this.setState({ refreshing: true })
+    await this.fetchData()
+    this.setState({ refreshing: false })
+  }
+
   public render () {
     return (
-      <View style={{ flex: 1 }}>
+      <View
+        style={{ flex: 1 }}
+      >
         <StatusBar barStyle='light-content' />
         <ScrollView
           style={{
             backgroundColor: '#fff',
             flex: 1
           }}
+          refreshControl={<RefreshControl
+            refreshing={this.state.refreshing}
+            onRefresh={this.onRefresh}
+            progressBackgroundColor={COLORS.P400}
+            tintColor={COLORS.P400}
+          />}
         >
           {this.renderHeader()}
           <View style={styles.cardsContainer}>
