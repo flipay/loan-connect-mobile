@@ -4,7 +4,8 @@ import { LinearGradient, Amplitude } from 'expo'
 import { NavigationScreenProps } from 'react-navigation'
 import { Text, AssetCard } from '../components'
 import { COLORS } from '../constants'
-import { AssetId } from '../types'
+import { AssetId, Asset } from '../types'
+import { getPortfolio } from '../requests'
 
 interface Card {
   id: AssetId,
@@ -12,31 +13,9 @@ interface Card {
   price: number,
 }
 
-const cards: Array<Card> = [
-  {
-    id: 'THB',
-    amount: 3000,
-    price: 1
-  },
-  {
-    id: 'BTC',
-    amount: 1,
-    price: 200000
-  },
-  {
-    id: 'ETH',
-    amount: 0,
-    price: 3000
-  },
-  {
-    id: 'OMG',
-    amount: 0,
-    price: 300
-  }
-]
-
 interface State {
   selectedAsset?: AssetId | null
+  assets: Array<Asset>
 }
 
 export default class MainScreen extends React.Component<
@@ -46,7 +25,17 @@ export default class MainScreen extends React.Component<
   constructor (props: NavigationScreenProps) {
     super(props)
     this.state = {
-      selectedAsset: null
+      selectedAsset: null,
+      assets: []
+    }
+  }
+
+  public async componentDidMount () {
+    try {
+      const assets = await getPortfolio()
+      this.setState({ assets })
+    } catch (error) {
+      console.log('======= error ========', error) 
     }
   }
 
@@ -94,26 +83,26 @@ export default class MainScreen extends React.Component<
         >
           {this.renderHeader()}
           <View style={styles.cardsContainer}>
-            {cards.map((card: Card, index) => {
+            {this.state.assets.map((asset: Asset, index) => {
               const expanded =
                 !!this.state.selectedAsset &&
-                this.state.selectedAsset === card.id
+                this.state.selectedAsset === asset.id
               return (
-                <View key={card.id}>
+                <View key={asset.id}>
                   {index !== 0 && (
                     <View
                       style={expanded ? styles.bigSpace : styles.smallSpace}
                     />
                   )}
                   <AssetCard
-                    id={card.id}
-                    amount={card.amount}
-                    price={card.price}
+                    id={asset.id}
+                    amount={asset.amount || 0}
+                    price={asset.price}
                     expanded={expanded}
-                    onPress={() => this.onPress(card.id)}
+                    onPress={() => this.onPress(asset.id)}
                     navigation={this.props.navigation}
                   />
-                  {index !== cards.length - 1 && (
+                  {index !== this.state.assets.length - 1 && (
                     <View
                       style={expanded ? styles.bigSpace : styles.smallSpace}
                     />
