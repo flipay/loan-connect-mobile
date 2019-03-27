@@ -28,17 +28,20 @@ export async function authen (phoneNumber: string) {
   return response && response.data
 }
 
-export async function submitOtp (accountId: string, otpNumber: string) {
-  const response = await axios.post(`accounts/${accountId}/verify`, {
-    otp_number: otpNumber
-  })
-  return response.data.user
+export async function submitOtp (token: string, otpNumber: string) {
+  const response = await axios.post(
+    `auth/verify`,
+    { code: otpNumber },
+    { headers: { Authorization: 'Bearer ' + token } }
+  )
+  return response.data
 }
 
 export async function createPin (accountId: string, pin: string) {
-  const response = await axios.post(`accounts/${accountId}/create_pin`, {
-    pin
-  })
+  const response = await axios.post(`accounts/${accountId}/create_pin`, 
+    { pin },
+
+  )
   return response.data.user
 }
 

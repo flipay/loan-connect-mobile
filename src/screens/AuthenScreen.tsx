@@ -37,7 +37,7 @@ export default class AuthenScreen extends React.Component<
     if (!response) { return }
     this.props.navigation.navigate('VerifyPhoneNumber', {
       phoneNumber: this.state.phoneNumber,
-      token: response.token,
+      otpToken: response.token,
       refCode: response.ref_code
     })
   }
