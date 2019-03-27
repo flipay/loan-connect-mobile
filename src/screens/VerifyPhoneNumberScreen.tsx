@@ -283,7 +283,7 @@ export default class VerifyPhoneNumberScreen extends React.Component<
             <Text type='title'>{`Enter the 6-digit code sent to ${this.props.navigation.getParam(
               'phoneNumber',
               '08XXXXXXXX'
-            )}`}</Text>
+            )} (Ref: ${this.props.navigation.getParam('refCode', 'XXXX')})`}</Text>
             {this.renderBoxes()}
             {this.renderBody()}
             {this.renderHiddenTextInput(autoFocus)}

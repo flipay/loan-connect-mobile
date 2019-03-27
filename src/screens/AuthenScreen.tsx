@@ -32,16 +32,14 @@ export default class AuthenScreen extends React.Component<
     // it will not work on the next page.
     Keyboard.dismiss()
     this.setState({ loading: true })
-    try {
-      const user = await authen(this.state.phoneNumber)
-      this.props.navigation.navigate('VerifyPhoneNumber', {
-        accountId: user.id,
-        phoneNumber: this.state.phoneNumber
-      })
-      this.setState({ loading: false })
-    } catch (err) {
-      this.setState({ loading: false })
-    }
+    const response = await authen(this.state.phoneNumber)
+    this.setState({ loading: false })
+    if (!response) { return }
+    this.props.navigation.navigate('VerifyPhoneNumber', {
+      phoneNumber: this.state.phoneNumber,
+      token: response.token,
+      refCode: response.ref_code
+    })
   }
 
   public onChangeText = async (text: string) => {
