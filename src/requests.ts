@@ -1,6 +1,9 @@
 import axios from 'axios'
 import { Alert } from 'react-native'
+import _ from 'lodash'
+import Promise from 'bluebird'
 import { OrderType, OrderPart, AssetId } from './types'
+import { ASSETS } from './constants'
 
 export async function authen (phoneNumber: string) {
   const payload = {
@@ -43,6 +46,29 @@ export async function createPin (accountId: string, pin: string) {
 
   )
   return response.data.user
+}
+
+export function getBalance (asset: AssetId) {
+  return axios.get(
+    `/wallet/${asset}/balance`,
+    {
+      baseURL: 'https://api.flipay.co/v1/flipay'
+    }
+  )
+}
+
+export async function getPortfolio () {
+  const arrayAssets = _.map(ASSETS, (asset) => asset)
+  const orderedAssets = _.sortBy(arrayAssets, (asset) => asset.order)
+  const responses = await Promise.map((orderedAssets), (asset) => {
+    return getBalance(asset.id)
+  })
+  return _.map(responses, (object, index) => {
+    return {
+      amount: object.data.data.amount,
+      ...orderedAssets[index]
+    }
+  })
 }
 
 export async function getAmount (

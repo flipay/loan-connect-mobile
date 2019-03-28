@@ -1,41 +1,17 @@
 import * as React from 'react'
-import { ScrollView, StatusBar, View, StyleSheet } from 'react-native'
+import _ from 'lodash'
+import { ScrollView, RefreshControl, StatusBar, View, StyleSheet } from 'react-native'
 import { LinearGradient, Amplitude } from 'expo'
 import { NavigationScreenProps } from 'react-navigation'
 import { Text, AssetCard } from '../components'
 import { COLORS } from '../constants'
-import { AssetId } from '../types'
-
-interface Card {
-  id: AssetId,
-  amount: number,
-  price?: number,
-}
-
-const cards: Array<Card> = [
-  {
-    id: 'THB',
-    amount: 3000
-  },
-  {
-    id: 'BTC',
-    amount: 1,
-    price: 200000
-  },
-  {
-    id: 'ETH',
-    amount: 0,
-    price: 3000
-  },
-  {
-    id: 'OMG',
-    amount: 0,
-    price: 300
-  }
-]
+import { AssetId, Asset } from '../types'
+import { getPortfolio } from '../requests'
 
 interface State {
   selectedAsset?: AssetId | null
+  assets: Array<Asset>
+  refreshing: boolean
 }
 
 export default class MainScreen extends React.Component<
@@ -45,8 +21,27 @@ export default class MainScreen extends React.Component<
   constructor (props: NavigationScreenProps) {
     super(props)
     this.state = {
-      selectedAsset: null
+      selectedAsset: null,
+      assets: [],
+      refreshing: false
     }
+  }
+
+  public componentDidMount () {
+    this.fetchData()
+  }
+
+  public async fetchData () {
+    try {
+      const assets = await getPortfolio()
+      this.setState({ assets })
+    } catch (error) {
+      console.log('======= error ========', error)
+    }
+  } 
+
+  public getSumBalance () {
+    return _.sumBy(this.state.assets, (asset) => (asset.price || 1) * (asset.amount || 0))
   }
 
   public onPress = (assetId: AssetId) => {
@@ -73,46 +68,59 @@ export default class MainScreen extends React.Component<
         <Text style={styles.totalValueContainer}>
           <Text color={COLORS.WHITE}>฿</Text>
           <Text type='large-title' style={styles.totalValue} color={COLORS.WHITE}>
-            {' '}
-            203,000
+            {` ${this.getSumBalance()}`}
           </Text>
         </Text>
       </LinearGradient>
     )
   }
 
+  public onRefresh = async () => {
+    this.setState({ refreshing: true })
+    await this.fetchData()
+    this.setState({ refreshing: false })
+  }
+
   public render () {
     return (
-      <View style={{ flex: 1 }}>
+      <View
+        style={{ flex: 1 }}
+      >
         <StatusBar barStyle='light-content' />
         <ScrollView
           style={{
             backgroundColor: '#fff',
             flex: 1
           }}
+          refreshControl={<RefreshControl
+            refreshing={this.state.refreshing}
+            onRefresh={this.onRefresh}
+            progressBackgroundColor={COLORS.P400}
+            tintColor={COLORS.P400}
+          />}
         >
           {this.renderHeader()}
           <View style={styles.cardsContainer}>
-            {cards.map((card: Card, index) => {
+            {this.state.assets.map((asset: Asset, index) => {
               const expanded =
                 !!this.state.selectedAsset &&
-                this.state.selectedAsset === card.id
+                this.state.selectedAsset === asset.id
               return (
-                <View key={card.id}>
+                <View key={asset.id}>
                   {index !== 0 && (
                     <View
                       style={expanded ? styles.bigSpace : styles.smallSpace}
                     />
                   )}
                   <AssetCard
-                    id={card.id}
-                    amount={card.amount}
-                    price={card.price}
+                    id={asset.id}
+                    amount={asset.amount || 0}
+                    price={asset.price}
                     expanded={expanded}
-                    onPress={() => this.onPress(card.id)}
+                    onPress={() => this.onPress(asset.id)}
                     navigation={this.props.navigation}
                   />
-                  {index !== cards.length - 1 && (
+                  {index !== this.state.assets.length - 1 && (
                     <View
                       style={expanded ? styles.bigSpace : styles.smallSpace}
                     />
