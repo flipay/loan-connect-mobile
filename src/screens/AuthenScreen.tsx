@@ -3,7 +3,7 @@ import _ from 'lodash'
 import { Amplitude } from 'expo'
 import { NavigationScreenProps } from 'react-navigation'
 import { View, TextInput, StyleSheet, Keyboard } from 'react-native'
-import { signUp } from '../requests'
+import { authen } from '../requests'
 import { COLORS } from '../constants'
 import { ScreenWithKeyboard, Text, Layer } from '../components'
 
@@ -13,7 +13,7 @@ interface State {
   activeLayer: boolean
 }
 
-export default class SignUpScreen extends React.Component<
+export default class AuthenScreen extends React.Component<
   NavigationScreenProps,
   State
 > {
@@ -27,21 +27,19 @@ export default class SignUpScreen extends React.Component<
   }
 
   public onPressSubmit = async () => {
-    Amplitude.logEvent('sign-up/submit-phone-number')
+    Amplitude.logEvent('authen/submit-phone-number')
     // NOTE: I have to close the Keyboard first otherwise
     // it will not work on the next page.
     Keyboard.dismiss()
     this.setState({ loading: true })
-    try {
-      const user = await signUp(this.state.phoneNumber)
-      this.props.navigation.navigate('VerifyPhoneNumber', {
-        accountId: user.id,
-        phoneNumber: this.state.phoneNumber
-      })
-      this.setState({ loading: false })
-    } catch (err) {
-      this.setState({ loading: false })
-    }
+    const response = await authen(this.state.phoneNumber)
+    this.setState({ loading: false })
+    if (!response) { return }
+    this.props.navigation.navigate('VerifyPhoneNumber', {
+      phoneNumber: this.state.phoneNumber,
+      otpToken: response.token,
+      refCode: response.ref_code
+    })
   }
 
   public onChangeText = async (text: string) => {
@@ -49,7 +47,7 @@ export default class SignUpScreen extends React.Component<
   }
 
   public onPressBackButton = () => {
-    Amplitude.logEvent('sign-up/press-back-button')
+    Amplitude.logEvent('authen/press-back-button')
     this.props.navigation.goBack()
   }
 

@@ -1,33 +1,50 @@
 import axios from 'axios'
+import { Alert } from 'react-native'
 import _ from 'lodash'
 import Promise from 'bluebird'
 import { OrderType, OrderPart, AssetId } from './types'
 import { ASSETS } from './constants'
 
-export async function signUp (phoneNumber: string) {
-  const response = await axios.post('/sign_up', { phone_number: phoneNumber })
-  return response.data.user
+export async function authen (phoneNumber: string) {
+  const payload = {
+    phone_number: '66' + phoneNumber.substring(1)
+  }
+  let response
+  try {
+    response = await axios.post('auth/signup', payload)
+  } catch (signUpErr) {
+    switch (signUpErr.response.status) {
+      case 409:
+        try {
+          response = await axios.post('auth/login', payload)
+        } catch (logInErr) {
+          Alert.alert(logInErr.request._response)
+        }
+        break
+      case 422:
+        Alert.alert('Invalid phone number format')
+        break
+      default:
+        Alert.alert('Something went wrong.')
+    }
+  }
+  return response && response.data
 }
 
-export async function submitOtp (accountId: string, otpNumber: string) {
-  const response = await axios.post(`accounts/${accountId}/verify`, {
-    otp_number: otpNumber
-  })
-  return response.data.user
+export async function submitOtp (token: string, otpNumber: string) {
+  const response = await axios.post(
+    `auth/verify`,
+    { code: otpNumber },
+    { headers: { Authorization: 'Bearer ' + token } }
+  )
+  return response.data
 }
 
 export async function createPin (accountId: string, pin: string) {
-  const response = await axios.post(`accounts/${accountId}/create_pin`, {
-    pin
-  })
-  return response.data.user
-}
+  const response = await axios.post(`accounts/${accountId}/create_pin`, 
+    { pin },
 
-export async function logIn (accountId: string, pin: string) {
-  const response = await axios.post(`log_in`, {
-    account_id: accountId,
-    pin
-  })
+  )
   return response.data.user
 }
 
@@ -62,9 +79,10 @@ export async function getAmount (
   provider: string
 ) {
   return axios.get(
-    `/rates/${orderType === 'buy' ? 'THB' : assetId}/${orderType === 'sell' ? 'THB' : assetId}`,
+    `/rates/${orderType === 'buy' ? 'THB' : assetId}/${
+      orderType === 'sell' ? 'THB' : assetId
+    }`,
     {
-      baseURL: 'https://api.flipay.co/v1/flipay/',
       params: {
         provider,
         [`amount_${specifiedPart}`]: amount

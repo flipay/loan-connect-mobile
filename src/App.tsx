@@ -9,14 +9,15 @@ import {
 import Starter from './Starter'
 import MainScreen from './screens/MainScreen'
 import WelcomeScreen from './screens/WelcomeScreen'
-import SignUpScreen from './screens/SignUpScreen'
+import AuthenScreen from './screens/AuthenScreen'
 import VerifyPhoneNumberScreen from './screens/VerifyPhoneNumberScreen'
 import TradeScreen from './screens/TradeScreen'
 import ComparisonScreen from './screens/ComparisonScreen'
 import PinScreen from './screens/PinScreen'
 import { Font, Amplitude } from 'expo'
 
-axios.defaults.baseURL = 'https://flipay-mock-backend.herokuapp.com/'
+axios.defaults.baseURL = 'https://api.flipay.co/v1/'
+// axios.defaults.baseURL = 'https://flipay-mock-backend.herokuapp.com/'
 // axios.defaults.baseURL = 'http://192.168.0.4:8000'
 
 const AuthStack = createStackNavigator(
@@ -31,7 +32,7 @@ const AuthStack = createStackNavigator(
 const VerificationStack = createStackNavigator(
   {
     Welcome: { screen: WelcomeScreen },
-    SignUp: { screen: SignUpScreen },
+    Authen: { screen: AuthenScreen },
     VerifyPhoneNumber: { screen: VerifyPhoneNumberScreen }
   },
   {

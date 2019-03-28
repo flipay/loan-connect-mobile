@@ -14,9 +14,9 @@ import { COLORS } from '../constants'
 export default class WelcomeScreen extends React.Component<
   NavigationScreenProps
 > {
-  public onPressSignUp = () => {
-    Amplitude.logEvent('welcome/press-create-account-button')
-    this.props.navigation.navigate('SignUp')
+  public onPressButton = () => {
+    Amplitude.logEvent('welcome/press-create-account-or-login-button')
+    this.props.navigation.navigate('Authen')
   }
 
   public renderBody () {
@@ -35,9 +35,9 @@ export default class WelcomeScreen extends React.Component<
 
   public renderButton () {
     return (
-      <TouchableOpacity style={styles.button} onPress={this.onPressSignUp}>
+      <TouchableOpacity style={styles.button} onPress={this.onPressButton}>
         <Text type='button' color={COLORS.P400}>
-          Create a new account
+          Create a new account / Log In
         </Text>
       </TouchableOpacity>
     )

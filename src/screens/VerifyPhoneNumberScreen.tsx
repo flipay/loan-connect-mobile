@@ -120,13 +120,22 @@ export default class VerifyPhoneNumberScreen extends React.Component<
       }
       try {
         this.setState({ loading: true })
-        await submitOtp(this.props.navigation.getParam('accountId'), text)
+        await submitOtp(this.props.navigation.getParam('otpToken'), text)
         Amplitude.logEvent('verify-phone-number/successfully-verified')
         this.setState({ verified: true, loading: false })
       } catch (err) {
-        Amplitude.logEvent('verify-phone-number/sms-code-incorrect')
+        let errorMessage
+        switch (err.response.status) {
+          case 403:
+            Amplitude.logEvent('verify-phone-number/sms-code-incorrect')
+            errorMessage = 'The code you entered is incorrect'
+            break
+          default:
+
+            errorMessage = 'Something went wrong.'
+        }
         this.setState({
-          errorMessage: 'The SMS code you entered is incorrect',
+          errorMessage,
           loading: false
         })
       }
@@ -283,7 +292,7 @@ export default class VerifyPhoneNumberScreen extends React.Component<
             <Text type='title'>{`Enter the 6-digit code sent to ${this.props.navigation.getParam(
               'phoneNumber',
               '08XXXXXXXX'
-            )}`}</Text>
+            )} (Ref: ${this.props.navigation.getParam('refCode', 'XXXX')})`}</Text>
             {this.renderBoxes()}
             {this.renderBody()}
             {this.renderHiddenTextInput(autoFocus)}
