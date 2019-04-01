@@ -4,13 +4,13 @@ import _ from 'lodash'
 import Promise from 'bluebird'
 import { OrderType, OrderPart, AssetId } from './types'
 import { ASSETS } from './constants'
-import { encrypToken, decryptToken } from './secureStorage'
+import { setToken, getToken } from './secureStorage'
 
 export function setBaseUrl (url: string) {
   axios.defaults.baseURL = url
 }
 
-function setToken (token: string) {
+function setAuthorization (token: string) {
   axios.defaults.headers.common.Authorization = `Bearer ${token}`
   const min = 20
   setTimeout(() => {
@@ -19,8 +19,13 @@ function setToken (token: string) {
 }
 
 export async function setUpPin (token: string, pin: string) {
-  await encrypToken (token, pin)
-  setToken (token)
+  await setToken(token, pin)
+  setAuthorization(token)
+}
+
+export async function unlock (pin: string) {
+  const token = await getToken(pin)
+  setAuthorization(token)
 }
 
 export async function authen (phoneNumber: string) {
@@ -47,12 +52,6 @@ export async function authen (phoneNumber: string) {
     }
   }
   return response && response.data
-}
-
-export async function unlock (pin: string) {
-  const token = await decryptToken(pin)
-  setToken(token)
-  await getBalance('THB') // try sending one request
 }
 
 export async function submitOtp (token: string, otpNumber: string) {

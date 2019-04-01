@@ -2,25 +2,37 @@ import CryptoJS from 'crypto-js'
 import { Alert } from 'react-native'
 import { SecureStore } from 'expo'
 
-export async function encrypToken (token: string, pin: string) {
-  const cipherText = CryptoJS.AES.encrypt(token, pin).toString()
-  try {
-    await SecureStore.setItemAsync('encrypted-token', cipherText)
-  } catch (err) {
-    Alert.alert('Authentication failed')
-  }
-  return ''
+const ENCRYPTED_TOKEN = 'encrypted-token'
+const HASHED_TOKEN = 'hashed-token'
+
+export async function checkLoginStatus () {
+  const value = await SecureStore.getItemAsync(ENCRYPTED_TOKEN)
+  return !!value
 }
 
-export async function decryptToken (pin: string) {
+export async function setToken (token: string, pin: string) {
+  const encrypted = CryptoJS.AES.encrypt(token, pin).toString()
+  const hashed = CryptoJS.SHA256(token).toString()
   try {
-    const value = await SecureStore.getItemAsync('encrypted-token')
-    if (value) {
-      return CryptoJS.AES.decrypt(value, pin).toString(CryptoJS.enc.Utf8)
-    }
-    return ''
+    await SecureStore.setItemAsync(ENCRYPTED_TOKEN, encrypted)
+    await SecureStore.setItemAsync(HASHED_TOKEN, hashed)
   } catch (err) {
     Alert.alert('Authentication failed')
-    return ''
   }
+}
+
+export async function getToken (pin: string) {
+  const encrypted = await SecureStore.getItemAsync(ENCRYPTED_TOKEN)
+  const hashed = await SecureStore.getItemAsync(HASHED_TOKEN)
+  if (encrypted && hashed) {
+    const decrypted = CryptoJS.AES.decrypt(encrypted, pin).toString(CryptoJS.enc.Utf8)
+    const decryptedHashed = CryptoJS.SHA256(decrypted).toString()
+    if (hashed === decryptedHashed) {
+      const token = decrypted
+      return token
+    } else {
+      throw (Error('wrong pin'))
+    }
+  }
+  throw (Error('no credential available'))
 }
