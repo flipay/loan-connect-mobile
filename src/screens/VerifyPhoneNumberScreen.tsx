@@ -1,10 +1,11 @@
 import * as React from 'react'
 import _ from 'lodash'
-import { View, TextInput, StyleSheet, AsyncStorage, TouchableOpacity } from 'react-native'
+import axios from 'axios'
+import { View, TextInput, StyleSheet, TouchableOpacity } from 'react-native'
 import { Amplitude } from 'expo'
 import { AntDesign } from '@expo/vector-icons'
 import { NavigationScreenProps } from 'react-navigation'
-import { submitOtp, createPin } from '../requests'
+import { setToken, submitOtp } from '../requests'
 import { COLORS } from '../constants'
 import { Text, ScreenWithKeyboard, Layer, Link } from '../components'
 
@@ -88,10 +89,7 @@ export default class VerifyPhoneNumberScreen extends React.Component<
           Amplitude.logEvent('confirm-pin/pin-match')
           try {
             startLoading()
-            const accountId = this.props.navigation.getParam('accountId')
-            await createPin(accountId, secondPin)
             Amplitude.logEvent('confirm-pin/successfully-setting-pin')
-            await AsyncStorage.setItem('account_id', accountId)
             stackNavigationConmfirmPin.navigate('Main')
           } catch (error) {
             Amplitude.logEvent('confirm-pin/error-setting-pin')
@@ -120,7 +118,8 @@ export default class VerifyPhoneNumberScreen extends React.Component<
       }
       try {
         this.setState({ loading: true })
-        await submitOtp(this.props.navigation.getParam('otpToken'), text)
+        const { token } = await submitOtp(this.props.navigation.getParam('otpToken'), text)
+        setToken(token)
         Amplitude.logEvent('verify-phone-number/successfully-verified')
         this.setState({ verified: true, loading: false })
       } catch (err) {

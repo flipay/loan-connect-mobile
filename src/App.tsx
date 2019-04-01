@@ -1,11 +1,11 @@
 import * as React from 'react'
-import axios from 'axios'
 import {
   createAppContainer,
   createStackNavigator,
   createSwitchNavigator
 } from 'react-navigation'
 
+import { setBaseUrl } from './requests'
 import Starter from './Starter'
 import MainScreen from './screens/MainScreen'
 import WelcomeScreen from './screens/WelcomeScreen'
@@ -16,9 +16,9 @@ import ComparisonScreen from './screens/ComparisonScreen'
 import PinScreen from './screens/PinScreen'
 import { Font, Amplitude } from 'expo'
 
-axios.defaults.baseURL = 'https://api.flipay.co/v1/'
-// axios.defaults.baseURL = 'https://flipay-mock-backend.herokuapp.com/'
-// axios.defaults.baseURL = 'http://192.168.0.4:8000'
+setBaseUrl('https://api.flipay.co/v1/')
+// 'https://flipay-mock-backend.herokuapp.com/'
+// 'http://192.168.0.4:8000'
 
 const AuthStack = createStackNavigator(
   {

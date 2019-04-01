@@ -5,6 +5,18 @@ import Promise from 'bluebird'
 import { OrderType, OrderPart, AssetId } from './types'
 import { ASSETS } from './constants'
 
+export function setBaseUrl (url: string) {
+  axios.defaults.baseURL = url
+}
+
+export function setToken (token: string) {
+  axios.defaults.headers.common.Authorization = `Bearer ${token}`
+  const min = 20
+  setTimeout(() => {
+    axios.defaults.headers.common.Authorization = ''
+  }, min * 60 * 1000)
+}
+
 export async function authen (phoneNumber: string) {
   const payload = {
     phone_number: '66' + phoneNumber.substring(1)
@@ -41,20 +53,14 @@ export async function submitOtp (token: string, otpNumber: string) {
 }
 
 export async function createPin (accountId: string, pin: string) {
-  const response = await axios.post(`accounts/${accountId}/create_pin`, 
-    { pin },
-
+  const response = await axios.post(`accounts/${accountId}/create_pin`,
+    { pin }
   )
   return response.data.user
 }
 
 export function getBalance (asset: AssetId) {
-  return axios.get(
-    `/wallet/${asset}/balance`,
-    {
-      baseURL: 'https://api.flipay.co/v1/flipay'
-    }
-  )
+  return axios.get(`wallets/${asset}/balance`)
 }
 
 export async function getPortfolio () {
