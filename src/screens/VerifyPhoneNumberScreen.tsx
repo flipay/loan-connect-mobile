@@ -4,7 +4,7 @@ import { View, TextInput, StyleSheet, TouchableOpacity } from 'react-native'
 import { Amplitude } from 'expo'
 import { AntDesign } from '@expo/vector-icons'
 import { NavigationScreenProps } from 'react-navigation'
-import { setToken, submitOtp } from '../requests'
+import { setUpPin, submitOtp } from '../requests'
 import { COLORS } from '../constants'
 import { Text, ScreenWithKeyboard, Layer, Link } from '../components'
 
@@ -26,6 +26,7 @@ export default class VerifyPhoneNumberScreen extends React.Component<
 > {
   private input: TextInput | null = null
   private interval: any
+  private accessToken: string = ''
 
   public constructor (props: NavigationScreenProps) {
     super(props)
@@ -88,6 +89,7 @@ export default class VerifyPhoneNumberScreen extends React.Component<
           Amplitude.logEvent('confirm-pin/pin-match')
           try {
             startLoading()
+            await setUpPin(this.accessToken, secondPin)
             Amplitude.logEvent('confirm-pin/successfully-setting-pin')
             stackNavigationConmfirmPin.navigate('Main')
           } catch (error) {
@@ -118,7 +120,7 @@ export default class VerifyPhoneNumberScreen extends React.Component<
       try {
         this.setState({ loading: true })
         const { token } = await submitOtp(this.props.navigation.getParam('otpToken'), text)
-        setToken(token)
+        this.accessToken = token
         Amplitude.logEvent('verify-phone-number/successfully-verified')
         this.setState({ verified: true, loading: false })
       } catch (err) {

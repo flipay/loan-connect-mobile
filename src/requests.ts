@@ -1,22 +1,26 @@
 import axios from 'axios'
-import aes from 'crypto-js/aes'
-import { SecureStore } from 'expo'
 import { Alert } from 'react-native'
 import _ from 'lodash'
 import Promise from 'bluebird'
 import { OrderType, OrderPart, AssetId } from './types'
 import { ASSETS } from './constants'
+import { encrypToken, decryptToken } from './secureStorage'
 
 export function setBaseUrl (url: string) {
   axios.defaults.baseURL = url
 }
 
-export function setToken (token: string) {
+function setToken (token: string) {
   axios.defaults.headers.common.Authorization = `Bearer ${token}`
   const min = 20
   setTimeout(() => {
     axios.defaults.headers.common.Authorization = ''
   }, min * 60 * 1000)
+}
+
+export async function setUpPin (token: string, pin: string) {
+  await encrypToken (token, pin)
+  setToken (token)
 }
 
 export async function authen (phoneNumber: string) {
@@ -45,34 +49,10 @@ export async function authen (phoneNumber: string) {
   return response && response.data
 }
 
-export async function encrypToken (token: string, pin: string) {
-  const cipherText = aes.encrypt(token, pin).toString()
-  try {
-    await SecureStore.setItemAsync('encrypted-token', cipherText)
-  } catch (err) {
-    Alert.alert('Authentication failed')
-  }
-  return ''
-}
-
-async function decryptToken (pin: string) {
-  try {
-    const value = await SecureStore.getItemAsync('encrypted-token')
-    const token = aes.decrypt(value, pin)
-    return token
-  } catch (err) {
-    Alert.alert('Authentication failed')
-  }
-}
-
 export async function unlock (pin: string) {
-  try {
-    const token = await decryptToken(pin)
-    setToken(token)
-    getBalance('THB') // try sending one request
-  } catch (err) {
-    Alert.alert('insert the wrong PIN')
-  }
+  const token = await decryptToken(pin)
+  setToken(token)
+  await getBalance('THB') // try sending one request
 }
 
 export async function submitOtp (token: string, otpNumber: string) {
