@@ -1,4 +1,6 @@
 import axios from 'axios'
+import aes from 'crypto-js/aes'
+import { SecureStore } from 'expo'
 import { Alert } from 'react-native'
 import _ from 'lodash'
 import Promise from 'bluebird'
@@ -43,6 +45,36 @@ export async function authen (phoneNumber: string) {
   return response && response.data
 }
 
+export async function encrypToken (token: string, pin: string) {
+  const cipherText = aes.encrypt(token, pin).toString()
+  try {
+    await SecureStore.setItemAsync('encrypted-token', cipherText)
+  } catch (err) {
+    Alert.alert('Authentication failed')
+  }
+  return ''
+}
+
+async function decryptToken (pin: string) {
+  try {
+    const value = await SecureStore.getItemAsync('encrypted-token')
+    const token = aes.decrypt(value, pin)
+    return token
+  } catch (err) {
+    Alert.alert('Authentication failed')
+  }
+}
+
+export async function unlock (pin: string) {
+  try {
+    const token = await decryptToken(pin)
+    setToken(token)
+    getBalance('THB') // try sending one request
+  } catch (err) {
+    Alert.alert('insert the wrong PIN')
+  }
+}
+
 export async function submitOtp (token: string, otpNumber: string) {
   const response = await axios.post(
     `auth/verify`,
@@ -52,14 +84,7 @@ export async function submitOtp (token: string, otpNumber: string) {
   return response.data
 }
 
-export async function createPin (accountId: string, pin: string) {
-  const response = await axios.post(`accounts/${accountId}/create_pin`,
-    { pin }
-  )
-  return response.data.user
-}
-
-export function getBalance (asset: AssetId) {
+function getBalance (asset: AssetId) {
   return axios.get(`wallets/${asset}/balance`)
 }
 

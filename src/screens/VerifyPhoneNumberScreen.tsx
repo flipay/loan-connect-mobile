@@ -1,6 +1,5 @@
 import * as React from 'react'
 import _ from 'lodash'
-import axios from 'axios'
 import { View, TextInput, StyleSheet, TouchableOpacity } from 'react-native'
 import { Amplitude } from 'expo'
 import { AntDesign } from '@expo/vector-icons'

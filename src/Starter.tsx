@@ -4,7 +4,7 @@ import _ from 'lodash'
 import { View, StyleSheet, AsyncStorage } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { Amplitude } from 'expo'
-import { logIn } from './requests'
+import { unlock } from './requests'
 import { COLORS } from './constants/styleGuides'
 import { Text } from './components'
 
@@ -27,7 +27,7 @@ export default class Start extends React.Component<
         onSuccess: async (pin: string, stackNavigationLogInPin: any, setErrorConfirm: (errorMessage: string) => void, startLoading: () => void, stopLoading: () => void) => {
           try {
             startLoading()
-            await logIn(accountId, pin)
+            await unlock(pin)
             Amplitude.logEvent('login/successfully-login')
             stackNavigationLogInPin.navigate('Main')
           } catch (error) {
