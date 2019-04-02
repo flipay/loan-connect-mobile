@@ -68,6 +68,14 @@ export default class AssetCard extends React.Component<
     }
   }
 
+  public onPressDepositButton = () => {
+    this.props.navigation.navigate('Deposit')
+  }
+
+  public onPressWithdrawButton = () => {
+    this.props.navigation.navigate('Withdraw')
+  }
+
   public onPressButton = (side: 'buy' | 'sell') => {
     Amplitude.logEventWithProperties('main/trade-button', {
       assetId: this.props.id,
@@ -99,9 +107,11 @@ export default class AssetCard extends React.Component<
 
   public renderExpandedCardDescription () {
     return this.props.id === 'THB' ? (
-      <Text numberOfLines={2} style={styles.contactUs} color={COLORS.N500}>
-        To deposit cash in Thai baht, please contact us
-      </Text>
+      <View style={styles.buttonsContainer}>
+        <Button onPress={this.onPressDepositButton}>Deposit</Button>
+        <View style={styles.spacing} />
+        <Button onPress={this.onPressWithdrawButton}>Withdraw</Button>
+      </View>
     ) : (
       <View style={styles.buttonsContainer}>
         <Button onPress={() => this.onPressButton('buy')}>Buy</Button>
