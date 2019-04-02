@@ -70,15 +70,26 @@ function getBalance (asset: AssetId) {
 export async function getPortfolio () {
   const arrayAssets = _.map(ASSETS, (asset) => asset)
   const orderedAssets = _.sortBy(arrayAssets, (asset) => asset.order)
-  const responses = await Promise.map((orderedAssets), (asset) => {
-    return getBalance(asset.id)
-  })
-  return _.map(responses, (object, index) => {
-    return {
-      amount: object.data.data.amount,
-      ...orderedAssets[index]
-    }
-  })
+  let responses
+  try {
+    responses = await Promise.map((orderedAssets), (asset) => {
+      return getBalance(asset.id)
+    })
+    return _.map(responses, (object, index) => {
+      return {
+        amount: object.data.data.amount,
+        ...orderedAssets[index]
+      }
+    })
+  } catch (err) { // HACK: when I get 404 everything is gone
+    return _.map(orderedAssets, (asset) => (
+      {
+        amount: 0,
+        ...asset
+      }
+    ))
+  }
+
 }
 
 export async function getAmount (
