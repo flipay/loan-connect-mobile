@@ -73,7 +73,7 @@ export default class AssetCard extends React.Component<
   }
 
   public onPressWithdrawButton = () => {
-    this.props.navigation.navigate('Withdraw')
+    this.props.navigation.navigate('Withdrawal')
   }
 
   public onPressButton = (side: 'buy' | 'sell') => {
