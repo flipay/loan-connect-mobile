@@ -13,6 +13,7 @@ import {
 import { COLORS, ASSETS } from '../constants'
 import { AssetId, OrderPart } from '../types'
 import { getAmount } from '../requests'
+import { toNumber } from '../utils'
 import { Amplitude } from 'expo'
 
 type TradeBoxType = OrderPart
@@ -67,7 +68,7 @@ export default class TradeScreen extends React.Component<
       this.props.navigation.getParam('side', 'buy'),
       this.props.navigation.getParam('assetId', 'BTC'),
       tradeBox,
-      this.toNumber(value),
+      toNumber(value),
       'liquid'
     )
 
@@ -108,15 +109,10 @@ export default class TradeScreen extends React.Component<
     }
   }
 
-  public toNumber (value: string) {
-    const valueInStringWithoutComma = _.replace(value, /,/g, '')
-    return Number(valueInStringWithoutComma)
-  }
-
   public formatNumberInString (valueInString: string) {
     let haveDot = false
     let endingZero = 0
-    const valueInNumber = this.toNumber(valueInString)
+    const valueInNumber = toNumber(valueInString)
     if (valueInString === '.') {
       valueInString = '0.'
     } else if (valueInString !== '') {
