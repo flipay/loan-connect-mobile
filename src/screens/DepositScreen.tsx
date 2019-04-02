@@ -12,6 +12,7 @@ import { toNumber } from '../utils'
 interface State {
   amount: string
   active: boolean
+  submitted: boolean
 }
 
 export default class DepositScreen extends React.Component<
@@ -23,7 +24,8 @@ export default class DepositScreen extends React.Component<
     super(props)
     this.state = {
       amount: '',
-      active: true
+      active: true,
+      submitted: false
     }
   }
 
@@ -40,31 +42,39 @@ export default class DepositScreen extends React.Component<
     this.setState({ amount: value })
   }
 
-  public onPressSubmit = () => {
-    deposit('THB', toNumber(this.state.amount))
+  public onPressSubmit = async () => {
+    await deposit('THB', toNumber(this.state.amount))
+    this.setState({ submitted: true })
   }
 
   public render () {
     return (
       <ScreenWithKeyboard
-        backButtonType='arrowleft'
+        backButtonType='close'
         onPressBackButton={this.onPressBackButton}
         activeSubmitButton={!!this.state.amount}
+        submitButtonText={this.state.submitted ? 'OK' : 'Submit'}
         onPessSubmitButton={this.onPressSubmit}
         fullScreenLoading={false}
       >
         {(autoFocus: boolean) => (
           <View style={styles.body}>
-            <Text type='title'>Deposit</Text>
-            <TradeBox
-              autoFocus={autoFocus}
-              description='Deposit amount'
-              assetId='THB'
-              onPress={this.onPress}
-              onChangeValue={this.onChangeValue}
-              active={this.state.active}
-              value={this.state.amount}
-            />
+            <Text type='title' style={styles.title}>Deposit</Text>
+            {!this.state.submitted
+              ? (
+                <TradeBox
+                  autoFocus={autoFocus}
+                  description='Deposit amount'
+                  assetId='THB'
+                  onPress={this.onPress}
+                  onChangeValue={this.onChangeValue}
+                  active={this.state.active}
+                  value={this.state.amount}
+                />
+              ) : (
+                <Text>Submit the transfer receipt to receipt@flipay.co after that, it will be available in your wallet within 24 hours.</Text>
+              )
+            }
           </View>
         )}
       </ScreenWithKeyboard>
@@ -74,6 +84,11 @@ export default class DepositScreen extends React.Component<
 
 const styles = StyleSheet.create({
   body: {
-    flex: 1
+    flex: 1,
+    paddingTop: 20,
+    alignItems: 'center'
+  },
+  title: {
+    paddingBottom: 20
   }
 })
