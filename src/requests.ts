@@ -165,3 +165,17 @@ export async function withdraw (
     bank_account_issuer: accountIssuer
   })
 }
+
+export async function order (
+  assetGive: AssetId,
+  assetTake: AssetId,
+  amountGive: string,
+  expectedAmountTake: string
+) {
+  await axios.post('orders', {
+    asset_give: assetGive,
+    asset_take: assetTake,
+    amount_give: amountGive,
+    expected_amount_take: expectedAmountTake
+  })
+}

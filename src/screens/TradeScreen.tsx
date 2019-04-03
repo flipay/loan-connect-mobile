@@ -1,6 +1,6 @@
 import * as React from 'react'
 import _ from 'lodash'
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, View, Alert } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import {
   Text,
@@ -13,7 +13,7 @@ import {
 } from '../components'
 import { COLORS, ASSETS } from '../constants'
 import { AssetId, OrderPart } from '../types'
-import { getAmount } from '../requests'
+import { getAmount, order } from '../requests'
 import { toNumber } from '../utils'
 import { Amplitude } from 'expo'
 
@@ -165,9 +165,21 @@ export default class TradeScreen extends React.Component<
     }, 500)
   }
 
-  public execute = () => {
+  public execute = async () => {
+    const side = this.props.navigation.getParam('side')
+    const assetId = this.props.navigation.getParam('assetId')
     this.logEvent('preee-submit-button')
-    this.setState({ executed: true })
+    try {
+      await order(
+        side === 'buy' ? 'THB' : assetId,
+        side === 'buy' ? assetId : 'THB',
+        this.state.giveTradeBoxValue,
+        this.state.takeTradeBoxValue
+      )
+      this.setState({ executed: true })
+    } catch (err) {
+      Alert.alert('Something went wrong')
+    }
   }
 
   public onClose = () => {
