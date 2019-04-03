@@ -63,33 +63,24 @@ export async function submitOtp (token: string, otpNumber: string) {
   return response.data
 }
 
-function getBalance (asset: AssetId) {
-  return axios.get(`wallets/${asset}/balance`)
+async function getBalance (asset: AssetId) {
+  try {
+    const response = await axios.get(`wallets/${asset}/balance`)
+    return response.data.amount
+  } catch (err) {
+    return 0
+  }
 }
 
 export async function getPortfolio () {
-  const arrayAssets = _.map(ASSETS, (asset) => asset)
-  const orderedAssets = _.sortBy(arrayAssets, (asset) => asset.order)
-  let responses
-  try {
-    responses = await Promise.map((orderedAssets), (asset) => {
-      return getBalance(asset.id)
-    })
-    return _.map(responses, (object, index) => {
-      return {
-        amount: object.data.data.amount,
-        ...orderedAssets[index]
-      }
-    })
-  } catch (err) { // HACK: when I get 404 everything is gone
-    return _.map(orderedAssets, (asset) => (
-      {
-        amount: 0,
-        ...asset
-      }
-    ))
-  }
+  const assets = ASSETS
+  const thbAmount = await getBalance('THB')
+  assets.THB.amount = thbAmount
+  const btcAmount = await getBalance('BTC')
+  assets.BTC.amount = btcAmount
 
+  const arrayAssets = _.map(assets, (asset) => asset)
+  return _.sortBy(arrayAssets, (asset) => asset.order)
 }
 
 export async function getAmount (
@@ -118,4 +109,19 @@ export async function getAllAmounts (
   cryptoAmount: number
 ) {
   console.log('it does not work yet, wating for take side to work')
+}
+
+export async function deposit (assetId: AssetId, amount: number) {
+  console.log('kendo jaa eieiei', assetId, amount)
+  try {
+    await axios.post(
+      'deposits',
+      {
+        asset: assetId,
+        amount
+      }
+    )
+  } catch (err) {
+    console.log('kendo jaa err deposit', JSON.stringify(err))
+  }
 }
