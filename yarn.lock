@@ -843,19 +843,20 @@
   resolved "https://registry.yarnpkg.com/@types/crypto-js/-/crypto-js-3.1.43.tgz#b859347d6289ba13e347c335a4c9efa63337a748"
   integrity sha512-EHe/YKctU3IYNBsDmSOPX/7jLHPRlx8WaiDKSY9JCTnJ8XJeM4c0ZJvx+9Gxmr2s2ihI92R+3U/gNL1sq5oRuQ==
 
-"@types/expo@30.0.0":
-  version "30.0.0"
-  resolved "https://registry.yarnpkg.com/@types/expo/-/expo-30.0.0.tgz#fb19a1148b8d3136bf31cdc2ea09baa81b282a36"
-  integrity sha512-LFpFv/vVB8e2rO9yxC3MVMXZfzCe7hK6TV6xsneUbtG+lduGAaqNeT1w8paiPuK5jTp5Xe+ZnAC/TSFi5h+12Q==
+"@types/expo@^32.0.9":
+  version "32.0.9"
+  resolved "https://registry.yarnpkg.com/@types/expo/-/expo-32.0.9.tgz#f32ec58e22159232a5246048ae09a9441007b9e9"
+  integrity sha512-9NvR7AkpM9B4SJ+/WptMWQi0nKNJzMQx/rWDBk3EJWsQf6aYv4/jfbacCN8n68xkbLYtvZNiS2VUKUIX/YX3iQ==
   dependencies:
     "@types/fbemitter" "*"
     "@types/react" "*"
     "@types/react-native" "*"
+    react-native-maps "*"
 
-"@types/expo__vector-icons@6.2.3":
-  version "6.2.3"
-  resolved "https://registry.yarnpkg.com/@types/expo__vector-icons/-/expo__vector-icons-6.2.3.tgz#68f2018a40dcfccb9bae79461080cc4d129b451f"
-  integrity sha512-YQd+BzwHiaRk8ILV0vHQ1bwhlUDqvWLf+cQFmZOwjLaMTcZTzEjxZstEzvMn8LiV4t6ZbDmZjraaN28b8mAq6g==
+"@types/expo__vector-icons@^9.0.1":
+  version "9.0.1"
+  resolved "https://registry.yarnpkg.com/@types/expo__vector-icons/-/expo__vector-icons-9.0.1.tgz#46a0a9701cb69e632a05b87aafa7b0f537919896"
+  integrity sha512-xcdtdQSojtUO0mSuVDCP01cyqAXhZCIMGN1jXuqfA6DbOIg5cIcIBLIC5vhiGP0vR5gdviSyIHgPf4NR2d3wOg==
   dependencies:
     "@types/react" "*"
     "@types/react-native" "*"
@@ -4816,6 +4817,11 @@ react-native-gesture-handler@1.0.9:
     hoist-non-react-statics "^2.3.1"
     invariant "^2.2.2"
     prop-types "^15.5.10"
+
+react-native-maps@*:
+  version "0.23.0"
+  resolved "https://registry.yarnpkg.com/react-native-maps/-/react-native-maps-0.23.0.tgz#edbfdcad0e42190627eb1c8067eaba5965c8f81e"
+  integrity sha512-qxOIQGsDtQXQlSJdXMW1wg8pvLaVYdbiIolB7tZTTgTGgIA/hDxXwZbQZ08c4KDD6/VTk8krfd1APaHkqvh6og==
 
 react-native-maps@expo/react-native-maps#v0.22.0-exp.0:
   version "0.22.0"
