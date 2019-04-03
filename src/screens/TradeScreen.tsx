@@ -6,6 +6,7 @@ import {
   Text,
   Value,
   AssetBox,
+  AssetBoxTemp,
   TradeResult,
   ScreenWithKeyboard,
   Link
@@ -238,18 +239,18 @@ export default class TradeScreen extends React.Component<
             active={this.state.activeTradeBox === 'give'}
             value={this.state.giveTradeBoxValue}
           />
-          <AssetBox
+          <AssetBoxTemp
             description={
               side === 'sell' ? 'You will receive' : 'You will receive'
             }
             assetId={side === 'sell' ? 'THB' : assetId}
-            onPress={() => this.onPressTradeBox('take')}
-            onChangeValue={(value: string) => this.onChangeValue('take', value)}
-            active={this.state.activeTradeBox === 'take'}
+            // onPress={() => this.onPressTradeBox('take')}
+            // onChangeValue={(value: string) => this.onChangeValue('take', value)}
+            // active={this.state.activeTradeBox === 'take'}
             value={this.state.takeTradeBoxValue}
           />
         </View>
-        {this.renderFooter()}
+        {/* {this.renderFooter()} */}
       </View>
     )
   }
