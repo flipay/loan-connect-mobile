@@ -8,6 +8,7 @@ export interface Asset {
   image: ImageSourcePropType
   unit: string
   order: number
+  decimal: number
   amount?: number
   price?: number
 }

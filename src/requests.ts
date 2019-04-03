@@ -85,7 +85,7 @@ export async function submitOtp (token: string, otpNumber: string) {
 async function getBalance (asset: AssetId) {
   try {
     const response = await axios.get(`wallets/${asset}/balance`)
-    return response.data.data.amount
+    return Number(response.data.data.amount)
   } catch (err) {
     if (getErrorCode(err) === 'resource_not_found') {
       return 0
@@ -173,12 +173,12 @@ export async function withdraw (
 export async function order (
   assetGive: AssetId,
   assetTake: AssetId,
-  amountGive: string,
-  expectedAmountTake: string
+  amountGive: number,
+  expectedAmountTake: number
 ) {
-
+  let response
   try {
-    await axios.post('orders', {
+    response = await axios.post('orders', {
       asset_give: assetGive,
       asset_take: assetTake,
       amount_give: amountGive,
@@ -189,7 +189,7 @@ export async function order (
       await axios.post('wallets', {
         asset: assetTake
       })
-      await axios.post('orders', {
+      response = await axios.post('orders', {
         asset_give: assetGive,
         asset_take: assetTake,
         amount_give: amountGive,
@@ -199,6 +199,8 @@ export async function order (
       throw(err)
     }
   }
+  console.log('kendo jaa eiei', response)
+  return 
 }
 
 function getErrorCode (err: Error) {
