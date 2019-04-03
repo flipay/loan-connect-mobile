@@ -5,13 +5,19 @@ import {
 } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { Amplitude } from 'expo'
-import { Text, ScreenWithKeyboard, TradeBox } from '../components'
-import { deposit } from '../requests'
+import { Text, ScreenWithKeyboard, TradeBox, TextBox } from '../components'
+import { withdraw } from '../requests'
 import { toNumber } from '../utils'
+
+const boxes = ['amount', 'accountNumber', 'accountName', 'accountIssuer']
+type Box = typeof boxes[number]
 
 interface State {
   amount: string
-  active: boolean
+  accountNumber: string
+  accountName: string
+  accountissuer: string
+  activeBox: Box
   submitted: boolean
 }
 
@@ -24,7 +30,10 @@ export default class WithdrawalScreen extends React.Component<
     super(props)
     this.state = {
       amount: '',
-      active: true,
+      accountNumber: '',
+      accountName: '',
+      accountissuer: '',
+      activeBox: 'amount',
       submitted: false
     }
   }
@@ -34,17 +43,27 @@ export default class WithdrawalScreen extends React.Component<
     this.props.navigation.goBack()
   }
 
-  public onPress = () => {
-    this.setState({ active: true })
+  public onPressBox = (box: Box) => {
+    this.setState({ activeBox: box })
   }
 
-  public onChangeValue = (value: string) => {
-    this.setState({ amount: value })
+  public onChangeValue = (box: Box, value: string) => {
+    // TODO: make this work
+    // this.setState({ [box]: value })
+    if (box === boxes[0]) {
+      this.setState({ amount: value })
+    } else if (box === boxes[1]) {
+      this.setState({ accountNumber: value })
+    } else if (box === boxes[2]) {
+      this.setState({ accountName: value })
+    } else {
+      this.setState({ accountissuer: value })
+    }
   }
 
   public onPressSubmit = async () => {
     if (!this.state.submitted) {
-      await deposit('THB', toNumber(this.state.amount))
+      await withdraw(toNumber(this.state.amount))
       this.setState({ submitted: true })
     } else {
       this.props.navigation.goBack()
@@ -66,15 +85,38 @@ export default class WithdrawalScreen extends React.Component<
             <Text type='title' style={styles.title}>Withdrawal</Text>
             {!this.state.submitted
               ? (
-                <TradeBox
-                  autoFocus={autoFocus}
-                  description='Withdrawal amount'
-                  assetId='THB'
-                  onPress={this.onPress}
-                  onChangeValue={this.onChangeValue}
-                  active={this.state.active}
-                  value={this.state.amount}
-                />
+                <View>
+                  <TradeBox
+                    autoFocus={autoFocus}
+                    description='Withdrawal amount'
+                    assetId='THB'
+                    onPress={() => this.onPressBox(boxes[0])}
+                    onChangeValue={(value) => this.onChangeValue(boxes[0], value)}
+                    active={this.state.activeBox === boxes[0]}
+                    value={this.state.amount}
+                  />
+                  <TextBox
+                    description='Account number'
+                    onPress={() => this.onPressBox(boxes[1])}
+                    onChangeValue={(value) => this.onChangeValue(boxes[1], value)}
+                    active={this.state.activeBox === boxes[1]}
+                    value={this.state.amount}
+                  />
+                  <TextBox
+                    description='Account name'
+                    onPress={() => this.onPressBox(boxes[2])}
+                    onChangeValue={(value) => this.onChangeValue(boxes[2], value)}
+                    active={this.state.activeBox === boxes[2]}
+                    value={this.state.amount}
+                  />
+                  <TextBox
+                    description='Bank'
+                    onPress={() => this.onPressBox(boxes[3])}
+                    onChangeValue={(value) => this.onChangeValue(boxes[3], value)}
+                    active={this.state.activeBox === boxes[3]}
+                    value={this.state.amount}
+                  />
+                </View>
               ) : (
                 <Text>Submit the transfer receipt to receipt@flipay.co after that, it will be available in your wallet within 24 hours.</Text>
               )

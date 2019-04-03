@@ -4,6 +4,7 @@ import Button from './Button'
 import CloseButton from './CloseButton'
 import Text from './Text'
 import Value from './Value'
+import TextBox from './TextBox'
 import TradeBox from './TradeBox'
 import TradeResult from './TradeResult'
 import SubmitButton from './SubmitButton'
@@ -20,6 +21,7 @@ export {
   CloseButton,
   Text,
   Value,
+  TextBox,
   TradeBox,
   TradeResult,
   SubmitButton,

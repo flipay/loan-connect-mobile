@@ -8,7 +8,8 @@ import {
   TouchableOpacity,
   StatusBar,
   Platform,
-  Keyboard
+  Keyboard,
+  ScrollView
 } from 'react-native'
 import { Constants } from 'expo'
 import { AntDesign } from '@expo/vector-icons'
@@ -88,23 +89,25 @@ export default class Screen extends React.Component<Props, State> {
                     : 'light-content'
                 }
               />
-              {this.props.onPressBackButton && (
-                <TouchableOpacity
-                  style={styles.backButton}
-                  onPress={this.props.onPressBackButton}
-                >
-                  <AntDesign
-                    name={this.props.backButtonType}
-                    size={28}
-                    color={COLORS.N800}
-                  />
-                </TouchableOpacity>
-              )}
-              <View style={styles.content}>
-                {this.props.children(
-                  this.state.keyboardAvoidingViewKey === DEFAULT_KEYBOARD_KEY
+              <ScrollView>
+                {this.props.onPressBackButton && (
+                  <TouchableOpacity
+                    style={styles.backButton}
+                    onPress={this.props.onPressBackButton}
+                  >
+                    <AntDesign
+                      name={this.props.backButtonType}
+                      size={28}
+                      color={COLORS.N800}
+                    />
+                  </TouchableOpacity>
                 )}
-              </View>
+                <View style={styles.content}>
+                  {this.props.children(
+                    this.state.keyboardAvoidingViewKey === DEFAULT_KEYBOARD_KEY
+                  )}
+                </View>
+              </ScrollView>
               {this.props.onPessSubmitButton && (
                 <SubmitButton
                   onPress={this.props.onPessSubmitButton}
@@ -129,18 +132,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'space-between',
-    paddingTop: 40,
+    paddingTop: 20,
     position: 'relative'
   },
   backButton: {
     zIndex: 1,
     position: 'absolute',
     left: 12,
-    top: 24,
+    top: 8,
     padding: 10
   },
   content: {
     flex: 1,
+    paddingTop: 20,
     paddingHorizontal: 20
   }
 })
