@@ -1,6 +1,6 @@
 import { ImageSourcePropType } from 'react-native'
 
-export type AssetId = 'THB' | 'BTC'
+export type AssetId = 'THB' | 'BTC' | 'ETH' | 'OMG'
 
 export interface Asset {
   id: AssetId

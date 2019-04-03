@@ -15,6 +15,7 @@ interface Props {
   onChangeValue: (value: string) => void
   active: boolean
   value?: string
+  numberPad?: boolean
 }
 
 export default class TextBox extends React.Component<Props> {
@@ -45,7 +46,7 @@ export default class TextBox extends React.Component<Props> {
             selectionColor={COLORS.P400}
             onChangeText={text => this.props.onChangeValue(text)}
             value={this.props.value}
-            keyboardType='decimal-pad'
+            keyboardType={this.props.numberPad ? 'decimal-pad' : 'default'}
             placeholder='0'
             onFocus={this.props.onPress}
           />

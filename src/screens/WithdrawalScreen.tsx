@@ -1,7 +1,8 @@
 import * as React from 'react'
 import {
   View,
-  StyleSheet
+  StyleSheet,
+  Alert
 } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { Amplitude } from 'expo'
@@ -16,7 +17,7 @@ interface State {
   amount: string
   accountNumber: string
   accountName: string
-  accountissuer: string
+  accountIssuer: string
   activeBox: Box
   submitted: boolean
 }
@@ -32,10 +33,19 @@ export default class WithdrawalScreen extends React.Component<
       amount: '',
       accountNumber: '',
       accountName: '',
-      accountissuer: '',
+      accountIssuer: '',
       activeBox: 'amount',
       submitted: false
     }
+  }
+
+  public isSubmitButtonActive = () => {
+    if (this.state.amount
+      && this.state.accountNumber
+      && this.state.accountName
+      && this.state.accountIssuer
+    ) { return true }
+    return false
   }
 
   public onPressBackButton = () => {
@@ -57,14 +67,24 @@ export default class WithdrawalScreen extends React.Component<
     } else if (box === boxes[2]) {
       this.setState({ accountName: value })
     } else {
-      this.setState({ accountissuer: value })
+      this.setState({ accountIssuer: value })
     }
   }
 
   public onPressSubmit = async () => {
     if (!this.state.submitted) {
-      await withdraw(toNumber(this.state.amount))
-      this.setState({ submitted: true })
+      try {
+        await withdraw(
+          toNumber(this.state.amount),
+          this.state.accountNumber,
+          this.state.accountName,
+          this.state.accountIssuer
+        )
+        this.setState({ submitted: true })
+      } catch (err) {
+        console.log('kendo jaa error ja', JSON.stringify(err))
+        Alert.alert('Something went wrong, please contact our staff')
+      }
     } else {
       this.props.navigation.goBack()
     }
@@ -75,7 +95,7 @@ export default class WithdrawalScreen extends React.Component<
       <ScreenWithKeyboard
         backButtonType='close'
         onPressBackButton={this.onPressBackButton}
-        activeSubmitButton={!!this.state.amount}
+        activeSubmitButton={this.isSubmitButtonActive()}
         submitButtonText={this.state.submitted ? 'OK' : 'Submit'}
         onPessSubmitButton={this.onPressSubmit}
         fullScreenLoading={false}
@@ -100,21 +120,22 @@ export default class WithdrawalScreen extends React.Component<
                     onPress={() => this.onPressBox(boxes[1])}
                     onChangeValue={(value) => this.onChangeValue(boxes[1], value)}
                     active={this.state.activeBox === boxes[1]}
-                    value={this.state.amount}
+                    value={this.state.accountNumber}
+                    numberPad={true}
                   />
                   <TextBox
                     description='Account name'
                     onPress={() => this.onPressBox(boxes[2])}
                     onChangeValue={(value) => this.onChangeValue(boxes[2], value)}
                     active={this.state.activeBox === boxes[2]}
-                    value={this.state.amount}
+                    value={this.state.accountName}
                   />
                   <TextBox
                     description='Bank'
                     onPress={() => this.onPressBox(boxes[3])}
                     onChangeValue={(value) => this.onChangeValue(boxes[3], value)}
                     active={this.state.activeBox === boxes[3]}
-                    value={this.state.amount}
+                    value={this.state.accountIssuer}
                   />
                 </View>
               ) : (

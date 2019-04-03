@@ -1,10 +1,29 @@
 import axios from 'axios'
 import { Alert } from 'react-native'
 import _ from 'lodash'
-import Promise from 'bluebird'
+// import Promise from 'bluebird'
 import { OrderType, OrderPart, AssetId } from './types'
 import { ASSETS } from './constants'
 import { setToken, getToken } from './secureStorage'
+
+async function getMarketPrice (assetId: AssetId) {
+  const bxAssetId: { [key in AssetId]: string } = {
+    THB: '',
+    BTC: '1',
+    ETH: '21',
+    OMG: ''
+  }
+  try {
+    const response = await axios.get(`trade/?parinng=${bxAssetId[assetId]}`, {
+      baseURL: 'https://bx.in.th/api/',
+      headers: ''
+    })
+    const price = Number(_.last(_.get(response, 'data.trades.rate')))
+    return price
+  } catch (err) {
+    return undefined
+  }
+}
 
 export function setBaseUrl (url: string) {
   axios.defaults.baseURL = url
@@ -66,7 +85,7 @@ export async function submitOtp (token: string, otpNumber: string) {
 async function getBalance (asset: AssetId) {
   try {
     const response = await axios.get(`wallets/${asset}/balance`)
-    return response.data.amount
+    return response.data.data.amount
   } catch (err) {
     return 0
   }
@@ -76,11 +95,13 @@ export async function getPortfolio () {
   const assets = ASSETS
   const thbAmount = await getBalance('THB')
   assets.THB.amount = thbAmount
-  const btcAmount = await getBalance('BTC')
-  assets.BTC.amount = btcAmount
+  // const btcAmount = await getBalance('BTC')
+  // const btcPrice = await getMarketPrice('BTC')
+  // assets.BTC.price = btcPrice
+  // assets.BTC.amount = btcAmount
 
-  const arrayAssets = _.map(assets, (asset) => asset)
-  return _.sortBy(arrayAssets, (asset) => asset.order)
+  const arrayAssets = _.map(assets, asset => asset)
+  return _.sortBy(arrayAssets, asset => asset.order)
 }
 
 export async function getAmount (
@@ -115,19 +136,32 @@ export async function deposit (assetId: AssetId, amount: number) {
   try {
     await axios.post('wallets', { asset: 'THB' })
   } catch (err) {
-    if (_.get(err, 'response.data.errors.asset[0]') !== 'has already been taken') {
+    if (
+      _.get(err, 'response.data.errors.asset[0]') !== 'has already been taken'
+    ) {
       Alert.alert('Something went wrong')
     }
   }
   try {
-    await axios.post(
-      'deposits',
-      {
-        asset: assetId,
-        amount
-      }
-    )
+    await axios.post('deposits', {
+      asset: assetId,
+      amount
+    })
   } catch (err) {
     Alert.alert('Cannot request for deposit')
   }
+}
+
+export async function withdraw (
+  amount: number,
+  accountNumber: string,
+  accountName: string,
+  accountIssuer: string
+) {
+  await axios.post('withdrawals', {
+    amount,
+    bank_account_number: accountNumber,
+    bank_account_name: accountName,
+    bank_account_issuer: accountIssuer
+  })
 }
