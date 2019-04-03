@@ -112,7 +112,13 @@ export async function getAllAmounts (
 }
 
 export async function deposit (assetId: AssetId, amount: number) {
-  console.log('kendo jaa eieiei', assetId, amount)
+  try {
+    await axios.post('wallets', { asset: 'THB' })
+  } catch (err) {
+    if (_.get(err, 'response.data.errors.asset[0]') !== 'has already been taken') {
+      Alert.alert('Something went wrong')
+    }
+  }
   try {
     await axios.post(
       'deposits',
@@ -122,6 +128,6 @@ export async function deposit (assetId: AssetId, amount: number) {
       }
     )
   } catch (err) {
-    console.log('kendo jaa err deposit', JSON.stringify(err))
+    Alert.alert('Cannot request for deposit')
   }
 }

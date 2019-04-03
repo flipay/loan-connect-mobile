@@ -6,7 +6,7 @@ import {
 import { NavigationScreenProps } from 'react-navigation'
 import { Amplitude } from 'expo'
 import { Text, ScreenWithKeyboard, TradeBox } from '../components'
-import { deposit, getAllAmounts } from '../requests'
+import { deposit } from '../requests'
 import { toNumber } from '../utils'
 
 interface State {
@@ -43,8 +43,12 @@ export default class DepositScreen extends React.Component<
   }
 
   public onPressSubmit = async () => {
-    await deposit('THB', toNumber(this.state.amount))
-    this.setState({ submitted: true })
+    if (!this.state.submitted) {
+      await deposit('THB', toNumber(this.state.amount))
+      this.setState({ submitted: true })
+    } else {
+      this.props.navigation.goBack()
+    }
   }
 
   public render () {
