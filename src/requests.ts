@@ -18,8 +18,8 @@ async function getMarketPrice (assetId: AssetId) {
       baseURL: 'https://bx.in.th/api/',
       headers: ''
     })
-    const price = Number(_.last(_.get(response, 'data.trades.rate')))
-    return price
+    const price = _.last(_.get(response, 'data.trades')).rate
+    return Number(price)
   } catch (err) {
     return undefined
   }
@@ -87,7 +87,11 @@ async function getBalance (asset: AssetId) {
     const response = await axios.get(`wallets/${asset}/balance`)
     return response.data.data.amount
   } catch (err) {
-    return 0
+    if (getErrorCode(err) === 'resource_not_found') {
+      return 0
+    } else {
+      throw(err)
+    }
   }
 }
 
@@ -95,10 +99,10 @@ export async function getPortfolio () {
   const assets = ASSETS
   const thbAmount = await getBalance('THB')
   assets.THB.amount = thbAmount
-  // const btcAmount = await getBalance('BTC')
-  // const btcPrice = await getMarketPrice('BTC')
-  // assets.BTC.price = btcPrice
-  // assets.BTC.amount = btcAmount
+  const btcAmount = await getBalance('BTC')
+  const btcPrice = await getMarketPrice('BTC')
+  assets.BTC.price = btcPrice
+  assets.BTC.amount = btcAmount
 
   const arrayAssets = _.map(assets, asset => asset)
   return _.sortBy(arrayAssets, asset => asset.order)
