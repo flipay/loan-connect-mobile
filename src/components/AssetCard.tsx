@@ -8,7 +8,6 @@ import {
   TouchableWithoutFeedback
 } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
-import Text from './Text'
 import Button from './Button'
 import Asset from './Asset'
 import Value from './Value'
@@ -19,6 +18,7 @@ import { Amplitude } from 'expo'
 
 interface Props {
   id: AssetId
+  cash: number
   amount: number
   price?: number
   expanded: boolean
@@ -84,7 +84,10 @@ export default class AssetCard extends React.Component<
     this.props.navigation.navigate('Trade', {
       side,
       assetId: this.props.id,
-      remainingBalance: side ? 3000 : 1
+      remainingBalance:
+        side === 'buy'
+          ? this.props.cash
+          : this.props.amount
     })
   }
 

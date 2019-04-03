@@ -114,6 +114,7 @@ export default class MainScreen extends React.Component<
                   )}
                   <AssetCard
                     id={asset.id}
+                    cash={_.get(this.state.assets, '[0].amount', 0)}
                     amount={asset.amount || 0}
                     price={asset.price}
                     expanded={expanded}

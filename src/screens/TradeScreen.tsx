@@ -223,7 +223,9 @@ export default class TradeScreen extends React.Component<
           {`${_.capitalize(side)} ${ASSETS[assetId].name}`}
         </Text>
         <Text type='body' color={COLORS.N500}>
-          <Value assetId={assetId}>{remainingBalance}</Value>
+          <Value assetId={side === 'buy' ? 'THB' : assetId}>
+            {remainingBalance}
+          </Value>
           {` available`}
         </Text>
         <View style={styles.tradeBoxesContainer}>
