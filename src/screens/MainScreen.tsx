@@ -68,7 +68,7 @@ export default class MainScreen extends React.Component<
         <Text style={styles.totalValueContainer}>
           <Text color={COLORS.WHITE}>฿</Text>
           <Text type='large-title' style={styles.totalValue} color={COLORS.WHITE}>
-            {` ${this.getSumBalance()}`}
+            {` ${this.getSumBalance().toLocaleString()}`}
           </Text>
         </Text>
       </LinearGradient>
