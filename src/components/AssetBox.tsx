@@ -20,7 +20,7 @@ interface Props {
   value?: string
 }
 
-export default class TradeBox extends React.Component<Props> {
+export default class AssetBox extends React.Component<Props> {
   private input: TextInput | null = null
 
   public onPress = () => {

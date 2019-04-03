@@ -5,7 +5,7 @@ import {
 } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { Amplitude } from 'expo'
-import { Text, ScreenWithKeyboard, TradeBox, TextBox } from '../components'
+import { Text, ScreenWithKeyboard, AssetBox, TextBox } from '../components'
 import { withdraw } from '../requests'
 import { toNumber } from '../utils'
 
@@ -86,7 +86,7 @@ export default class WithdrawalScreen extends React.Component<
             {!this.state.submitted
               ? (
                 <View>
-                  <TradeBox
+                  <AssetBox
                     autoFocus={autoFocus}
                     description='Withdrawal amount'
                     assetId='THB'

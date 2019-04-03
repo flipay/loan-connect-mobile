@@ -5,7 +5,7 @@ import {
 } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { Amplitude } from 'expo'
-import { Text, ScreenWithKeyboard, TradeBox } from '../components'
+import { Text, ScreenWithKeyboard, AssetBox } from '../components'
 import { deposit } from '../requests'
 import { toNumber } from '../utils'
 
@@ -66,7 +66,7 @@ export default class DepositScreen extends React.Component<
             <Text type='title' style={styles.title}>Deposit</Text>
             {!this.state.submitted
               ? (
-                <TradeBox
+                <AssetBox
                   autoFocus={autoFocus}
                   description='Deposit amount'
                   assetId='THB'

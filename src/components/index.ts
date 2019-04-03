@@ -5,7 +5,7 @@ import CloseButton from './CloseButton'
 import Text from './Text'
 import Value from './Value'
 import TextBox from './TextBox'
-import TradeBox from './TradeBox'
+import AssetBox from './AssetBox'
 import TradeResult from './TradeResult'
 import SubmitButton from './SubmitButton'
 import Layer from './Layer'
@@ -22,7 +22,7 @@ export {
   Text,
   Value,
   TextBox,
-  TradeBox,
+  AssetBox,
   TradeResult,
   SubmitButton,
   Layer,
