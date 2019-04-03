@@ -60,6 +60,10 @@ export default class TradeScreen extends React.Component<
     }
   }
 
+  public componentWillUnmount () {
+    clearInterval(this.interval)
+  }
+
   public getAmount = async () => {
     const tradeBox = this.state.activeTradeBox
     const value = this.state.activeTradeBox === 'give'
@@ -178,6 +182,7 @@ export default class TradeScreen extends React.Component<
       )
       this.setState({ executed: true })
     } catch (err) {
+      console.log('kendo jaa eieiei error', JSON.stringify(err))
       Alert.alert('Something went wrong')
     }
   }

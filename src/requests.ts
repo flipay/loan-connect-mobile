@@ -172,10 +172,31 @@ export async function order (
   amountGive: string,
   expectedAmountTake: string
 ) {
-  await axios.post('orders', {
-    asset_give: assetGive,
-    asset_take: assetTake,
-    amount_give: amountGive,
-    expected_amount_take: expectedAmountTake
-  })
+
+  try {
+    await axios.post('orders', {
+      asset_give: assetGive,
+      asset_take: assetTake,
+      amount_give: amountGive,
+      expected_amount_take: expectedAmountTake
+    })
+  } catch (err) {
+    if (getErrorCode(err) === 'resource_not_found') {
+      await axios.post('wallets', {
+        asset: assetTake
+      })
+      await axios.post('orders', {
+        asset_give: assetGive,
+        asset_take: assetTake,
+        amount_give: amountGive,
+        expected_amount_take: expectedAmountTake
+      })
+    } else {
+      throw(err)
+    }
+  }
+}
+
+function getErrorCode (err: Error) {
+  return _.get(err, 'response.data.code')
 }
