@@ -26,13 +26,30 @@ async function getMarketPrice (assetId: AssetId) {
   }
 }
 
-export function setBaseUrl (url: string) {
-  axios.defaults.baseURL = url
+let expiredAlertVisible = false
+
+export function setUpRequest (navigation: any) {
+  // 'https://flipay-mock-backend.herokuapp.com/'
+  // 'http://192.168.0.4:8000'
+  axios.defaults.baseURL = 'https://api.flipay.co/v1/'
+  axios.defaults.validateStatus = (status: number) => {
+    if (status === 401 && expiredAlertVisible === false) {
+      expiredAlertVisible = true
+      Alert.alert('The session is expired. please insert PIN again.', undefined, [{
+        text: 'OK',
+        onPress: () => {
+          expiredAlertVisible = false
+          navigation.navigate('Starter')
+        }
+      }])
+    }
+    return status >= 200 && status < 300
+  }
 }
 
 function setAuthorization (token: string) {
   axios.defaults.headers.common.Authorization = `Bearer ${token}`
-  const min = 20
+  const min = 30
   setTimeout(() => {
     axios.defaults.headers.common.Authorization = ''
   }, min * 60 * 1000)
@@ -201,8 +218,7 @@ export async function order (
       throw(err)
     }
   }
-  console.log('kendo jaa eiei', response)
-  return 
+  return response
 }
 
 function getErrorCode (err: Error) {
