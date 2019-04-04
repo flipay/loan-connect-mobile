@@ -8,6 +8,7 @@ import TextBox from './TextBox'
 import AssetBox from './AssetBox'
 import AssetBoxTemp from './AssetBoxTemp'
 import TradeResult from './TradeResult'
+import Picker from './Picker'
 import SubmitButton from './SubmitButton'
 import Layer from './Layer'
 import Asset from './Asset'
@@ -26,6 +27,7 @@ export {
   AssetBox,
   AssetBoxTemp,
   TradeResult,
+  Picker,
   SubmitButton,
   Layer,
   Asset,

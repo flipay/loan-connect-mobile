@@ -4,20 +4,23 @@ import {
   StyleSheet,
   Alert
 } from 'react-native'
+import _ from 'lodash'
 import { NavigationScreenProps } from 'react-navigation'
 import { Amplitude } from 'expo'
-import { Text, ScreenWithKeyboard, AssetBox, TextBox } from '../components'
+import { Text, ScreenWithKeyboard, AssetBox, TextBox, Picker } from '../components'
 import { withdraw } from '../requests'
 import { toNumber } from '../utils'
+import { ACCOUNT_ISSUERS } from '../constants'
+import { Issuer } from '../types'
 
-const boxes = ['amount', 'accountNumber', 'accountName', 'accountIssuer']
+const boxes = ['amount', 'accountNumber', 'accountName']
 type Box = typeof boxes[number]
 
 interface State {
   amount: string
   accountNumber: string
   accountName: string
-  accountIssuer: string
+  accountIssuer?: Issuer
   activeBox: Box
   submitted: boolean
 }
@@ -33,7 +36,7 @@ export default class WithdrawalScreen extends React.Component<
       amount: '',
       accountNumber: '',
       accountName: '',
-      accountIssuer: '',
+      accountIssuer: undefined,
       activeBox: 'amount',
       submitted: false
     }
@@ -66,12 +69,11 @@ export default class WithdrawalScreen extends React.Component<
       this.setState({ accountNumber: value })
     } else if (box === boxes[2]) {
       this.setState({ accountName: value })
-    } else {
-      this.setState({ accountIssuer: value })
     }
   }
 
   public onPressSubmit = async () => {
+    if (!this.state.accountIssuer) { return }
     if (!this.state.submitted) {
       try {
         await withdraw(
@@ -88,6 +90,10 @@ export default class WithdrawalScreen extends React.Component<
     } else {
       this.props.navigation.goBack()
     }
+  }
+
+  public onSelectIssuer = (value: Issuer) => {
+    this.setState({ accountIssuer: value })
   }
 
   public render () {
@@ -129,6 +135,11 @@ export default class WithdrawalScreen extends React.Component<
                     onChangeValue={(value) => this.onChangeValue(boxes[2], value)}
                     active={this.state.activeBox === boxes[2]}
                     value={this.state.accountName}
+                  />
+                  <Picker
+                    selectedValue={this.state.accountIssuer}
+                    onValueChange={this.onSelectIssuer}
+                    data={ACCOUNT_ISSUERS}
                   />
                   <TextBox
                     description='Bank'
