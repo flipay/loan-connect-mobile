@@ -17,12 +17,12 @@ import { getAmount, order } from '../requests'
 import { toNumber } from '../utils'
 import { Amplitude } from 'expo'
 
-type TradeBoxType = OrderPart
+type AssetBoxType = OrderPart
 
 interface State {
-  activeTradeBox: TradeBoxType
-  giveTradeBoxValue: string
-  takeTradeBoxValue: string
+  activeAssetBox: AssetBoxType
+  giveAssetBoxValue: string
+  takeAssetBoxValue: string
   typing: boolean
   loading: boolean
   executed: boolean
@@ -37,9 +37,9 @@ export default class TradeScreen extends React.Component<
   public constructor (props: NavigationScreenProps) {
     super(props)
     this.state = {
-      activeTradeBox: 'give',
-      giveTradeBoxValue: '',
-      takeTradeBoxValue: '',
+      activeAssetBox: 'give',
+      giveAssetBoxValue: '',
+      takeAssetBoxValue: '',
       typing: false,
       loading: false,
       executed: false
@@ -65,33 +65,34 @@ export default class TradeScreen extends React.Component<
   }
 
   public getAmount = async () => {
-    const tradeBox = this.state.activeTradeBox
-    const value = this.state.activeTradeBox === 'give'
-      ? this.state.giveTradeBoxValue
-      : this.state.takeTradeBoxValue
+    const activeAssetBox = this.state.activeAssetBox
+    const value = activeAssetBox === 'give'
+      ? this.state.giveAssetBoxValue
+      : this.state.takeAssetBoxValue
     const response = await getAmount(
       this.props.navigation.getParam('side', 'buy'),
       this.props.navigation.getParam('assetId', 'BTC'),
-      tradeBox,
+      activeAssetBox,
       toNumber(value),
       'liquid'
     )
 
     const { data } = response
-    const amount = data.data[`amount_${tradeBox === 'give' ? 'take' : 'give'}`]
-
+    const resultAssetBox = activeAssetBox === 'give' ? 'take' : 'give'
+    const amount = data.data[`amount_${resultAssetBox}`]
+    const assetId: AssetId = data.data[`asset_${resultAssetBox}`]
     const valueInString = amount.toLocaleString(undefined, {
-      maximumFractionDigits: 8
+      maximumFractionDigits: ASSETS[assetId].decimal
     })
 
-    if (tradeBox === 'give') {
+    if (activeAssetBox === 'give') {
       this.setState({
-        takeTradeBoxValue: valueInString,
+        takeAssetBoxValue: valueInString,
         loading: false
       })
     } else {
       this.setState({
-        giveTradeBoxValue: valueInString,
+        giveAssetBoxValue: valueInString,
         loading: false
       })
     }
@@ -105,25 +106,25 @@ export default class TradeScreen extends React.Component<
     })
   }
 
-  public onPressTradeBox = (tradeBox: TradeBoxType) => {
-    this.logEvent('press-trade-box', { tradeSide: tradeBox })
-    if (tradeBox !== this.state.activeTradeBox) {
+  public onPressAssetBox = (assetBox: AssetBoxType) => {
+    this.logEvent('press-trade-box', { tradeSide: assetBox })
+    if (assetBox !== this.state.activeAssetBox) {
       this.setState({
-        activeTradeBox: tradeBox
+        activeAssetBox: assetBox
       })
     }
   }
 
-  public onChangeValue = async (tradeBox: TradeBoxType, value: string) => {
-    if (tradeBox === 'give') {
+  public onChangeValue = async (assetBox: AssetBoxType, value: string) => {
+    if (assetBox === 'give') {
       this.setState({
         typing: true,
-        giveTradeBoxValue: value
+        giveAssetBoxValue: value
       })
-    } else if (tradeBox === 'take') {
+    } else if (assetBox === 'take') {
       this.setState({
         typing: true,
-        takeTradeBoxValue: value
+        takeAssetBoxValue: value
       })
     }
 
@@ -141,11 +142,12 @@ export default class TradeScreen extends React.Component<
       await order(
         side === 'buy' ? 'THB' : assetId,
         side === 'buy' ? assetId : 'THB',
-        toNumber(this.state.giveTradeBoxValue),
-        toNumber(this.state.takeTradeBoxValue)
+        toNumber(this.state.giveAssetBoxValue),
+        toNumber(this.state.takeAssetBoxValue)
       )
       this.setState({ executed: true })
     } catch (err) {
+      console.log('kendo jaa eieiei wrong', JSON.stringify(err, undefined, 2))
       Alert.alert('Something went wrong')
     }
   }
@@ -162,14 +164,14 @@ export default class TradeScreen extends React.Component<
       assetId: this.props.navigation.getParam('assetId'),
       cryptoAmount:
         this.props.navigation.getParam('side') === 'buy'
-          ? this.state.takeTradeBoxValue
-          : this.state.giveTradeBoxValue
+          ? this.state.takeAssetBoxValue
+          : this.state.giveAssetBoxValue
     })
   }
 
   public isSubmitable = () => {
     return (
-      this.state.giveTradeBoxValue !== '' && this.state.takeTradeBoxValue !== ''
+      this.state.giveAssetBoxValue !== '' && this.state.takeAssetBoxValue !== ''
     )
   }
 
@@ -209,25 +211,25 @@ export default class TradeScreen extends React.Component<
           </Value>
           {` available`}
         </Text>
-        <View style={styles.tradeBoxesContainer}>
+        <View style={styles.assetBoxesContainer}>
           <AssetBox
             autoFocus={autoFocus}
             description={side === 'buy' ? 'You buy with' : 'You sell'}
             assetId={side === 'buy' ? 'THB' : assetId}
-            onPress={() => this.onPressTradeBox('give')}
+            onPress={() => this.onPressAssetBox('give')}
             onChangeValue={(value: string) => this.onChangeValue('give', value)}
-            active={this.state.activeTradeBox === 'give'}
-            value={this.state.giveTradeBoxValue}
+            active={this.state.activeAssetBox === 'give'}
+            value={this.state.giveAssetBoxValue}
           />
           <AssetBoxTemp
             description={
               side === 'sell' ? 'You will receive' : 'You will receive'
             }
             assetId={side === 'sell' ? 'THB' : assetId}
-            // onPress={() => this.onPressTradeBox('take')}
+            // onPress={() => this.onPressAssetBox('take')}
             // onChangeValue={(value: string) => this.onChangeValue('take', value)}
-            // active={this.state.activeTradeBox === 'take'}
-            value={this.state.takeTradeBoxValue}
+            // active={this.state.activeAssetBox === 'take'}
+            value={this.state.takeAssetBoxValue}
           />
         </View>
         {/* {this.renderFooter()} */}
@@ -274,7 +276,7 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     alignItems: 'center'
   },
-  tradeBoxesContainer: {
+  assetBoxesContainer: {
     marginTop: 20,
     width: '100%'
   },
