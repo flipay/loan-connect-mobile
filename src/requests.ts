@@ -1,17 +1,18 @@
 import axios from 'axios'
 import { Alert } from 'react-native'
 import _ from 'lodash'
-// import Promise from 'bluebird'
+import Promise from 'bluebird'
 import { OrderType, OrderPart, AssetId } from './types'
 import { ASSETS } from './constants'
 import { setToken, getToken } from './secureStorage'
 
 async function getMarketPrice (assetId: AssetId) {
+  if (assetId === 'THB') { return 1 }
   const bxAssetId: { [key in AssetId]: string } = {
     THB: '',
     BTC: '1',
     ETH: '21',
-    OMG: ''
+    OMG: '26'
   }
   try {
     const response = await axios.get(`trade/?parinng=${bxAssetId[assetId]}`, {
@@ -82,27 +83,28 @@ export async function submitOtp (token: string, otpNumber: string) {
   return response.data
 }
 
-async function getBalance (asset: AssetId) {
+async function getAssetData (assetId: AssetId, assets: any) {
   try {
-    const response = await axios.get(`wallets/${asset}/balance`)
-    return Number(response.data.data.amount)
+    const response = await axios.get(`wallets/${assetId}/balance`)
+    assets[assetId].amount = Number(response.data.data.amount)
   } catch (err) {
     if (getErrorCode(err) === 'resource_not_found') {
-      return 0
+      assets[assetId].amount = 0
     } else {
       throw(err)
     }
   }
+  const price = await getMarketPrice(assetId)
+  assets[assetId].price = price
 }
 
 export async function getPortfolio () {
   const assets = ASSETS
-  const thbAmount = await getBalance('THB')
-  assets.THB.amount = thbAmount
-  const btcAmount = await getBalance('BTC')
-  const btcPrice = await getMarketPrice('BTC')
-  assets.BTC.price = btcPrice
-  assets.BTC.amount = btcAmount
+  const assetIds = _.map(assets, asset => asset.id)
+
+  await Promise.map(assetIds, (id) => {
+    return getAssetData(id, assets)
+  })
 
   const arrayAssets = _.map(assets, asset => asset)
   return _.sortBy(arrayAssets, asset => asset.order)
