@@ -69,22 +69,24 @@ export default class TradeScreen extends React.Component<
     const value = activeAssetBox === 'give'
       ? this.state.giveAssetBoxValue
       : this.state.takeAssetBoxValue
-    const response = await getAmount(
-      this.props.navigation.getParam('side', 'buy'),
-      this.props.navigation.getParam('assetId', 'BTC'),
-      activeAssetBox,
-      toNumber(value),
-      'liquid'
-    )
-
-    const { data } = response
-    const resultAssetBox = activeAssetBox === 'give' ? 'take' : 'give'
-    const amount = data.data[`amount_${resultAssetBox}`]
-    const assetId: AssetId = data.data[`asset_${resultAssetBox}`]
-    const valueInString = amount.toLocaleString(undefined, {
-      maximumFractionDigits: ASSETS[assetId].decimal
-    })
-
+    const num = toNumber(value)
+    let valueInString = '0'
+    if (num > 0) {
+      const response = await getAmount(
+        this.props.navigation.getParam('side', 'buy'),
+        this.props.navigation.getParam('assetId', 'BTC'),
+        activeAssetBox,
+        num,
+        'liquid'
+      )
+      const { data } = response
+      const resultAssetBox = activeAssetBox === 'give' ? 'take' : 'give'
+      const amount = data.data[`amount_${resultAssetBox}`]
+      const assetId: AssetId = data.data[`asset_${resultAssetBox}`]
+      valueInString = amount.toLocaleString(undefined, {
+        maximumFractionDigits: ASSETS[assetId].decimal
+      })
+    }
     if (activeAssetBox === 'give') {
       this.setState({
         takeAssetBoxValue: valueInString,
