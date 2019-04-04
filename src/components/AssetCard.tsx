@@ -144,7 +144,7 @@ export default class AssetCard extends React.Component<
               <View style={styles.rightSection}>
                 <View style={styles.valueContainer}>
                   <Value assetId='THB' fontType='headline'>
-                    {(this.props.price || 0) * this.props.amount}
+                    {(this.props.price || 1) * this.props.amount}
                   </Value>
                   {!(this.props.id === 'THB') && (
                     <Value assetId={this.props.id} fontType='caption'>
