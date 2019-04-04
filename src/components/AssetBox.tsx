@@ -1,12 +1,9 @@
 import * as React from 'react'
-import {
-  View,
-  StyleSheet,
-  TextInput,
-  Image
-} from 'react-native'
+import _ from 'lodash'
+import { View, StyleSheet, TextInput, Image } from 'react-native'
 import Text from './Text'
 import Layer from './Layer'
+import { toNumber } from '../utils'
 import { COLORS, FONT_TYPES, ASSETS } from '../constants'
 import { AssetId } from '../types'
 
@@ -23,6 +20,41 @@ interface Props {
 export default class AssetBox extends React.Component<Props> {
   private input: TextInput | null = null
 
+  public formatNumberInString (valueInString: string) {
+    let haveDot = false
+    let endingZero = 0
+    const valueInNumber = toNumber(valueInString)
+    if (valueInString === '.') {
+      valueInString = '0.'
+    } else if (valueInString !== '') {
+      const { length } = valueInString
+      if (valueInString[length - 1] === '.') {
+        haveDot = true
+      } else if (
+        _.includes(valueInString, '.') &&
+        valueInString[length - 1] === '0'
+      ) {
+        const valueWithoutZero = _.trimEnd(valueInString, '0')
+        if (valueWithoutZero[valueWithoutZero.length - 1] === '.') {
+          haveDot = true
+        }
+        endingZero = length - _.trimEnd(valueInString, '0').length
+      }
+      valueInString = valueInNumber.toLocaleString(undefined, {
+        maximumFractionDigits: 8
+      })
+      if (haveDot) {
+        valueInString += '.'
+      }
+      if (endingZero > 0) {
+        for (let i = 0; i < endingZero; i++) {
+          valueInString += '0'
+        }
+      }
+    }
+    return valueInString
+  }
+
   public onPress = () => {
     if (this.input) {
       this.input.focus()
@@ -38,16 +70,23 @@ export default class AssetBox extends React.Component<Props> {
         active={this.props.active}
       >
         <View style={styles.leftContainer}>
-          <Text type='caption' color={COLORS.N500}>{this.props.description}</Text>
+          <Text type='caption' color={COLORS.N500}>
+            {this.props.description}
+          </Text>
           <TextInput
             ref={element => {
               this.input = element
             }}
-            style={[styles.textInput, this.props.active && styles.activeTextInput]}
+            style={[
+              styles.textInput,
+              this.props.active && styles.activeTextInput
+            ]}
             autoFocus={this.props.autoFocus}
             placeholderTextColor={this.props.active ? COLORS.P100 : COLORS.N300}
             selectionColor={COLORS.P400}
-            onChangeText={text => this.props.onChangeValue(text)}
+            onChangeText={text =>
+              this.props.onChangeValue(this.formatNumberInString(text))
+            }
             value={this.props.value}
             keyboardType='decimal-pad'
             placeholder='0'
@@ -55,7 +94,10 @@ export default class AssetBox extends React.Component<Props> {
           />
         </View>
         <View style={styles.rightContainer}>
-          <Image source={image} style={{ width: 16, height: 16, marginRight: 8 }} />
+          <Image
+            source={image}
+            style={{ width: 16, height: 16, marginRight: 8 }}
+          />
           <Text>{unit}</Text>
         </View>
       </Layer>

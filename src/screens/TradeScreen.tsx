@@ -114,52 +114,16 @@ export default class TradeScreen extends React.Component<
     }
   }
 
-  public formatNumberInString (valueInString: string) {
-    let haveDot = false
-    let endingZero = 0
-    const valueInNumber = toNumber(valueInString)
-    if (valueInString === '.') {
-      valueInString = '0.'
-    } else if (valueInString !== '') {
-      const { length } = valueInString
-      if (valueInString[length - 1] === '.') {
-        haveDot = true
-      } else if (
-        _.includes(valueInString, '.') &&
-        valueInString[length - 1] === '0'
-      ) {
-        const valueWithoutZero = _.trimEnd(valueInString, '0')
-        if (valueWithoutZero[valueWithoutZero.length - 1] === '.') {
-          haveDot = true
-        }
-        endingZero = length - _.trimEnd(valueInString, '0').length
-      }
-      valueInString = valueInNumber.toLocaleString(undefined, {
-        maximumFractionDigits: 8
-      })
-      if (haveDot) {
-        valueInString += '.'
-      }
-      if (endingZero > 0) {
-        for (let i = 0; i < endingZero; i++) {
-          valueInString += '0'
-        }
-      }
-    }
-    return valueInString
-  }
-
   public onChangeValue = async (tradeBox: TradeBoxType, value: string) => {
-    const formattedNumberInString = this.formatNumberInString(value)
     if (tradeBox === 'give') {
       this.setState({
         typing: true,
-        giveTradeBoxValue: formattedNumberInString
+        giveTradeBoxValue: value
       })
     } else if (tradeBox === 'take') {
       this.setState({
         typing: true,
-        takeTradeBoxValue: formattedNumberInString
+        takeTradeBoxValue: value
       })
     }
 
@@ -177,12 +141,11 @@ export default class TradeScreen extends React.Component<
       await order(
         side === 'buy' ? 'THB' : assetId,
         side === 'buy' ? assetId : 'THB',
-        this.state.giveTradeBoxValue,
-        this.state.takeTradeBoxValue
+        toNumber(this.state.giveTradeBoxValue),
+        toNumber(this.state.takeTradeBoxValue)
       )
       this.setState({ executed: true })
     } catch (err) {
-      console.log('kendo jaa eieiei error', JSON.stringify(err))
       Alert.alert('Something went wrong')
     }
   }
