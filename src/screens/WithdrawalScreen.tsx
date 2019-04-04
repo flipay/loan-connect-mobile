@@ -36,7 +36,7 @@ export default class WithdrawalScreen extends React.Component<
       amount: '',
       accountNumber: '',
       accountName: '',
-      accountIssuer: undefined,
+      accountIssuer: 'kbank',
       activeBox: 'amount',
       submitted: false
     }
@@ -136,17 +136,11 @@ export default class WithdrawalScreen extends React.Component<
                     active={this.state.activeBox === boxes[2]}
                     value={this.state.accountName}
                   />
+                  <Text type='caption'>Account Issuer</Text>
                   <Picker
                     selectedValue={this.state.accountIssuer}
                     onValueChange={this.onSelectIssuer}
                     data={ACCOUNT_ISSUERS}
-                  />
-                  <TextBox
-                    description='Bank'
-                    onPress={() => this.onPressBox(boxes[3])}
-                    onChangeValue={(value) => this.onChangeValue(boxes[3], value)}
-                    active={this.state.activeBox === boxes[3]}
-                    value={this.state.accountIssuer}
                   />
                 </View>
               ) : (

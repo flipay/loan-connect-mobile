@@ -1,18 +1,20 @@
-export default [
+import _ from 'lodash'
+
+export default _.sortBy([
  { value: 'bbl', label: 'Bangkok Bank' },
  { value: 'kbank', label: 'Kasikorn Bank' },
 //  { value: 'rbs', label: 'rbs' },
-//  { value: 'ktb', label: 'ktb' },
+ { value: 'ktb', label: 'Krung Thai Bank' },
 //  { value: 'jpm', label: 'jpm' },
 //  { value: 'mufg', label: 'mufg' },
-//  { value: 'tmb', label: 'tmb' },
- { value: 'scb', label: 'Siam Commercial Bank' }
+ { value: 'tmb', label: 'TMB' },
+ { value: 'scb', label: 'Siam Commercial Bank' },
 //  { value: 'citi', label: 'citi' },
 //  { value: 'smbc', label: 'smbc' },
 //  { value: 'sc', label: 'sc' },
-//  { value: 'cimb', label: 'cimb' },
+ { value: 'cimb', label: 'CIMB' },
 //  { value: 'uob', label: 'uob' },
-//  { value: 'bay', label: 'bay' },
+ { value: 'bay', label: 'Krungsri Bank' }
 //  { value: 'mega', label: 'mega' },
 //  { value: 'boa', label: 'boa' },
 //  { value: 'cacib', label: 'cacib' },
@@ -30,4 +32,4 @@ export default [
 //  { value: 'icbc', label: 'icbc' },
 //  { value: 'tcrb', label: 'tcrb' },
 //  { value: 'lhb', label: 'lhb' }
-]
+], (item) => item.label)

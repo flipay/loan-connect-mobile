@@ -19,13 +19,14 @@ interface Props {
 export default class FlipPicker extends React.Component <Props> {
   public renderItem (item: Item) {
     return (
-      <Item label={item.label} value={item.value} />
+      <Item key={item.value} label={item.label} value={item.value} />
     )
   }
 
   public render () {
     return (
       <Picker
+        style={styles.picker}
         selectedValue={this.props.selectedValue}
         onValueChange={this.props.onValueChange}
       >
@@ -36,7 +37,7 @@ export default class FlipPicker extends React.Component <Props> {
 }
 
 const styles = StyleSheet.create({
-  kak: {
-    backgroundColor: 'black'
+  picker: {
+    backgroundColor: 'white'
   }
 })
