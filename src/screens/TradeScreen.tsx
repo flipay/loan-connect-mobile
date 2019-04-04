@@ -14,7 +14,7 @@ import {
 import { COLORS, ASSETS } from '../constants'
 import { AssetId, OrderPart } from '../types'
 import { getAmount, order } from '../requests'
-import { toNumber, getErrorCode } from '../utils'
+import { toNumber, getErrorCode, alert } from '../utils'
 import { Amplitude } from 'expo'
 
 type AssetBoxType = OrderPart
@@ -26,8 +26,8 @@ interface State {
   typing: boolean
   loading: boolean
   executed: boolean
-  resultGive?: number
-  resultTake?: number
+  resultGive: number
+  resultTake: number
 }
 
 export default class TradeScreen extends React.Component<
@@ -44,7 +44,9 @@ export default class TradeScreen extends React.Component<
       takeAssetBoxValue: '',
       typing: false,
       loading: false,
-      executed: false
+      executed: false,
+      resultGive: 0,
+      resultTake: 0
     }
   }
 
@@ -159,7 +161,7 @@ export default class TradeScreen extends React.Component<
       if (code === 'insufficient_amount') {
         Alert.alert(`You don't have enough fund.`)
       } else {
-        Alert.alert(`Something went wrong, CODE: ${code}`)
+        alert(err)
       }
     }
   }
@@ -255,14 +257,12 @@ export default class TradeScreen extends React.Component<
   }
 
   public render () {
-    const orderType = _.capitalize(
-      this.props.navigation.getParam('side', 'buy')
-    )
+    const orderType = this.props.navigation.getParam('side', 'buy')
     return (
       <ScreenWithKeyboard
         backButtonType='close'
         onPressBackButton={this.state.executed ? undefined : this.onClose}
-        submitButtonText={this.state.executed ? 'Done' : orderType}
+        submitButtonText={this.state.executed ? 'Done' : _.capitalize(orderType)}
         activeSubmitButton={this.isSubmitable()}
         onPessSubmitButton={this.state.executed ? this.pressDone : this.execute}
       >
@@ -270,9 +270,10 @@ export default class TradeScreen extends React.Component<
           <View style={styles.bodyContainer}>
             {this.state.executed ? (
               <TradeResult
+                orderType={orderType}
                 assetId={this.props.navigation.getParam('assetId', 'BTC')}
-                price={this.state.resultGive || 0}
-                amount={this.state.resultTake || 0}
+                cryptoAmount={orderType === 'buy' ? this.state.resultTake : this.state.resultGive}
+                thbAmount={orderType === 'sell' ? this.state.resultTake : this.state.resultGive}
               />
             ) : (
               this.renderTradeBody(autoFocus)

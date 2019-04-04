@@ -5,7 +5,7 @@ import Promise from 'bluebird'
 import { OrderType, OrderPart, AssetId } from './types'
 import { ASSETS } from './constants'
 import { setToken, getToken } from './secureStorage'
-import { getErrorCode } from './utils'
+import { getErrorCode, alert } from './utils'
 
 async function getMarketPrice (assetId: AssetId) {
   if (assetId === 'THB') { return 1 }
@@ -86,7 +86,7 @@ export async function authen (phoneNumber: string) {
         Alert.alert('Invalid phone number format')
         break
       default:
-        Alert.alert('Something went wrong.')
+        alert(signUpErr)
     }
   }
   return response && response.data
@@ -163,7 +163,7 @@ export async function deposit (assetId: AssetId, amount: number) {
     if (
       _.get(err, 'response.data.errors.asset[0]') !== 'has already been taken'
     ) {
-      Alert.alert('Something went wrong')
+      alert(err)
     }
   }
   try {

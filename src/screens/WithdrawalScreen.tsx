@@ -1,15 +1,14 @@
 import * as React from 'react'
 import {
   View,
-  StyleSheet,
-  Alert
+  StyleSheet
 } from 'react-native'
 import _ from 'lodash'
 import { NavigationScreenProps } from 'react-navigation'
 import { Amplitude } from 'expo'
 import { Text, ScreenWithKeyboard, AssetBox, TextBox, Picker } from '../components'
 import { withdraw } from '../requests'
-import { toNumber } from '../utils'
+import { toNumber, alert } from '../utils'
 import { ACCOUNT_ISSUERS } from '../constants'
 import { Issuer } from '../types'
 
@@ -84,8 +83,7 @@ export default class WithdrawalScreen extends React.Component<
         )
         this.setState({ submitted: true })
       } catch (err) {
-        console.log('kendo jaa error ja', JSON.stringify(err))
-        Alert.alert('Something went wrong, please contact our staff')
+        alert(err)
       }
     } else {
       this.props.navigation.goBack()

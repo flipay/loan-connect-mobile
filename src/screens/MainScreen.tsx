@@ -13,6 +13,7 @@ import { Text, AssetCard } from '../components'
 import { COLORS, ASSETS } from '../constants'
 import { AssetId, Asset } from '../types'
 import { getPortfolio } from '../requests'
+import { alert } from '../utils'
 
 interface State {
   selectedAsset?: AssetId | null
@@ -41,8 +42,8 @@ export default class MainScreen extends React.Component<
     try {
       const assets = await getPortfolio()
       this.setState({ assets })
-    } catch (error) {
-      console.log('======= error ========', error)
+    } catch (err) {
+      alert(err)
     }
   }
 
