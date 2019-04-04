@@ -14,7 +14,7 @@ import {
 import { COLORS, ASSETS } from '../constants'
 import { AssetId, OrderPart } from '../types'
 import { getAmount, order } from '../requests'
-import { toNumber } from '../utils'
+import { toNumber, getErrorCode } from '../utils'
 import { Amplitude } from 'expo'
 
 type AssetBoxType = OrderPart
@@ -155,7 +155,12 @@ export default class TradeScreen extends React.Component<
         resultTake: Number(resultTake)
       })
     } catch (err) {
-      Alert.alert('Something went wrong')
+      const code = getErrorCode(err)
+      if (code === 'insufficient_amount') {
+        Alert.alert(`You don't have enough fund.`)
+      } else {
+        Alert.alert(`Something went wrong, CODE: ${code}`)
+      }
     }
   }
 

@@ -5,6 +5,7 @@ import Promise from 'bluebird'
 import { OrderType, OrderPart, AssetId } from './types'
 import { ASSETS } from './constants'
 import { setToken, getToken } from './secureStorage'
+import { getErrorCode } from './utils'
 
 async function getMarketPrice (assetId: AssetId) {
   if (assetId === 'THB') { return 1 }
@@ -219,8 +220,4 @@ export async function order (
     }
   }
   return response.data.data
-}
-
-function getErrorCode (err: Error) {
-  return _.get(err, 'response.data.code')
 }
