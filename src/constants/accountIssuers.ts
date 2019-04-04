@@ -1,0 +1,35 @@
+import _ from 'lodash'
+
+export default _.sortBy([
+ { value: 'bbl', label: 'Bangkok Bank' },
+ { value: 'kbank', label: 'Kasikorn Bank' },
+//  { value: 'rbs', label: 'rbs' },
+ { value: 'ktb', label: 'Krung Thai Bank' },
+//  { value: 'jpm', label: 'jpm' },
+//  { value: 'mufg', label: 'mufg' },
+ { value: 'tmb', label: 'TMB' },
+ { value: 'scb', label: 'Siam Commercial Bank' },
+//  { value: 'citi', label: 'citi' },
+//  { value: 'smbc', label: 'smbc' },
+//  { value: 'sc', label: 'sc' },
+ { value: 'cimb', label: 'CIMB' },
+//  { value: 'uob', label: 'uob' },
+ { value: 'bay', label: 'Krungsri Bank' }
+//  { value: 'mega', label: 'mega' },
+//  { value: 'boa', label: 'boa' },
+//  { value: 'cacib', label: 'cacib' },
+//  { value: 'gsb', label: 'gsb' },
+//  { value: 'hsbc', label: 'hsbc' },
+//  { value: 'db', label: 'db' },
+//  { value: 'ghb', label: 'ghb' },
+//  { value: 'baac', label: 'baac' },
+//  { value: 'mb', label: 'mb' },
+//  { value: 'bnp', label: 'bnp' },
+//  { value: 'tbank', label: 'tbank' },
+//  { value: 'ibank', label: 'ibank' },
+//  { value: 'tisco', label: 'tisco' },
+//  { value: 'kk', label: 'kk' },
+//  { value: 'icbc', label: 'icbc' },
+//  { value: 'tcrb', label: 'tcrb' },
+//  { value: 'lhb', label: 'lhb' }
+], (item) => item.label)

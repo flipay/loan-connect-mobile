@@ -1,12 +1,19 @@
 import * as React from 'react'
 import _ from 'lodash'
-import { ScrollView, RefreshControl, StatusBar, View, StyleSheet } from 'react-native'
+import {
+  ScrollView,
+  RefreshControl,
+  StatusBar,
+  View,
+  StyleSheet
+} from 'react-native'
 import { LinearGradient, Amplitude } from 'expo'
 import { NavigationScreenProps } from 'react-navigation'
 import { Text, AssetCard } from '../components'
-import { COLORS } from '../constants'
+import { COLORS, ASSETS } from '../constants'
 import { AssetId, Asset } from '../types'
 import { getPortfolio } from '../requests'
+import { alert } from '../utils'
 
 interface State {
   selectedAsset?: AssetId | null
@@ -35,21 +42,28 @@ export default class MainScreen extends React.Component<
     try {
       const assets = await getPortfolio()
       this.setState({ assets })
-    } catch (error) {
-      console.log('======= error ========', error)
+    } catch (err) {
+      alert(err)
     }
   }
 
   public getSumBalance () {
-    return _.sumBy(this.state.assets, (asset) => (asset.price || 1) * (asset.amount || 0))
+    return _.sumBy(
+      this.state.assets,
+      asset => (asset.price || 1) * (asset.amount || 0)
+    )
   }
 
   public onPress = (assetId: AssetId) => {
     if (this.state.selectedAsset === assetId) {
-      Amplitude.logEventWithProperties('main/close-asset-card', { assetId: assetId })
+      Amplitude.logEventWithProperties('main/close-asset-card', {
+        assetId: assetId
+      })
       this.setState({ selectedAsset: null })
     } else {
-      Amplitude.logEventWithProperties('main/open-asset-card', { assetId: assetId })
+      Amplitude.logEventWithProperties('main/open-asset-card', {
+        assetId: assetId
+      })
       this.setState({ selectedAsset: assetId })
     }
   }
@@ -67,8 +81,14 @@ export default class MainScreen extends React.Component<
         </Text>
         <Text style={styles.totalValueContainer}>
           <Text color={COLORS.WHITE}>฿</Text>
-          <Text type='large-title' style={styles.totalValue} color={COLORS.WHITE}>
-            {` ${this.getSumBalance()}`}
+          <Text
+            type='large-title'
+            style={styles.totalValue}
+            color={COLORS.WHITE}
+          >
+            {` ${this.getSumBalance().toLocaleString(undefined, {
+              maximumFractionDigits: ASSETS.THB.decimal
+            })}`}
           </Text>
         </Text>
       </LinearGradient>
@@ -83,21 +103,21 @@ export default class MainScreen extends React.Component<
 
   public render () {
     return (
-      <View
-        style={{ flex: 1 }}
-      >
+      <View style={{ flex: 1 }}>
         <StatusBar barStyle='light-content' />
         <ScrollView
           style={{
             backgroundColor: '#fff',
             flex: 1
           }}
-          refreshControl={<RefreshControl
-            refreshing={this.state.refreshing}
-            onRefresh={this.onRefresh}
-            progressBackgroundColor={COLORS.P400}
-            tintColor={COLORS.P400}
-          />}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this.onRefresh}
+              progressBackgroundColor={COLORS.P400}
+              tintColor={COLORS.P400}
+            />
+          }
         >
           {this.renderHeader()}
           <View style={styles.cardsContainer}>
@@ -114,6 +134,7 @@ export default class MainScreen extends React.Component<
                   )}
                   <AssetCard
                     id={asset.id}
+                    cash={_.get(this.state.assets, '[0].amount', 0)}
                     amount={asset.amount || 0}
                     price={asset.price}
                     expanded={expanded}

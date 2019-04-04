@@ -1,29 +1,33 @@
 import * as React from 'react'
 import _ from 'lodash'
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, View, Alert } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import {
   Text,
   Value,
-  TradeBox,
+  AssetBox,
+  AssetBoxTemp,
   TradeResult,
   ScreenWithKeyboard,
   Link
 } from '../components'
 import { COLORS, ASSETS } from '../constants'
 import { AssetId, OrderPart } from '../types'
-import { getAmount } from '../requests'
+import { getAmount, order } from '../requests'
+import { toNumber, getErrorCode, alert } from '../utils'
 import { Amplitude } from 'expo'
 
-type TradeBoxType = OrderPart
+type AssetBoxType = OrderPart
 
 interface State {
-  activeTradeBox: TradeBoxType
-  giveTradeBoxValue: string
-  takeTradeBoxValue: string
+  activeAssetBox: AssetBoxType
+  giveAssetBoxValue: string
+  takeAssetBoxValue: string
   typing: boolean
   loading: boolean
   executed: boolean
+  resultGive: number
+  resultTake: number
 }
 
 export default class TradeScreen extends React.Component<
@@ -35,12 +39,14 @@ export default class TradeScreen extends React.Component<
   public constructor (props: NavigationScreenProps) {
     super(props)
     this.state = {
-      activeTradeBox: 'give',
-      giveTradeBoxValue: '',
-      takeTradeBoxValue: '',
+      activeAssetBox: 'give',
+      giveAssetBoxValue: '',
+      takeAssetBoxValue: '',
       typing: false,
       loading: false,
-      executed: false
+      executed: false,
+      resultGive: 0,
+      resultTake: 0
     }
   }
 
@@ -58,34 +64,41 @@ export default class TradeScreen extends React.Component<
     }
   }
 
+  public componentWillUnmount () {
+    clearInterval(this.interval)
+  }
+
   public getAmount = async () => {
-    const tradeBox = this.state.activeTradeBox
-    const value = this.state.activeTradeBox === 'give'
-      ? this.state.giveTradeBoxValue
-      : this.state.takeTradeBoxValue
-    const response = await getAmount(
-      this.props.navigation.getParam('side', 'buy'),
-      this.props.navigation.getParam('assetId', 'BTC'),
-      tradeBox,
-      this.toNumber(value),
-      'liquid'
-    )
-
-    const { data } = response
-    const amount = data.data[`amount_${tradeBox === 'give' ? 'take' : 'give'}`]
-
-    const valueInString = amount.toLocaleString(undefined, {
-      maximumFractionDigits: 8
-    })
-
-    if (tradeBox === 'give') {
+    const activeAssetBox = this.state.activeAssetBox
+    const value = activeAssetBox === 'give'
+      ? this.state.giveAssetBoxValue
+      : this.state.takeAssetBoxValue
+    const num = toNumber(value)
+    let valueInString = '0'
+    if (num > 0) {
+      const response = await getAmount(
+        this.props.navigation.getParam('side', 'buy'),
+        this.props.navigation.getParam('assetId', 'BTC'),
+        activeAssetBox,
+        num,
+        'liquid'
+      )
+      const { data } = response
+      const resultAssetBox = activeAssetBox === 'give' ? 'take' : 'give'
+      const amount = data.data[`amount_${resultAssetBox}`]
+      const assetId: AssetId = data.data[`asset_${resultAssetBox}`]
+      valueInString = amount.toLocaleString(undefined, {
+        maximumFractionDigits: ASSETS[assetId].decimal
+      })
+    }
+    if (activeAssetBox === 'give') {
       this.setState({
-        takeTradeBoxValue: valueInString,
+        takeAssetBoxValue: valueInString,
         loading: false
       })
     } else {
       this.setState({
-        giveTradeBoxValue: valueInString,
+        giveAssetBoxValue: valueInString,
         loading: false
       })
     }
@@ -99,66 +112,25 @@ export default class TradeScreen extends React.Component<
     })
   }
 
-  public onPressTradeBox = (tradeBox: TradeBoxType) => {
-    this.logEvent('press-trade-box', { tradeSide: tradeBox })
-    if (tradeBox !== this.state.activeTradeBox) {
+  public onPressAssetBox = (assetBox: AssetBoxType) => {
+    this.logEvent('press-trade-box', { tradeSide: assetBox })
+    if (assetBox !== this.state.activeAssetBox) {
       this.setState({
-        activeTradeBox: tradeBox
+        activeAssetBox: assetBox
       })
     }
   }
 
-  public toNumber (value: string) {
-    const valueInStringWithoutComma = _.replace(value, /,/g, '')
-    return Number(valueInStringWithoutComma)
-  }
-
-  public formatNumberInString (valueInString: string) {
-    let haveDot = false
-    let endingZero = 0
-    const valueInNumber = this.toNumber(valueInString)
-    if (valueInString === '.') {
-      valueInString = '0.'
-    } else if (valueInString !== '') {
-      const { length } = valueInString
-      if (valueInString[length - 1] === '.') {
-        haveDot = true
-      } else if (
-        _.includes(valueInString, '.') &&
-        valueInString[length - 1] === '0'
-      ) {
-        const valueWithoutZero = _.trimEnd(valueInString, '0')
-        if (valueWithoutZero[valueWithoutZero.length - 1] === '.') {
-          haveDot = true
-        }
-        endingZero = length - _.trimEnd(valueInString, '0').length
-      }
-      valueInString = valueInNumber.toLocaleString(undefined, {
-        maximumFractionDigits: 8
-      })
-      if (haveDot) {
-        valueInString += '.'
-      }
-      if (endingZero > 0) {
-        for (let i = 0; i < endingZero; i++) {
-          valueInString += '0'
-        }
-      }
-    }
-    return valueInString
-  }
-
-  public onChangeValue = async (tradeBox: TradeBoxType, value: string) => {
-    const formattedNumberInString = this.formatNumberInString(value)
-    if (tradeBox === 'give') {
+  public onChangeValue = async (assetBox: AssetBoxType, value: string) => {
+    if (assetBox === 'give') {
       this.setState({
         typing: true,
-        giveTradeBoxValue: formattedNumberInString
+        giveAssetBoxValue: value
       })
-    } else if (tradeBox === 'take') {
+    } else if (assetBox === 'take') {
       this.setState({
         typing: true,
-        takeTradeBoxValue: formattedNumberInString
+        takeAssetBoxValue: value
       })
     }
 
@@ -168,9 +140,30 @@ export default class TradeScreen extends React.Component<
     }, 500)
   }
 
-  public execute = () => {
+  public execute = async () => {
+    const side = this.props.navigation.getParam('side')
+    const assetId = this.props.navigation.getParam('assetId')
     this.logEvent('preee-submit-button')
-    this.setState({ executed: true })
+    try {
+      const { amount_give: resultGive, amount_take: resultTake } = await order(
+        side === 'buy' ? 'THB' : assetId,
+        side === 'buy' ? assetId : 'THB',
+        toNumber(this.state.giveAssetBoxValue),
+        toNumber(this.state.takeAssetBoxValue)
+      )
+      this.setState({
+        executed: true,
+        resultGive: Number(resultGive),
+        resultTake: Number(resultTake)
+      })
+    } catch (err) {
+      const code = getErrorCode(err)
+      if (code === 'insufficient_amount') {
+        Alert.alert(`You don't have enough fund.`)
+      } else {
+        alert(err)
+      }
+    }
   }
 
   public onClose = () => {
@@ -185,14 +178,14 @@ export default class TradeScreen extends React.Component<
       assetId: this.props.navigation.getParam('assetId'),
       cryptoAmount:
         this.props.navigation.getParam('side') === 'buy'
-          ? this.state.takeTradeBoxValue
-          : this.state.giveTradeBoxValue
+          ? this.state.takeAssetBoxValue
+          : this.state.giveAssetBoxValue
     })
   }
 
   public isSubmitable = () => {
     return (
-      this.state.giveTradeBoxValue !== '' && this.state.takeTradeBoxValue !== ''
+      this.state.giveAssetBoxValue !== '' && this.state.takeAssetBoxValue !== ''
     )
   }
 
@@ -227,31 +220,33 @@ export default class TradeScreen extends React.Component<
           {`${_.capitalize(side)} ${ASSETS[assetId].name}`}
         </Text>
         <Text type='body' color={COLORS.N500}>
-          <Value assetId={assetId}>{remainingBalance}</Value>
+          <Value assetId={side === 'buy' ? 'THB' : assetId}>
+            {remainingBalance}
+          </Value>
           {` available`}
         </Text>
-        <View style={styles.tradeBoxesContainer}>
-          <TradeBox
+        <View style={styles.assetBoxesContainer}>
+          <AssetBox
             autoFocus={autoFocus}
             description={side === 'buy' ? 'You buy with' : 'You sell'}
             assetId={side === 'buy' ? 'THB' : assetId}
-            onPress={() => this.onPressTradeBox('give')}
+            onPress={() => this.onPressAssetBox('give')}
             onChangeValue={(value: string) => this.onChangeValue('give', value)}
-            active={this.state.activeTradeBox === 'give'}
-            value={this.state.giveTradeBoxValue}
+            active={this.state.activeAssetBox === 'give'}
+            value={this.state.giveAssetBoxValue}
           />
-          <TradeBox
+          <AssetBoxTemp
             description={
               side === 'sell' ? 'You will receive' : 'You will receive'
             }
             assetId={side === 'sell' ? 'THB' : assetId}
-            onPress={() => this.onPressTradeBox('take')}
-            onChangeValue={(value: string) => this.onChangeValue('take', value)}
-            active={this.state.activeTradeBox === 'take'}
-            value={this.state.takeTradeBoxValue}
+            // onPress={() => this.onPressAssetBox('take')}
+            // onChangeValue={(value: string) => this.onChangeValue('take', value)}
+            // active={this.state.activeAssetBox === 'take'}
+            value={this.state.takeAssetBoxValue}
           />
         </View>
-        {this.renderFooter()}
+        {/* {this.renderFooter()} */}
       </View>
     )
   }
@@ -262,21 +257,24 @@ export default class TradeScreen extends React.Component<
   }
 
   public render () {
-    const orderType = _.capitalize(
-      this.props.navigation.getParam('side', 'buy')
-    )
+    const orderType = this.props.navigation.getParam('side', 'buy')
     return (
       <ScreenWithKeyboard
         backButtonType='close'
         onPressBackButton={this.state.executed ? undefined : this.onClose}
-        submitButtonText={this.state.executed ? 'Done' : orderType}
+        submitButtonText={this.state.executed ? 'Done' : _.capitalize(orderType)}
         activeSubmitButton={this.isSubmitable()}
         onPessSubmitButton={this.state.executed ? this.pressDone : this.execute}
       >
         {autoFocus => (
           <View style={styles.bodyContainer}>
             {this.state.executed ? (
-              <TradeResult assetId='BTC' amount={0.0099} price={950} fee={50} />
+              <TradeResult
+                orderType={orderType}
+                assetId={this.props.navigation.getParam('assetId', 'BTC')}
+                cryptoAmount={orderType === 'buy' ? this.state.resultTake : this.state.resultGive}
+                thbAmount={orderType === 'sell' ? this.state.resultTake : this.state.resultGive}
+              />
             ) : (
               this.renderTradeBody(autoFocus)
             )}
@@ -295,7 +293,7 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     alignItems: 'center'
   },
-  tradeBoxesContainer: {
+  assetBoxesContainer: {
     marginTop: 20,
     width: '100%'
   },

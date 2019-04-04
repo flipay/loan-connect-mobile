@@ -16,11 +16,12 @@ interface Props {
 class Value extends React.Component<Props> {
   public render () {
     const { style, ...otherProps } = this.props
+    const amount = this.props.children.toLocaleString(undefined, {
+      maximumFractionDigits: ASSETS[this.props.assetId].decimal
+    })
     return (
       <Text style={this.props.style} type={this.props.fontType || 'inherit'} {...otherProps}>
-        {this.props.children.toLocaleString(undefined, {
-          maximumFractionDigits: 8
-        })}
+        {amount}
         {` ${
           this.props.full
             ? ASSETS[this.props.assetId].name

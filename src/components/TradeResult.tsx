@@ -1,21 +1,18 @@
 import * as React from 'react'
-import {
-  View,
-  StyleSheet,
-  Image
-} from 'react-native'
+import { View, StyleSheet, Image } from 'react-native'
 import Layer from './Layer'
 import Text from './Text'
 import Value from './Value'
 import Asset from './Asset'
 import { COLORS } from '../constants/styleGuides'
-import { AssetId } from '../types'
+import { AssetId, OrderType } from '../types'
 
 interface Props {
+  orderType: OrderType
   assetId: AssetId
-  amount: number
-  price: number
-  fee: number
+  cryptoAmount: number
+  thbAmount: number
+  fee?: number
 }
 
 export default class TradeResult extends React.Component<Props> {
@@ -36,10 +33,10 @@ export default class TradeResult extends React.Component<Props> {
   public renderAssetPart () {
     return (
       <View style={styles.assetPart}>
-        <Text>You received</Text>
+        <Text>{this.props.orderType === 'buy' ? 'You received' : 'You sold'}</Text>
         <View style={[styles.row, styles.assetRow]}>
           <Asset id={this.props.assetId} />
-          <Value assetId={this.props.assetId}>{this.props.amount}</Value>
+          <Value assetId={this.props.assetId}>{this.props.cryptoAmount}</Value>
         </View>
       </View>
     )
@@ -50,15 +47,17 @@ export default class TradeResult extends React.Component<Props> {
       <View style={styles.paymentPart}>
         <View style={styles.row}>
           <Text type='caption'>Exchange price</Text>
-          <Value fontType='caption' assetId='THB'>{this.props.price}</Value>
+          <Value fontType='caption' assetId='THB'>
+            {this.props.thbAmount}
+          </Value>
         </View>
-        <View style={[styles.row, styles.fee]}>
+        {/* <View style={[styles.row, styles.fee]}>
           <Text type='caption'>Transaction Fee</Text>
           <Value fontType='caption' assetId='THB'>{this.props.fee}</Value>
-        </View>
+        </View> */}
         <View style={styles.row}>
           <Text type='headline'>Total expense</Text>
-          <Value assetId='THB'>{this.props.price + this.props.fee}</Value>
+          <Value assetId='THB'>{this.props.thbAmount}</Value>
         </View>
       </View>
     )

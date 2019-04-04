@@ -7,6 +7,7 @@ import { NavigationScreenProps } from 'react-navigation'
 import { setUpPin, submitOtp } from '../requests'
 import { COLORS } from '../constants'
 import { Text, ScreenWithKeyboard, Layer, Link } from '../components'
+import { alert } from '../utils'
 
 type No = 0 | 1 | 2 | 3 | 4 | 5
 
@@ -124,15 +125,14 @@ export default class VerifyPhoneNumberScreen extends React.Component<
         Amplitude.logEvent('verify-phone-number/successfully-verified')
         this.setState({ verified: true, loading: false })
       } catch (err) {
-        let errorMessage
+        let errorMessage = ''
         switch (err.response.status) {
           case 403:
             Amplitude.logEvent('verify-phone-number/sms-code-incorrect')
             errorMessage = 'The code you entered is incorrect'
             break
           default:
-
-            errorMessage = 'Something went wrong.'
+            alert(err)
         }
         this.setState({
           errorMessage,

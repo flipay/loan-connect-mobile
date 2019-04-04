@@ -4,7 +4,7 @@ import _ from 'lodash'
 import { View, StyleSheet } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { SecureStore, Amplitude } from 'expo'
-import { unlock } from './requests'
+import { setUpRequest, unlock } from './requests'
 import { checkLoginStatus } from './secureStorage'
 import { COLORS } from './constants/styleGuides'
 import { Text } from './components'
@@ -17,15 +17,15 @@ export default class Start extends React.Component<
   NavigationScreenProps,
   State
 > {
-
   public async componentDidMount () {
+    setUpRequest(this.props.navigation)
     // NOTE: restart data to test onboarding //
-    await SecureStore.deleteItemAsync('encrypted-token')
+    // await SecureStore.deleteItemAsync('encrypted-token')
     ///////////////////////////////////////////
     const isLogIned = await checkLoginStatus()
     if (isLogIned) {
       this.props.navigation.navigate('Pin', {
-        title: 'Log in with PIN',
+        title: 'Unlock with PIN',
         onSuccess: async (pin: string, stackNavigationLogInPin: any, setErrorConfirm: (errorMessage: string) => void, startLoading: () => void, stopLoading: () => void) => {
           try {
             startLoading()
@@ -33,7 +33,7 @@ export default class Start extends React.Component<
             this.goToMain(stackNavigationLogInPin)
           } catch (err) {
             stopLoading()
-            Amplitude.logEvent('login/wrong-pin')
+            Amplitude.logEvent('unlock/wrong-pin')
             setErrorConfirm('Wrong PIN')
           }
         }
@@ -44,7 +44,7 @@ export default class Start extends React.Component<
   }
 
   public goToMain (navigation: any) {
-    Amplitude.logEvent('login/successfully-login')
+    Amplitude.logEvent('unlock/successfully-login')
     navigation.navigate('Main')
   }
 

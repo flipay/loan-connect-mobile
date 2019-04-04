@@ -5,20 +5,17 @@ import {
   createSwitchNavigator
 } from 'react-navigation'
 
-import { setBaseUrl } from './requests'
 import Starter from './Starter'
 import MainScreen from './screens/MainScreen'
 import WelcomeScreen from './screens/WelcomeScreen'
 import AuthenScreen from './screens/AuthenScreen'
 import VerifyPhoneNumberScreen from './screens/VerifyPhoneNumberScreen'
 import TradeScreen from './screens/TradeScreen'
+import DepositScreen from './screens/DepositScreen'
+import WithdrawalScreen from './screens/WithdrawalScreen'
 import ComparisonScreen from './screens/ComparisonScreen'
 import PinScreen from './screens/PinScreen'
 import { Font, Amplitude } from 'expo'
-
-setBaseUrl('https://api.flipay.co/v1/')
-// 'https://flipay-mock-backend.herokuapp.com/'
-// 'http://192.168.0.4:8000'
 
 const AuthStack = createStackNavigator(
   {
@@ -43,6 +40,8 @@ const VerificationStack = createStackNavigator(
 const AppStack = createStackNavigator(
   {
     Main: { screen: MainScreen },
+    Deposit: { screen: DepositScreen },
+    Withdrawal: { screen: WithdrawalScreen },
     Trade: { screen: TradeScreen },
     Comparison: { screen: ComparisonScreen }
   },

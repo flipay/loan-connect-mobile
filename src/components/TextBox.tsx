@@ -2,25 +2,23 @@ import * as React from 'react'
 import {
   View,
   StyleSheet,
-  TextInput,
-  Image
+  TextInput
 } from 'react-native'
 import Text from './Text'
 import Layer from './Layer'
-import { COLORS, FONT_TYPES, ASSETS } from '../constants'
-import { AssetId } from '../types'
+import { COLORS, FONT_TYPES } from '../constants'
 
 interface Props {
   autoFocus?: boolean
   description: string
-  assetId: AssetId
   onPress: () => void
   onChangeValue: (value: string) => void
   active: boolean
   value?: string
+  numberPad?: boolean
 }
 
-export default class TradeBox extends React.Component<Props> {
+export default class TextBox extends React.Component<Props> {
   private input: TextInput | null = null
 
   public onPress = () => {
@@ -30,7 +28,6 @@ export default class TradeBox extends React.Component<Props> {
   }
 
   public render () {
-    const { image, unit } = ASSETS[this.props.assetId]
     return (
       <Layer
         style={styles.container}
@@ -49,14 +46,10 @@ export default class TradeBox extends React.Component<Props> {
             selectionColor={COLORS.P400}
             onChangeText={text => this.props.onChangeValue(text)}
             value={this.props.value}
-            keyboardType='decimal-pad'
+            keyboardType={this.props.numberPad ? 'decimal-pad' : 'default'}
             placeholder='0'
             onFocus={this.props.onPress}
           />
-        </View>
-        <View style={styles.rightContainer}>
-          <Image source={image} style={{ width: 16, height: 16, marginRight: 8 }} />
-          <Text>{unit}</Text>
         </View>
       </Layer>
     )

@@ -8,7 +8,6 @@ import {
   TouchableWithoutFeedback
 } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
-import Text from './Text'
 import Button from './Button'
 import Asset from './Asset'
 import Value from './Value'
@@ -19,6 +18,7 @@ import { Amplitude } from 'expo'
 
 interface Props {
   id: AssetId
+  cash: number
   amount: number
   price?: number
   expanded: boolean
@@ -68,6 +68,14 @@ export default class AssetCard extends React.Component<
     }
   }
 
+  public onPressDepositButton = () => {
+    this.props.navigation.navigate('Deposit')
+  }
+
+  public onPressWithdrawButton = () => {
+    this.props.navigation.navigate('Withdrawal')
+  }
+
   public onPressButton = (side: 'buy' | 'sell') => {
     Amplitude.logEventWithProperties('main/trade-button', {
       assetId: this.props.id,
@@ -76,7 +84,10 @@ export default class AssetCard extends React.Component<
     this.props.navigation.navigate('Trade', {
       side,
       assetId: this.props.id,
-      remainingBalance: side ? 3000 : 1
+      remainingBalance:
+        side === 'buy'
+          ? this.props.cash
+          : this.props.amount
     })
   }
 
@@ -99,9 +110,11 @@ export default class AssetCard extends React.Component<
 
   public renderExpandedCardDescription () {
     return this.props.id === 'THB' ? (
-      <Text numberOfLines={2} style={styles.contactUs} color={COLORS.N500}>
-        To deposit cash in Thai baht, please contact us
-      </Text>
+      <View style={styles.buttonsContainer}>
+        <Button onPress={this.onPressDepositButton}>Deposit</Button>
+        <View style={styles.spacing} />
+        <Button onPress={this.onPressWithdrawButton}>Withdraw</Button>
+      </View>
     ) : (
       <View style={styles.buttonsContainer}>
         <Button onPress={() => this.onPressButton('buy')}>Buy</Button>
@@ -131,7 +144,7 @@ export default class AssetCard extends React.Component<
               <View style={styles.rightSection}>
                 <View style={styles.valueContainer}>
                   <Value assetId='THB' fontType='headline'>
-                    {(this.props.price || 0) * this.props.amount}
+                    {(this.props.price || 1) * this.props.amount}
                   </Value>
                   {!(this.props.id === 'THB') && (
                     <Value assetId={this.props.id} fontType='caption'>
