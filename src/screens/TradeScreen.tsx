@@ -26,6 +26,8 @@ interface State {
   typing: boolean
   loading: boolean
   executed: boolean
+  resultGive?: number
+  resultTake?: number
 }
 
 export default class TradeScreen extends React.Component<
@@ -141,15 +143,18 @@ export default class TradeScreen extends React.Component<
     const assetId = this.props.navigation.getParam('assetId')
     this.logEvent('preee-submit-button')
     try {
-      await order(
+      const { amount_give: resultGive, amount_take: resultTake } = await order(
         side === 'buy' ? 'THB' : assetId,
         side === 'buy' ? assetId : 'THB',
         toNumber(this.state.giveAssetBoxValue),
         toNumber(this.state.takeAssetBoxValue)
       )
-      this.setState({ executed: true })
+      this.setState({
+        executed: true,
+        resultGive: Number(resultGive),
+        resultTake: Number(resultTake)
+      })
     } catch (err) {
-      console.log('kendo jaa eieiei wrong', JSON.stringify(err, undefined, 2))
       Alert.alert('Something went wrong')
     }
   }
@@ -259,7 +264,11 @@ export default class TradeScreen extends React.Component<
         {autoFocus => (
           <View style={styles.bodyContainer}>
             {this.state.executed ? (
-              <TradeResult assetId='BTC' amount={0.0099} price={950} fee={50} />
+              <TradeResult
+                assetId={this.props.navigation.getParam('assetId', 'BTC')}
+                price={this.state.resultGive || 0}
+                amount={this.state.resultTake || 0}
+              />
             ) : (
               this.renderTradeBody(autoFocus)
             )}

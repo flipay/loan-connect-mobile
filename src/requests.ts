@@ -218,7 +218,7 @@ export async function order (
       throw(err)
     }
   }
-  return response
+  return response.data.data
 }
 
 function getErrorCode (err: Error) {

@@ -15,7 +15,7 @@ interface Props {
   assetId: AssetId
   amount: number
   price: number
-  fee: number
+  fee?: number
 }
 
 export default class TradeResult extends React.Component<Props> {
@@ -52,13 +52,13 @@ export default class TradeResult extends React.Component<Props> {
           <Text type='caption'>Exchange price</Text>
           <Value fontType='caption' assetId='THB'>{this.props.price}</Value>
         </View>
-        <View style={[styles.row, styles.fee]}>
+        {/* <View style={[styles.row, styles.fee]}>
           <Text type='caption'>Transaction Fee</Text>
           <Value fontType='caption' assetId='THB'>{this.props.fee}</Value>
-        </View>
+        </View> */}
         <View style={styles.row}>
           <Text type='headline'>Total expense</Text>
-          <Value assetId='THB'>{this.props.price + this.props.fee}</Value>
+          <Value assetId='THB'>{this.props.price}</Value>
         </View>
       </View>
     )
