@@ -7,11 +7,15 @@ export function toNumber (value: string) {
 }
 
 export function toString (value: number, decimal: number) {
+  if (decimal < 0) { throw Error('not accept minus decimal') }
   let floored = Math.floor(value)
+
   if (decimal > 0) {
-    floored = Math.floor(value * decimal) / decimal
+    const multiplier = Math.pow(10, decimal)
+    floored = Math.floor(value * multiplier) / multiplier
   }
-  return floored.toLocaleString(undefined, { maximumFractionDigits: decimal })
+  const result = floored.toLocaleString(undefined, { maximumFractionDigits: decimal })
+  return result
 }
 
 export function getErrorCode (err: Error) {
