@@ -3,7 +3,7 @@ import _ from 'lodash'
 import { View, StyleSheet, TextInput, Image } from 'react-native'
 import Text from './Text'
 import Layer from './Layer'
-import { toNumber } from '../utils'
+import { toNumber, toString } from '../utils'
 import { COLORS, FONT_TYPES, ASSETS } from '../constants'
 import { AssetId } from '../types'
 
@@ -40,9 +40,7 @@ export default class AssetBox extends React.Component<Props> {
         }
         endingZero = length - _.trimEnd(valueInString, '0').length
       }
-      valueInString = valueInNumber.toLocaleString(undefined, {
-        maximumFractionDigits: 8
-      })
+      valueInString = toString(valueInNumber, 8)
       if (haveDot) {
         valueInString += '.'
       }

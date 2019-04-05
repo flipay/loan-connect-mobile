@@ -14,7 +14,7 @@ import {
 import { COLORS, ASSETS } from '../constants'
 import { AssetId, OrderPart } from '../types'
 import { getAmount, order } from '../requests'
-import { toNumber, getErrorCode, alert } from '../utils'
+import { toNumber, toString, getErrorCode, alert } from '../utils'
 import { Amplitude } from 'expo'
 
 type AssetBoxType = OrderPart
@@ -87,9 +87,7 @@ export default class TradeScreen extends React.Component<
       const resultAssetBox = activeAssetBox === 'give' ? 'take' : 'give'
       const amount = data.data[`amount_${resultAssetBox}`]
       const assetId: AssetId = data.data[`asset_${resultAssetBox}`]
-      valueInString = amount.toLocaleString(undefined, {
-        maximumFractionDigits: ASSETS[assetId].decimal
-      })
+      valueInString = toString(amount, ASSETS[assetId].decimal)
     }
     if (activeAssetBox === 'give') {
       this.setState({

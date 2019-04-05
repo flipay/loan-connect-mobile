@@ -6,6 +6,14 @@ export function toNumber (value: string) {
   return Number(valueInStringWithoutComma)
 }
 
+export function toString (value: number, decimal: number) {
+  let floored = Math.floor(value)
+  if (decimal > 0) {
+    floored = Math.floor(value * decimal) / decimal
+  }
+  return floored.toLocaleString(undefined, { maximumFractionDigits: decimal })
+}
+
 export function getErrorCode (err: Error) {
   return _.get(err, 'response.data.code')
 }

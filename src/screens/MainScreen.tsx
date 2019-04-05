@@ -13,7 +13,7 @@ import { Text, AssetCard } from '../components'
 import { COLORS, ASSETS } from '../constants'
 import { AssetId, Asset } from '../types'
 import { getPortfolio } from '../requests'
-import { alert } from '../utils'
+import { alert, toString } from '../utils'
 
 interface State {
   selectedAsset?: AssetId | null
@@ -86,9 +86,7 @@ export default class MainScreen extends React.Component<
             style={styles.totalValue}
             color={COLORS.WHITE}
           >
-            {` ${this.getSumBalance().toLocaleString(undefined, {
-              maximumFractionDigits: ASSETS.THB.decimal
-            })}`}
+            {` ${toString(this.getSumBalance(), ASSETS.THB.decimal)}`}
           </Text>
         </Text>
       </LinearGradient>
