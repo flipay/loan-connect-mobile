@@ -35,15 +35,6 @@ export function setUpRequest (nav: any) {
   // 'http://192.168.0.4:8000'
   axios.defaults.baseURL = 'https://api.flipay.co/v1/'
   navigation = nav
-  axios.defaults.validateStatus = (status: number) => {
-
-    if (status >= 200 && status < 300) {
-      setLockTimeout()
-      return true
-    } else {
-      return false
-    }
-  }
 }
 
 function setLockTimeout () {
