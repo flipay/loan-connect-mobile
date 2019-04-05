@@ -35,9 +35,18 @@ export default class MainScreen extends React.Component<
       refreshing: false
     }
   }
+  private willFocusSubscription: any
 
   public componentDidMount () {
     this.fetchData()
+    this.willFocusSubscription = this.props.navigation.addListener(
+      'willFocus',
+      () => { this.fetchData() }
+    )
+  }
+
+  public componentWillUnmount () {
+    this.willFocusSubscription.remove()
   }
 
   public async fetchData () {
