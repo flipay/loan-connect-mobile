@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { Alert } from 'react-native'
+import { Alert, AppState } from 'react-native'
 import _ from 'lodash'
 import Promise from 'bluebird'
 import { OrderType, OrderPart, AssetId } from './types'
@@ -39,15 +39,19 @@ export function setUpRequest (nav: any) {
 
 function setLockTimeout () {
   clearTimeout(lockTimeout)
-  const min = 10
+  const min = 0.5
   lockTimeout = setTimeout(() => {
     axios.defaults.headers.common.Authorization = ''
-    Alert.alert('The session is expired. please insert PIN again.', undefined, [{
-      text: 'OK',
-      onPress: () => {
-        navigation.navigate('Starter')
-      }
-    }])
+    if (AppState.currentState === 'active') {
+      Alert.alert('The session is expired. please insert PIN again.', undefined, [{
+        text: 'OK',
+        onPress: () => {
+          navigation.navigate('Starter')
+        }
+      }])
+    } else {
+      navigation.navigate('Starter')
+    }
   }, min * 60 * 1000)
 }
 
