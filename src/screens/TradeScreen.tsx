@@ -66,6 +66,7 @@ export default class TradeScreen extends React.Component<
 
   public componentWillUnmount () {
     clearInterval(this.interval)
+    clearTimeout(this.timeout)
   }
 
   public getAmount = async () => {
