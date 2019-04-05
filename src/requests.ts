@@ -16,7 +16,7 @@ async function getMarketPrice (assetId: AssetId) {
     OMG: '26'
   }
   try {
-    const response = await axios.get(`trade/?parinng=${bxAssetId[assetId]}`, {
+    const response = await axios.get(`trade/?pairing=${bxAssetId[assetId]}`, {
       baseURL: 'https://bx.in.th/api/',
       headers: ''
     })
