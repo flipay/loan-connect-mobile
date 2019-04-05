@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
   lockButton: {
     position: 'absolute',
     top: 25,
-    right: 15,
+    right: 10,
     padding: 6,
     transform: [{ rotate: '180deg' }]
   },
