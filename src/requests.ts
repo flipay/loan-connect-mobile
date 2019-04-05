@@ -39,7 +39,7 @@ export function setUpRequest (nav: any) {
 
 function setLockTimeout () {
   clearTimeout(lockTimeout)
-  const min = 0.5
+  const min = 30
   lockTimeout = setTimeout(() => {
     axios.defaults.headers.common.Authorization = ''
     if (AppState.currentState === 'active') {
