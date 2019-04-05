@@ -181,7 +181,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 25,
     right: 15,
-    padding: 6
+    padding: 6,
+    transform: [{ rotate: '180deg' }]
   },
   totalValueContainer: {
     color: COLORS.WHITE,
