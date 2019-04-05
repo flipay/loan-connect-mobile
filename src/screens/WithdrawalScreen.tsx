@@ -121,6 +121,7 @@ export default class WithdrawalScreen extends React.Component<
                   />
                   <TextBox
                     description='Account number'
+                    placeholder='000000'
                     onPress={() => this.onPressBox(boxes[1])}
                     onChangeValue={(value) => this.onChangeValue(boxes[1], value)}
                     active={this.state.activeBox === boxes[1]}

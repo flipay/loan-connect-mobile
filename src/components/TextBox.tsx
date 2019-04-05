@@ -11,6 +11,7 @@ import { COLORS, FONT_TYPES } from '../constants'
 interface Props {
   autoFocus?: boolean
   description: string
+  placeholder?: string
   onPress: () => void
   onChangeValue: (value: string) => void
   active: boolean
@@ -42,12 +43,12 @@ export default class TextBox extends React.Component<Props> {
             }}
             style={[styles.textInput, this.props.active && styles.activeTextInput]}
             autoFocus={this.props.autoFocus}
+            placeholder={this.props.placeholder}
             placeholderTextColor={this.props.active ? COLORS.P100 : COLORS.N300}
             selectionColor={COLORS.P400}
             onChangeText={text => this.props.onChangeValue(text)}
             value={this.props.value}
             keyboardType={this.props.numberPad ? 'decimal-pad' : 'default'}
-            placeholder='0'
             onFocus={this.props.onPress}
           />
         </View>
