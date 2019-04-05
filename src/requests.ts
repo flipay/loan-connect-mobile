@@ -7,6 +7,9 @@ import { ASSETS } from './constants'
 import { setToken, getToken } from './secureStorage'
 import { getErrorCode, alert } from './utils'
 
+let navigation: any
+let lockTimeout: any
+
 async function getMarketPrice (assetId: AssetId) {
   if (assetId === 'THB') { return 1 }
   const bxAssetId: { [key in AssetId]: string } = {
@@ -27,33 +30,39 @@ async function getMarketPrice (assetId: AssetId) {
   }
 }
 
-let expiredAlertVisible = false
-
-export function setUpRequest (navigation: any) {
+export function setUpRequest (nav: any) {
   // 'https://flipay-mock-backend.herokuapp.com/'
   // 'http://192.168.0.4:8000'
   axios.defaults.baseURL = 'https://api.flipay.co/v1/'
+  navigation = nav
   axios.defaults.validateStatus = (status: number) => {
-    if (status === 401 && expiredAlertVisible === false) {
-      expiredAlertVisible = true
-      Alert.alert('The session is expired. please insert PIN again.', undefined, [{
-        text: 'OK',
-        onPress: () => {
-          expiredAlertVisible = false
-          navigation.navigate('Starter')
-        }
-      }])
+
+    if (status >= 200 && status < 300) {
+      setLockTimeout()
+      return true
+    } else {
+      return false
     }
-    return status >= 200 && status < 300
   }
+}
+
+function setLockTimeout () {
+  clearTimeout(lockTimeout)
+  const min = 10
+  lockTimeout = setTimeout(() => {
+    axios.defaults.headers.common.Authorization = ''
+    Alert.alert('The session is expired. please insert PIN again.', undefined, [{
+      text: 'OK',
+      onPress: () => {
+        navigation.navigate('Starter')
+      }
+    }])
+  }, min * 60 * 1000)
 }
 
 function setAuthorization (token: string) {
   axios.defaults.headers.common.Authorization = `Bearer ${token}`
-  const min = 30
-  setTimeout(() => {
-    axios.defaults.headers.common.Authorization = ''
-  }, min * 60 * 1000)
+  setLockTimeout()
 }
 
 export async function setUpPin (token: string, pin: string) {
@@ -64,6 +73,12 @@ export async function setUpPin (token: string, pin: string) {
 export async function unlock (pin: string) {
   const token = await getToken(pin)
   setAuthorization(token)
+}
+
+export async function lock () {
+  clearTimeout(lockTimeout)
+  axios.defaults.headers.common.Authorization = ''
+  navigation.navigate('Starter')
 }
 
 export async function authen (phoneNumber: string) {

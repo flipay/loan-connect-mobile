@@ -5,14 +5,16 @@ import {
   RefreshControl,
   StatusBar,
   View,
-  StyleSheet
+  StyleSheet,
+  TouchableOpacity
 } from 'react-native'
 import { LinearGradient, Amplitude } from 'expo'
+import { SimpleLineIcons } from '@expo/vector-icons'
 import { NavigationScreenProps } from 'react-navigation'
 import { Text, AssetCard } from '../components'
 import { COLORS, ASSETS } from '../constants'
 import { AssetId, Asset } from '../types'
-import { getPortfolio } from '../requests'
+import { getPortfolio, lock } from '../requests'
 import { alert, toString } from '../utils'
 
 interface State {
@@ -68,6 +70,18 @@ export default class MainScreen extends React.Component<
     }
   }
 
+  public renderLockButton () {
+    return (
+      <TouchableOpacity onPress={lock} style={styles.lockButton}>
+        <SimpleLineIcons
+          name='logout'
+          size={24}
+          color={COLORS.WHITE}
+        />
+      </TouchableOpacity>
+    )
+  }
+
   public renderHeader () {
     return (
       <LinearGradient
@@ -89,6 +103,7 @@ export default class MainScreen extends React.Component<
             {` ${toString(this.getSumBalance(), ASSETS.THB.decimal)}`}
           </Text>
         </Text>
+        {this.renderLockButton()}
       </LinearGradient>
     )
   }
@@ -156,10 +171,17 @@ export default class MainScreen extends React.Component<
 
 const styles = StyleSheet.create({
   header: {
+    position: 'relative',
     backgroundColor: 'blue',
     height: 236,
     alignItems: 'center',
     justifyContent: 'center'
+  },
+  lockButton: {
+    position: 'absolute',
+    top: 25,
+    right: 15,
+    padding: 6
   },
   totalValueContainer: {
     color: COLORS.WHITE,
