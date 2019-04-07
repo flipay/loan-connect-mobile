@@ -16,6 +16,13 @@ import WithdrawalScreen from './screens/WithdrawalScreen'
 import ComparisonScreen from './screens/ComparisonScreen'
 import PinScreen from './screens/PinScreen'
 import { Font, Amplitude } from 'expo'
+import { Platform } from 'react-native'
+
+// HACK: to make (number).toLocaleString to work correctly for Android
+if (Platform.OS === 'android') {
+  require('intl')
+  require('intl/locale-data/jsonp/en-US')
+}
 
 const AuthStack = createStackNavigator(
   {
