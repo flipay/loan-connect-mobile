@@ -86,6 +86,7 @@ export default class MainScreen extends React.Component<
           name='logout'
           size={24}
           color={COLORS.WHITE}
+          style={styles.lockIcon}
         />
       </TouchableOpacity>
     )
@@ -190,7 +191,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 25,
     right: 10,
-    padding: 6,
+    padding: 6
+  },
+  lockIcon: {
     transform: [{ rotate: '180deg' }]
   },
   totalValueContainer: {
