@@ -81,6 +81,7 @@ export default class AssetBox extends React.Component<Props> {
               styles.textInput,
               this.props.active && styles.activeTextInput
             ]}
+            maxLength={10}
             autoFocus={this.props.autoFocus}
             placeholderTextColor={this.props.active ? COLORS.P100 : COLORS.N300}
             selectionColor={COLORS.P400}
