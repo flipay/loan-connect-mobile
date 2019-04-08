@@ -26,6 +26,8 @@ export default class AssetBox extends React.Component<Props> {
     const valueInNumber = toNumber(valueInString)
     if (valueInString === '.') {
       valueInString = '0.'
+    } else if (isNaN(valueInNumber)) {
+      return this.props.value
     } else if (valueInString !== '') {
       const { length } = valueInString
       if (valueInString[length - 1] === '.') {
