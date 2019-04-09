@@ -3,7 +3,7 @@
     "name": "Flipay",
     "description": "",
     "slug": "flipay",
-    "privacy": "public",
+    "privacy": "unlisted",
     "sdkVersion": "31.0.0",
     "version": "0.2.2",
     "orientation": "portrait",
