@@ -11,15 +11,13 @@ import {
   ScreenWithKeyboard,
   Link
 } from '../components'
-import { COLORS, ASSETS, ProviderId } from '../constants'
+import { COLORS, ASSETS, THBAmountTypes } from '../constants'
 import { AssetId, OrderPart } from '../types'
 import { getAmount, order, getCompetitorTHBAmounts } from '../requests'
-import { toNumber, toString, getErrorCode, alert } from '../utils'
+import { toNumber, toString, getErrorCode, alert, calSaveAmount } from '../utils'
 import { Amplitude } from 'expo'
 
 type AssetBoxType = OrderPart
-
-type THBAmountTypes = { [key in ProviderId]: number }
 
 interface State {
   activeAssetBox: AssetBoxType
@@ -201,12 +199,17 @@ export default class TradeScreen extends React.Component<
 
   public renderFooter () {
     const side = this.props.navigation.getParam('side', 'buy')
+    const saved = calSaveAmount(
+      side,
+      side === 'buy' ? toNumber(this.state.takeAssetBoxValue) : toNumber(this.state.giveAssetBoxValue),
+      this.state.thbAmounts
+    )
     return (
       this.isSubmitable() && (
         <View style={styles.footer}>
           <Text color={COLORS.N500}>
             {side === 'buy' ? 'You save up to ' : 'You earn up to '}
-            <Text color={COLORS.N800}>500 THB</Text>
+            <Text color={COLORS.N800}>{toString(saved, ASSETS.THB.decimal)} THB</Text>
             {side === 'buy' ? '' : ' more'}
           </Text>
           <Link onPress={this.onPressPriceComparison}>

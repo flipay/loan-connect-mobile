@@ -6,6 +6,8 @@ export const COMPETITOR_IDS = _.reject(PROVIDER_IDS, (id) => id === 'liquid')
 
 export type ProviderId = typeof PROVIDER_IDS[number]
 
+export type THBAmountTypes = { [key in ProviderId]: number }
+
 export interface Provider {
   id: ProviderId
   name: string
