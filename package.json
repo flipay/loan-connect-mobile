@@ -40,17 +40,40 @@
     "@types/expo": "^32.0.9",
     "@types/expo__vector-icons": "^9.0.1",
     "@types/fbemitter": "2.0.32",
+    "@types/jest": "^24.0.11",
     "@types/react": "16.4.18",
     "@types/react-native": "0.57.7",
     "@types/react-navigation": "^2.13.7",
+    "jest": "^24.0.0",
     "jest-expo": "^32.0.0",
     "react-test-renderer": "^16.8.6",
+    "ts-jest": "^24.0.2",
     "tslint": "5.11.0",
     "tslint-eslint-rules": "5.4.0",
     "tslint-react": "3.6.0",
     "typescript": "^3.4.1"
   },
   "jest": {
-    "preset": "jest-expo"
+    "preset": "jest-expo",
+    "transform": {
+      "^.+\\.js$": "<rootDir>/node_modules/react-native/jest/preprocessor.js",
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testMatch": [
+      "**/__tests__/**/*.ts?(x)",
+      "**/?(*.)+(spec|test).ts?(x)"
+    ],
+    "moduleFileExtensions": [
+      "js",
+      "ts",
+      "tsx"
+    ],
+    "globals": {
+      "ts-jest": {
+        "tsConfig": {
+          "jsx": "react"
+        }
+      }
+    }
   }
 }
