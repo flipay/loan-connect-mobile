@@ -11,13 +11,15 @@ import {
   ScreenWithKeyboard,
   Link
 } from '../components'
-import { COLORS, ASSETS } from '../constants'
+import { COLORS, ASSETS, ProviderId } from '../constants'
 import { AssetId, OrderPart } from '../types'
 import { getAmount, order } from '../requests'
 import { toNumber, toString, getErrorCode, alert } from '../utils'
 import { Amplitude } from 'expo'
 
 type AssetBoxType = OrderPart
+
+type THBAmountTypes = { [key in ProviderId]: number }
 
 interface State {
   activeAssetBox: AssetBoxType
@@ -28,6 +30,8 @@ interface State {
   executed: boolean
   resultGive: number
   resultTake: number
+  worstThaiBahtAmount?: number
+  thbAmounts?: THBAmountTypes
 }
 
 export default class TradeScreen extends React.Component<
@@ -77,18 +81,17 @@ export default class TradeScreen extends React.Component<
     const num = toNumber(value)
     let valueInString = '0'
     if (num > 0) {
-      const response = await getAmount(
-        this.props.navigation.getParam('side', 'buy'),
-        this.props.navigation.getParam('assetId', 'BTC'),
+      const side = this.props.navigation.getParam('side', 'buy')
+      const assetId: AssetId = this.props.navigation.getParam('assetId', 'BTC')
+      const amount = await getAmount(
+        side,
+        assetId,
         activeAssetBox,
         num,
         'liquid'
       )
-      const { data } = response
-      const resultAssetBox = activeAssetBox === 'give' ? 'take' : 'give'
-      const amount = data.data[`amount_${resultAssetBox}`]
-      const assetId: AssetId = data.data[`asset_${resultAssetBox}`]
-      valueInString = toString(amount, ASSETS[assetId].decimal)
+      const responseAsset = side === 'buy' ? assetId : 'THB'
+      valueInString = toString(amount, ASSETS[responseAsset].decimal)
     }
     if (activeAssetBox === 'give') {
       this.setState({
@@ -245,7 +248,7 @@ export default class TradeScreen extends React.Component<
             value={this.state.takeAssetBoxValue}
           />
         </View>
-        {/* {this.renderFooter()} */}
+        {this.renderFooter()}
       </View>
     )
   }
@@ -297,6 +300,7 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   footer: {
+    marginTop: 20,
     alignItems: 'center'
   }
 })

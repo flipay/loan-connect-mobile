@@ -145,7 +145,7 @@ export async function getAmount (
   amount: number,
   provider: string
 ) {
-  return axios.get(
+  const response = await axios.get(
     `/rates/${orderType === 'buy' ? 'THB' : assetId}/${
       orderType === 'sell' ? 'THB' : assetId
     }`,
@@ -156,6 +156,9 @@ export async function getAmount (
       }
     }
   )
+  const { data } = response
+  const resultAssetBox = specifiedPart === 'give' ? 'take' : 'give'
+  return data.data[`amount_${resultAssetBox}`]
 }
 
 export async function getAllAmounts (
@@ -163,7 +166,7 @@ export async function getAllAmounts (
   assetId: AssetId,
   cryptoAmount: number
 ) {
-  console.log('it does not work yet, wating for take side to work')
+  console.log('kendo jaaaaaaa')
 }
 
 export async function deposit (assetId: AssetId, amount: number) {
