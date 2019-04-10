@@ -3,7 +3,7 @@ import { Alert, AppState } from 'react-native'
 import _ from 'lodash'
 import Promise from 'bluebird'
 import { OrderType, OrderPart, AssetId } from './types'
-import { ASSETS } from './constants'
+import { ASSETS, COMPETITOR_IDS } from './constants'
 import { setToken, getToken } from './secureStorage'
 import { getErrorCode, alert } from './utils'
 
@@ -161,12 +161,28 @@ export async function getAmount (
   return data.data[`amount_${resultAssetBox}`]
 }
 
-export async function getAllAmounts (
+export async function getCompetitorTHBAmounts (
   orderType: OrderType,
   assetId: AssetId,
   cryptoAmount: number
 ) {
-  console.log('kendo jaaaaaaa')
+  const result = await Promise.map(COMPETITOR_IDS, async (providerId) => {
+    let amount
+    try {
+      amount = await getAmount(
+        orderType,
+        assetId,
+        orderType === 'buy' ? 'take' : 'give',
+        cryptoAmount,
+        providerId
+      )
+    } catch (err) {
+      console.log('could not get the result', JSON.stringify(err, undefined, 2))
+    }
+    return [providerId, amount]
+  })
+
+  return _.fromPairs(result)
 }
 
 export async function deposit (assetId: AssetId, amount: number) {

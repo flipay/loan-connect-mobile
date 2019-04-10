@@ -13,7 +13,7 @@ import {
 } from '../components'
 import { COLORS, ASSETS, ProviderId } from '../constants'
 import { AssetId, OrderPart } from '../types'
-import { getAmount, order } from '../requests'
+import { getAmount, order, getCompetitorTHBAmounts } from '../requests'
 import { toNumber, toString, getErrorCode, alert } from '../utils'
 import { Amplitude } from 'expo'
 
@@ -92,6 +92,14 @@ export default class TradeScreen extends React.Component<
       )
       const responseAsset = side === 'buy' ? assetId : 'THB'
       valueInString = toString(amount, ASSETS[responseAsset].decimal)
+      const result = await getCompetitorTHBAmounts(
+        this.props.navigation.getParam('side', 'buy'),
+        this.props.navigation.getParam('assetId', 'BTC'),
+        this.props.navigation.getParam('side', 'buy') ? toNumber(this.state.takeAssetBoxValue) : toNumber(this.state.giveAssetBoxValue)
+      )
+      this.setState({
+        thbAmounts: result
+      })
     }
     if (activeAssetBox === 'give') {
       this.setState({
