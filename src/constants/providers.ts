@@ -25,15 +25,5 @@ export const PROVIDERS: Array<Provider> = [
     id: 'bxth',
     name: 'BX Thailand',
     image: require('../img/company_bx.png')
-  },
-  {
-    id: 'binance',
-    name: 'Satang Pro',
-    image: require('../img/company_bx.png')
-  },
-  {
-    id: 'bitfinex',
-    name: 'Bitkub',
-    image: require('../img/icon_eth.png')
   }
 ]
