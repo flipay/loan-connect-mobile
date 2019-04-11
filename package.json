@@ -15,7 +15,7 @@
     "lint": "tslint src/**/*.ts",
     "start": "expo start",
     "validate": "npm run lint --scripts-prepend-node-path && tsc --noEmit",
-    "test": "jest"
+    "test": "jest --watch"
   },
   "dependencies": {
     "axios": "^0.18.0",

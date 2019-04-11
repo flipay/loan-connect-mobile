@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import * as _ from 'lodash'
 import { Alert } from 'react-native'
 import { THBAmountTypes } from './constants'
 import { OrderType } from './types'
@@ -29,19 +29,25 @@ export function alert (err: Error) {
 }
 
 export function calSaveAmount (side: OrderType, amount: number, thbAmounts?: THBAmountTypes) {
-  if (!thbAmounts) { return 0 }
+  if (!thbAmounts) {
+    return 0
+  }
   const amounts = _.map(thbAmounts)
   if (side === 'buy') {
-    const worstAmount = _.min(amounts)
-    if (!worstAmount) { return 0 }
+    const worstAmount = _.max(amounts)
+    if (!worstAmount) {
+      return 0
+    }
     if (worstAmount <= amount) {
       return 0
     } else {
       return worstAmount - amount
     }
   } else {
-    const worstAmount = _.max(amounts)
-    if (!worstAmount) { return 0 }
+    const worstAmount = _.min(amounts)
+    if (!worstAmount) {
+      return 0
+    }
     if (worstAmount >= amount) {
       return 0
     } else {
