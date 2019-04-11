@@ -5,7 +5,7 @@ import Promise from 'bluebird'
 import { OrderType, OrderPart, AssetId } from './types'
 import { ASSETS, COMPETITOR_IDS } from './constants'
 import { setToken, getToken } from './secureStorage'
-import { getErrorCode, alert } from './utils'
+import { getErrorCode, getErrorDetail, alert } from './utils'
 
 let navigation: any
 let lockTimeout: any
@@ -177,11 +177,10 @@ export async function getCompetitorTHBAmounts (
         providerId
       )
     } catch (err) {
-      console.log('could not get the result', JSON.stringify(err, undefined, 2))
+      console.log('', getErrorDetail(err))
     }
     return [providerId, amount]
   })
-
   return _.fromPairs(result)
 }
 

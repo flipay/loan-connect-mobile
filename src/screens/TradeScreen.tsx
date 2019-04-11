@@ -201,7 +201,7 @@ export default class TradeScreen extends React.Component<
     const side = this.props.navigation.getParam('side', 'buy')
     const saved = calSaveAmount(
       side,
-      side === 'buy' ? toNumber(this.state.takeAssetBoxValue) : toNumber(this.state.giveAssetBoxValue),
+      side === 'buy' ? toNumber(this.state.giveAssetBoxValue) : toNumber(this.state.takeAssetBoxValue),
       this.state.thbAmounts
     )
     return (
@@ -209,7 +209,7 @@ export default class TradeScreen extends React.Component<
         <View style={styles.footer}>
           <Text color={COLORS.N500}>
             {side === 'buy' ? 'You save up to ' : 'You earn up to '}
-            <Text color={COLORS.N800}>{toString(saved, ASSETS.THB.decimal)} THB</Text>
+            <Text color={COLORS.N800}>{toString(saved, 2)} THB</Text>
             {side === 'buy' ? '' : ' more'}
           </Text>
           <Link onPress={this.onPressPriceComparison}>

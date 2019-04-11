@@ -24,8 +24,12 @@ export function getErrorCode (err: Error) {
   return _.get(err, 'response.data.code')
 }
 
+export function getErrorDetail (err: Error) {
+  return JSON.stringify(_.get(err, 'response.data.errors'))
+}
+
 export function alert (err: Error) {
-  return Alert.alert(`Something went wrong: ${JSON.stringify(_.get(err, 'response.data.errors'))}`)
+  return Alert.alert(`Something went wrong: ${getErrorDetail(err)}`)
 }
 
 export function calSaveAmount (side: OrderType, amount: number, thbAmounts?: THBAmountTypes) {
