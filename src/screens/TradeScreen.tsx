@@ -180,14 +180,19 @@ export default class TradeScreen extends React.Component<
   }
 
   public onPressPriceComparison = () => {
+    const cryptoAmount = this.props.navigation.getParam('side') === 'buy'
+      ? this.state.takeAssetBoxValue
+      : this.state.giveAssetBoxValue
+    const flipayAmount = this.props.navigation.getParam('side') === 'sell'
+      ? this.state.takeAssetBoxValue
+      : this.state.giveAssetBoxValue
     this.logEvent('press-price-comparison-link')
     this.props.navigation.navigate('Comparison', {
       side: this.props.navigation.getParam('side'),
       assetId: this.props.navigation.getParam('assetId'),
-      cryptoAmount:
-        this.props.navigation.getParam('side') === 'buy'
-          ? this.state.takeAssetBoxValue
-          : this.state.giveAssetBoxValue
+      competitorAmounts: this.state.thbAmounts,
+      flipayAmount,
+      cryptoAmount
     })
   }
 
@@ -195,6 +200,11 @@ export default class TradeScreen extends React.Component<
     return (
       this.state.giveAssetBoxValue !== '' && this.state.takeAssetBoxValue !== ''
     )
+  }
+
+  public generateDataforComparisonPage () {
+
+    return 
   }
 
   public renderFooter () {

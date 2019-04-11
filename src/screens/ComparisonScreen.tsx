@@ -12,9 +12,8 @@ import resolveAssetSource from 'resolveAssetSource'
 import { LinearGradient, Amplitude } from 'expo'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { Text, Value, CloseButton } from '../components'
-import { COLORS } from '../constants'
+import { COLORS, PROVIDERS } from '../constants'
 import { AssetId, OrderType } from '../types'
-import { getAllAmounts } from '../requests'
 
 interface RequestedRecord {
   name: string
@@ -31,71 +30,36 @@ interface FormattedRecord {
 
 type RequestedRecords = Array<RequestedRecord>
 
-interface State {
-  requestedData: RequestedRecords
+interface Props {
+  data: RequestedRecords
 }
 
 type Side = OrderType
 
 export default class ComparisonScreen extends React.Component<
-  NavigationScreenProps,
-  State
+  Props & NavigationScreenProps
 > {
-  private interval: any = null
-
-  public constructor (props: NavigationScreenProps) {
-    super(props)
-    this.state = {
-      requestedData: []
-    }
-  }
-  public componentDidMount () {
-    this.requestData()
-    this.interval = setInterval(() => {
-      this.requestData()
-    }, 5000)
-  }
-
-  public componentWillUnmount () {
-    clearInterval(this.interval)
-  }
-
-  public async requestData () {
-    const side = this.props.navigation.getParam('side', 'sell')
-    const assetId: AssetId = this.props.navigation.getParam('assetId', 'bitcoin')
-    const cryptoAmount = this.props.navigation.getParam('cryptoAmount', 1000)
-    await getAllAmounts(side, assetId, cryptoAmount)
-    const mockData = [
-      {
-        name: 'Satang',
-        amount: 1400,
-        image: require('../img/company_bx.png')
-      },
-      {
-        name: 'BX Thailand',
-        amount: 3000,
-        image: require('../img/company_bx.png')
-      },
-      {
-        name: 'Bitkub',
-        amount: 2000,
-        image: require('../img/company_bx.png')
-      },
-      {
-        name: 'flipay',
-        amount: 1000,
-        image: require('../img/company_flipay.png')
-      }
-    ]
-
-    this.setState({
-      requestedData: mockData
-    })
-  }
-
   public onClose = () => {
     Amplitude.logEvent('comparison/press-close-button')
     this.props.navigation.goBack()
+  }
+
+  public getStructuredData () {
+    const competitorAmounts = this.props.navigation.getParam('competitorAmounts')
+    const flipayAmount = this.props.navigation.getParam('flipayAmount')
+    return _.map(PROVIDERS, (provider) => {
+      if (provider.id === 'flipay') {
+        return ({
+          ...provider,
+          amount: flipayAmount
+        })
+      } else {
+        return ({
+          ...provider,
+          amount: competitorAmounts[provider.id]
+        })
+      }
+    })
   }
 
   public renderRecord (data: FormattedRecord, index: number) {
@@ -180,19 +144,11 @@ export default class ComparisonScreen extends React.Component<
     const side = this.props.navigation.getParam('side', 'sell')
     const assetId: AssetId = this.props.navigation.getParam('assetId', 'bitcoin')
     const cryptoAmount = this.props.navigation.getParam('cryptoAmount', 1000)
-
-    const flipayRecord = _.find(
-      this.state.requestedData,
-      record => record.name === 'flipay'
-    )
-    if (!flipayRecord) {
-      return <View />
-    }
-    const flipayAmount = flipayRecord.amount
-    const sortedRecords = _.sortBy(this.state.requestedData, record => {
+    const structuredData = this.getStructuredData()
+    const sortedRecords = _.sortBy(structuredData, record => {
       return record.amount * (side === 'sell' ? -1 : 1)
     })
-    const bestCompany = sortedRecords[0].name
+    const best = sortedRecords[0]
     const worstAmount = sortedRecords[sortedRecords.length - 1].amount
     return (
       <LinearGradient
@@ -203,9 +159,9 @@ export default class ComparisonScreen extends React.Component<
       >
         <StatusBar barStyle='light-content' />
         <CloseButton onPress={this.onClose} color={COLORS.WHITE} />
-        {this.renderTitle(side, Math.abs(flipayAmount - worstAmount))}
+        {this.renderTitle(side, Math.abs(best.amount - worstAmount))}
         <Text color={COLORS.WHITE}>
-          {`Looks like ${bestCompany} is the best way to ${side}`}
+          {`Looks like ${best.name} is the best way to ${side}`}
         </Text>
         <Text color={COLORS.WHITE}>
           <Value assetId={assetId} full={true}>{cryptoAmount}</Value>
