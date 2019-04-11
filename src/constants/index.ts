@@ -1,10 +1,15 @@
 import { ASSETS } from './assets'
+import { PROVIDERS, ProviderId, COMPETITOR_IDS, THBAmountTypes } from './providers'
 import { COLORS, FONT_TYPES } from './styleGuides'
 import ACCOUNT_ISSUERS from './accountIssuers'
 
 export {
-  ACCOUNT_ISSUERS,
   ASSETS,
+  PROVIDERS,
+  ProviderId,
+  THBAmountTypes,
+  COMPETITOR_IDS,
   COLORS,
-  FONT_TYPES
+  FONT_TYPES,
+  ACCOUNT_ISSUERS
 }

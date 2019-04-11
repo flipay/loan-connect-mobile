@@ -3,9 +3,9 @@ import { Alert, AppState } from 'react-native'
 import _ from 'lodash'
 import Promise from 'bluebird'
 import { OrderType, OrderPart, AssetId } from './types'
-import { ASSETS } from './constants'
+import { ASSETS, COMPETITOR_IDS } from './constants'
 import { setToken, getToken } from './secureStorage'
-import { getErrorCode, alert } from './utils'
+import { getErrorCode, getErrorDetail, alert } from './utils'
 
 let navigation: any
 let lockTimeout: any
@@ -145,7 +145,7 @@ export async function getAmount (
   amount: number,
   provider: string
 ) {
-  return axios.get(
+  const response = await axios.get(
     `/rates/${orderType === 'buy' ? 'THB' : assetId}/${
       orderType === 'sell' ? 'THB' : assetId
     }`,
@@ -156,14 +156,32 @@ export async function getAmount (
       }
     }
   )
+  const { data } = response
+  const resultAssetBox = specifiedPart === 'give' ? 'take' : 'give'
+  return data.data[`amount_${resultAssetBox}`]
 }
 
-export async function getAllAmounts (
+export async function getCompetitorTHBAmounts (
   orderType: OrderType,
   assetId: AssetId,
   cryptoAmount: number
 ) {
-  console.log('it does not work yet, wating for take side to work')
+  const result = await Promise.map(COMPETITOR_IDS, async (providerId) => {
+    let amount
+    try {
+      amount = await getAmount(
+        orderType,
+        assetId,
+        orderType === 'buy' ? 'take' : 'give',
+        cryptoAmount,
+        providerId
+      )
+    } catch (err) {
+      console.log('', getErrorDetail(err))
+    }
+    return [providerId, amount]
+  })
+  return _.fromPairs(result)
 }
 
 export async function deposit (assetId: AssetId, amount: number) {

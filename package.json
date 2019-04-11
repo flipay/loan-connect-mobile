@@ -14,19 +14,20 @@
     "ios": "expo start --ios",
     "lint": "tslint src/**/*.ts",
     "start": "expo start",
-    "validate": "npm run lint --scripts-prepend-node-path && tsc --noEmit"
+    "validate": "npm run lint --scripts-prepend-node-path && tsc --noEmit",
+    "test": "jest --watch"
   },
   "dependencies": {
     "axios": "^0.18.0",
     "bluebird": "^3.5.3",
     "crypto-js": "^3.1.9-1",
-    "expo": "31.0.4",
+    "expo": "^32.0.0",
     "intl": "^1.2.5",
     "lodash": "^4.17.11",
     "react": "16.5.0",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-31.0.1.tar.gz",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz",
     "react-native-dropdownalert": "^3.7.1",
-    "react-navigation": "^3.0.4",
+    "react-navigation": "^3.0.9",
     "react-redux": "^6.0.0",
     "recompose": "^0.30.0",
     "redux": "^4.0.1",
@@ -39,12 +40,40 @@
     "@types/expo": "^32.0.9",
     "@types/expo__vector-icons": "^9.0.1",
     "@types/fbemitter": "2.0.32",
+    "@types/jest": "^24.0.11",
     "@types/react": "16.4.18",
     "@types/react-native": "0.57.7",
     "@types/react-navigation": "^2.13.7",
+    "jest": "^24.0.0",
+    "jest-expo": "^32.0.0",
+    "react-test-renderer": "^16.8.6",
+    "ts-jest": "^24.0.2",
     "tslint": "5.11.0",
     "tslint-eslint-rules": "5.4.0",
     "tslint-react": "3.6.0",
     "typescript": "^3.4.1"
+  },
+  "jest": {
+    "preset": "jest-expo",
+    "transform": {
+      "^.+\\.js$": "<rootDir>/node_modules/react-native/jest/preprocessor.js",
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testMatch": [
+      "**/__tests__/**/*.ts?(x)",
+      "**/?(*.)+(spec|test).ts?(x)"
+    ],
+    "moduleFileExtensions": [
+      "js",
+      "ts",
+      "tsx"
+    ],
+    "globals": {
+      "ts-jest": {
+        "tsConfig": {
+          "jsx": "react"
+        }
+      }
+    }
   }
 }

@@ -11,10 +11,10 @@ import {
   ScreenWithKeyboard,
   Link
 } from '../components'
-import { COLORS, ASSETS } from '../constants'
+import { COLORS, ASSETS, THBAmountTypes } from '../constants'
 import { AssetId, OrderPart } from '../types'
-import { getAmount, order } from '../requests'
-import { toNumber, toString, getErrorCode, alert } from '../utils'
+import { getAmount, order, getCompetitorTHBAmounts } from '../requests'
+import { toNumber, toString, getErrorCode, alert, calSaveAmount } from '../utils'
 import { Amplitude } from 'expo'
 
 type AssetBoxType = OrderPart
@@ -28,6 +28,8 @@ interface State {
   executed: boolean
   resultGive: number
   resultTake: number
+  worstThaiBahtAmount?: number
+  thbAmounts?: THBAmountTypes
 }
 
 export default class TradeScreen extends React.Component<
@@ -77,18 +79,25 @@ export default class TradeScreen extends React.Component<
     const num = toNumber(value)
     let valueInString = '0'
     if (num > 0) {
-      const response = await getAmount(
-        this.props.navigation.getParam('side', 'buy'),
-        this.props.navigation.getParam('assetId', 'BTC'),
+      const side = this.props.navigation.getParam('side', 'buy')
+      const assetId: AssetId = this.props.navigation.getParam('assetId', 'BTC')
+      const amount = await getAmount(
+        side,
+        assetId,
         activeAssetBox,
         num,
         'liquid'
       )
-      const { data } = response
-      const resultAssetBox = activeAssetBox === 'give' ? 'take' : 'give'
-      const amount = data.data[`amount_${resultAssetBox}`]
-      const assetId: AssetId = data.data[`asset_${resultAssetBox}`]
-      valueInString = toString(amount, ASSETS[assetId].decimal)
+      const responseAsset = side === 'buy' ? assetId : 'THB'
+      valueInString = toString(amount, ASSETS[responseAsset].decimal)
+      const result = await getCompetitorTHBAmounts(
+        this.props.navigation.getParam('side', 'buy'),
+        this.props.navigation.getParam('assetId', 'BTC'),
+        this.props.navigation.getParam('side', 'buy') ? toNumber(this.state.takeAssetBoxValue) : toNumber(this.state.giveAssetBoxValue)
+      )
+      this.setState({
+        thbAmounts: result
+      })
     }
     if (activeAssetBox === 'give') {
       this.setState({
@@ -171,14 +180,19 @@ export default class TradeScreen extends React.Component<
   }
 
   public onPressPriceComparison = () => {
+    const cryptoAmount = this.props.navigation.getParam('side') === 'buy'
+      ? this.state.takeAssetBoxValue
+      : this.state.giveAssetBoxValue
+    const flipayAmount = this.props.navigation.getParam('side') === 'sell'
+      ? this.state.takeAssetBoxValue
+      : this.state.giveAssetBoxValue
     this.logEvent('press-price-comparison-link')
     this.props.navigation.navigate('Comparison', {
       side: this.props.navigation.getParam('side'),
       assetId: this.props.navigation.getParam('assetId'),
-      cryptoAmount:
-        this.props.navigation.getParam('side') === 'buy'
-          ? this.state.takeAssetBoxValue
-          : this.state.giveAssetBoxValue
+      competitorAmounts: this.state.thbAmounts,
+      flipayAmount: toNumber(flipayAmount),
+      cryptoAmount
     })
   }
 
@@ -188,14 +202,24 @@ export default class TradeScreen extends React.Component<
     )
   }
 
+  public generateDataforComparisonPage () {
+
+    return 
+  }
+
   public renderFooter () {
     const side = this.props.navigation.getParam('side', 'buy')
+    const saved = calSaveAmount(
+      side,
+      side === 'buy' ? toNumber(this.state.giveAssetBoxValue) : toNumber(this.state.takeAssetBoxValue),
+      this.state.thbAmounts
+    )
     return (
       this.isSubmitable() && (
         <View style={styles.footer}>
           <Text color={COLORS.N500}>
             {side === 'buy' ? 'You save up to ' : 'You earn up to '}
-            <Text color={COLORS.N800}>500 THB</Text>
+            <Text color={COLORS.N800}>{toString(saved, 2)} THB</Text>
             {side === 'buy' ? '' : ' more'}
           </Text>
           <Link onPress={this.onPressPriceComparison}>
@@ -245,7 +269,7 @@ export default class TradeScreen extends React.Component<
             value={this.state.takeAssetBoxValue}
           />
         </View>
-        {/* {this.renderFooter()} */}
+        {this.renderFooter()}
       </View>
     )
   }
@@ -297,6 +321,7 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   footer: {
+    marginTop: 20,
     alignItems: 'center'
   }
 })
