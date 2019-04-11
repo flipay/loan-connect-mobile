@@ -191,7 +191,7 @@ export default class TradeScreen extends React.Component<
       side: this.props.navigation.getParam('side'),
       assetId: this.props.navigation.getParam('assetId'),
       competitorAmounts: this.state.thbAmounts,
-      flipayAmount,
+      flipayAmount: toNumber(flipayAmount),
       cryptoAmount
     })
   }
