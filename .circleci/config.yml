@@ -16,6 +16,10 @@ publish: &publish
         command: yarn global add expo
 
     - run:
+      name: add expo to PATH
+      command: export PATH="$PATH:$HOME/.config/yarn/global/node_modules/.bin"
+
+    - run:
         name: Login into Expo
         command: expo login -u $EXPO_USERNAME -p $EXPO_PASSWORD
 
