@@ -15,7 +15,7 @@ publish: &publish
         command: |
           echo 'export PATH=$(yarn global bin):$PATH' >> $BASH_ENV
           source $BASH_ENV
-          yarn global add expo
+          yarn global add expo-cli
 
     - run:
         name: Login into Expo
