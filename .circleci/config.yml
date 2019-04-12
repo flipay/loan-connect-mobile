@@ -10,14 +10,12 @@ publish: &publish
     - run:
         name: Installing dependencies
         command: yarn
-
     - run:
-        name: Installing expo globally
-        command: yarn global add expo
-
-    - run:
-        name: add expo to PATH
-        command: export PATH="$PATH:$HOME/.config/yarn/global/node_modules/.bin"
+        name: prepare expo
+        command: |
+          echo 'export PATH=$(yarn global bin):$PATH' >> $BASH_ENV
+          source $BASH_ENV
+          yarn global add expo
 
     - run:
         name: Login into Expo
