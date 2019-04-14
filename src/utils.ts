@@ -1,5 +1,6 @@
 import * as _ from 'lodash'
 import { Alert } from 'react-native'
+import Sentry from 'sentry-expo'
 import { THBAmountTypes } from './constants'
 import { OrderType } from './types'
 
@@ -29,6 +30,7 @@ export function getErrorDetail (err: Error) {
 }
 
 export function alert (err: Error) {
+  Sentry.captureException(err)
   return Alert.alert(`Something went wrong: ${getErrorDetail(err)}`)
 }
 

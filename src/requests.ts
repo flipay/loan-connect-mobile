@@ -2,6 +2,7 @@ import axios from 'axios'
 import { Alert, AppState } from 'react-native'
 import _ from 'lodash'
 import Promise from 'bluebird'
+import Sentry from 'sentry-expo'
 import { OrderType, OrderPart, AssetId } from './types'
 import { ASSETS, COMPETITOR_IDS } from './constants'
 import { setToken, getToken } from './secureStorage'
@@ -177,7 +178,7 @@ export async function getCompetitorTHBAmounts (
         providerId
       )
     } catch (err) {
-      console.log('', getErrorDetail(err))
+      Sentry.captureException(err)
     }
     return [providerId, amount]
   })
