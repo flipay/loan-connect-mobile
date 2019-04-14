@@ -2,7 +2,8 @@ import * as React from 'react'
 import {
   createAppContainer,
   createStackNavigator,
-  createSwitchNavigator
+  createSwitchNavigator,
+  createBottomTabNavigator
 } from 'react-navigation'
 
 import Starter from './Starter'
@@ -14,6 +15,8 @@ import TradeScreen from './screens/TradeScreen'
 import DepositScreen from './screens/DepositScreen'
 import WithdrawalScreen from './screens/WithdrawalScreen'
 import ComparisonScreen from './screens/ComparisonScreen'
+import ActivityScreen from './screens/ActivityScreen'
+import ProfileScreen from './screens/ProfileScreen'
 import PinScreen from './screens/PinScreen'
 import { Font, Amplitude } from 'expo'
 import { Platform } from 'react-native'
@@ -50,7 +53,7 @@ const VerificationStack = createStackNavigator(
   }
 )
 
-const AppStack = createStackNavigator(
+const HomeStack = createStackNavigator(
   {
     Main: { screen: MainScreen },
     Deposit: { screen: DepositScreen },
@@ -64,10 +67,18 @@ const AppStack = createStackNavigator(
   }
 )
 
+const MainApp = createBottomTabNavigator(
+  {
+    Home: HomeStack,
+    Activity: ActivityScreen,
+    Profile: ProfileScreen
+  }
+)
+
 const AppNavigator = createSwitchNavigator({
-  Starter: Starter,
+  Starter,
   Verification: VerificationStack,
-  Home: AppStack,
+  MainApp,
   Auth: AuthStack
 })
 
