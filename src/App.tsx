@@ -67,6 +67,12 @@ const HomeStack = createStackNavigator(
   }
 )
 
+HomeStack.navigationOptions = ({ navigation }) => {
+  return {
+    tabBarVisible: navigation.state.index === 0
+  }
+}
+
 const MainApp = createBottomTabNavigator(
   {
     Home: HomeStack,
