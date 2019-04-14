@@ -17,6 +17,12 @@ import ComparisonScreen from './screens/ComparisonScreen'
 import PinScreen from './screens/PinScreen'
 import { Font, Amplitude } from 'expo'
 import { Platform } from 'react-native'
+import Sentry from 'sentry-expo'
+
+// NOTE: for testing Sentry locally
+// Sentry.enableInExpoDevelopment = true
+
+Sentry.config('https://7461bec2f42c41cdafde6f0048ac0047@sentry.io/1438488').install()
 
 // HACK: to make (number).toLocaleString to work correctly for Android
 if (Platform.OS === 'android') {
