@@ -44,7 +44,7 @@ export default class ProfileScreen extends React.Component<
             <Text type='headline'>Contact us at</Text>
             <Image
               source={require('../img/line@_logo.png')}
-              style={{ width: 52 , height: 14, marginLeft: 10, marginTop: 5 }}
+              style={{ width: 41 , height: 11, marginLeft: 7, marginTop: 8 }}
             />
           </View>
           <Text type='headline' color={COLORS.P400}>@flipay</Text>
@@ -97,7 +97,8 @@ const styles = StyleSheet.create({
   },
   lineFirstRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    marginBottom: 5
   },
   lineLeftSide: {
     flexDirection: 'row'
