@@ -5,6 +5,7 @@ import {
   createSwitchNavigator,
   createBottomTabNavigator
 } from 'react-navigation'
+import { FontAwesome, MaterialIcons } from '@expo/vector-icons'
 
 import Starter from './Starter'
 import MainScreen from './screens/MainScreen'
@@ -21,6 +22,7 @@ import PinScreen from './screens/PinScreen'
 import { Font, Amplitude } from 'expo'
 import { Platform } from 'react-native'
 import Sentry from 'sentry-expo'
+import { COLORS } from './constants'
 
 // NOTE: for testing Sentry locally
 // Sentry.enableInExpoDevelopment = true
@@ -63,21 +65,57 @@ const HomeStack = createStackNavigator(
   },
   {
     mode: 'modal',
-    headerMode: 'none'
+    headerMode: 'none',
+    navigationOptions: ({ navigation }) => {
+      return {
+        tabBarVisible: navigation.state.index === 0
+      }
+    }
   }
 )
 
-HomeStack.navigationOptions = ({ navigation }) => {
-  return {
-    tabBarVisible: navigation.state.index === 0
-  }
-}
-
 const MainApp = createBottomTabNavigator(
   {
-    Home: HomeStack,
-    Activity: ActivityScreen,
-    Profile: ProfileScreen
+    Home: {
+      screen: HomeStack,
+      navigationOptions: {
+        title: 'Buy/Sell'
+      }
+    },
+    Activity: {
+      screen: ActivityScreen,
+      navigationOptions: {
+        title: 'Activity'
+      }
+    },
+    Profile: {
+      screen: ProfileScreen,
+      navigationOptions: {
+        title: 'My Menu'
+      }
+    }
+  },
+  {
+    defaultNavigationOptions: ({ navigation }) => ({
+      tabBarIcon: ({ tintColor }) => {
+        const { routeName } = navigation.state
+        let IconComponent = FontAwesome
+        let iconName
+        if (routeName === 'Home') {
+          iconName = 'exchange'
+        } else if (routeName === 'Activity') {
+          IconComponent = MaterialIcons
+          iconName = 'history'
+        } else {
+          iconName = 'user-circle-o'
+        }
+        return <IconComponent name={iconName} size={25} color={tintColor || undefined} />
+      }
+    }),
+    tabBarOptions: {
+      activeTintColor: COLORS.P400,
+      inactiveTintColor: COLORS.N400
+    }
   }
 )
 
