@@ -3,6 +3,7 @@ import _ from 'lodash'
 import { View, Linking, StyleSheet } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 
+import { lock } from '../requests'
 import { getPhoneNumber } from '../asyncStorage'
 import { Text, Record } from '../components'
 import { COLORS } from '../constants'
@@ -47,8 +48,8 @@ export default class ProfileScreen extends React.Component<
     return (
       <View>
         {this.renderLineRecord()}
-        <Record>
-          <Text>
+        <Record onPress={lock}>
+          <Text color={COLORS.R400}>
             Log out
           </Text>
         </Record>
