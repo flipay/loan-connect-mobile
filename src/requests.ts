@@ -1,11 +1,12 @@
 import axios from 'axios'
-import { Alert, AppState } from 'react-native'
+import { Alert, AppState, AsyncStorage } from 'react-native'
 import _ from 'lodash'
 import Promise from 'bluebird'
 import Sentry from 'sentry-expo'
 import { OrderType, OrderPart, AssetId } from './types'
 import { ASSETS, COMPETITOR_IDS } from './constants'
 import { setToken, getToken } from './secureStorage'
+import { setPhoneNumber } from './asyncStorage'
 import { getErrorCode, getErrorDetail, alert } from './utils'
 
 let navigation: any
@@ -99,6 +100,9 @@ export async function authen (phoneNumber: string) {
       default:
         alert(signUpErr)
     }
+  }
+  if (response) {
+    setPhoneNumber(phoneNumber)
   }
   return response && response.data
 }
