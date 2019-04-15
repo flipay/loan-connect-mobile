@@ -1,6 +1,6 @@
 import * as React from 'react'
 import _ from 'lodash'
-import { View, Linking, StyleSheet, Image } from 'react-native'
+import { View, Linking, StyleSheet, Image, StatusBar } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 
 import { lock } from '../requests'
@@ -72,6 +72,7 @@ export default class ProfileScreen extends React.Component<
   public render () {
     return (
       <View style={styles.screen}>
+        <StatusBar barStyle='dark-content' />
         <View style={styles.header}>
           <Text type='caption'>Your phone number</Text>
           <Text type='large-title'>{this.state.phoneNumber || '08XXXXXXXX'}</Text>

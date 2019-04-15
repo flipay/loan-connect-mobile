@@ -1,7 +1,8 @@
 import * as React from 'react'
 import _ from 'lodash'
 import {
-  View
+  View,
+  StatusBar
 } from 'react-native'
 
 import { NavigationScreenProps } from 'react-navigation'
@@ -13,6 +14,7 @@ export default class ActivityScreen extends React.Component<
   public render () {
     return (
       <View style={{ flex: 1 }}>
+        <StatusBar barStyle='dark-content' />
         <Text>Activity Screen</Text>
       </View>
     )
