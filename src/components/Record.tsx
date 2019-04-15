@@ -24,6 +24,7 @@ export default class Record extends React.Component<Props> {
 const styles = StyleSheet.create({
   record: {
     borderTopColor: COLORS.N200,
-    borderTopWidth: 1
+    borderTopWidth: 1,
+    paddingVertical: 24
   }
 })

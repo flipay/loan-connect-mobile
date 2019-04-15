@@ -1,6 +1,6 @@
 import * as React from 'react'
 import _ from 'lodash'
-import { View, Linking, StyleSheet } from 'react-native'
+import { View, Linking, StyleSheet, Image } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 
 import { lock } from '../requests'
@@ -39,7 +39,19 @@ export default class ProfileScreen extends React.Component<
       <Record
         onPress={this.onPressLine}
       >
-        <Text> Line Ja </Text>
+        <View style={styles.lineFirstRow}>
+          <View style={styles.lineLeftSide}>
+            <Text type='headline'>Contact us at</Text>
+            <Image
+              source={require('../img/line@_logo.png')}
+              style={{ width: 52 , height: 14, marginLeft: 10, marginTop: 5 }}
+            />
+          </View>
+          <Text type='headline' color={COLORS.P400}>@flipay</Text>
+        </View>
+        <Text>
+          Give feedbacks, Report problems
+        </Text>
       </Record>
     )
   }
@@ -60,12 +72,10 @@ export default class ProfileScreen extends React.Component<
   public render () {
     return (
       <View style={styles.screen}>
-        {!!this.state.phoneNumber && (
-          <View>
-            <Text type='caption'>Your phone number</Text>
-            <Text type='large-title'>{this.state.phoneNumber}</Text>
-          </View>
-        )}
+        <View style={styles.header}>
+          <Text type='caption'>Your phone number</Text>
+          <Text type='large-title'>{this.state.phoneNumber || '08XXXXXXXX'}</Text>
+        </View>
         {this.renderList()}
       </View>
     )
@@ -74,10 +84,22 @@ export default class ProfileScreen extends React.Component<
 
 const styles = StyleSheet.create({
   screen: {
-    flex: 1
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingTop: 52
+  },
+  header: {
+    marginBottom: 25
   },
   record: {
     borderTopColor: COLORS.N200,
     borderTopWidth: 1
+  },
+  lineFirstRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  lineLeftSide: {
+    flexDirection: 'row'
   }
 })
