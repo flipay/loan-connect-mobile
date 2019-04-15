@@ -19,10 +19,22 @@ async function getData (key: string) {
   }
 }
 
+const PHONE_NUMBER = 'phoneNumber'
+
 export async function setPhoneNumber (phoneNumber: string) {
-  await setData('phoneNumber', phoneNumber)
+  await setData(PHONE_NUMBER, phoneNumber)
 }
 
 export async function getPhoneNumber () {
-  return getData('phoneNumber')
+  return getData(PHONE_NUMBER)
+}
+
+const FIRST_RUN = 'firstRun'
+
+export async function setFirstRun () {
+  await setData(FIRST_RUN, 'true')
+}
+
+export async function isFirstRun () {
+  return getData(FIRST_RUN)
 }

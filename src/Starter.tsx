@@ -3,9 +3,10 @@ import * as React from 'react'
 import _ from 'lodash'
 import { View, StyleSheet } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
-import { SecureStore, Amplitude } from 'expo'
+import { Amplitude } from 'expo'
 import { setUpRequest, unlock } from './requests'
-import { checkLoginStatus } from './secureStorage'
+import { checkLoginStatus, clearToken } from './secureStorage'
+import { isFirstRun, setFirstRun } from './asyncStorage'
 import { COLORS } from './constants/styleGuides'
 import { Text } from './components'
 
@@ -19,9 +20,10 @@ export default class Start extends React.Component<
 > {
   public async componentDidMount () {
     setUpRequest(this.props.navigation)
-    // NOTE: restart data to test onboarding //
-    // await SecureStore.deleteItemAsync('encrypted-token')
-    ///////////////////////////////////////////
+    const firstRun = await isFirstRun()
+    if (firstRun) {
+      await Promise.all([clearToken(), setFirstRun()])
+    }
     const isLogIned = await checkLoginStatus()
     if (isLogIned) {
       this.props.navigation.navigate('Pin', {
