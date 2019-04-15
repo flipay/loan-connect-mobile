@@ -30,11 +30,13 @@ export async function getPhoneNumber () {
 }
 
 const FIRST_RUN = 'firstRun'
+const DONE_STATUS = 'done'
 
-export async function setFirstRun () {
-  await setData(FIRST_RUN, 'true')
+export async function runFirstTime () {
+  await setData(FIRST_RUN, DONE_STATUS)
 }
 
 export async function isFirstRun () {
-  return getData(FIRST_RUN)
+  const result = await getData(FIRST_RUN)
+  return result !== DONE_STATUS
 }

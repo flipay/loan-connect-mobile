@@ -1,12 +1,12 @@
 
 import * as React from 'react'
 import _ from 'lodash'
-import { View, StyleSheet } from 'react-native'
+import { View, StyleSheet, AsyncStorage } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { Amplitude } from 'expo'
 import { setUpRequest, unlock } from './requests'
 import { checkLoginStatus, clearToken } from './secureStorage'
-import { isFirstRun, setFirstRun } from './asyncStorage'
+import { isFirstRun, runFirstTime } from './asyncStorage'
 import { COLORS } from './constants/styleGuides'
 import { Text } from './components'
 
@@ -20,9 +20,13 @@ export default class Start extends React.Component<
 > {
   public async componentDidMount () {
     setUpRequest(this.props.navigation)
+
+    // NOTE: for testing first run
+    // await AsyncStorage.clear()
+
     const firstRun = await isFirstRun()
     if (firstRun) {
-      await Promise.all([clearToken(), setFirstRun()])
+      await Promise.all([clearToken(), runFirstTime()])
     }
     const isLogIned = await checkLoginStatus()
     if (isLogIned) {
