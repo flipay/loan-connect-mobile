@@ -17,6 +17,7 @@ import ScreenWithKeyboard from './ScreenWithKeyboard'
 import Link from './Link'
 import FullScreenLoading from './FullScreenLoading'
 import Record from './Record'
+import Activity from './Activity'
 
 export {
   AssetCard,
@@ -36,5 +37,6 @@ export {
   ScreenWithKeyboard,
   Link,
   FullScreenLoading,
-  Record
+  Record,
+  Activity
 }
