@@ -53,7 +53,6 @@ export default class MainScreen extends React.Component<
   public async fetchData () {
     try {
       const [assets, hasDeposited] = await Promise.all([getPortfolio(), hasEverDeposit()])
-
       this.setState({ assets, hasDeposited })
     } catch (err) {
       alert(err)
@@ -81,15 +80,15 @@ export default class MainScreen extends React.Component<
     }
   }
 
-  public shouldShowWelcomeScreen () {
+  public shouldShowWelcomeMessage () {
     return this.getSumBalance() === 0 && !this.state.hasDeposited
   }
 
-  public renderWelcomeScreen () {
+  public renderWelcomeMessage () {
     return (
       <View>
-        <Text color={COLORS.WHITE}>Welcome to Flipay!</Text>
-        <Text type='title' color={COLORS.WHITE}>How much would you like to start investment?</Text>
+        <Text color={COLORS.WHITE} style={styles.welcome}>Welcome to Flipay!</Text>
+        <Text type='title' color={COLORS.WHITE} style={styles.howMuch}>How much would you like to start investment?</Text>
         <Button onPress={() => this.props.navigation.navigate('Deposit')}>Deposit your money</Button>
       </View>
     )
@@ -101,10 +100,10 @@ export default class MainScreen extends React.Component<
         colors={[COLORS.P400, COLORS.C500]}
         start={[0.3, 0.7]}
         end={[2, -0.8]}
-        style={[styles.header, this.shouldShowWelcomeScreen() && { height: 404 }]}
+        style={[styles.header, this.shouldShowWelcomeMessage() && { height: 404 }]}
       >
-        {this.shouldShowWelcomeScreen()
-          ? this.renderWelcomeScreen()
+        {this.shouldShowWelcomeMessage()
+          ? this.renderWelcomeMessage()
           : (
             <View style={styles.headerTextContainer}>
               <Text type='caption' color={COLORS.P100}>
@@ -215,5 +214,11 @@ const styles = StyleSheet.create({
   },
   smallSpace: {
     height: 4
+  },
+  welcome: {
+    marginBottom: 8
+  },
+  howMuch: {
+    marginBottom: 24
   }
 })
