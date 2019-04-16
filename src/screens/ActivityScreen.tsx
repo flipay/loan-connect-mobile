@@ -8,6 +8,7 @@ import {
 
 import { NavigationScreenProps } from 'react-navigation'
 import { Text, Value, Activity } from '../components'
+import { COLORS } from '../constants'
 
 export default class ActivityScreen extends React.Component<
   NavigationScreenProps
@@ -22,9 +23,9 @@ export default class ActivityScreen extends React.Component<
         <View>
           <Text type='large-title'>Activity</Text>
         </View>
-        <View>
+        <View style={styles.savedSection}>
           <Text>With Flipay, you have saved</Text>
-          <Value assetId='THB'>{this.getSavedAmount()}</Value>
+          <Value assetId='THB' fontType='title' style={styles.savedValue}>{this.getSavedAmount()}</Value>
         </View>
       </View>
     )
@@ -80,9 +81,18 @@ export default class ActivityScreen extends React.Component<
 
 const styles = StyleSheet.create({
   screen: {
-    flex: 1
+    flex: 1,
+    paddingTop: 52,
+    paddingHorizontal: 20
   },
   header: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  savedSection: {
+    alignItems: 'flex-end'
+  },
+  savedValue: {
+    color: COLORS.G400
   }
 })

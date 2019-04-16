@@ -9,8 +9,7 @@ interface Props {
   children: number
   assetId: AssetId
   full?: boolean
-  hidden?: boolean
-  style?: TextStyle
+  style?: any
   fontType?: FontType
 }
 
