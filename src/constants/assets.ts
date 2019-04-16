@@ -5,7 +5,7 @@ type AssetTypes = { [key in AssetId]: Asset }
 export const ASSETS: AssetTypes = {
   THB: {
     id: 'THB',
-    name: 'Cash',
+    name: 'Thai Baht',
     image: require('../img/icon_cash.png'),
     unit: 'THB',
     decimal: 0,

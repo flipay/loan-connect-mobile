@@ -128,7 +128,6 @@ export default class ComparisonScreen extends React.Component<
   }
 
   public renderTitle (side: Side, gain: number) {
-    console.log('kneod jaa eieieieiei', gain)
     return side === 'buy'
       ? (
         <Text type='title' color={COLORS.WHITE}>
@@ -151,10 +150,6 @@ export default class ComparisonScreen extends React.Component<
     })
     const best = sortedRecords[0]
     const worstAmount = sortedRecords[sortedRecords.length - 1].amount
-
-    console.log('kendo ja aeirjaoejraewifjaesfi', best.amount, typeof best.amount)
-    console.log('kendo ja aeirjaoejraewifjaesfi 2', worstAmount, typeof worstAmount)
-    console.log('kendo ja aeirjaoejraewifjaesfi abs', Math.abs(best.amount - worstAmount))
     return (
       <LinearGradient
         colors={[COLORS.P400, COLORS.C500]}

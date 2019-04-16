@@ -2,9 +2,11 @@ import axios from 'axios'
 import { Alert, AppState } from 'react-native'
 import _ from 'lodash'
 import Promise from 'bluebird'
+import Sentry from 'sentry-expo'
 import { OrderType, OrderPart, AssetId } from './types'
 import { ASSETS, COMPETITOR_IDS } from './constants'
 import { setToken, getToken } from './secureStorage'
+import { setPhoneNumber, markFirstDepositAsDone } from './asyncStorage'
 import { getErrorCode, getErrorDetail, alert } from './utils'
 
 let navigation: any
@@ -99,6 +101,9 @@ export async function authen (phoneNumber: string) {
         alert(signUpErr)
     }
   }
+  if (response) {
+    setPhoneNumber(phoneNumber)
+  }
   return response && response.data
 }
 
@@ -177,7 +182,7 @@ export async function getCompetitorTHBAmounts (
         providerId
       )
     } catch (err) {
-      console.log('', getErrorDetail(err))
+      Sentry.captureException(err)
     }
     return [providerId, amount]
   })
@@ -199,6 +204,7 @@ export async function deposit (assetId: AssetId, amount: number) {
       asset: assetId,
       amount
     })
+    await markFirstDepositAsDone()
   } catch (err) {
     Alert.alert('Cannot request for deposit')
   }

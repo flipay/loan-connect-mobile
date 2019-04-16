@@ -28,6 +28,18 @@
     },
     "android": {
       "package": "co.flipay.flipay"
+    },
+    "hooks": {
+      "postPublish": [
+        {
+          "file": "sentry-expo/upload-sourcemaps",
+          "config": {
+            "organization": "flipay-es",
+            "project": "flipay-mobile",
+            "authToken": "a5626fc0492c4684b5c15ba2636eee1e603e611716c14de78bbd58b1441790ff"
+          }
+        }
+      ]
     }
   }
 }
