@@ -1,12 +1,12 @@
 import axios from 'axios'
-import { Alert, AppState, AsyncStorage } from 'react-native'
+import { Alert, AppState } from 'react-native'
 import _ from 'lodash'
 import Promise from 'bluebird'
 import Sentry from 'sentry-expo'
 import { OrderType, OrderPart, AssetId } from './types'
 import { ASSETS, COMPETITOR_IDS } from './constants'
 import { setToken, getToken } from './secureStorage'
-import { setPhoneNumber } from './asyncStorage'
+import { setPhoneNumber, markFirstDepositAsDone } from './asyncStorage'
 import { getErrorCode, getErrorDetail, alert } from './utils'
 
 let navigation: any
@@ -204,6 +204,7 @@ export async function deposit (assetId: AssetId, amount: number) {
       asset: assetId,
       amount
     })
+    await markFirstDepositAsDone()
   } catch (err) {
     Alert.alert('Cannot request for deposit')
   }
