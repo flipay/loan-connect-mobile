@@ -86,7 +86,7 @@ export default class MainScreen extends React.Component<
 
   public renderWelcomeMessage () {
     return (
-      <View>
+      <View style={styles.welcomeSection}>
         <Text color={COLORS.WHITE} style={styles.welcome}>Welcome to Flipay!</Text>
         <Text type='title' color={COLORS.WHITE} style={styles.howMuch}>How much would you like to start investment?</Text>
         <Button onPress={() => this.props.navigation.navigate('Deposit')}>Deposit your money</Button>
@@ -214,6 +214,11 @@ const styles = StyleSheet.create({
   },
   smallSpace: {
     height: 4
+  },
+  welcomeSection: {
+    alignItems: 'flex-start',
+    width: '100%',
+    padding: 28
   },
   welcome: {
     marginBottom: 8
