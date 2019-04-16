@@ -1,4 +1,3 @@
-
 import * as React from 'react'
 import _ from 'lodash'
 import { View, StyleSheet, AsyncStorage } from 'react-native'
@@ -32,7 +31,14 @@ export default class Start extends React.Component<
     if (isLogIned) {
       this.props.navigation.navigate('Pin', {
         title: 'Unlock with PIN',
-        onSuccess: async (pin: string, stackNavigationLogInPin: any, setErrorConfirm: (errorMessage: string) => void, startLoading: () => void, stopLoading: () => void) => {
+        onSuccess: async (
+          pin: string,
+          stackNavigationLogInPin: any,
+          setErrorConfirm: (errorMessage: string) => void,
+          startLoading: () => void,
+          stopLoading: () => void,
+          clearPin: () => void
+        ) => {
           try {
             startLoading()
             await unlock(pin)
@@ -41,6 +47,9 @@ export default class Start extends React.Component<
             stopLoading()
             Amplitude.logEvent('unlock/wrong-pin')
             setErrorConfirm('Wrong PIN')
+            setTimeout(() => {
+              clearPin()
+            }, 1000)
           }
         }
       })
