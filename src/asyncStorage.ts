@@ -29,14 +29,33 @@ export async function getPhoneNumber () {
   return getData(PHONE_NUMBER)
 }
 
-const FIRST_RUN = 'firstRun'
+// NOTE: below are First time on the app related functions
 const DONE_STATUS = 'done'
+const RUN_APP = 'runApp'
+const DEPOSIT = 'firstDeposit'
 
-export async function runFirstTime () {
-  await setData(FIRST_RUN, DONE_STATUS)
+function createMarkAsDoneFunction (key: string) {
+  return async () => {
+    await setData(key, DONE_STATUS)
+  }
 }
 
-export async function isFirstRun () {
-  const result = await getData(FIRST_RUN)
-  return result !== DONE_STATUS
+function createHasEverDoneFunction (key: string) {
+  return async () => {
+    const result = await getData(key)
+    return result === DONE_STATUS
+  }
 }
+
+function createIsFirstTimeFunction (key: string) {
+  const hasEverDoneFunction = createHasEverDoneFunction(key)
+  return async () => {
+    const done = await hasEverDoneFunction()
+    return !done
+  }
+}
+
+export const runFirstTime = createMarkAsDoneFunction(RUN_APP)
+export const isFirstRun = createIsFirstTimeFunction(RUN_APP)
+export const markFirstDepositAsDone = createMarkAsDoneFunction(DEPOSIT)
+export const hasEverDeposit = createHasEverDoneFunction(DEPOSIT)
