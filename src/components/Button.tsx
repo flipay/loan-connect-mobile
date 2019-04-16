@@ -8,12 +8,13 @@ import { COLORS } from '../constants/styleGuides'
 interface Props {
   children: string
   onPress: () => void
+  style?: any
 }
 
 export default class Button extends React.Component<Props> {
   public render () {
     return (
-      <TouchableOpacity style={styles.container} onPress={this.props.onPress}>
+      <TouchableOpacity style={[styles.container, this.props.style]} onPress={this.props.onPress}>
         <Text color={COLORS.P400} type='button'>
           {this.props.children}
         </Text>
@@ -24,7 +25,6 @@ export default class Button extends React.Component<Props> {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     height: 60,
     justifyContent: 'center',
     alignItems: 'center',

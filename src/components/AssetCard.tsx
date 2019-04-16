@@ -109,17 +109,18 @@ export default class AssetCard extends React.Component<
   }
 
   public renderExpandedCardDescription () {
+    const ActionBotton = (props: any) => <Button {...props} style={styles.button} />
     return this.props.id === 'THB' ? (
       <View style={styles.buttonsContainer}>
-        <Button onPress={this.onPressDepositButton}>Deposit</Button>
+        <ActionBotton onPress={this.onPressDepositButton}>Deposit</ActionBotton>
         <View style={styles.spacing} />
-        <Button onPress={this.onPressWithdrawButton}>Withdraw</Button>
+        <ActionBotton onPress={this.onPressWithdrawButton}>Withdraw</ActionBotton>
       </View>
     ) : (
       <View style={styles.buttonsContainer}>
-        <Button onPress={() => this.onPressButton('buy')}>Buy</Button>
+        <ActionBotton onPress={() => this.onPressButton('buy')}>Buy</ActionBotton>
         <View style={styles.spacing} />
-        <Button onPress={() => this.onPressButton('sell')}>Sell</Button>
+        <ActionBotton onPress={() => this.onPressButton('sell')}>Sell</ActionBotton>
       </View>
     )
   }
@@ -215,8 +216,7 @@ const styles = StyleSheet.create({
   spacing: {
     width: 9
   },
-  contactUs: {
-    paddingHorizontal: 40,
-    textAlign: 'center'
+  button: {
+    flex: 1
   }
 })
