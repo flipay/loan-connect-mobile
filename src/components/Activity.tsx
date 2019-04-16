@@ -11,7 +11,7 @@ interface Props {
   type: 'buy' | 'sell' | 'deposit' | 'withdraw'
   amount: number
   assetId: AssetId
-  price: number
+  price?: number
   date: string
   time: string
 }
@@ -38,11 +38,11 @@ export default class Activity extends React.Component <Props> {
           <Value assetId={assetId}>{this.props.amount}</Value>
         </View>
         <View style={styles.description}>
-          <Text>
+          {this.props.price && <Text>
             <Text>at</Text>
             <Value assetId='THB'>{this.props.price}</Value>
             <Text>{ASSETS[this.props.assetId].unit}</Text>
-          </Text>
+          </Text>}
         </View>
       </View>
     )
