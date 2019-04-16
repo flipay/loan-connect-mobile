@@ -52,14 +52,14 @@ export default class ActivityScreen extends React.Component<
         />
         <Activity
           type='deposit'
-          amount={0.23423}
+          amount={23423}
           assetId='THB'
           date='Jan 12'
           time='21:03'
         />
         <Activity
-          type='sell'
-          amount={0.23423}
+          type='withdraw'
+          amount={23423}
           assetId='THB'
           date='Jan 12'
           time='21:03'
@@ -87,7 +87,8 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    marginBottom: 30
   },
   savedSection: {
     alignItems: 'flex-end'

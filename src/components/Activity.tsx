@@ -32,18 +32,16 @@ export default class Activity extends React.Component <Props> {
       <View style={styles.mainSection}>
         <View style={styles.mainRow}>
           <View style={styles.mainAction}>
-            <Text>{_.capitalize(this.props.type)}</Text>
-            <Asset id={assetId} />
+            <Text color={COLORS.N800} style={styles.action}>{_.capitalize(this.props.type)}</Text>
+            <Asset id={assetId} bodySize={true} />
           </View>
           <Value assetId={assetId}>{this.props.amount}</Value>
         </View>
-        <View style={styles.description}>
-          {this.props.price && <Text>
-            <Text>at</Text>
-            <Value assetId='THB'>{this.props.price}</Value>
-            <Text>{ASSETS[this.props.assetId].unit}</Text>
-          </Text>}
-        </View>
+        {this.props.price && <View style={styles.description}>
+          <Text>at </Text>
+          <Value assetId='THB'>{this.props.price}</Value>
+          <Text>{`/${ASSETS[this.props.assetId].unit}`}</Text>
+        </View>}
       </View>
     )
   }
@@ -60,14 +58,20 @@ export default class Activity extends React.Component <Props> {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    borderBottomColor: COLORS.N200,
+    borderBottomWidth: 1,
+    paddingTop: 19,
+    paddingBottom: 15
   },
   timeSection: {
     borderRightWidth: 1,
-    borderRightColor: COLORS.N200
+    borderRightColor: COLORS.N200,
+    paddingRight: 12
   },
   mainSection: {
-    backgroundColor: 'green'
+    paddingLeft: 10,
+    flex: 1
   },
   mainRow: {
     flexDirection: 'row',
@@ -76,7 +80,12 @@ const styles = StyleSheet.create({
   mainAction: {
     flexDirection: 'row'
   },
+  action: {
+    marginRight: 8
+  },
   description: {
-    alignItems: 'flex-end'
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center'
   }
 })
