@@ -24,7 +24,7 @@ export default class ActivityScreen extends React.Component<
           <Text type='large-title'>Activity</Text>
         </View>
         <View style={styles.savedSection}>
-          <Text>With Flipay, you have saved</Text>
+          <Text color={COLORS.N800}>With Flipay, you have saved</Text>
           <Value assetId='THB' fontType='title' style={styles.savedValue}>{this.getSavedAmount()}</Value>
         </View>
       </View>

@@ -38,9 +38,9 @@ export default class Activity extends React.Component <Props> {
           <Value assetId={assetId}>{this.props.amount}</Value>
         </View>
         {this.props.price && <View style={styles.description}>
-          <Text>at </Text>
-          <Value assetId='THB'>{this.props.price}</Value>
-          <Text>{`/${ASSETS[this.props.assetId].unit}`}</Text>
+          <Text type='caption'>at </Text>
+          <Value assetId='THB' fontType='caption'>{this.props.price}</Value>
+          <Text type='caption'>{`/${ASSETS[this.props.assetId].unit}`}</Text>
         </View>}
       </View>
     )
@@ -67,11 +67,13 @@ const styles = StyleSheet.create({
   timeSection: {
     borderRightWidth: 1,
     borderRightColor: COLORS.N200,
-    paddingRight: 12
+    paddingRight: 12,
+    justifyContent: 'space-between'
   },
   mainSection: {
     paddingLeft: 10,
-    flex: 1
+    flex: 1,
+    justifyContent: 'space-between'
   },
   mainRow: {
     flexDirection: 'row',
