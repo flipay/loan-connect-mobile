@@ -70,9 +70,9 @@ export default class ProfileScreen extends React.Component<
             Private Beta
           </Text>
         </Record>
-        <TouchableOpacity onPress={lock}>
+        <TouchableOpacity onPress={lock} style={styles.error}>
           <Text color={COLORS.R400}>
-            Log out
+            Sign out
           </Text>
         </TouchableOpacity>
       </View>
@@ -129,5 +129,8 @@ const styles = StyleSheet.create({
   contactDetail: {
     flexDirection: 'row',
     alignItems: 'center'
+  },
+  error: {
+    paddingVertical: 24
   }
 })
