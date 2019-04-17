@@ -79,7 +79,7 @@ const MainApp = createBottomTabNavigator(
     Profile: {
       screen: ProfileScreen,
       navigationOptions: {
-        title: 'My Menu'
+        title: 'Account'
       }
     }
   },

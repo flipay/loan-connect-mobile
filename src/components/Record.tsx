@@ -23,6 +23,10 @@ export default class Record extends React.Component<Props> {
 
 const styles = StyleSheet.create({
   record: {
+    height: 72,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     borderTopColor: COLORS.N200,
     borderTopWidth: 1,
     paddingVertical: 24
