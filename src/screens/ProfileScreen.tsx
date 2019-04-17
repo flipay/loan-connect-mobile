@@ -72,7 +72,7 @@ export default class ProfileScreen extends React.Component<
           </Text>
         </Record>
         <TouchableOpacity onPress={lock} style={styles.error}>
-          <Text color={COLORS.R400}>
+          <Text type='headline' color={COLORS.R400}>
             Sign out
           </Text>
         </TouchableOpacity>
