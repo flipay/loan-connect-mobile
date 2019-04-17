@@ -10,8 +10,9 @@ interface Props {
 
 export default class Record extends React.Component<Props> {
   public render () {
+    const Container = this.props.onPress ? TouchableOpacity : View
     return (
-      <TouchableOpacity style={styles.container} onPress={this.props.onPress}>
+      <Container style={styles.container} onPress={this.props.onPress}>
         <View style={styles.record}>{this.props.children}</View>
         {this.props.onPress && (
           <AntDesign
@@ -21,7 +22,7 @@ export default class Record extends React.Component<Props> {
             size={16}
           />
         )}
-      </TouchableOpacity>
+      </Container>
     )
   }
 }
