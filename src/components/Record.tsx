@@ -1,5 +1,6 @@
 import * as React from 'react'
-import { TouchableOpacity, StyleSheet } from 'react-native'
+import { TouchableOpacity, StyleSheet, View } from 'react-native'
+import { AntDesign } from '@expo/vector-icons'
 import { COLORS } from '../constants'
 
 interface Props {
@@ -8,27 +9,41 @@ interface Props {
 }
 
 export default class Record extends React.Component<Props> {
-
   public render () {
     return (
-      <TouchableOpacity
-        style={styles.record}
-        onPress={this.props.onPress}
-      >
-        {this.props.children}
+      <TouchableOpacity style={styles.container} onPress={this.props.onPress}>
+        <View style={styles.record}>{this.props.children}</View>
+        {this.props.onPress && (
+          <AntDesign
+            name='right'
+            color={COLORS.N500}
+            style={styles.arrowIcon}
+            size={16}
+          />
+        )}
       </TouchableOpacity>
     )
   }
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    borderTopColor: COLORS.N200,
+    borderTopWidth: 1
+  },
   record: {
+    flex: 1,
     height: 72,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    borderTopColor: COLORS.N200,
-    borderTopWidth: 1,
-    paddingVertical: 24
+    justifyContent: 'space-between'
+  },
+  arrowIcon: {
+    marginTop: 5,
+    marginRight: 5,
+    marginLeft: 10
   }
 })

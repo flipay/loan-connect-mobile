@@ -1,6 +1,6 @@
 import * as React from 'react'
 import _ from 'lodash'
-import { View, Linking, StyleSheet, Image, StatusBar } from 'react-native'
+import { View, Linking, StyleSheet, Image, StatusBar, TouchableOpacity } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 
 import { lock } from '../requests'
@@ -52,7 +52,7 @@ export default class ProfileScreen extends React.Component<
             source={require('../img/line_logo.png')}
             style={{ width: 35 , height: 12, marginRight: 5 }}
           />
-          <Text type='headline' color={COLORS.P400}>@flipay</Text>
+          <Text type='headline' color={COLORS.N800}>@flipay</Text>
         </View>
       </Record>
     )
@@ -70,11 +70,11 @@ export default class ProfileScreen extends React.Component<
             Private Beta
           </Text>
         </Record>
-        <Record onPress={lock}>
+        <TouchableOpacity onPress={lock}>
           <Text color={COLORS.R400}>
             Log out
           </Text>
-        </Record>
+        </TouchableOpacity>
       </View>
     )
   }
@@ -94,7 +94,6 @@ export default class ProfileScreen extends React.Component<
             style={{ width: 60, height: 60 }}
           />
         </View>
-
         {this.renderList()}
       </View>
     )
