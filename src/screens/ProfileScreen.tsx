@@ -1,6 +1,7 @@
 import * as React from 'react'
 import _ from 'lodash'
 import { View, Linking, StyleSheet, Image, StatusBar, TouchableOpacity } from 'react-native'
+import { Constants } from 'expo'
 import { NavigationScreenProps } from 'react-navigation'
 
 import { lock } from '../requests'
@@ -67,7 +68,7 @@ export default class ProfileScreen extends React.Component<
             Version
           </Text>
           <Text>
-            Private Beta
+            {`${Constants.manifest.version} (Private Beta)`}
           </Text>
         </Record>
         <TouchableOpacity onPress={lock} style={styles.error}>
