@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import { ImageSourcePropType } from 'react-native'
 
-const PROVIDER_IDS = ['bxth', 'binance', 'bitfinex', 'liquid']
+const PROVIDER_IDS = ['bxth', 'liquid']
 export const COMPETITOR_IDS = _.reject(PROVIDER_IDS, (id) => id === 'liquid')
 
 export type ProviderId = typeof PROVIDER_IDS[number]

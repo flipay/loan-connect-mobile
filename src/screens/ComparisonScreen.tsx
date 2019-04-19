@@ -13,7 +13,7 @@ import { LinearGradient, Amplitude } from 'expo'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { Text, Value, CloseButton } from '../components'
 import { COLORS, PROVIDERS } from '../constants'
-import { AssetId, OrderType } from '../types'
+import { AssetId } from '../types'
 
 interface RequestedRecord {
   id: string
@@ -51,12 +51,12 @@ export default class ComparisonScreen extends React.Component<
       if (provider.id === 'liquid') {
         return ({
           ...provider,
-          amount: flipayAmount
+          amount: _.round(flipayAmount)
         })
       } else {
         return ({
           ...provider,
-          amount: competitorAmounts[provider.id]
+          amount: _.round(competitorAmounts[provider.id])
         })
       }
     })
@@ -96,11 +96,13 @@ export default class ComparisonScreen extends React.Component<
     if (_.isEmpty(sortedRecords)) {
       return
     }
-    const bestAmount = sortedRecords[0].amount
+    const roundedBestAmount = _.round(sortedRecords[0].amount)
     const formatedRecords = _.map(sortedRecords, record => {
+      const roundedAmount = _.round(record.amount)
       return {
         ...record,
-        difference: Math.abs(record.amount - bestAmount)
+        amount: roundedAmount,
+        difference: Math.abs(roundedAmount - roundedBestAmount)
       }
     })
     return (
@@ -167,6 +169,10 @@ export default class ComparisonScreen extends React.Component<
     const side = this.props.navigation.getParam('side', 'sell')
     const flipayAmount = this.props.navigation.getParam('flipayAmount', 'sell')
     const structuredData = this.getStructuredData()
+
+    // NOTE: _.sortBy will preserve the order the the value is the same
+    // in this case we want flipay to be on top if they have the save value as flipay
+    // so make sure flipay is on the top
     const sortedRecords = _.sortBy(structuredData, record => {
       return record.amount * (side === 'sell' ? -1 : 1)
     })
