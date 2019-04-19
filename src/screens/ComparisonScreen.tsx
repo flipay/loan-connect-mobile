@@ -127,17 +127,12 @@ export default class ComparisonScreen extends React.Component<
     )
   }
 
-  public renderTitle (side: Side, gain: number) {
-    return side === 'buy'
-      ? (
-        <Text type='title' color={COLORS.WHITE}>
-          Save <Value assetId='THB'>{gain}</Value> with us!
-        </Text>
-      ) : (
-        <Text type='title' color={COLORS.WHITE}>
-           Earn <Value assetId='THB'>{gain}</Value> more with us!
-        </Text>
-      )
+  public renderTitle (gain: number) {
+    return (
+      <Text type='title' color={COLORS.WHITE}>
+        Save <Value assetId='THB'>{gain}</Value> with us!
+      </Text>
+    )
   }
 
   public render () {
@@ -159,7 +154,7 @@ export default class ComparisonScreen extends React.Component<
       >
         <StatusBar barStyle='light-content' />
         <CloseButton onPress={this.onClose} color={COLORS.WHITE} />
-        {this.renderTitle(side, Math.abs(best.amount - worstAmount))}
+        {this.renderTitle(Math.abs(best.amount - worstAmount))}
         <Text color={COLORS.WHITE}>
           {`Looks like ${best.name} is the best way to ${side}`}
         </Text>

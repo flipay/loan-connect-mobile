@@ -218,9 +218,8 @@ export default class TradeScreen extends React.Component<
       this.isSubmitable() && (
         <View style={styles.footer}>
           <Text color={COLORS.N500}>
-            {side === 'buy' ? 'You save up to ' : 'You earn up to '}
-            <Text color={COLORS.N800}>{toString(saved, 2)} THB</Text>
-            {side === 'buy' ? '' : ' more'}
+            You save up to
+            <Text color={COLORS.N800}>{` ${toString(saved, 2)} THB`}</Text>
           </Text>
           <Link onPress={this.onPressPriceComparison}>
             See price comparison
