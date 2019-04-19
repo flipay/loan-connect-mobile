@@ -16,12 +16,14 @@ import { COLORS, PROVIDERS } from '../constants'
 import { AssetId, OrderType } from '../types'
 
 interface RequestedRecord {
+  id: string
   name: string
   image: ImageSourcePropType
   amount: number
 }
 
 interface FormattedRecord {
+  id: string
   name: string
   image: ImageSourcePropType
   amount: number
@@ -33,8 +35,6 @@ type RequestedRecords = Array<RequestedRecord>
 interface Props {
   data: RequestedRecords
 }
-
-type Side = OrderType
 
 export default class ComparisonScreen extends React.Component<
   Props & NavigationScreenProps
@@ -135,10 +135,26 @@ export default class ComparisonScreen extends React.Component<
     )
   }
 
-  public render () {
+  public renderSubtitle (best: RequestedRecord) {
     const side = this.props.navigation.getParam('side', 'sell')
     const assetId: AssetId = this.props.navigation.getParam('assetId', 'bitcoin')
     const cryptoAmount = this.props.navigation.getParam('cryptoAmount', 1000)
+    const quility = best.id === 'liquid' ? 'best' : 'competitive'
+    return (
+        <Text style={styles.subtitle}>
+          <Text color={COLORS.WHITE}>
+            {`Looks like Flipay offers the ${quility} price for ${side}ing `}
+          </Text>
+          <Text color={COLORS.WHITE}>
+            <Value assetId={assetId} full={true}>{cryptoAmount}</Value>
+          </Text>
+        </Text>
+    )
+  }
+
+  public render () {
+    const side = this.props.navigation.getParam('side', 'sell')
+
     const structuredData = this.getStructuredData()
     const sortedRecords = _.sortBy(structuredData, record => {
       return record.amount * (side === 'sell' ? -1 : 1)
@@ -155,12 +171,7 @@ export default class ComparisonScreen extends React.Component<
         <StatusBar barStyle='light-content' />
         <CloseButton onPress={this.onClose} color={COLORS.WHITE} />
         {this.renderTitle(Math.abs(best.amount - worstAmount))}
-        <Text color={COLORS.WHITE}>
-          {`Looks like ${best.name} is the best way to ${side}`}
-        </Text>
-        <Text color={COLORS.WHITE}>
-          <Value assetId={assetId} full={true}>{cryptoAmount}</Value>
-        </Text>
+        {this.renderSubtitle(best)}
         {this.renderTable(sortedRecords)}
       </LinearGradient>
     )
@@ -208,5 +219,10 @@ const styles = StyleSheet.create({
   },
   downTrendIcon: {
     marginRight: 4
+  },
+  subtitle: {
+    marginTop: 12,
+    textAlign: 'center',
+    paddingHorizontal: 20
   }
 })
