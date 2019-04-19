@@ -127,7 +127,18 @@ export default class ComparisonScreen extends React.Component<
     )
   }
 
-  public renderTitle (gain: number) {
+  public renderTitle (flipayAmount: number, worstAmount: number) {
+    const side = this.props.navigation.getParam('side', 'sell')
+    let gain
+    if (side === 'buy') {
+      gain = worstAmount - flipayAmount
+    } else {
+      gain = flipayAmount - worstAmount
+    }
+    if (gain < 0) {
+      gain = 0
+    }
+
     return (
       <Text type='title' color={COLORS.WHITE}>
         Save <Value assetId='THB'>{gain}</Value> with us!
@@ -154,7 +165,7 @@ export default class ComparisonScreen extends React.Component<
 
   public render () {
     const side = this.props.navigation.getParam('side', 'sell')
-
+    const flipayAmount = this.props.navigation.getParam('flipayAmount', 'sell')
     const structuredData = this.getStructuredData()
     const sortedRecords = _.sortBy(structuredData, record => {
       return record.amount * (side === 'sell' ? -1 : 1)
@@ -170,7 +181,7 @@ export default class ComparisonScreen extends React.Component<
       >
         <StatusBar barStyle='light-content' />
         <CloseButton onPress={this.onClose} color={COLORS.WHITE} />
-        {this.renderTitle(Math.abs(best.amount - worstAmount))}
+        {this.renderTitle(flipayAmount, worstAmount)}
         {this.renderSubtitle(best)}
         {this.renderTable(sortedRecords)}
       </LinearGradient>
