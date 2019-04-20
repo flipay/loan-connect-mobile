@@ -145,7 +145,8 @@ const styles = StyleSheet.create({
   },
   belowTopSafeArea: {
     flex: 1,
-    backgroundColor: COLORS.P500
+    backgroundColor: COLORS.P500,
+    marginTop: 1 // HACK: otherwise there will be a line in the screen, seem to be a bug
   },
   outterContainer: {
     flex: 1
