@@ -4,7 +4,7 @@ import { Amplitude } from 'expo'
 import { NavigationScreenProps } from 'react-navigation'
 import { View, TextInput, StyleSheet, Keyboard } from 'react-native'
 import { authen } from '../requests'
-import { COLORS } from '../constants'
+
 import { ScreenWithKeyboard, Text, Layer } from '../components'
 
 interface State {
@@ -87,12 +87,8 @@ export default class AuthenScreen extends React.Component<
 }
 
 const styles = StyleSheet.create({
-  screen: {
-    backgroundColor: COLORS.WHITE,
-    flex: 1
-  },
   title: {
-    marginTop: 40
+    marginTop: 50
   },
   layer: {
     marginTop: 44,
