@@ -71,16 +71,16 @@ export default class Screen extends React.Component<Props, State> {
   public render () {
     return (
       <View style={styles.screen}>
-        <SafeAreaView style={styles.topSafeArea} />
-        <SafeAreaView style={styles.outsideContainer}>
-          <KeyboardAvoidingView
-            key={this.state.keyboardAvoidingViewKey}
-            style={styles.outsideContainer}
-            keyboardVerticalOffset={Constants.statusBarHeight === 40 ? 20 : 0}
-            behavior='height'
-          >
+        <KeyboardAvoidingView
+          key={this.state.keyboardAvoidingViewKey}
+          style={styles.screen}
+          keyboardVerticalOffset={Constants.statusBarHeight === 40 ? 20 : 0}
+          behavior='height'
+        >
+          <SafeAreaView style={styles.topSafeArea} />
+          <SafeAreaView style={styles.outsideContainer}>
             <TouchableWithoutFeedback
-              style={styles.outsideContainer}
+              style={styles.insideContainer}
               onPress={this.props.disableTouchOutside ? _.noop : Keyboard.dismiss}
               accessible={false}
             >
@@ -121,9 +121,9 @@ export default class Screen extends React.Component<Props, State> {
                 )}
               </View>
             </TouchableWithoutFeedback>
-          </KeyboardAvoidingView>
-          {this.props.fullScreenLoading && <FullScreenLoading visible={this.props.fullScreenLoading} />}
-        </SafeAreaView>
+            {this.props.fullScreenLoading && <FullScreenLoading visible={this.props.fullScreenLoading} />}
+          </SafeAreaView>
+        </KeyboardAvoidingView>
       </View>
     )
   }
@@ -136,6 +136,9 @@ const styles = StyleSheet.create({
   outsideContainer: {
     flex: 1,
     backgroundColor: COLORS.P500
+  },
+  insideCont1ainer: {
+    flex: 1
   },
   topSafeArea: {
     flex: 0
