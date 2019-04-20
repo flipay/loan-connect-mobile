@@ -37,6 +37,7 @@ export default class TradeScreen extends React.Component<
   NavigationScreenProps,
   State
 > {
+  private mounted: boolean = false
   private timeout: any
   private interval: any
   public constructor (props: NavigationScreenProps) {
@@ -57,6 +58,7 @@ export default class TradeScreen extends React.Component<
     prevProps: NavigationScreenProps,
     prevState: State
   ) {
+    this.mounted = true
     if (!prevState.typing && this.state.typing) {
       clearInterval(this.interval)
     } else if (prevState.typing && !this.state.typing) {
@@ -68,6 +70,7 @@ export default class TradeScreen extends React.Component<
   }
 
   public componentWillUnmount () {
+    this.mounted = false
     clearInterval(this.interval)
     clearTimeout(this.timeout)
   }
@@ -96,23 +99,24 @@ export default class TradeScreen extends React.Component<
       this.props.navigation.getParam('assetId', 'BTC'),
       this.props.navigation.getParam('side', 'buy') ? amount : toNumber(this.state.giveAssetBoxValue)
     )
-
-    if (activeAssetBox === 'give') {
-      this.setState({
-        competitorThbAmounts: result,
-        lastFetchSuccessfullyGiveAmount: initialValue,
-        lastFetchSuccessfullyTakeAmount: flipayResponseValue,
-        takeAssetBoxValue: flipayResponseValue,
-        loading: false
-      })
-    } else {
-      this.setState({
-        competitorThbAmounts: result,
-        lastFetchSuccessfullyGiveAmount: flipayResponseValue,
-        lastFetchSuccessfullyTakeAmount: initialValue,
-        giveAssetBoxValue: flipayResponseValue,
-        loading: false
-      })
+    if (this.mounted) {
+      if (activeAssetBox === 'give') {
+        this.setState({
+          competitorThbAmounts: result,
+          lastFetchSuccessfullyGiveAmount: initialValue,
+          lastFetchSuccessfullyTakeAmount: flipayResponseValue,
+          takeAssetBoxValue: flipayResponseValue,
+          loading: false
+        })
+      } else {
+        this.setState({
+          competitorThbAmounts: result,
+          lastFetchSuccessfullyGiveAmount: flipayResponseValue,
+          lastFetchSuccessfullyTakeAmount: initialValue,
+          giveAssetBoxValue: flipayResponseValue,
+          loading: false
+        })
+      }
     }
   }
 
