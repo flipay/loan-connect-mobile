@@ -76,7 +76,7 @@ export default class Screen extends React.Component<Props, State> {
           <KeyboardAvoidingView
             key={this.state.keyboardAvoidingViewKey}
             style={styles.screen}
-            keyboardVerticalOffset={Constants.statusBarHeight === 40 ? 40 : 20}
+            keyboardVerticalOffset={Constants.statusBarHeight}
             behavior='height'
           >
             <TouchableWithoutFeedback
