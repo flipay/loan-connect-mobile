@@ -71,17 +71,19 @@ export default class Screen extends React.Component<Props, State> {
   public render () {
     return (
       <View style={styles.screen}>
-        <KeyboardAvoidingView
-          key={this.state.keyboardAvoidingViewKey}
-          style={styles.screen}
-          keyboardVerticalOffset={Constants.statusBarHeight === 40 ? 20 : 0}
-          behavior='height'
-        >
-          <SafeAreaView style={styles.topSafeArea} />
-          <SafeAreaView style={styles.outsideContainer}>
+        <SafeAreaView style={styles.topSafeArea} />
+        <SafeAreaView style={styles.belowTopSafeArea}>
+          <KeyboardAvoidingView
+            key={this.state.keyboardAvoidingViewKey}
+            style={styles.screen}
+            keyboardVerticalOffset={Constants.statusBarHeight === 40 ? 40 : 20}
+            behavior='height'
+          >
             <TouchableWithoutFeedback
-              style={styles.insideContainer}
-              onPress={this.props.disableTouchOutside ? _.noop : Keyboard.dismiss}
+              style={styles.outterContainer}
+              onPress={
+                this.props.disableTouchOutside ? _.noop : Keyboard.dismiss
+              }
               accessible={false}
             >
               <View style={styles.container}>
@@ -107,7 +109,8 @@ export default class Screen extends React.Component<Props, State> {
                   )}
                   <View style={styles.content}>
                     {this.props.children(
-                      this.state.keyboardAvoidingViewKey === DEFAULT_KEYBOARD_KEY
+                      this.state.keyboardAvoidingViewKey ===
+                        DEFAULT_KEYBOARD_KEY
                     )}
                   </View>
                 </ScrollView>
@@ -121,9 +124,11 @@ export default class Screen extends React.Component<Props, State> {
                 )}
               </View>
             </TouchableWithoutFeedback>
-            {this.props.fullScreenLoading && <FullScreenLoading visible={this.props.fullScreenLoading} />}
-          </SafeAreaView>
-        </KeyboardAvoidingView>
+            {this.props.fullScreenLoading && (
+              <FullScreenLoading visible={this.props.fullScreenLoading} />
+            )}
+          </KeyboardAvoidingView>
+        </SafeAreaView>
       </View>
     )
   }
@@ -133,15 +138,17 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1
   },
-  outsideContainer: {
+  topSafeArea: {
+    flex: 0,
+    borderColor: COLORS.WHITE,
+    borderBottomWidth: 1
+  },
+  belowTopSafeArea: {
     flex: 1,
     backgroundColor: COLORS.P500
   },
-  insideCont1ainer: {
+  outterContainer: {
     flex: 1
-  },
-  topSafeArea: {
-    flex: 0
   },
   container: {
     flex: 1,
