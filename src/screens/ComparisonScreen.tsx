@@ -98,7 +98,7 @@ export default class ComparisonScreen extends React.Component<
         <Image source={image} style={{ width: source.width / 2, height: source.height / 2 }} />
         <View style={styles.rightPartRecord}>
           {isNaN(data.amount)
-            ? <Text type='caption'>unavailable</Text>
+            ? <Text type='caption' color={COLORS.N500}>Unavailable</Text>
             : this.renderValidRecord(data, index)
           }
         </View>
@@ -246,6 +246,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingLeft: 16,
     paddingRight: 8,
+    height: 80,
     paddingVertical: 24
   },
   rightPartRecord: {
