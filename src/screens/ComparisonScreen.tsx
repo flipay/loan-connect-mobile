@@ -48,7 +48,7 @@ export default class ComparisonScreen extends React.Component<
   public getStructuredData () {
     const competitorAmounts = this.props.navigation.getParam('competitorAmounts')
     const flipayAmount = this.props.navigation.getParam('flipayAmount')
-    const data = _.map(PROVIDERS, (provider) => {
+    return _.map(PROVIDERS, (provider) => {
       if (provider.id === 'liquid') {
         return ({
           ...provider,
@@ -62,35 +62,45 @@ export default class ComparisonScreen extends React.Component<
       }
     })
 
-    return _.filter(data, (value) => !isNaN(value.amount))
+  }
+
+  public renderValidRecord (data: FormattedRecord, index: number) {
+    const side = this.props.navigation.getParam('side', 'sell')
+    return (
+      <View style={styles.validRecord}>
+        <Value assetId='THB'>{data.amount}</Value>
+        {index === 0 ? (
+          <Text type='caption' color={COLORS.N500}>
+            Best Price
+          </Text>
+        ) : (
+          <View style={styles.captionRow}>
+            <MaterialCommunityIcons
+              name={side ? 'trending-up' : 'trending-down'}
+              color='#FE4747'
+              style={styles.downTrendIcon}
+            />
+            <Text type='caption' color={COLORS.N500}>
+              {side === 'buy' ? '+ ' : '- '}
+              <Value assetId='THB'>{data.difference}</Value>
+            </Text>
+          </View>
+        )}
+      </View>
+    )
   }
 
   public renderRecord (data: FormattedRecord, index: number) {
-    const side = this.props.navigation.getParam('side', 'sell')
     const image = data.image
     const source = resolveAssetSource(image)
     return (
       <View style={styles.tableRecord} key={data.name}>
         <Image source={image} style={{ width: source.width / 2, height: source.height / 2 }} />
         <View style={styles.rightPartRecord}>
-          <Value assetId='THB'>{data.amount}</Value>
-          {index === 0 ? (
-            <Text type='caption' color={COLORS.N500}>
-              Best Price
-            </Text>
-          ) : (
-            <View style={styles.captionRow}>
-              <MaterialCommunityIcons
-                name={side ? 'trending-up' : 'trending-down'}
-                color='#FE4747'
-                style={styles.downTrendIcon}
-              />
-              <Text type='caption' color={COLORS.N500}>
-                {side === 'buy' ? '+ ' : '- '}
-                <Value assetId='THB'>{data.difference}</Value>
-              </Text>
-            </View>
-          )}
+          {isNaN(data.amount)
+            ? <Text type='caption'>unavailable</Text>
+            : this.renderValidRecord(data, index)
+          }
         </View>
       </View>
     )
@@ -181,7 +191,8 @@ export default class ComparisonScreen extends React.Component<
       return record.amount * (side === 'sell' ? -1 : 1)
     })
     const best = sortedRecords[0]
-    const worstAmount = sortedRecords[sortedRecords.length - 1].amount
+    const worst = _.findLast(sortedRecords, (record) => !isNaN(record.amount))
+    if (!worst) { return null }
     return (
       <LinearGradient
         colors={[COLORS.P400, COLORS.C500]}
@@ -193,7 +204,7 @@ export default class ComparisonScreen extends React.Component<
           <View style={styles.content}>
             <StatusBar barStyle='light-content' />
             <CloseButton onPress={this.onClose} color={COLORS.WHITE} />
-            {this.renderTitle(flipayAmount, worstAmount)}
+            {this.renderTitle(flipayAmount, worst.amount)}
             {this.renderSubtitle(best)}
             {this.renderTable(sortedRecords)}
           </View>
@@ -238,6 +249,10 @@ const styles = StyleSheet.create({
     paddingVertical: 24
   },
   rightPartRecord: {
+    justifyContent: 'center',
+    alignItems: 'flex-end'
+  },
+  validRecord: {
     justifyContent: 'center',
     alignItems: 'flex-end'
   },
