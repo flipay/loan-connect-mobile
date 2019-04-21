@@ -70,14 +70,14 @@ export default class Screen extends React.Component<Props, State> {
   public render () {
     return (
       <View style={styles.screen}>
-        <SafeAreaView style={styles.screen}>
-          <KeyboardAvoidingView
-            key={this.state.keyboardAvoidingViewKey}
-            style={styles.screen}
-            behavior='height'
-          >
+        <KeyboardAvoidingView
+          key={this.state.keyboardAvoidingViewKey}
+          style={styles.screen}
+          behavior='height'
+        >
+          <SafeAreaView style={styles.screen}>
             <TouchableWithoutFeedback
-              style={styles.outterContainer}
+              style={styles.screen}
               onPress={
                 this.props.disableTouchOutside ? _.noop : Keyboard.dismiss
               }
@@ -124,8 +124,8 @@ export default class Screen extends React.Component<Props, State> {
             {this.props.fullScreenLoading && (
               <FullScreenLoading visible={this.props.fullScreenLoading} />
             )}
-          </KeyboardAvoidingView>
-        </SafeAreaView>
+          </SafeAreaView>
+        </KeyboardAvoidingView>
       </View>
     )
   }
@@ -133,9 +133,6 @@ export default class Screen extends React.Component<Props, State> {
 
 const styles = StyleSheet.create({
   screen: {
-    flex: 1
-  },
-  outterContainer: {
     flex: 1
   },
   container: {
@@ -153,7 +150,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    paddingTop: 20,
+    // paddingTop: 20,
     paddingHorizontal: 20
   }
 })
