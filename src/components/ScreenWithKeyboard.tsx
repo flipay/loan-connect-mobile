@@ -12,7 +12,6 @@ import {
   ScrollView,
   SafeAreaView
 } from 'react-native'
-import { Constants } from 'expo'
 import { AntDesign } from '@expo/vector-icons'
 import { COLORS } from '../constants'
 import SubmitButton from './SubmitButton'
@@ -71,12 +70,10 @@ export default class Screen extends React.Component<Props, State> {
   public render () {
     return (
       <View style={styles.screen}>
-        <SafeAreaView style={styles.topSafeArea} />
-        <SafeAreaView style={styles.belowTopSafeArea}>
+        <SafeAreaView style={styles.screen}>
           <KeyboardAvoidingView
             key={this.state.keyboardAvoidingViewKey}
             style={styles.screen}
-            keyboardVerticalOffset={Constants.statusBarHeight}
             behavior='height'
           >
             <TouchableWithoutFeedback
@@ -137,16 +134,6 @@ export default class Screen extends React.Component<Props, State> {
 const styles = StyleSheet.create({
   screen: {
     flex: 1
-  },
-  topSafeArea: {
-    flex: 0,
-    borderColor: COLORS.WHITE,
-    borderBottomWidth: 1
-  },
-  belowTopSafeArea: {
-    flex: 1,
-    backgroundColor: COLORS.P500,
-    marginTop: 1 // HACK: otherwise there will be a line in the screen, seem to be a bug
   },
   outterContainer: {
     flex: 1
