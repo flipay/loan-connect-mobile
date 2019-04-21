@@ -17,7 +17,7 @@ import TradeScreen from './screens/TradeScreen'
 import DepositScreen from './screens/DepositScreen'
 import WithdrawalScreen from './screens/WithdrawalScreen'
 import ComparisonScreen from './screens/ComparisonScreen'
-import ActivityScreen from './screens/ActivityScreen'
+// import ActivityScreen from './screens/ActivityScreen'
 import ProfileScreen from './screens/ProfileScreen'
 import PinScreen from './screens/PinScreen'
 
@@ -70,12 +70,12 @@ const MainApp = createBottomTabNavigator(
         title: 'Buy/Sell'
       }
     },
-    Activity: {
-      screen: ActivityScreen,
-      navigationOptions: {
-        title: 'Activity'
-      }
-    },
+    // Activity: {
+    //   screen: ActivityScreen,
+    //   navigationOptions: {
+    //     title: 'Activity'
+    //   }
+    // },
     Profile: {
       screen: ProfileScreen,
       navigationOptions: {
