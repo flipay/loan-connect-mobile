@@ -2,10 +2,11 @@ import * as React from 'react'
 import _ from 'lodash'
 import {
   View,
-  StyleSheet,
   StatusBar,
+  StyleSheet,
   Image,
-  ImageSourcePropType
+  ImageSourcePropType,
+  SafeAreaView
 } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import resolveAssetSource from 'resolveAssetSource'
@@ -154,14 +155,15 @@ export default class ComparisonScreen extends React.Component<
     const cryptoAmount = this.props.navigation.getParam('cryptoAmount', 1000)
     const quility = best.id === 'liquid' ? 'best' : 'competitive'
     return (
-        <Text style={styles.subtitle}>
+        <View style={styles.subtitle}>
           <Text color={COLORS.WHITE}>
-            {`Looks like Flipay offers the ${quility} price for ${side}ing `}
+            {`Looks like Flipay offers the ${quility} price`}
           </Text>
           <Text color={COLORS.WHITE}>
+            {` for ${side}ing `}
             <Value assetId={assetId} full={true}>{cryptoAmount}</Value>
           </Text>
-        </Text>
+        </View>
     )
   }
 
@@ -183,25 +185,32 @@ export default class ComparisonScreen extends React.Component<
         colors={[COLORS.P400, COLORS.C500]}
         start={[0.3, 0.7]}
         end={[2, -0.8]}
-        style={styles.container}
+        style={styles.screen}
       >
-        <StatusBar barStyle='light-content' />
-        <CloseButton onPress={this.onClose} color={COLORS.WHITE} />
-        {this.renderTitle(flipayAmount, worstAmount)}
-        {this.renderSubtitle(best)}
-        {this.renderTable(sortedRecords)}
+        <SafeAreaView style={styles.screen}>
+          <View style={styles.content}>
+            <StatusBar barStyle='light-content' />
+            <CloseButton onPress={this.onClose} color={COLORS.WHITE} />
+            {this.renderTitle(flipayAmount, worstAmount)}
+            {this.renderSubtitle(best)}
+            {this.renderTable(sortedRecords)}
+          </View>
+        </SafeAreaView>
       </LinearGradient>
     )
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
+  screen: {
+    flex: 1
+  },
+  content: {
     flex: 1,
-    paddingTop: 86,
-    paddingHorizontal: 16,
     alignItems: 'center',
-    position: 'relative'
+    position: 'relative',
+    paddingTop: 42,
+    paddingHorizontal: 12
   },
   table: {
     backgroundColor: COLORS.WHITE,
@@ -239,7 +248,6 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     marginTop: 12,
-    textAlign: 'center',
-    paddingHorizontal: 20
+    alignItems: 'center'
   }
 })

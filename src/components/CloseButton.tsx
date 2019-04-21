@@ -21,8 +21,8 @@ export default class Button extends React.Component<Props> {
 const styles = StyleSheet.create({
   closeButton: {
     position: 'absolute',
-    left: 0,
-    top: 24,
+    left: 5,
+    top: 8,
     padding: 6
   }
 })

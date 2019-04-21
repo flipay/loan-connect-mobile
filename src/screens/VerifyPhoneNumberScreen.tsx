@@ -1,6 +1,6 @@
 import * as React from 'react'
 import _ from 'lodash'
-import { View, TextInput, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, SafeAreaView, TextInput, StyleSheet, TouchableOpacity } from 'react-native'
 import { Amplitude } from 'expo'
 import { AntDesign } from '@expo/vector-icons'
 import { NavigationScreenProps } from 'react-navigation'
@@ -288,15 +288,15 @@ export default class VerifyPhoneNumberScreen extends React.Component<
         fullScreenLoading={this.state.loading}
       >
         {(autoFocus: boolean) => (
-          <View style={styles.content}>
-            <Text type='title'>{`Enter the 6-digit code sent to ${this.props.navigation.getParam(
+          <SafeAreaView style={styles.content}>
+            <Text type='title' style={styles.title}>{`Enter the 6-digit code sent to ${this.props.navigation.getParam(
               'phoneNumber',
               '08XXXXXXXX'
             )} (Ref: ${this.props.navigation.getParam('refCode', 'XXXX')})`}</Text>
             {this.renderBoxes()}
             {this.renderBody()}
             {this.renderHiddenTextInput(autoFocus)}
-          </View>
+          </SafeAreaView>
         )}
       </ScreenWithKeyboard>
     )
@@ -305,8 +305,10 @@ export default class VerifyPhoneNumberScreen extends React.Component<
 
 const styles = StyleSheet.create({
   content: {
-    flex: 1,
-    marginTop: 40
+    flex: 1
+  },
+  title: {
+    marginTop: 62
   },
   boxes: {
     marginTop: 24,
