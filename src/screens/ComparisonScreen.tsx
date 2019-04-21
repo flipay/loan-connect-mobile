@@ -48,7 +48,7 @@ export default class ComparisonScreen extends React.Component<
   public getStructuredData () {
     const competitorAmounts = this.props.navigation.getParam('competitorAmounts')
     const flipayAmount = this.props.navigation.getParam('flipayAmount')
-    return _.map(PROVIDERS, (provider) => {
+    const data = _.map(PROVIDERS, (provider) => {
       if (provider.id === 'liquid') {
         return ({
           ...provider,
@@ -61,6 +61,8 @@ export default class ComparisonScreen extends React.Component<
         })
       }
     })
+
+    return _.filter(data, (value) => !isNaN(value.amount))
   }
 
   public renderRecord (data: FormattedRecord, index: number) {
