@@ -2,8 +2,9 @@ import * as React from 'react'
 import { Platform } from 'react-native'
 import { Font, Amplitude, AppLoading } from 'expo'
 import { createAppContainer } from 'react-navigation'
-import AppNavigator from './AppNavigator'
 import Sentry from 'sentry-expo'
+import preloadAssets from './preloadAsssets'
+import AppNavigator from './AppNavigator'
 
 // NOTE: for testing Sentry locally
 // Sentry.enableInExpoDevelopment = true
@@ -34,10 +35,7 @@ export default class App extends React.Component<{}, State> {
   }
 
   public async loadAssetsAsync () {
-    await Font.loadAsync({
-      nunito: require('../assets/fonts/Nunito-Regular.ttf'),
-      'nunito-semibold': require('../assets/fonts/Nunito-Regular.ttf')
-    })
+    await preloadAssets()
   }
 
   public render () {

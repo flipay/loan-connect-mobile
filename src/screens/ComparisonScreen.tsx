@@ -13,15 +13,17 @@ import { LinearGradient, Amplitude } from 'expo'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { Text, Value, CloseButton } from '../components'
 import { COLORS, PROVIDERS } from '../constants'
-import { AssetId, OrderType } from '../types'
+import { AssetId } from '../types'
 
 interface RequestedRecord {
+  id: string
   name: string
   image: ImageSourcePropType
   amount: number
 }
 
 interface FormattedRecord {
+  id: string
   name: string
   image: ImageSourcePropType
   amount: number
@@ -33,8 +35,6 @@ type RequestedRecords = Array<RequestedRecord>
 interface Props {
   data: RequestedRecords
 }
-
-type Side = OrderType
 
 export default class ComparisonScreen extends React.Component<
   Props & NavigationScreenProps
@@ -51,12 +51,12 @@ export default class ComparisonScreen extends React.Component<
       if (provider.id === 'liquid') {
         return ({
           ...provider,
-          amount: flipayAmount
+          amount: _.round(flipayAmount)
         })
       } else {
         return ({
           ...provider,
-          amount: competitorAmounts[provider.id]
+          amount: _.round(competitorAmounts[provider.id])
         })
       }
     })
@@ -96,11 +96,13 @@ export default class ComparisonScreen extends React.Component<
     if (_.isEmpty(sortedRecords)) {
       return
     }
-    const bestAmount = sortedRecords[0].amount
+    const roundedBestAmount = _.round(sortedRecords[0].amount)
     const formatedRecords = _.map(sortedRecords, record => {
+      const roundedAmount = _.round(record.amount)
       return {
         ...record,
-        difference: Math.abs(record.amount - bestAmount)
+        amount: roundedAmount,
+        difference: Math.abs(roundedAmount - roundedBestAmount)
       }
     })
     return (
@@ -127,24 +129,50 @@ export default class ComparisonScreen extends React.Component<
     )
   }
 
-  public renderTitle (side: Side, gain: number) {
-    return side === 'buy'
-      ? (
-        <Text type='title' color={COLORS.WHITE}>
-          Save <Value assetId='THB'>{gain}</Value> with us!
+  public renderTitle (flipayAmount: number, worstAmount: number) {
+    const side = this.props.navigation.getParam('side', 'sell')
+    let gain
+    if (side === 'buy') {
+      gain = worstAmount - flipayAmount
+    } else {
+      gain = flipayAmount - worstAmount
+    }
+    if (gain < 0) {
+      gain = 0
+    }
+
+    return (
+      <Text type='title' color={COLORS.WHITE}>
+        Save <Value assetId='THB'>{gain}</Value> with us!
+      </Text>
+    )
+  }
+
+  public renderSubtitle (best: RequestedRecord) {
+    const side = this.props.navigation.getParam('side', 'sell')
+    const assetId: AssetId = this.props.navigation.getParam('assetId', 'bitcoin')
+    const cryptoAmount = this.props.navigation.getParam('cryptoAmount', 1000)
+    const quility = best.id === 'liquid' ? 'best' : 'competitive'
+    return (
+        <Text style={styles.subtitle}>
+          <Text color={COLORS.WHITE}>
+            {`Looks like Flipay offers the ${quility} price for ${side}ing `}
+          </Text>
+          <Text color={COLORS.WHITE}>
+            <Value assetId={assetId} full={true}>{cryptoAmount}</Value>
+          </Text>
         </Text>
-      ) : (
-        <Text type='title' color={COLORS.WHITE}>
-           Earn <Value assetId='THB'>{gain}</Value> more with us!
-        </Text>
-      )
+    )
   }
 
   public render () {
     const side = this.props.navigation.getParam('side', 'sell')
-    const assetId: AssetId = this.props.navigation.getParam('assetId', 'bitcoin')
-    const cryptoAmount = this.props.navigation.getParam('cryptoAmount', 1000)
+    const flipayAmount = this.props.navigation.getParam('flipayAmount', 'sell')
     const structuredData = this.getStructuredData()
+
+    // NOTE: _.sortBy will preserve the order the the value is the same
+    // in this case we want flipay to be on top if they have the save value as flipay
+    // so make sure flipay is on the top
     const sortedRecords = _.sortBy(structuredData, record => {
       return record.amount * (side === 'sell' ? -1 : 1)
     })
@@ -159,13 +187,8 @@ export default class ComparisonScreen extends React.Component<
       >
         <StatusBar barStyle='light-content' />
         <CloseButton onPress={this.onClose} color={COLORS.WHITE} />
-        {this.renderTitle(side, Math.abs(best.amount - worstAmount))}
-        <Text color={COLORS.WHITE}>
-          {`Looks like ${best.name} is the best way to ${side}`}
-        </Text>
-        <Text color={COLORS.WHITE}>
-          <Value assetId={assetId} full={true}>{cryptoAmount}</Value>
-        </Text>
+        {this.renderTitle(flipayAmount, worstAmount)}
+        {this.renderSubtitle(best)}
         {this.renderTable(sortedRecords)}
       </LinearGradient>
     )
@@ -213,5 +236,10 @@ const styles = StyleSheet.create({
   },
   downTrendIcon: {
     marginRight: 4
+  },
+  subtitle: {
+    marginTop: 12,
+    textAlign: 'center',
+    paddingHorizontal: 20
   }
 })

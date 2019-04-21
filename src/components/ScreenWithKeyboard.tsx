@@ -9,7 +9,8 @@ import {
   StatusBar,
   Platform,
   Keyboard,
-  ScrollView
+  ScrollView,
+  SafeAreaView
 } from 'react-native'
 import { Constants } from 'expo'
 import { AntDesign } from '@expo/vector-icons'
@@ -69,71 +70,92 @@ export default class Screen extends React.Component<Props, State> {
 
   public render () {
     return (
-      <View style={styles.outsideContainer}>
-        <KeyboardAvoidingView
-          key={this.state.keyboardAvoidingViewKey}
-          style={styles.outsideContainer}
-          keyboardVerticalOffset={Constants.statusBarHeight === 40 ? 20 : 0}
-          behavior='height'
-        >
-          <TouchableWithoutFeedback
-            style={styles.outsideContainer}
-            onPress={this.props.disableTouchOutside ? _.noop : Keyboard.dismiss}
-            accessible={false}
+      <View style={styles.screen}>
+        <SafeAreaView style={styles.topSafeArea} />
+        <SafeAreaView style={styles.belowTopSafeArea}>
+          <KeyboardAvoidingView
+            key={this.state.keyboardAvoidingViewKey}
+            style={styles.screen}
+            keyboardVerticalOffset={Constants.statusBarHeight}
+            behavior='height'
           >
-            <View style={styles.container}>
-              <StatusBar
-                barStyle={
-                  this.props.statusBar === 'black'
-                    ? 'dark-content'
-                    : 'light-content'
-                }
-              />
-              <ScrollView>
-                {this.props.onPressBackButton && (
-                  <TouchableOpacity
-                    style={styles.backButton}
-                    onPress={this.props.onPressBackButton}
-                  >
-                    <AntDesign
-                      name={this.props.backButtonType}
-                      size={28}
-                      color={COLORS.N800}
-                    />
-                  </TouchableOpacity>
-                )}
-                <View style={styles.content}>
-                  {this.props.children(
-                    this.state.keyboardAvoidingViewKey === DEFAULT_KEYBOARD_KEY
+            <TouchableWithoutFeedback
+              style={styles.outterContainer}
+              onPress={
+                this.props.disableTouchOutside ? _.noop : Keyboard.dismiss
+              }
+              accessible={false}
+            >
+              <View style={styles.container}>
+                <StatusBar
+                  barStyle={
+                    this.props.statusBar === 'black'
+                      ? 'dark-content'
+                      : 'light-content'
+                  }
+                />
+                <ScrollView>
+                  {this.props.onPressBackButton && (
+                    <TouchableOpacity
+                      style={styles.backButton}
+                      onPress={this.props.onPressBackButton}
+                    >
+                      <AntDesign
+                        name={this.props.backButtonType}
+                        size={28}
+                        color={COLORS.N800}
+                      />
+                    </TouchableOpacity>
                   )}
-                </View>
-              </ScrollView>
-              {this.props.onPessSubmitButton && (
-                <SubmitButton
-                  onPress={this.props.onPessSubmitButton}
-                  active={this.props.activeSubmitButton}
-                >
-                  {this.props.submitButtonText || 'Next'}
-                </SubmitButton>
-              )}
-            </View>
-          </TouchableWithoutFeedback>
-        </KeyboardAvoidingView>
-        {this.props.fullScreenLoading && <FullScreenLoading visible={this.props.fullScreenLoading} />}
+                  <View style={styles.content}>
+                    {this.props.children(
+                      this.state.keyboardAvoidingViewKey ===
+                        DEFAULT_KEYBOARD_KEY
+                    )}
+                  </View>
+                </ScrollView>
+                {this.props.onPessSubmitButton && (
+                  <SubmitButton
+                    onPress={this.props.onPessSubmitButton}
+                    active={this.props.activeSubmitButton}
+                  >
+                    {this.props.submitButtonText || 'Next'}
+                  </SubmitButton>
+                )}
+              </View>
+            </TouchableWithoutFeedback>
+            {this.props.fullScreenLoading && (
+              <FullScreenLoading visible={this.props.fullScreenLoading} />
+            )}
+          </KeyboardAvoidingView>
+        </SafeAreaView>
       </View>
     )
   }
 }
 
 const styles = StyleSheet.create({
-  outsideContainer: {
+  screen: {
+    flex: 1
+  },
+  topSafeArea: {
+    flex: 0,
+    borderColor: COLORS.WHITE,
+    borderBottomWidth: 1
+  },
+  belowTopSafeArea: {
+    flex: 1,
+    backgroundColor: COLORS.P500,
+    marginTop: 1 // HACK: otherwise there will be a line in the screen, seem to be a bug
+  },
+  outterContainer: {
     flex: 1
   },
   container: {
     flex: 1,
     justifyContent: 'space-between',
-    paddingTop: 20,
-    position: 'relative'
+    position: 'relative',
+    backgroundColor: COLORS.WHITE
   },
   backButton: {
     zIndex: 1,

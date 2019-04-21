@@ -7,24 +7,26 @@ import {
   StyleSheet
 } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
-import { LinearGradient, Amplitude } from 'expo'
+import { LinearGradient, Amplitude, Asset } from 'expo'
 import { Text } from '../components'
 import { COLORS } from '../constants'
 
 export default class WelcomeScreen extends React.Component<
   NavigationScreenProps
 > {
+
   public onPressButton = () => {
     Amplitude.logEvent('welcome/press-create-account-or-login-button')
     this.props.navigation.navigate('Authen')
   }
 
   public renderBody () {
+    const uri = Asset.fromModule(require('../img/flipay_horizontal_logo_reverse.png')).localUri
     return (
       <View style={styles.body}>
         <Image
           style={{ width: 164, height: 41 }}
-          source={require('../img/flipay_horizontal_logo_reverse.png')}
+          source={{ uri }}
         />
         <Text style={styles.description} color={COLORS.WHITE}>
           Creating the Borderless world of Banking
