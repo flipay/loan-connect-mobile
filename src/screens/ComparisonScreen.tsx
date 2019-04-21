@@ -15,6 +15,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { Text, Value, CloseButton } from '../components'
 import { COLORS, PROVIDERS } from '../constants'
 import { AssetId } from '../types'
+import { calSaveAmount } from '../utils'
 
 interface RequestedRecord {
   id: string
@@ -142,21 +143,13 @@ export default class ComparisonScreen extends React.Component<
     )
   }
 
-  public renderTitle (flipayAmount: number, worstAmount: number) {
+  public renderTitle () {
     const side = this.props.navigation.getParam('side', 'sell')
-    let gain
-    if (side === 'buy') {
-      gain = worstAmount - flipayAmount
-    } else {
-      gain = flipayAmount - worstAmount
-    }
-    if (gain < 0) {
-      gain = 0
-    }
-
+    const flipayAmount = this.props.navigation.getParam('flipayAmount', 'sell')
+    const competitorAmounts = this.props.navigation.getParam('competitorAmounts')
     return (
       <Text type='title' color={COLORS.WHITE}>
-        Save <Value assetId='THB'>{gain}</Value> with us!
+        Save <Value assetId='THB' decimal={2}>{calSaveAmount(side, flipayAmount, competitorAmounts)}</Value> with us!
       </Text>
     )
   }

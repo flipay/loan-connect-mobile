@@ -11,6 +11,7 @@ interface Props {
   full?: boolean
   style?: any
   fontType?: FontType
+  decimal?: number
 }
 
 class Value extends React.Component<Props> {
@@ -18,7 +19,7 @@ class Value extends React.Component<Props> {
     const { style, ...otherProps } = this.props
     const amount = toString(
       this.props.children,
-      ASSETS[this.props.assetId].decimal
+      this.props.decimal || ASSETS[this.props.assetId].decimal
     )
     return (
       <Text
