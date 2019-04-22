@@ -44,8 +44,11 @@ export default class PinScreen extends React.Component<
         this.props.navigation,
         this.setError,
         () => this.setState({ loading: true }),
-        () => this.setState({ loading: false })
+        () => this.setState({ loading: false }),
+        () => this.setState({ pin: '' })
       )
+    } else if (prevState.pin.length === 4 && this.state.pin.length < 4 && this.state.errorMessage) {
+      this.setState({ errorMessage: '' })
     }
   }
 
@@ -62,7 +65,6 @@ export default class PinScreen extends React.Component<
   public onBackSpace = () => {
     if (this.state.pin.length > 0) {
       this.setState({
-        errorMessage: '',
         pin: this.state.pin.slice(0, this.state.pin.length - 1)
       })
     }

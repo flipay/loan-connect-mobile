@@ -10,6 +10,10 @@ export async function checkLoginStatus () {
   return !!value
 }
 
+export async function clearToken () {
+  await SecureStore.deleteItemAsync(ENCRYPTED_TOKEN)
+}
+
 export async function setToken (token: string, pin: string) {
   const encrypted = CryptoJS.AES.encrypt(token, pin).toString()
   const hashed = CryptoJS.SHA256(token).toString()

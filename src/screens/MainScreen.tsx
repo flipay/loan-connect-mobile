@@ -5,22 +5,22 @@ import {
   RefreshControl,
   StatusBar,
   View,
-  StyleSheet,
-  TouchableOpacity
+  StyleSheet
 } from 'react-native'
 import { LinearGradient, Amplitude } from 'expo'
-import { SimpleLineIcons } from '@expo/vector-icons'
 import { NavigationScreenProps } from 'react-navigation'
-import { Text, AssetCard } from '../components'
+import { Text, AssetCard, Button } from '../components'
 import { COLORS, ASSETS } from '../constants'
 import { AssetId, Asset } from '../types'
-import { getPortfolio, lock } from '../requests'
+import { getPortfolio } from '../requests'
+import { hasEverDeposit } from '../asyncStorage'
 import { alert, toString } from '../utils'
 
 interface State {
   selectedAsset?: AssetId | null
   assets: Array<Asset>
   refreshing: boolean
+  hasDeposited: boolean
 }
 
 export default class MainScreen extends React.Component<
@@ -32,7 +32,8 @@ export default class MainScreen extends React.Component<
     this.state = {
       selectedAsset: null,
       assets: [],
-      refreshing: false
+      refreshing: false,
+      hasDeposited: true
     }
   }
   private willFocusSubscription: any
@@ -51,8 +52,8 @@ export default class MainScreen extends React.Component<
 
   public async fetchData () {
     try {
-      const assets = await getPortfolio()
-      this.setState({ assets })
+      const [assets, hasDeposited] = await Promise.all([getPortfolio(), hasEverDeposit()])
+      this.setState({ assets, hasDeposited })
     } catch (err) {
       alert(err)
     }
@@ -79,16 +80,17 @@ export default class MainScreen extends React.Component<
     }
   }
 
-  public renderLockButton () {
+  public shouldShowWelcomeMessage () {
+    return this.getSumBalance() === 0 && !this.state.hasDeposited
+  }
+
+  public renderWelcomeMessage () {
     return (
-      <TouchableOpacity onPress={lock} style={styles.lockButton}>
-        <SimpleLineIcons
-          name='logout'
-          size={24}
-          color={COLORS.WHITE}
-          style={styles.lockIcon}
-        />
-      </TouchableOpacity>
+      <View style={styles.welcomeSection}>
+        <Text color={COLORS.WHITE} style={styles.welcome}>Welcome to Flipay!</Text>
+        <Text type='title' color={COLORS.WHITE} style={styles.howMuch}>How much would you like to start investment?</Text>
+        <Button onPress={() => this.props.navigation.navigate('Deposit')}>Deposit your money</Button>
+      </View>
     )
   }
 
@@ -98,22 +100,28 @@ export default class MainScreen extends React.Component<
         colors={[COLORS.P400, COLORS.C500]}
         start={[0.3, 0.7]}
         end={[2, -0.8]}
-        style={styles.header}
+        style={[styles.header, this.shouldShowWelcomeMessage() && { height: 404 }]}
       >
-        <Text type='caption' color={COLORS.P100}>
-          TOTAL VALUE
-        </Text>
-        <Text style={styles.totalValueContainer}>
-          <Text color={COLORS.WHITE}>฿</Text>
-          <Text
-            type='large-title'
-            style={styles.totalValue}
-            color={COLORS.WHITE}
-          >
-            {` ${toString(this.getSumBalance(), ASSETS.THB.decimal)}`}
-          </Text>
-        </Text>
-        {this.renderLockButton()}
+        {this.shouldShowWelcomeMessage()
+          ? this.renderWelcomeMessage()
+          : (
+            <View style={styles.headerTextContainer}>
+              <Text type='caption' color={COLORS.P100}>
+                TOTAL VALUE
+              </Text>
+              <Text style={styles.totalValueContainer}>
+                <Text color={COLORS.WHITE}>฿</Text>
+                <Text
+                  type='large-title'
+                  style={styles.totalValue}
+                  color={COLORS.WHITE}
+                >
+                  {` ${toString(this.getSumBalance(), ASSETS.THB.decimal)}`}
+                </Text>
+              </Text>
+            </View>
+          )
+        }
       </LinearGradient>
     )
   }
@@ -187,14 +195,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
-  lockButton: {
-    position: 'absolute',
-    top: 25,
-    right: 10,
-    padding: 6
-  },
-  lockIcon: {
-    transform: [{ rotate: '180deg' }]
+  headerTextContainer: {
+    alignItems: 'center'
   },
   totalValueContainer: {
     color: COLORS.WHITE,
@@ -212,5 +214,16 @@ const styles = StyleSheet.create({
   },
   smallSpace: {
     height: 4
+  },
+  welcomeSection: {
+    alignItems: 'flex-start',
+    width: '100%',
+    padding: 28
+  },
+  welcome: {
+    marginBottom: 8
+  },
+  howMuch: {
+    marginBottom: 24
   }
 })

@@ -1,5 +1,6 @@
 import * as _ from 'lodash'
 import { Alert } from 'react-native'
+import Sentry from 'sentry-expo'
 import { THBAmountTypes } from './constants'
 import { OrderType } from './types'
 
@@ -29,6 +30,7 @@ export function getErrorDetail (err: Error) {
 }
 
 export function alert (err: Error) {
+  Sentry.captureException(err)
   return Alert.alert(`Something went wrong: ${getErrorDetail(err)}`)
 }
 
@@ -37,8 +39,9 @@ export function calSaveAmount (side: OrderType, amount: number, thbAmounts?: THB
     return 0
   }
   const amounts = _.map(thbAmounts)
+  const validAmounts = _.filter(amounts, (value) => !isNaN(value))
   if (side === 'buy') {
-    const worstAmount = _.max(amounts)
+    const worstAmount = _.max(validAmounts)
     if (!worstAmount) {
       return 0
     }
@@ -48,7 +51,7 @@ export function calSaveAmount (side: OrderType, amount: number, thbAmounts?: THB
       return worstAmount - amount
     }
   } else {
-    const worstAmount = _.min(amounts)
+    const worstAmount = _.min(validAmounts)
     if (!worstAmount) {
       return 0
     }

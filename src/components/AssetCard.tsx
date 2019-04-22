@@ -98,28 +98,29 @@ export default class AssetCard extends React.Component<
       </Value>
     ) : (
       <View style={styles.coinMainContent}>
-        <Value assetId='THB' fontType='title'>
-          {(this.props.price || 0) * this.props.amount}
-        </Value>
-        <Value assetId={this.props.id} fontType='body'>
+        <Value assetId={this.props.id} fontType='title'>
           {this.props.amount}
+        </Value>
+        <Value assetId='THB' fontType='body'>
+          {(this.props.price || 0) * this.props.amount}
         </Value>
       </View>
     )
   }
 
   public renderExpandedCardDescription () {
+    const ActionBotton = (props: any) => <Button {...props} style={styles.button} />
     return this.props.id === 'THB' ? (
       <View style={styles.buttonsContainer}>
-        <Button onPress={this.onPressDepositButton}>Deposit</Button>
+        <ActionBotton onPress={this.onPressDepositButton}>Deposit</ActionBotton>
         <View style={styles.spacing} />
-        <Button onPress={this.onPressWithdrawButton}>Withdraw</Button>
+        <ActionBotton onPress={this.onPressWithdrawButton}>Withdraw</ActionBotton>
       </View>
     ) : (
       <View style={styles.buttonsContainer}>
-        <Button onPress={() => this.onPressButton('buy')}>Buy</Button>
+        <ActionBotton onPress={() => this.onPressButton('buy')}>Buy</ActionBotton>
         <View style={styles.spacing} />
-        <Button onPress={() => this.onPressButton('sell')}>Sell</Button>
+        <ActionBotton onPress={() => this.onPressButton('sell')}>Sell</ActionBotton>
       </View>
     )
   }
@@ -143,14 +144,12 @@ export default class AssetCard extends React.Component<
             {!this.props.expanded && (
               <View style={styles.rightSection}>
                 <View style={styles.valueContainer}>
-                  <Value assetId='THB' fontType='headline'>
-                    {(this.props.price || 1) * this.props.amount}
+                  <Value assetId={this.props.id} fontType='headline'>
+                    {this.props.amount}
                   </Value>
-                  {!(this.props.id === 'THB') && (
-                    <Value assetId={this.props.id} fontType='caption'>
-                      {this.props.amount}
-                    </Value>
-                  )}
+                  {this.props.id !== 'THB' && <Value assetId='THB' fontType='caption'>
+                    {(this.props.price || 1) * this.props.amount}
+                  </Value>}
                 </View>
                 <FontAwesome name='angle-down' size={16} color={COLORS.N400} />
               </View>
@@ -215,8 +214,7 @@ const styles = StyleSheet.create({
   spacing: {
     width: 9
   },
-  contactUs: {
-    paddingHorizontal: 40,
-    textAlign: 'center'
+  button: {
+    flex: 1
   }
 })

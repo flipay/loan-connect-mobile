@@ -2,9 +2,9 @@ import * as React from 'react'
 import _ from 'lodash'
 import { Amplitude } from 'expo'
 import { NavigationScreenProps } from 'react-navigation'
-import { View, TextInput, StyleSheet, Keyboard } from 'react-native'
+import { TextInput, StyleSheet, Keyboard, SafeAreaView } from 'react-native'
 import { authen } from '../requests'
-import { COLORS } from '../constants'
+
 import { ScreenWithKeyboard, Text, Layer } from '../components'
 
 interface State {
@@ -61,7 +61,7 @@ export default class AuthenScreen extends React.Component<
         fullScreenLoading={this.state.loading}
       >
         {(autoFocus: boolean) => (
-          <View>
+          <SafeAreaView>
             <Text type='title' style={styles.title}>Enter your mobile number</Text>
               <Layer
                 style={styles.layer}
@@ -79,7 +79,7 @@ export default class AuthenScreen extends React.Component<
                   value={this.state.phoneNumber}
                 />
               </Layer>
-          </View>
+          </SafeAreaView>
         )}
       </ScreenWithKeyboard>
     )
@@ -87,12 +87,8 @@ export default class AuthenScreen extends React.Component<
 }
 
 const styles = StyleSheet.create({
-  screen: {
-    backgroundColor: COLORS.WHITE,
-    flex: 1
-  },
   title: {
-    marginTop: 40
+    marginTop: 62
   },
   layer: {
     marginTop: 44,
