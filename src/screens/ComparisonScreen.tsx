@@ -2,10 +2,11 @@ import * as React from 'react'
 import _ from 'lodash'
 import {
   View,
-  StyleSheet,
   StatusBar,
+  StyleSheet,
   Image,
-  ImageSourcePropType
+  ImageSourcePropType,
+  SafeAreaView
 } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import resolveAssetSource from 'resolveAssetSource'
@@ -14,6 +15,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { Text, Value, CloseButton } from '../components'
 import { COLORS, PROVIDERS } from '../constants'
 import { AssetId } from '../types'
+import { calSaveAmount } from '../utils'
 
 interface RequestedRecord {
   id: string
@@ -60,34 +62,46 @@ export default class ComparisonScreen extends React.Component<
         })
       }
     })
+
+  }
+
+  public renderValidRecord (data: FormattedRecord, index: number) {
+    const side = this.props.navigation.getParam('side', 'sell')
+    return (
+      <View style={styles.validRecord}>
+        <Value assetId='THB'>{data.amount}</Value>
+        {index === 0 ? (
+          <Text type='caption' color={COLORS.N500}>
+            Best Price
+          </Text>
+        ) : (
+          <View style={styles.captionRow}>
+            <MaterialCommunityIcons
+              name={side ? 'trending-up' : 'trending-down'}
+              color='#FE4747'
+              style={styles.downTrendIcon}
+            />
+            <Text type='caption' color={COLORS.N500}>
+              {side === 'buy' ? '+ ' : '- '}
+              <Value assetId='THB'>{data.difference}</Value>
+            </Text>
+          </View>
+        )}
+      </View>
+    )
   }
 
   public renderRecord (data: FormattedRecord, index: number) {
-    const side = this.props.navigation.getParam('side', 'sell')
     const image = data.image
     const source = resolveAssetSource(image)
     return (
       <View style={styles.tableRecord} key={data.name}>
         <Image source={image} style={{ width: source.width / 2, height: source.height / 2 }} />
         <View style={styles.rightPartRecord}>
-          <Value assetId='THB'>{data.amount}</Value>
-          {index === 0 ? (
-            <Text type='caption' color={COLORS.N500}>
-              Best Price
-            </Text>
-          ) : (
-            <View style={styles.captionRow}>
-              <MaterialCommunityIcons
-                name={side ? 'trending-up' : 'trending-down'}
-                color='#FE4747'
-                style={styles.downTrendIcon}
-              />
-              <Text type='caption' color={COLORS.N500}>
-                {side === 'buy' ? '+ ' : '- '}
-                <Value assetId='THB'>{data.difference}</Value>
-              </Text>
-            </View>
-          )}
+          {isNaN(data.amount)
+            ? <Text type='caption' color={COLORS.N500}>Unavailable</Text>
+            : this.renderValidRecord(data, index)
+          }
         </View>
       </View>
     )
@@ -129,21 +143,13 @@ export default class ComparisonScreen extends React.Component<
     )
   }
 
-  public renderTitle (flipayAmount: number, worstAmount: number) {
+  public renderTitle () {
     const side = this.props.navigation.getParam('side', 'sell')
-    let gain
-    if (side === 'buy') {
-      gain = worstAmount - flipayAmount
-    } else {
-      gain = flipayAmount - worstAmount
-    }
-    if (gain < 0) {
-      gain = 0
-    }
-
+    const flipayAmount = this.props.navigation.getParam('flipayAmount', 'sell')
+    const competitorAmounts = this.props.navigation.getParam('competitorAmounts')
     return (
       <Text type='title' color={COLORS.WHITE}>
-        Save <Value assetId='THB'>{gain}</Value> with us!
+        Save <Value assetId='THB' decimal={2}>{calSaveAmount(side, flipayAmount, competitorAmounts)}</Value> with us!
       </Text>
     )
   }
@@ -154,14 +160,15 @@ export default class ComparisonScreen extends React.Component<
     const cryptoAmount = this.props.navigation.getParam('cryptoAmount', 1000)
     const quility = best.id === 'liquid' ? 'best' : 'competitive'
     return (
-        <Text style={styles.subtitle}>
+        <View style={styles.subtitle}>
           <Text color={COLORS.WHITE}>
-            {`Looks like Flipay offers the ${quility} price for ${side}ing `}
+            {`Looks like Flipay offers the ${quility} price`}
           </Text>
           <Text color={COLORS.WHITE}>
+            {` for ${side}ing `}
             <Value assetId={assetId} full={true}>{cryptoAmount}</Value>
           </Text>
-        </Text>
+        </View>
     )
   }
 
@@ -177,31 +184,39 @@ export default class ComparisonScreen extends React.Component<
       return record.amount * (side === 'sell' ? -1 : 1)
     })
     const best = sortedRecords[0]
-    const worstAmount = sortedRecords[sortedRecords.length - 1].amount
+    const worst = _.findLast(sortedRecords, (record) => !isNaN(record.amount))
+    if (!worst) { return null }
     return (
       <LinearGradient
         colors={[COLORS.P400, COLORS.C500]}
         start={[0.3, 0.7]}
         end={[2, -0.8]}
-        style={styles.container}
+        style={styles.screen}
       >
-        <StatusBar barStyle='light-content' />
-        <CloseButton onPress={this.onClose} color={COLORS.WHITE} />
-        {this.renderTitle(flipayAmount, worstAmount)}
-        {this.renderSubtitle(best)}
-        {this.renderTable(sortedRecords)}
+        <SafeAreaView style={styles.screen}>
+          <View style={styles.content}>
+            <StatusBar barStyle='light-content' />
+            <CloseButton onPress={this.onClose} color={COLORS.WHITE} />
+            {this.renderTitle(flipayAmount, worst.amount)}
+            {this.renderSubtitle(best)}
+            {this.renderTable(sortedRecords)}
+          </View>
+        </SafeAreaView>
       </LinearGradient>
     )
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
+  screen: {
+    flex: 1
+  },
+  content: {
     flex: 1,
-    paddingTop: 86,
-    paddingHorizontal: 16,
     alignItems: 'center',
-    position: 'relative'
+    position: 'relative',
+    paddingTop: 42,
+    paddingHorizontal: 12
   },
   table: {
     backgroundColor: COLORS.WHITE,
@@ -224,9 +239,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingLeft: 16,
     paddingRight: 8,
+    height: 80,
     paddingVertical: 24
   },
   rightPartRecord: {
+    justifyContent: 'center',
+    alignItems: 'flex-end'
+  },
+  validRecord: {
     justifyContent: 'center',
     alignItems: 'flex-end'
   },
@@ -239,7 +259,6 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     marginTop: 12,
-    textAlign: 'center',
-    paddingHorizontal: 20
+    alignItems: 'center'
   }
 })

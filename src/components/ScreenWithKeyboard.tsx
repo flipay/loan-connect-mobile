@@ -12,7 +12,6 @@ import {
   ScrollView,
   SafeAreaView
 } from 'react-native'
-import { Constants } from 'expo'
 import { AntDesign } from '@expo/vector-icons'
 import { COLORS } from '../constants'
 import SubmitButton from './SubmitButton'
@@ -71,16 +70,14 @@ export default class Screen extends React.Component<Props, State> {
   public render () {
     return (
       <View style={styles.screen}>
-        <SafeAreaView style={styles.topSafeArea} />
-        <SafeAreaView style={styles.belowTopSafeArea}>
-          <KeyboardAvoidingView
-            key={this.state.keyboardAvoidingViewKey}
-            style={styles.screen}
-            keyboardVerticalOffset={Constants.statusBarHeight}
-            behavior='height'
-          >
+        <KeyboardAvoidingView
+          key={this.state.keyboardAvoidingViewKey}
+          style={styles.screen}
+          behavior='height'
+        >
+          <SafeAreaView style={styles.screen}>
             <TouchableWithoutFeedback
-              style={styles.outterContainer}
+              style={styles.screen}
               onPress={
                 this.props.disableTouchOutside ? _.noop : Keyboard.dismiss
               }
@@ -127,8 +124,8 @@ export default class Screen extends React.Component<Props, State> {
             {this.props.fullScreenLoading && (
               <FullScreenLoading visible={this.props.fullScreenLoading} />
             )}
-          </KeyboardAvoidingView>
-        </SafeAreaView>
+          </SafeAreaView>
+        </KeyboardAvoidingView>
       </View>
     )
   }
@@ -136,19 +133,6 @@ export default class Screen extends React.Component<Props, State> {
 
 const styles = StyleSheet.create({
   screen: {
-    flex: 1
-  },
-  topSafeArea: {
-    flex: 0,
-    borderColor: COLORS.WHITE,
-    borderBottomWidth: 1
-  },
-  belowTopSafeArea: {
-    flex: 1,
-    backgroundColor: COLORS.P500,
-    marginTop: 1 // HACK: otherwise there will be a line in the screen, seem to be a bug
-  },
-  outterContainer: {
     flex: 1
   },
   container: {
@@ -166,7 +150,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    paddingTop: 20,
+    // paddingTop: 20,
     paddingHorizontal: 20
   }
 })

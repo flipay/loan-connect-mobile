@@ -73,11 +73,6 @@ export default class Start extends React.Component<
 }
 
 const styles = StyleSheet.create({
-  kak: {
-    width: 50,
-    height: 50,
-    backgroundColor: 'red'
-  },
   screen: {
     backgroundColor: COLORS.WHITE,
     flex: 1

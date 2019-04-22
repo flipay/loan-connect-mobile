@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import { ImageSourcePropType } from 'react-native'
 
-const PROVIDER_IDS = ['bxth', 'liquid']
+const PROVIDER_IDS = ['bxth', 'liquid', 'bitkub', 'satang']
 export const COMPETITOR_IDS = _.reject(PROVIDER_IDS, (id) => id === 'liquid')
 
 export type ProviderId = typeof PROVIDER_IDS[number]
@@ -25,5 +25,15 @@ export const PROVIDERS: Array<Provider> = [
     id: 'bxth',
     name: 'BX Thailand',
     image: require('../img/company_bx.png')
+  },
+  {
+    id: 'bitkub',
+    name: 'Bitkub',
+    image: require('../img/company_bitkub.png')
+  },
+  {
+    id: 'satang',
+    name: 'Satang',
+    image: require('../img/company_satang.png')
   }
 ]

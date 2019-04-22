@@ -98,11 +98,11 @@ export default class AssetCard extends React.Component<
       </Value>
     ) : (
       <View style={styles.coinMainContent}>
-        <Value assetId='THB' fontType='title'>
-          {(this.props.price || 0) * this.props.amount}
-        </Value>
-        <Value assetId={this.props.id} fontType='body'>
+        <Value assetId={this.props.id} fontType='title'>
           {this.props.amount}
+        </Value>
+        <Value assetId='THB' fontType='body'>
+          {(this.props.price || 0) * this.props.amount}
         </Value>
       </View>
     )
@@ -144,14 +144,12 @@ export default class AssetCard extends React.Component<
             {!this.props.expanded && (
               <View style={styles.rightSection}>
                 <View style={styles.valueContainer}>
-                  <Value assetId='THB' fontType='headline'>
-                    {(this.props.price || 1) * this.props.amount}
+                  <Value assetId={this.props.id} fontType='headline'>
+                    {this.props.amount}
                   </Value>
-                  {!(this.props.id === 'THB') && (
-                    <Value assetId={this.props.id} fontType='caption'>
-                      {this.props.amount}
-                    </Value>
-                  )}
+                  {this.props.id !== 'THB' && <Value assetId='THB' fontType='caption'>
+                    {(this.props.price || 1) * this.props.amount}
+                  </Value>}
                 </View>
                 <FontAwesome name='angle-down' size={16} color={COLORS.N400} />
               </View>

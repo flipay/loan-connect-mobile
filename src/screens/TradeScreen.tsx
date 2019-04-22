@@ -93,11 +93,10 @@ export default class TradeScreen extends React.Component<
     )
     const responseAsset = side === 'buy' ? assetId : 'THB'
     flipayResponseValue = toString(amount, ASSETS[responseAsset].decimal)
-
     const result = await getCompetitorTHBAmounts(
       this.props.navigation.getParam('side', 'buy'),
       this.props.navigation.getParam('assetId', 'BTC'),
-      this.props.navigation.getParam('side', 'buy') ? amount : toNumber(this.state.giveAssetBoxValue)
+      this.props.navigation.getParam('side', 'buy') === 'buy' ? amount : toNumber(this.state.giveAssetBoxValue)
     )
     if (this.mounted) {
       if (activeAssetBox === 'give') {
