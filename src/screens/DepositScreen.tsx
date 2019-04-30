@@ -107,7 +107,7 @@ export default class DepositScreen extends React.Component<
         style={[styles.contact, lastContact && styles.noMargin]}
       >
         <View style={styles.contactContent}>
-          <Text style={styles.contactLabel}>
+          <Text color={COLORS.N600} style={styles.contactLabel}>
             {label}
           </Text>
           <Text type='button' color={COLORS.P400}>
