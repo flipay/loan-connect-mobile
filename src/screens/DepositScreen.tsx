@@ -1,13 +1,15 @@
 import * as React from 'react'
 import {
   View,
-  StyleSheet
+  StyleSheet,
+  Image
 } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { Amplitude } from 'expo'
-import { Text, ScreenWithKeyboard, AssetBox } from '../components'
+import { Text, ScreenWithKeyboard, AssetBox, Value } from '../components'
 import { deposit } from '../requests'
 import { toNumber } from '../utils'
+import { COLORS } from '../constants'
 
 interface State {
   amount: string
@@ -51,6 +53,35 @@ export default class DepositScreen extends React.Component<
     }
   }
 
+  public renderSteps () {
+    return (
+      <View>
+        <Text type='button'>How to cash in by bank transfer</Text>
+        <Text type='button' color={COLORS.N700}>
+          <Text>1. Transfer </Text>
+          <Value assetId='THB'>{toNumber(this.state.amount)}</Value>
+         <Text>cash in amount to following account.</Text>
+        </Text>
+        <View style={styles.transferDetail}>
+          <View style={styles.depositBank}>
+            <Image source={require('../img/bank_bbl.png')} style={{ width: 20, height: 20 }}/>
+            <Text type='button' color={COLORS.N800} style={styles.bank}>Bangkok Bank</Text>
+          </View>
+          <View style={styles.transferDetailTable}>
+            <View style={styles.labelColumn}>
+              <Text color={COLORS.N600} style={styles.row}>Acc No.</Text>
+              <Text color={COLORS.N600}>Name</Text>
+            </View>
+            <View>
+              <Text color={COLORS.N800} style={styles.row}>855-0-51723-2</Text>
+              <Text color={COLORS.N800}>นาย ภาณุมาชร์ อนันตชัยวณิช</Text>
+            </View>
+          </View>
+        </View>
+      </View>
+    )
+  }
+
   public render () {
     return (
       <ScreenWithKeyboard
@@ -75,9 +106,7 @@ export default class DepositScreen extends React.Component<
                   active={this.state.active}
                   value={this.state.amount}
                 />
-              ) : (
-                <Text>Submit the transfer receipt to receipt@flipay.co after that, it will be available in your wallet within 24 hours.</Text>
-              )
+              ) : this.renderSteps()
             }
           </View>
         )}
@@ -94,5 +123,28 @@ const styles = StyleSheet.create({
   },
   title: {
     paddingBottom: 20
+  },
+  transferDetail: {
+    marginTop: 12,
+    backgroundColor: COLORS.N100,
+    paddingVertical: 11,
+    paddingHorizontal: 20,
+    borderRadius: 4
+  },
+  depositBank: {
+    flexDirection: 'row'
+  },
+  bank: {
+    marginLeft: 10,
+    marginBottom: 15
+  },
+  transferDetailTable: {
+    flexDirection: 'row'
+  },
+  labelColumn: {
+    marginRight: 9
+  },
+  row: {
+    marginBottom: 6
   }
 })
