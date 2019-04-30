@@ -1,12 +1,12 @@
 import * as React from 'react'
-import { View, StyleSheet, Image } from 'react-native'
+import { View, StyleSheet, Image, TouchableOpacity, Linking } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { Amplitude } from 'expo'
 import { AntDesign } from '@expo/vector-icons'
 import { Text, ScreenWithKeyboard, AssetBox, Value } from '../components'
 import { deposit } from '../requests'
 import { toNumber } from '../utils'
-import { COLORS } from '../constants'
+import { COLORS, CONTACTS } from '../constants'
 
 interface State {
   amount: string
@@ -100,9 +100,12 @@ export default class DepositScreen extends React.Component<
     )
   }
 
-  public renderContact (label: string, value: string, lastContact?: boolean) {
+  public renderContact (label: string, value: string, onPress: () => {}, lastContact?: boolean) {
     return (
-      <View style={[styles.contact, lastContact && styles.noMargin]}>
+      <TouchableOpacity
+        onPress={onPress}
+        style={[styles.contact, lastContact && styles.noMargin]}
+      >
         <View style={styles.contactContent}>
           <Text style={styles.contactLabel}>
             {label}
@@ -116,16 +119,17 @@ export default class DepositScreen extends React.Component<
           color={COLORS.N500}
           size={16}
         />
-      </View>
+      </TouchableOpacity>
     )
   }
 
   public renderSecondBullet () {
+    const email = 'deposit@flipay.co'
     return this.renderBullet(
       '2. Send us the banking transfer slip with your phone number to one of the Flipay contacts',
       <View>
-        {this.renderContact('Email', 'deposit@flipay.co')}
-        {this.renderContact('Line', '@flipay', true)}
+        {this.renderContact('Email', email, () => Linking.openURL(`mailto:${email}`))}
+        {this.renderContact('Line', '@flipay', () => Linking.openURL(CONTACTS.LINE_LINK), true)}
       </View>
     )
   }

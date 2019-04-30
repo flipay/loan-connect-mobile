@@ -7,7 +7,7 @@ import { NavigationScreenProps } from 'react-navigation'
 import { lock } from '../requests'
 import { getPhoneNumber } from '../asyncStorage'
 import { Text, Record } from '../components'
-import { COLORS } from '../constants'
+import { COLORS, CONTACTS } from '../constants'
 
 interface State {
   phoneNumber?: string | null
@@ -41,7 +41,7 @@ export default class AccountScreen extends React.Component<
   }
 
   public onPressLine = () => {
-    Linking.openURL('https://line.me/R/ti/p/@flipay')
+    Linking.openURL(CONTACTS.LINE_LINK)
   }
 
   public renderLineRecord () {
