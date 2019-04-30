@@ -29,7 +29,7 @@ export default class WelcomeScreen extends React.Component<
           source={{ uri }}
         />
         <Text style={styles.description} color={COLORS.WHITE}>
-          Creating the Borderless world of Banking
+          Exchange cryptocurrencies at the best rate
         </Text>
       </View>
     )
