@@ -12,6 +12,7 @@ import {
   ScrollView,
   SafeAreaView
 } from 'react-native'
+import { Constants } from 'expo'
 import { AntDesign } from '@expo/vector-icons'
 import { COLORS } from '../constants'
 import SubmitButton from './SubmitButton'
@@ -136,6 +137,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   container: {
+    paddingTop: Constants.statusBarHeight,
     flex: 1,
     justifyContent: 'space-between',
     position: 'relative',
