@@ -143,7 +143,7 @@ export default class WithdrawalScreen extends React.Component<
                   />
                 </View>
               ) : (
-                <Text>Submit the transfer receipt to receipt@flipay.co after that, it will be available in your wallet within 24 hours.</Text>
+                <Text>We’ll transfer to your bank account within 24 hours. We may reach out to you by phone if we need more information.</Text>
               )
             }
           </View>

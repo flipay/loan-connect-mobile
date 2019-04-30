@@ -7,23 +7,16 @@ import { NavigationScreenProps } from 'react-navigation'
 import { lock } from '../requests'
 import { getPhoneNumber } from '../asyncStorage'
 import { Text, Record } from '../components'
-import { COLORS } from '../constants'
+import { COLORS, CONTACTS } from '../constants'
 
 interface State {
   phoneNumber?: string | null
 }
 
-export default class ProfileScreen extends React.Component<
+export default class AccountScreen extends React.Component<
   NavigationScreenProps,
   State
 > {
-  public async componentDidMount () {
-    const phoneNumber = await getPhoneNumber()
-    this.setState({
-      phoneNumber
-    })
-  }
-
   public constructor (props: NavigationScreenProps) {
     super(props)
     this.state = {
@@ -31,8 +24,24 @@ export default class ProfileScreen extends React.Component<
     }
   }
 
+  private navListener: any = null
+
+  public async componentDidMount () {
+    this.navListener = this.props.navigation.addListener('didFocus', () => {
+      StatusBar.setBarStyle('dark-content')
+    })
+    const phoneNumber = await getPhoneNumber()
+    this.setState({
+      phoneNumber
+    })
+  }
+
+  public componentWillUnmount () {
+    this.navListener.remove()
+  }
+
   public onPressLine = () => {
-    Linking.openURL('https://line.me/R/ti/p/@flipay')
+    Linking.openURL(CONTACTS.LINE_LINK)
   }
 
   public renderLineRecord () {
@@ -83,8 +92,6 @@ export default class ProfileScreen extends React.Component<
   public render () {
     return (
       <View style={styles.screen}>
-        <StatusBar barStyle='dark-content' />
-
         <View style={styles.header}>
           <View style={styles.headerDetail}>
             <Text type='caption'>ACCOUNT</Text>

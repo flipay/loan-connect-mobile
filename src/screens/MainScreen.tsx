@@ -42,7 +42,10 @@ export default class MainScreen extends React.Component<
     this.fetchData()
     this.willFocusSubscription = this.props.navigation.addListener(
       'willFocus',
-      () => { this.fetchData() }
+      () => {
+        StatusBar.setBarStyle('light-content')
+        this.fetchData()
+      }
     )
   }
 
@@ -135,7 +138,6 @@ export default class MainScreen extends React.Component<
   public render () {
     return (
       <View style={{ flex: 1 }}>
-        <StatusBar barStyle='light-content' />
         <ScrollView
           style={{
             backgroundColor: '#fff',
