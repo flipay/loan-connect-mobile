@@ -18,7 +18,7 @@ import DepositScreen from './screens/DepositScreen'
 import WithdrawalScreen from './screens/WithdrawalScreen'
 import ComparisonScreen from './screens/ComparisonScreen'
 // import ActivityScreen from './screens/ActivityScreen'
-import ProfileScreen from './screens/ProfileScreen'
+import AccountScreen from './screens/AccountScreen'
 import PinScreen from './screens/PinScreen'
 
 import { COLORS } from './constants'
@@ -76,8 +76,8 @@ const MainApp = createBottomTabNavigator(
     //     title: 'Activity'
     //   }
     // },
-    Profile: {
-      screen: ProfileScreen,
+    Account: {
+      screen: AccountScreen,
       navigationOptions: {
         title: 'Account'
       }
