@@ -17,18 +17,27 @@ export default class ProfileScreen extends React.Component<
   NavigationScreenProps,
   State
 > {
+  public constructor (props: NavigationScreenProps) {
+    super(props)
+    this.state = {
+      phoneNumber: null
+    }
+  }
+
+  private navListener: any = null
+
   public async componentDidMount () {
+    this.navListener = this.props.navigation.addListener('didFocus', () => {
+      StatusBar.setBarStyle('dark-content')
+    })
     const phoneNumber = await getPhoneNumber()
     this.setState({
       phoneNumber
     })
   }
 
-  public constructor (props: NavigationScreenProps) {
-    super(props)
-    this.state = {
-      phoneNumber: null
-    }
+  public componentWillUnmount () {
+    this.navListener.remove()
   }
 
   public onPressLine = () => {
@@ -83,8 +92,6 @@ export default class ProfileScreen extends React.Component<
   public render () {
     return (
       <View style={styles.screen}>
-        <StatusBar barStyle='dark-content' />
-
         <View style={styles.header}>
           <View style={styles.headerDetail}>
             <Text type='caption'>ACCOUNT</Text>
