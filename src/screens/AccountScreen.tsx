@@ -13,7 +13,7 @@ interface State {
   phoneNumber?: string | null
 }
 
-export default class ProfileScreen extends React.Component<
+export default class AccountScreen extends React.Component<
   NavigationScreenProps,
   State
 > {
