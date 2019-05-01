@@ -136,6 +136,7 @@ export default class MainScreen extends React.Component<
   }
 
   public onRefresh = async () => {
+    logEvent('main/pull-the-screen-to-reload')
     this.setState({ refreshing: true })
     await this.fetchData()
     this.setState({ refreshing: false })
