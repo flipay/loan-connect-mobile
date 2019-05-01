@@ -2,12 +2,12 @@ import * as React from 'react'
 import _ from 'lodash'
 import { View, StyleSheet, AsyncStorage } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
-import { Amplitude } from 'expo'
 import { setUpRequest, unlock } from './requests'
 import { checkLoginStatus, clearToken } from './secureStorage'
 import { isFirstRun, runFirstTime } from './asyncStorage'
 import { COLORS } from './constants/styleGuides'
 import { Text } from './components'
+import { logEvent } from './analytics'
 
 interface State {
   pin: string
@@ -45,7 +45,7 @@ export default class Start extends React.Component<
             this.goToMain(stackNavigationLogInPin)
           } catch (err) {
             stopLoading()
-            Amplitude.logEvent('unlock/wrong-pin')
+            logEvent('unlock/wrong-pin')
             setErrorConfirm('Wrong PIN')
             setTimeout(() => {
               clearPin()
@@ -59,7 +59,7 @@ export default class Start extends React.Component<
   }
 
   public goToMain (navigation: any) {
-    Amplitude.logEvent('unlock/successfully-login')
+    logEvent('unlock/successfully-unlock')
     navigation.navigate('Main')
   }
 

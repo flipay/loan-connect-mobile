@@ -1,6 +1,32 @@
 import { Amplitude, Constants } from 'expo'
 
-type Event = 'kak'
+type Event = 'open-the-app'
+  | 'welcome/press-create-account-or-login-button'
+  | 'authen/submit-phone-number'
+  | 'authen/press-back-button'
+  | 'verify-phone-number/timeout'
+  | 'verify-phone-number/press-backspace'
+  | 'verify-phone-number/successfully-verified'
+  | 'verify-phone-number/sms-code-incorrect'
+  | 'verify-phone-number/press-resend-code-link'
+  | 'verify-phone-number/press-next-button'
+  | 'verify-phone-number/press-boxes'
+  | 'verify-phone-number/press-back-button'
+  | 'create-pin/finish-creating-pin'
+  | 'confirm-pin/pin-match'
+  | 'confirm-pin/successfully-setting-pin'
+  | 'confirm-pin/error-setting-pin'
+  | 'confirm-pin/pin-does-not-match'
+  | 'unlock/wrong-pin'
+  | 'unlock/successfully-unlock'
+  | 'main/trade-button'
+  | 'main/close-asset-card'
+  | 'main/open-asset-card'
+  | 'comparison/press-close-button'
+  | 'deposit/press-back-button'
+  | 'trade/press-trade-box'
+  | 'trade/press-submit-button'
+  | 'trade/press-back-button'
 
 let isInitialized = false
 const apiKey = 'ca298c390e996d2d0ca61eeabf1a7756'
@@ -38,16 +64,11 @@ const maybeInitialize = () => {
 //   }
 // }
 
-const track = (event: Event, options: any = null) => {
+export const logEvent = (event: Event, options: any = null) => {
   maybeInitialize()
   if (options) {
     Amplitude.logEventWithProperties(event, options)
   } else {
     Amplitude.logEvent(event)
   }
-}
-
-export default {
-  track
-  // identify
 }

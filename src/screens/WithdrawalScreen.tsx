@@ -5,12 +5,12 @@ import {
 } from 'react-native'
 import _ from 'lodash'
 import { NavigationScreenProps } from 'react-navigation'
-import { Amplitude } from 'expo'
 import { Text, ScreenWithKeyboard, AssetBox, TextBox, Picker } from '../components'
 import { withdraw } from '../requests'
 import { toNumber, alert } from '../utils'
 import { ACCOUNT_ISSUERS } from '../constants'
 import { Issuer } from '../types'
+import { logEvent } from '../analytics'
 
 const boxes = ['amount', 'accountNumber', 'accountName']
 type Box = typeof boxes[number]
@@ -51,7 +51,7 @@ export default class WithdrawalScreen extends React.Component<
   }
 
   public onPressBackButton = () => {
-    Amplitude.logEvent('deposit/press-back-button')
+    logEvent('deposit/press-back-button')
     this.props.navigation.goBack()
   }
 

@@ -7,7 +7,7 @@ import {
   View,
   StyleSheet
 } from 'react-native'
-import { LinearGradient, Amplitude } from 'expo'
+import { LinearGradient } from 'expo'
 import { NavigationScreenProps } from 'react-navigation'
 import { Text, AssetCard, Button } from '../components'
 import { COLORS, ASSETS } from '../constants'
@@ -15,6 +15,7 @@ import { AssetId, Asset } from '../types'
 import { getPortfolio } from '../requests'
 import { hasEverDeposit } from '../asyncStorage'
 import { alert, toString } from '../utils'
+import { logevent } from '../analytics'
 
 interface State {
   selectedAsset?: AssetId | null
@@ -71,12 +72,12 @@ export default class MainScreen extends React.Component<
 
   public onPress = (assetId: AssetId) => {
     if (this.state.selectedAsset === assetId) {
-      Amplitude.logEventWithProperties('main/close-asset-card', {
+      logevent('main/close-asset-card', {
         assetId: assetId
       })
       this.setState({ selectedAsset: null })
     } else {
-      Amplitude.logEventWithProperties('main/open-asset-card', {
+      logevent('main/open-asset-card', {
         assetId: assetId
       })
       this.setState({ selectedAsset: assetId })

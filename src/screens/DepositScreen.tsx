@@ -1,12 +1,12 @@
 import * as React from 'react'
 import { View, StyleSheet, Image, TouchableOpacity, Linking } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
-import { Amplitude } from 'expo'
 import { AntDesign } from '@expo/vector-icons'
 import { Text, ScreenWithKeyboard, AssetBox, Value } from '../components'
 import { deposit } from '../requests'
 import { toNumber } from '../utils'
 import { COLORS, CONTACTS } from '../constants'
+import { logEvent } from '../analytics'
 
 interface State {
   amount: string
@@ -28,7 +28,7 @@ export default class DepositScreen extends React.Component<
   }
 
   public onPressBackButton = () => {
-    Amplitude.logEvent('deposit/press-back-button')
+    logEvent('deposit/press-back-button')
     this.props.navigation.goBack()
   }
 
