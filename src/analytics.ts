@@ -51,7 +51,7 @@ const apiKey = 'ca298c390e996d2d0ca61eeabf1a7756'
 
 function isProduction () {
   const releaseChannel = Constants.manifest.releaseChannel
-  return _.includes(releaseChannel, 'prod')
+  return _.includes(releaseChannel, 'default')
 }
 
 const initialize = () => {
@@ -68,19 +68,17 @@ const maybeInitialize = () => {
   }
 }
 
-// const identify = (id: ?string, options?: ?Object = null) => {
-//   maybeInitialize()
-//   options = normalizeTrackingOptions(options)
-
-//   if (id) {
-//     Amplitude.setUserId(id)
-//     if (options) {
-//       Amplitude.setUserProperties(options)
-//     }
-//   } else {
-//     Amplitude.clearUserProperties()
-//   }
-// }
+export function identify (id: string, options?: object) {
+  maybeInitialize()
+  if (id) {
+    Amplitude.setUserId(id)
+    if (options) {
+      Amplitude.setUserProperties(options)
+    }
+  } else {
+    Amplitude.clearUserProperties()
+  }
+}
 
 export function logEvent (event: Event, options: any = null) {
   maybeInitialize()
