@@ -15,7 +15,7 @@ import { AssetId, Asset } from '../types'
 import { getPortfolio } from '../requests'
 import { hasEverDeposit } from '../asyncStorage'
 import { alert, toString } from '../utils'
-import { logevent } from '../analytics'
+import { logEvent } from '../analytics'
 
 interface State {
   selectedAsset?: AssetId | null
@@ -72,12 +72,12 @@ export default class MainScreen extends React.Component<
 
   public onPress = (assetId: AssetId) => {
     if (this.state.selectedAsset === assetId) {
-      logevent('main/close-asset-card', {
+      logEvent('main/close-asset-card', {
         assetId: assetId
       })
       this.setState({ selectedAsset: null })
     } else {
-      logevent('main/open-asset-card', {
+      logEvent('main/open-asset-card', {
         assetId: assetId
       })
       this.setState({ selectedAsset: assetId })

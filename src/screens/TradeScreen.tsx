@@ -181,7 +181,10 @@ export default class TradeScreen extends React.Component<
   }
 
   public onClose = () => {
-    this.logEvent('press-back-button')
+    logEvent('trade/press-back-button', {
+      side: this.props.navigation.getParam('side'),
+      assetId: this.props.navigation.getParam('assetId')
+    })
     this.props.navigation.goBack()
   }
 
@@ -195,7 +198,10 @@ export default class TradeScreen extends React.Component<
 
     if (!flipayAmount) { return null }
 
-    this.logEvent('press-price-comparison-link')
+    logEvent('trade/press-price-comparison-link', {
+      side: this.props.navigation.getParam('side'),
+      assetId: this.props.navigation.getParam('assetId')
+    })
     this.props.navigation.navigate('Comparison', {
       side: this.props.navigation.getParam('side'),
       assetId: this.props.navigation.getParam('assetId'),
@@ -282,7 +288,10 @@ export default class TradeScreen extends React.Component<
   }
 
   public pressDone = () => {
-    this.logEvent('press-done-button')
+    logEvent('trade-result/press-done-button', {
+      side: this.props.navigation.getParam('side'),
+      assetId: this.props.navigation.getParam('assetId')
+    })
     this.props.navigation.goBack()
   }
 

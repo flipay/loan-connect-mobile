@@ -1,4 +1,5 @@
 import { Amplitude, Constants } from 'expo'
+import _ from 'lodash'
 
 type Event = 'open-the-app'
   | 'welcome/press-create-account-or-login-button'
@@ -27,13 +28,15 @@ type Event = 'open-the-app'
   | 'trade/press-trade-box'
   | 'trade/press-submit-button'
   | 'trade/press-back-button'
+  | 'trade/press-price-comparison-link'
+  | 'trade-result/press-done-button'
 
 let isInitialized = false
 const apiKey = 'ca298c390e996d2d0ca61eeabf1a7756'
 
 function isProduction () {
   const releaseChannel = Constants.manifest.releaseChannel
-  return releaseChannel.indexOf('prod') !== -1
+  return _.includes(releaseChannel, 'prod')
 }
 
 const initialize = () => {
@@ -64,7 +67,7 @@ const maybeInitialize = () => {
 //   }
 // }
 
-export const logEvent = (event: Event, options: any = null) => {
+export function logEvent (event: Event, options: any = null) {
   maybeInitialize()
   if (options) {
     Amplitude.logEventWithProperties(event, options)
