@@ -8,6 +8,7 @@ import { ASSETS, COMPETITOR_IDS } from './constants'
 import { setToken, getToken } from './secureStorage'
 import { setPhoneNumber, markFirstDepositAsDone } from './asyncStorage'
 import { getErrorCode, getErrorDetail, alert } from './utils'
+import { identify } from './analytics'
 
 let navigation: any
 let lockTimeout: any
@@ -102,6 +103,7 @@ export async function authen (phoneNumber: string) {
     }
   }
   if (response) {
+    identify(phoneNumber)
     setPhoneNumber(phoneNumber)
   }
   return response && response.data
