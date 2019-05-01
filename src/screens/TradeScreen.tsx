@@ -15,7 +15,7 @@ import { COLORS, ASSETS, THBAmountTypes } from '../constants'
 import { AssetId, OrderPart } from '../types'
 import { getAmount, order, getCompetitorTHBAmounts } from '../requests'
 import { toNumber, toString, getErrorCode, alert, calSaveAmount } from '../utils'
-import { Amplitude } from 'expo'
+import { logEvent } from '../analytics'
 
 type AssetBoxType = OrderPart
 
@@ -119,16 +119,12 @@ export default class TradeScreen extends React.Component<
     }
   }
 
-  public logEvent = (eventName: string, params?: object) => {
-    Amplitude.logEventWithProperties(`trade/${eventName}`, {
+  public onPressAssetBox = (assetBox: AssetBoxType) => {
+    logEvent('trade/press-asset-box', {
       side: this.props.navigation.getParam('side'),
       assetId: this.props.navigation.getParam('assetId'),
-      ...(params || {})
+      tradeSide: assetBox
     })
-  }
-
-  public onPressAssetBox = (assetBox: AssetBoxType) => {
-    this.logEvent('press-trade-box', { tradeSide: assetBox })
     if (assetBox !== this.state.activeAssetBox) {
       this.setState({
         activeAssetBox: assetBox
@@ -158,7 +154,10 @@ export default class TradeScreen extends React.Component<
   public execute = async () => {
     const side = this.props.navigation.getParam('side')
     const assetId = this.props.navigation.getParam('assetId')
-    this.logEvent('preee-submit-button')
+    logEvent('trade/press-submit-button', {
+      side: this.props.navigation.getParam('side'),
+      assetId: this.props.navigation.getParam('assetId')
+    })
     try {
       const { amount_give: tradeResultGive, amount_take: tradeResultTake } = await order(
         side === 'buy' ? 'THB' : assetId,
@@ -182,7 +181,10 @@ export default class TradeScreen extends React.Component<
   }
 
   public onClose = () => {
-    this.logEvent('press-back-button')
+    logEvent('trade/press-back-button', {
+      side: this.props.navigation.getParam('side'),
+      assetId: this.props.navigation.getParam('assetId')
+    })
     this.props.navigation.goBack()
   }
 
@@ -196,7 +198,10 @@ export default class TradeScreen extends React.Component<
 
     if (!flipayAmount) { return null }
 
-    this.logEvent('press-price-comparison-link')
+    logEvent('trade/press-price-comparison-link', {
+      side: this.props.navigation.getParam('side'),
+      assetId: this.props.navigation.getParam('assetId')
+    })
     this.props.navigation.navigate('Comparison', {
       side: this.props.navigation.getParam('side'),
       assetId: this.props.navigation.getParam('assetId'),
@@ -283,7 +288,10 @@ export default class TradeScreen extends React.Component<
   }
 
   public pressDone = () => {
-    this.logEvent('press-done-button')
+    logEvent('trade-result/press-done-button', {
+      side: this.props.navigation.getParam('side'),
+      assetId: this.props.navigation.getParam('assetId')
+    })
     this.props.navigation.goBack()
   }
 

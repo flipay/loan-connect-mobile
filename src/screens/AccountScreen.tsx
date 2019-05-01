@@ -8,6 +8,7 @@ import { lock } from '../requests'
 import { getPhoneNumber } from '../asyncStorage'
 import { Text, Record } from '../components'
 import { COLORS, CONTACTS } from '../constants'
+import { logEvent } from '../analytics'
 
 interface State {
   phoneNumber?: string | null
@@ -41,7 +42,13 @@ export default class AccountScreen extends React.Component<
   }
 
   public onPressLine = () => {
+    logEvent('account/press-contact-us-by-line')
     Linking.openURL(CONTACTS.LINE_LINK)
+  }
+
+  public onPressSignOut = () => {
+    logEvent('account/press-sign-out')
+    lock()
   }
 
   public renderLineRecord () {
@@ -80,7 +87,7 @@ export default class AccountScreen extends React.Component<
             {`${Constants.manifest.version} (Private Beta)`}
           </Text>
         </Record>
-        <TouchableOpacity onPress={lock} style={styles.error}>
+        <TouchableOpacity onPress={this.onPressSignOut} style={styles.error}>
           <Text type='headline' color={COLORS.R400}>
             Sign out
           </Text>

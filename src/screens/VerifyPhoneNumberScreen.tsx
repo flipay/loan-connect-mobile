@@ -1,13 +1,13 @@
 import * as React from 'react'
 import _ from 'lodash'
 import { View, SafeAreaView, TextInput, StyleSheet, TouchableOpacity } from 'react-native'
-import { Amplitude } from 'expo'
 import { AntDesign } from '@expo/vector-icons'
 import { NavigationScreenProps } from 'react-navigation'
 import { setUpPin, submitOtp } from '../requests'
 import { COLORS } from '../constants'
 import { Text, ScreenWithKeyboard, Layer, Link } from '../components'
 import { alert } from '../utils'
+import { logEvent } from '../analytics'
 
 type No = 0 | 1 | 2 | 3 | 4 | 5
 
@@ -58,7 +58,7 @@ export default class VerifyPhoneNumberScreen extends React.Component<
       prevState.timer === 1 &&
       this.state.timer === 0
     ) {
-      Amplitude.logEvent('verify-phone-number/timeout')
+      logEvent('verify-phone-number/timeout')
       if (this.input) {
         this.input.blur()
       }
@@ -77,7 +77,7 @@ export default class VerifyPhoneNumberScreen extends React.Component<
     firstPin: string,
     stackNavigationCreatePin: any
   ) => {
-    Amplitude.logEvent('create-pin/finish-creating-pin')
+    logEvent('create-pin/finish-creating-pin')
     stackNavigationCreatePin.push('Pin', {
       title: 'Confirm your PIN',
       onSuccess: async (
@@ -87,18 +87,18 @@ export default class VerifyPhoneNumberScreen extends React.Component<
         startLoading: () => void
       ) => {
         if (firstPin === secondPin) {
-          Amplitude.logEvent('confirm-pin/pin-match')
+          logEvent('confirm-pin/pin-match')
           try {
             startLoading()
             await setUpPin(this.accessToken, secondPin)
-            Amplitude.logEvent('confirm-pin/successfully-setting-pin')
+            logEvent('confirm-pin/successfully-setting-pin')
             stackNavigationConmfirmPin.navigate('Main')
           } catch (error) {
-            Amplitude.logEvent('confirm-pin/error-setting-pin')
+            logEvent('confirm-pin/error-setting-pin')
             setErrorConfirm(error.message)
           }
         } else {
-          Amplitude.logEvent('confirm-pin/pin-does-not-match')
+          logEvent('confirm-pin/pin-does-not-match')
           setErrorConfirm('The PIN does not match')
           setTimeout(() => {
             stackNavigationConmfirmPin.pop()
@@ -110,7 +110,7 @@ export default class VerifyPhoneNumberScreen extends React.Component<
 
   public onChangeText = async (text: string) => {
     if (text.length < this.state.otp.length) {
-      Amplitude.logEvent('verify-phone-number/press-backspace')
+      logEvent('verify-phone-number/press-backspace')
       this.setState({ errorMessage: '' })
     }
     this.setState({ otp: text })
@@ -122,13 +122,13 @@ export default class VerifyPhoneNumberScreen extends React.Component<
         this.setState({ loading: true })
         const { token } = await submitOtp(this.props.navigation.getParam('otpToken'), text)
         this.accessToken = token
-        Amplitude.logEvent('verify-phone-number/successfully-verified')
+        logEvent('verify-phone-number/successfully-verified')
         this.setState({ verified: true, loading: false })
       } catch (err) {
         let errorMessage = ''
         switch (err.response.status) {
           case 403:
-            Amplitude.logEvent('verify-phone-number/sms-code-incorrect')
+            logEvent('verify-phone-number/sms-code-incorrect')
             errorMessage = 'The code you entered is incorrect'
             break
           default:
@@ -143,7 +143,7 @@ export default class VerifyPhoneNumberScreen extends React.Component<
   }
 
   public onPressResend = () => {
-    Amplitude.logEvent('verify-phone-number/press-resend-code-link')
+    logEvent('verify-phone-number/press-resend-code-link')
     if (this.input) {
       this.input.focus()
       this.setState({
@@ -155,7 +155,7 @@ export default class VerifyPhoneNumberScreen extends React.Component<
   }
 
   public onNextStep = () => {
-    Amplitude.logEvent('verify-phone-number/press-next-button')
+    logEvent('verify-phone-number/press-next-button')
     this.props.navigation.navigate('Pin', {
       title: 'Create a PIN',
       onSuccess: this.navigateToConfirmPinScreen
@@ -163,7 +163,7 @@ export default class VerifyPhoneNumberScreen extends React.Component<
   }
 
   public onPressBoxes = () => {
-    Amplitude.logEvent('verify-phone-number/press-boxes')
+    logEvent('verify-phone-number/press-boxes')
     if (this.input) {
       this.input.focus()
     }
@@ -273,7 +273,7 @@ export default class VerifyPhoneNumberScreen extends React.Component<
   }
 
   public onPressBackButon = () => {
-    Amplitude.logEvent('verify-phone-number/press-back-button')
+    logEvent('verify-phone-number/press-back-button')
     this.props.navigation.goBack()
   }
 
