@@ -120,7 +120,7 @@ export default class TradeScreen extends React.Component<
   }
 
   public onPressAssetBox = (assetBox: AssetBoxType) => {
-    logEvent('trade/press-trade-box', {
+    logEvent('trade/press-asset-box', {
       side: this.props.navigation.getParam('side'),
       assetId: this.props.navigation.getParam('assetId'),
       tradeSide: assetBox
