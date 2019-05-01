@@ -1,10 +1,11 @@
 import * as React from 'react'
 import { Platform } from 'react-native'
-import { Font, Amplitude, AppLoading } from 'expo'
+import { AppLoading } from 'expo'
 import { createAppContainer } from 'react-navigation'
 import Sentry from 'sentry-expo'
 import preloadAssets from './preloadAsssets'
 import AppNavigator from './AppNavigator'
+import { logEvent } from './analytics'
 
 // NOTE: for testing Sentry locally
 // Sentry.enableInExpoDevelopment = true
@@ -30,8 +31,7 @@ export default class App extends React.Component<{}, State> {
     }
   }
   public componentDidMount () {
-    Amplitude.initialize('ca298c390e996d2d0ca61eeabf1a7756')
-    Amplitude.logEvent('open-the-app')
+    logEvent('open-the-app')
   }
 
   public async loadAssetsAsync () {

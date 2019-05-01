@@ -14,7 +14,7 @@ import Value from './Value'
 import Layer from './Layer'
 import { COLORS } from '../constants'
 import { AssetId } from '../types'
-import { Amplitude } from 'expo'
+import { logEvent } from '../analytics'
 
 interface Props {
   id: AssetId
@@ -69,15 +69,17 @@ export default class AssetCard extends React.Component<
   }
 
   public onPressDepositButton = () => {
+    logEvent('main/press-deposit-button')
     this.props.navigation.navigate('Deposit')
   }
 
   public onPressWithdrawButton = () => {
+    logEvent('main/press-withdraw-button')
     this.props.navigation.navigate('Withdrawal')
   }
 
   public onPressButton = (side: 'buy' | 'sell') => {
-    Amplitude.logEventWithProperties('main/trade-button', {
+    logEvent('main/press-trade-button', {
       assetId: this.props.id,
       side
     })

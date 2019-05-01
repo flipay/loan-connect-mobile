@@ -22,6 +22,7 @@ import AccountScreen from './screens/AccountScreen'
 import PinScreen from './screens/PinScreen'
 
 import { COLORS } from './constants'
+import { logEvent } from './analytics'
 
 const AuthStack = createStackNavigator(
   {
@@ -67,7 +68,11 @@ const MainApp = createBottomTabNavigator(
     Home: {
       screen: HomeStack,
       navigationOptions: {
-        title: 'Buy/Sell'
+        title: 'Buy/Sell',
+        tabBarOnPress: ({ navigation }: any) => {
+          logEvent('tab-bar/press-buy-sell-menu')
+          navigation.navigate('Home')
+        }
       }
     },
     // Activity: {
@@ -79,7 +84,11 @@ const MainApp = createBottomTabNavigator(
     Account: {
       screen: AccountScreen,
       navigationOptions: {
-        title: 'Account'
+        title: 'Account',
+        tabBarOnPress: ({ navigation }: any) => {
+          logEvent('tab-bar/press-account-menu')
+          navigation.navigate('Account')
+        }
       }
     }
   },

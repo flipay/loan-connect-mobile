@@ -7,7 +7,7 @@ import {
   View,
   StyleSheet
 } from 'react-native'
-import { LinearGradient, Amplitude } from 'expo'
+import { LinearGradient } from 'expo'
 import { NavigationScreenProps } from 'react-navigation'
 import { Text, AssetCard, Button } from '../components'
 import { COLORS, ASSETS } from '../constants'
@@ -15,6 +15,7 @@ import { AssetId, Asset } from '../types'
 import { getPortfolio } from '../requests'
 import { hasEverDeposit } from '../asyncStorage'
 import { alert, toString } from '../utils'
+import { logEvent } from '../analytics'
 
 interface State {
   selectedAsset?: AssetId | null
@@ -71,12 +72,12 @@ export default class MainScreen extends React.Component<
 
   public onPress = (assetId: AssetId) => {
     if (this.state.selectedAsset === assetId) {
-      Amplitude.logEventWithProperties('main/close-asset-card', {
+      logEvent('main/close-asset-card', {
         assetId: assetId
       })
       this.setState({ selectedAsset: null })
     } else {
-      Amplitude.logEventWithProperties('main/open-asset-card', {
+      logEvent('main/open-asset-card', {
         assetId: assetId
       })
       this.setState({ selectedAsset: assetId })
@@ -87,12 +88,17 @@ export default class MainScreen extends React.Component<
     return this.getSumBalance() === 0 && !this.state.hasDeposited
   }
 
+  public onPressDepositFromWelcomeMessage = () => {
+    logEvent('main/press-deposit-from-welcome-message')
+    this.props.navigation.navigate('Deposit')
+  }
+
   public renderWelcomeMessage () {
     return (
       <View style={styles.welcomeSection}>
         <Text color={COLORS.WHITE} style={styles.welcome}>Welcome to Flipay!</Text>
-        <Text type='title' color={COLORS.WHITE} style={styles.howMuch}>How much would you like to start investment?</Text>
-        <Button onPress={() => this.props.navigation.navigate('Deposit')}>Deposit your money</Button>
+        <Text type='title' color={COLORS.WHITE} style={styles.howMuch}>How much would you like to start the investment?</Text>
+        <Button onPress={this.onPressDepositFromWelcomeMessage}>Deposit your money</Button>
       </View>
     )
   }
@@ -130,6 +136,7 @@ export default class MainScreen extends React.Component<
   }
 
   public onRefresh = async () => {
+    logEvent('main/pull-the-screen-to-reload')
     this.setState({ refreshing: true })
     await this.fetchData()
     this.setState({ refreshing: false })
