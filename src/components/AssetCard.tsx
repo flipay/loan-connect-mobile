@@ -69,15 +69,17 @@ export default class AssetCard extends React.Component<
   }
 
   public onPressDepositButton = () => {
+    logEvent('main/press-deposit-button')
     this.props.navigation.navigate('Deposit')
   }
 
   public onPressWithdrawButton = () => {
+    logEvent('main/press-withdraw-button')
     this.props.navigation.navigate('Withdrawal')
   }
 
   public onPressButton = (side: 'buy' | 'sell') => {
-    logEvent('main/trade-button', {
+    logEvent('main/press-trade-button', {
       assetId: this.props.id,
       side
     })

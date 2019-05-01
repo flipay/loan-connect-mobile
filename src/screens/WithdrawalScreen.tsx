@@ -51,7 +51,7 @@ export default class WithdrawalScreen extends React.Component<
   }
 
   public onPressBackButton = () => {
-    logEvent('deposit/press-back-button')
+    logEvent('withdrawal/press-back-button')
     this.props.navigation.goBack()
   }
 
