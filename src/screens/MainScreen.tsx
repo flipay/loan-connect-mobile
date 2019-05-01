@@ -97,7 +97,7 @@ export default class MainScreen extends React.Component<
     return (
       <View style={styles.welcomeSection}>
         <Text color={COLORS.WHITE} style={styles.welcome}>Welcome to Flipay!</Text>
-        <Text type='title' color={COLORS.WHITE} style={styles.howMuch}>How much would you like to start investment?</Text>
+        <Text type='title' color={COLORS.WHITE} style={styles.howMuch}>How much would you like to start the investment?</Text>
         <Button onPress={this.onPressDepositFromWelcomeMessage}>Deposit your money</Button>
       </View>
     )
