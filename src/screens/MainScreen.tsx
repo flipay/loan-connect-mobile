@@ -88,12 +88,17 @@ export default class MainScreen extends React.Component<
     return this.getSumBalance() === 0 && !this.state.hasDeposited
   }
 
+  public onPressDepositFromWelcomeMessage = () => {
+    logEvent('main/press-deposit-from-welcome-message')
+    this.props.navigation.navigate('Deposit')
+  }
+
   public renderWelcomeMessage () {
     return (
       <View style={styles.welcomeSection}>
         <Text color={COLORS.WHITE} style={styles.welcome}>Welcome to Flipay!</Text>
         <Text type='title' color={COLORS.WHITE} style={styles.howMuch}>How much would you like to start investment?</Text>
-        <Button onPress={() => this.props.navigation.navigate('Deposit')}>Deposit your money</Button>
+        <Button onPress={this.onPressDepositFromWelcomeMessage}>Deposit your money</Button>
       </View>
     )
   }
