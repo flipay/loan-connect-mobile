@@ -2,8 +2,8 @@ import CryptoJS from 'crypto-js'
 import { Alert } from 'react-native'
 import { SecureStore } from 'expo'
 
-const ENCRYPTED_TOKEN = 'encrypted-token'
-const HASHED_TOKEN = 'hashed-token'
+const ENCRYPTED_TOKEN = 'flipay-encrypted-token'
+const HASHED_TOKEN = 'flipay-hashed-token'
 
 export async function checkLoginStatus () {
   const value = await SecureStore.getItemAsync(ENCRYPTED_TOKEN)
