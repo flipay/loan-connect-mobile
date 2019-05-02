@@ -308,7 +308,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   title: {
-    marginTop: 62
+    marginTop: 42
   },
   boxes: {
     marginTop: 24,
