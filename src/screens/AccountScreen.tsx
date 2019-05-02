@@ -119,7 +119,8 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     paddingHorizontal: 20,
-    paddingTop: 52
+    paddingTop: 52,
+    backgroundColor: COLORS.WHITE
   },
   header: {
     flexDirection: 'row',

@@ -2,38 +2,17 @@ import * as React from 'react'
 import { View, StyleSheet, Image, TouchableOpacity, Linking } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { AntDesign } from '@expo/vector-icons'
-import { Text, ScreenWithKeyboard, AssetBox, Value } from '../components'
-import { deposit } from '../requests'
-import { toNumber } from '../utils'
+import { Text, ScreenWithKeyboard } from '../components'
 import { COLORS, CONTACTS } from '../constants'
 import { logEvent } from '../analytics'
 
-interface State {
-  amount: string
-  active: boolean
-  amountChosen: boolean
-}
-
 export default class DepositScreen extends React.Component<
-  NavigationScreenProps,
-  State
+  NavigationScreenProps
 > {
-  public constructor (props: NavigationScreenProps) {
-    super(props)
-    this.state = {
-      amount: '',
-      active: true,
-      amountChosen: false
-    }
-  }
 
   public onPressBackButton = () => {
     logEvent('deposit/press-back-button')
     this.props.navigation.goBack()
-  }
-
-  public onPress = () => {
-    this.setState({ active: true })
   }
 
   public onChangeValue = (value: string) => {
@@ -41,12 +20,8 @@ export default class DepositScreen extends React.Component<
   }
 
   public onPressSubmit = async () => {
-    if (!this.state.amountChosen) {
-      this.setState({ amountChosen: true })
-    } else {
-      await deposit('THB', toNumber(this.state.amount))
-      this.props.navigation.goBack()
-    }
+    logEvent('deposit/press-done')
+    this.props.navigation.goBack()
   }
 
   public renderBullet (main: any, detail?: any) {
@@ -62,41 +37,35 @@ export default class DepositScreen extends React.Component<
 
   public renderFirstBullet () {
     return this.renderBullet(
-      <Text>
-        <Text color={COLORS.N700}>1. Transfer '</Text>
-        <Value assetId='THB' style={{ color: COLORS.N700 }}>
-          {toNumber(this.state.amount)}
-        </Value>
-        <Text color={COLORS.N700}>
-          ' cash in amount to following account.
-        </Text>
+      <Text color={COLORS.N700}>
+        1. Transfer your cash into the following account.
       </Text>
       ,
       <View style={styles.transferDetail}>
-      <View style={styles.depositBank}>
-        <Image
-          source={require('../img/bank_bbl.png')}
-          style={{ width: 20, height: 20 }}
-        />
-        <Text type='button' color={COLORS.N800} style={styles.bank}>
-          Bangkok Bank
-        </Text>
-      </View>
-      <View style={styles.transferDetailTable}>
-        <View style={styles.labelColumn}>
-          <Text color={COLORS.N600} style={styles.row}>
-            Acc No.
+        <View style={styles.depositBank}>
+          <Image
+            source={require('../img/bank_bbl.png')}
+            style={{ width: 20, height: 20 }}
+          />
+          <Text type='button' color={COLORS.N800} style={styles.bank}>
+            Bangkok Bank
           </Text>
-          <Text color={COLORS.N600}>Name</Text>
         </View>
-        <View>
-          <Text color={COLORS.N800} style={styles.row}>
-            855-0-51723-2
-          </Text>
-          <Text color={COLORS.N800}>นาย ภาณุมาชร์ อนันตชัยวณิช</Text>
+        <View style={styles.transferDetailTable}>
+          <View style={styles.labelColumn}>
+            <Text color={COLORS.N600} style={styles.row}>
+              Acc No.
+            </Text>
+            <Text color={COLORS.N600}>Name</Text>
+          </View>
+          <View>
+            <Text color={COLORS.N800} style={styles.row}>
+              855-0-51723-2
+            </Text>
+            <Text color={COLORS.N800}>นาย ภาณุมาชร์ อนันตชัยวณิช</Text>
+          </View>
         </View>
       </View>
-    </View>
     )
   }
 
@@ -136,7 +105,7 @@ export default class DepositScreen extends React.Component<
 
   public renderThirdBullet () {
     return this.renderBullet(
-     ' 3. Tab below ‘Request deposit’ button to finish the process. We will update your balance within 24 hours.'
+     ' 3. After that, we will update your balance within 24 hours.'
     )
   }
 
@@ -158,8 +127,7 @@ export default class DepositScreen extends React.Component<
       <ScreenWithKeyboard
         backButtonType='close'
         onPressBackButton={this.onPressBackButton}
-        activeSubmitButton={!!this.state.amount}
-        submitButtonText={this.state.amountChosen ? 'Request deposit' : 'Next'}
+        submitButtonText='Done'
         onPessSubmitButton={this.onPressSubmit}
         fullScreenLoading={false}
       >
@@ -168,19 +136,7 @@ export default class DepositScreen extends React.Component<
             <Text type='title' style={styles.title}>
               Deposit
             </Text>
-            {!this.state.amountChosen ? (
-              <AssetBox
-                autoFocus={autoFocus}
-                description='Deposit amount'
-                assetId='THB'
-                onPress={this.onPress}
-                onChangeValue={this.onChangeValue}
-                active={this.state.active}
-                value={this.state.amount}
-              />
-            ) : (
-              this.renderSteps()
-            )}
+            {this.renderSteps()}
           </View>
         )}
       </ScreenWithKeyboard>

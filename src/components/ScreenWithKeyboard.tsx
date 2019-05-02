@@ -76,50 +76,52 @@ export default class Screen extends React.Component<Props, State> {
           style={styles.screen}
           behavior='height'
         >
-          <SafeAreaView style={styles.screen}>
+          <SafeAreaView style={styles.safeAreaContainer}>
             <TouchableWithoutFeedback
-              style={styles.screen}
+              style={styles.safeArea}
               onPress={
                 this.props.disableTouchOutside ? _.noop : Keyboard.dismiss
               }
               accessible={false}
             >
-              <View style={styles.container}>
-                <StatusBar
-                  barStyle={
-                    this.props.statusBar === 'black'
-                      ? 'dark-content'
-                      : 'light-content'
-                  }
-                />
-                <ScrollView>
-                  {this.props.onPressBackButton && (
-                    <TouchableOpacity
-                      style={styles.backButton}
-                      onPress={this.props.onPressBackButton}
-                    >
-                      <AntDesign
-                        name={this.props.backButtonType}
-                        size={28}
-                        color={COLORS.N800}
-                      />
-                    </TouchableOpacity>
-                  )}
-                  <View style={styles.content}>
-                    {this.props.children(
-                      this.state.keyboardAvoidingViewKey ===
-                        DEFAULT_KEYBOARD_KEY
-                    )}
-                  </View>
-                </ScrollView>
-                {this.props.onPessSubmitButton && (
-                  <SubmitButton
-                    onPress={this.props.onPessSubmitButton}
-                    active={this.props.activeSubmitButton}
+              <View style={styles.safeArea}>
+                {this.props.onPressBackButton && (
+                  <TouchableOpacity
+                    style={styles.backButton}
+                    onPress={this.props.onPressBackButton}
                   >
-                    {this.props.submitButtonText || 'Next'}
-                  </SubmitButton>
+                    <AntDesign
+                      name={this.props.backButtonType}
+                      size={28}
+                      color={COLORS.N800}
+                    />
+                  </TouchableOpacity>
                 )}
+                <View style={styles.container}>
+                  <StatusBar
+                    barStyle={
+                      this.props.statusBar === 'black'
+                        ? 'dark-content'
+                        : 'light-content'
+                    }
+                  />
+                  <ScrollView>
+                    <View style={styles.content}>
+                      {this.props.children(
+                        this.state.keyboardAvoidingViewKey ===
+                          DEFAULT_KEYBOARD_KEY
+                      )}
+                    </View>
+                  </ScrollView>
+                  {this.props.onPessSubmitButton && (
+                    <SubmitButton
+                      onPress={this.props.onPessSubmitButton}
+                      active={this.props.activeSubmitButton}
+                    >
+                      {this.props.submitButtonText || 'Next'}
+                    </SubmitButton>
+                  )}
+                </View>
               </View>
             </TouchableWithoutFeedback>
             {this.props.fullScreenLoading && (
@@ -134,25 +136,31 @@ export default class Screen extends React.Component<Props, State> {
 
 const styles = StyleSheet.create({
   screen: {
-    flex: 1
+    flex: 1,
+    backgroundColor: COLORS.WHITE
+  },
+  safeAreaContainer: {
+    flex: 1,
+    marginTop: Platform.OS === 'android' ? Constants.statusBarHeight : 0
+  },
+  safeArea: {
+    flex: 1,
+    position: 'relative'
   },
   container: {
-    paddingTop: Constants.statusBarHeight,
+    paddingTop: 20,
     flex: 1,
-    justifyContent: 'space-between',
-    position: 'relative',
-    backgroundColor: COLORS.WHITE
+    justifyContent: 'space-between'
   },
   backButton: {
     zIndex: 1,
     position: 'absolute',
     left: 12,
-    top: 8,
+    top: 0,
     padding: 10
   },
   content: {
     flex: 1,
-    // paddingTop: 20,
     paddingHorizontal: 20
   }
 })
