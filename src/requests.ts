@@ -63,9 +63,13 @@ function setAuthorization (token: string) {
   setLockTimeout()
 }
 
-export async function setUpPin (token: string, pin: string) {
+export async function finalizeAuthenProcess (token: string, pin: string) {
   await setToken(token, pin)
   setAuthorization(token)
+  const response = await axios.get('users/me')
+  if (response && response.data) {
+    identify(response.data.uid)
+  }
 }
 
 export async function unlock (pin: string) {
@@ -103,7 +107,6 @@ export async function authen (phoneNumber: string) {
     }
   }
   if (response) {
-    identify(phoneNumber)
     setPhoneNumber(phoneNumber)
   }
   return response && response.data

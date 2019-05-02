@@ -3,7 +3,7 @@ import _ from 'lodash'
 import { View, SafeAreaView, TextInput, StyleSheet, TouchableOpacity } from 'react-native'
 import { AntDesign } from '@expo/vector-icons'
 import { NavigationScreenProps } from 'react-navigation'
-import { setUpPin, submitOtp } from '../requests'
+import { finalizeAuthenProcess, submitOtp } from '../requests'
 import { COLORS } from '../constants'
 import { Text, ScreenWithKeyboard, Layer, Link } from '../components'
 import { alert } from '../utils'
@@ -90,7 +90,7 @@ export default class VerifyPhoneNumberScreen extends React.Component<
           logEvent('confirm-pin/pin-match')
           try {
             startLoading()
-            await setUpPin(this.accessToken, secondPin)
+            await finalizeAuthenProcess(this.accessToken, secondPin)
             logEvent('confirm-pin/successfully-setting-pin')
             stackNavigationConmfirmPin.navigate('Main')
           } catch (error) {
