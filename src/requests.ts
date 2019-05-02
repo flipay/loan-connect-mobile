@@ -66,9 +66,11 @@ function setAuthorization (token: string) {
 export async function finalizeAuthenProcess (token: string, pin: string) {
   await setToken(token, pin)
   setAuthorization(token)
-  const response = await axios.get('users/me')
-  if (response && response.data) {
-    identify(response.data.uid)
+  const { data } = await axios.get('users/me')
+  if (data && data.data) {
+    const { uid, phone_number } = data.data
+    identify(uid, { phone_number })
+    setPhoneNumber('0' + phone_number.substring(2))
   }
 }
 
@@ -105,9 +107,6 @@ export async function authen (phoneNumber: string) {
       default:
         alert(signUpErr)
     }
-  }
-  if (response) {
-    setPhoneNumber(phoneNumber)
   }
   return response && response.data
 }
