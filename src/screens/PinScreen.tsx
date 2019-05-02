@@ -206,7 +206,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.R400
   },
   spacing: {
-    width: 32
+    width: 25
   },
   errorArea: {
     height: 24,
