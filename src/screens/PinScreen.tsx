@@ -12,7 +12,9 @@ interface State {
   loading: boolean
 }
 
-type Index = 0 | 1 | 2 | 3
+type Index = 0 | 1 | 2 | 3 | 4 | 5
+
+const pinLength = 6
 
 export default class PinScreen extends React.Component<
   NavigationScreenProps,
@@ -38,7 +40,7 @@ export default class PinScreen extends React.Component<
   }
 
   public async componentDidUpdate (prevProps: NavigationScreenProps, prevState: State) {
-    if (prevState.pin.length === 3 && this.state.pin.length === 4) {
+    if (prevState.pin.length === pinLength - 1 && this.state.pin.length === pinLength) {
       await this.props.navigation.getParam('onSuccess')(
         this.state.pin,
         this.props.navigation,
@@ -47,7 +49,7 @@ export default class PinScreen extends React.Component<
         () => this.setState({ loading: false }),
         () => this.setState({ pin: '' })
       )
-    } else if (prevState.pin.length === 4 && this.state.pin.length < 4 && this.state.errorMessage) {
+    } else if (prevState.pin.length === pinLength && this.state.pin.length < pinLength && this.state.errorMessage) {
       this.setState({ errorMessage: '' })
     }
   }
@@ -57,7 +59,7 @@ export default class PinScreen extends React.Component<
   }
 
   public onPressNum = (digit: number) => {
-    if (this.state.pin.length < 4) {
+    if (this.state.pin.length < pinLength) {
       this.setState({ pin: this.state.pin + String(digit) })
     }
   }
@@ -104,6 +106,10 @@ export default class PinScreen extends React.Component<
         {this.renderDot(2)}
         {this.renderSpacing()}
         {this.renderDot(3)}
+        {this.renderSpacing()}
+        {this.renderDot(4)}
+        {this.renderSpacing()}
+        {this.renderDot(5)}
       </View>
     )
   }
