@@ -153,6 +153,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   backButton: {
+    zIndex: 1,
     position: 'absolute',
     left: 12,
     top: 0,
