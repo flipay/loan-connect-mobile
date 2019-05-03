@@ -38,7 +38,7 @@ export function calSaveAmount (side: OrderType, amount: number, thbAmounts?: THB
   if (!thbAmounts) {
     return 0
   }
-  const amounts = _.map(thbAmounts)
+  const amounts = _.map(thbAmounts, (value) => Number(value))
   const validAmounts = _.filter(amounts, (value) => !isNaN(value))
   if (side === 'buy') {
     const worstAmount = _.max(validAmounts)
