@@ -21,6 +21,9 @@
         "mp4"
       ]
     },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "co.flipay.flipay",
