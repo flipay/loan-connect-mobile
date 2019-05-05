@@ -1,12 +1,13 @@
 import * as React from 'react'
 import _ from 'lodash'
-import { View, StyleSheet, AsyncStorage } from 'react-native'
-import { Updates, AppLoading } from 'expo'
+import { AsyncStorage } from 'react-native'
+import { Updates, Constants } from 'expo'
 import { NavigationScreenProps } from 'react-navigation'
 import { setUpRequest, unlock } from './requests'
 import { checkLoginStatus, clearToken } from './secureStorage'
 import { isFirstRun, runFirstTime } from './asyncStorage'
 import { logEvent } from './analytics'
+import { FullScreenLoading } from './components'
 import { alert } from './utils'
 
 interface State {
@@ -21,7 +22,7 @@ export default class Start extends React.Component<
   public constructor (props: NavigationScreenProps) {
     super(props)
     this.state = {
-      updating: true
+      updating: false
     }
   }
 
@@ -48,15 +49,19 @@ export default class Start extends React.Component<
       }
     })
 
-    try {
-      const { isAvailable } = await Updates.checkForUpdateAsync()
-      if (isAvailable) {
-        await Updates.fetchUpdateAsync()
-      } else {
-        this.run()
+    if (Constants.manifest.releaseChannel) { // Not dev mode
+      try {
+        const { isAvailable } = await Updates.checkForUpdateAsync()
+        if (isAvailable) {
+          await Updates.fetchUpdateAsync()
+        } else {
+          this.run()
+        }
+      } catch (err) {
+        alert(err)
       }
-    } catch (err) {
-      alert(err)
+    } else {
+      this.run()
     }
   }
 
@@ -102,6 +107,6 @@ export default class Start extends React.Component<
   }
 
   public render () {
-    return <View style={{ flex: 1, backgroundColor: 'red' }} />
+    return <FullScreenLoading visible={this.state.updating} />
   }
 }
