@@ -14,7 +14,13 @@ import {
 import { COLORS, ASSETS, THBAmountTypes } from '../constants'
 import { AssetId, OrderPart } from '../types'
 import { getAmount, order, getCompetitorTHBAmounts } from '../requests'
-import { toNumber, toString, getErrorCode, alert, calSaveAmount } from '../utils'
+import {
+  toNumber,
+  toString,
+  getErrorCode,
+  alert,
+  calSaveAmount
+} from '../utils'
 import { logEvent } from '../analytics'
 
 type AssetBoxType = OrderPart
@@ -77,9 +83,10 @@ export default class TradeScreen extends React.Component<
 
   public getAmount = async () => {
     const activeAssetBox = this.state.activeAssetBox
-    const initialValue = activeAssetBox === 'give'
-      ? this.state.giveAssetBoxValue
-      : this.state.takeAssetBoxValue
+    const initialValue =
+      activeAssetBox === 'give'
+        ? this.state.giveAssetBoxValue
+        : this.state.takeAssetBoxValue
     const num = toNumber(initialValue)
     let flipayResponseValue = '0'
     const side = this.props.navigation.getParam('side', 'buy')
@@ -96,7 +103,9 @@ export default class TradeScreen extends React.Component<
     const result = await getCompetitorTHBAmounts(
       this.props.navigation.getParam('side', 'buy'),
       this.props.navigation.getParam('assetId', 'BTC'),
-      this.props.navigation.getParam('side', 'buy') === 'buy' ? amount : toNumber(this.state.giveAssetBoxValue)
+      this.props.navigation.getParam('side', 'buy') === 'buy'
+        ? amount
+        : toNumber(this.state.giveAssetBoxValue)
     )
     if (this.mounted) {
       if (activeAssetBox === 'give') {
@@ -159,7 +168,10 @@ export default class TradeScreen extends React.Component<
       assetId: this.props.navigation.getParam('assetId')
     })
     try {
-      const { amount_give: tradeResultGive, amount_take: tradeResultTake } = await order(
+      const {
+        amount_give: tradeResultGive,
+        amount_take: tradeResultTake
+      } = await order(
         side === 'buy' ? 'THB' : assetId,
         side === 'buy' ? assetId : 'THB',
         toNumber(this.state.giveAssetBoxValue),
@@ -172,8 +184,17 @@ export default class TradeScreen extends React.Component<
       })
     } catch (err) {
       const code = getErrorCode(err)
-      if (code === 'insufficient_amount') {
-        Alert.alert(`You don't have enough fund.`)
+      if (code === 'insufficient_balance') {
+        const remainingBalance = this.props.navigation.getParam(
+          'remainingBalance',
+          0
+        )
+        Alert.alert(
+          `The balance is not enough. (remaining ${toString(
+            remainingBalance,
+            ASSETS[this.getGiveAsset()].decimal
+          )} ${ASSETS[this.getGiveAsset()].unit})`
+        )
       } else {
         alert(err)
       }
@@ -189,14 +210,18 @@ export default class TradeScreen extends React.Component<
   }
 
   public onPressPriceComparison = () => {
-    const cryptoAmount = this.props.navigation.getParam('side') === 'buy'
-      ? this.state.lastFetchSuccessfullyTakeAmount
-      : this.state.lastFetchSuccessfullyGiveAmount
-    const flipayAmount = this.props.navigation.getParam('side') === 'sell'
-      ? this.state.lastFetchSuccessfullyTakeAmount
-      : this.state.lastFetchSuccessfullyGiveAmount
+    const cryptoAmount =
+      this.props.navigation.getParam('side') === 'buy'
+        ? this.state.lastFetchSuccessfullyTakeAmount
+        : this.state.lastFetchSuccessfullyGiveAmount
+    const flipayAmount =
+      this.props.navigation.getParam('side') === 'sell'
+        ? this.state.lastFetchSuccessfullyTakeAmount
+        : this.state.lastFetchSuccessfullyGiveAmount
 
-    if (!flipayAmount) { return null }
+    if (!flipayAmount) {
+      return null
+    }
 
     logEvent('trade/press-price-comparison-link', {
       side: this.props.navigation.getParam('side'),
@@ -213,14 +238,20 @@ export default class TradeScreen extends React.Component<
 
   public isSubmitable = () => {
     return (
-      this.state.giveAssetBoxValue === this.state.lastFetchSuccessfullyGiveAmount &&
-      this.state.takeAssetBoxValue === this.state.lastFetchSuccessfullyTakeAmount
+      this.state.giveAssetBoxValue ===
+        this.state.lastFetchSuccessfullyGiveAmount &&
+      this.state.takeAssetBoxValue ===
+        this.state.lastFetchSuccessfullyTakeAmount
     )
   }
 
   public renderFooter () {
-    if (!this.state.lastFetchSuccessfullyGiveAmount) { return null }
-    if (!this.state.lastFetchSuccessfullyTakeAmount) { return null }
+    if (!this.state.lastFetchSuccessfullyGiveAmount) {
+      return null
+    }
+    if (!this.state.lastFetchSuccessfullyTakeAmount) {
+      return null
+    }
 
     const side = this.props.navigation.getParam('side', 'buy')
     const saved = calSaveAmount(
@@ -236,11 +267,15 @@ export default class TradeScreen extends React.Component<
           You save up to
           <Text color={COLORS.N800}>{` ${toString(saved, 2)} THB`}</Text>
         </Text>
-        <Link onPress={this.onPressPriceComparison}>
-          See price comparison
-        </Link>
+        <Link onPress={this.onPressPriceComparison}>See price comparison</Link>
       </View>
     )
+  }
+
+  public getGiveAsset () {
+    const side = this.props.navigation.getParam('side', 'buy')
+    const assetId: AssetId = this.props.navigation.getParam('assetId', 'BTC')
+    return side === 'buy' ? 'THB' : assetId
   }
 
   public renderTradeBody (autoFocus: boolean) {
@@ -256,9 +291,7 @@ export default class TradeScreen extends React.Component<
           {`${_.capitalize(side)} ${ASSETS[assetId].name}`}
         </Text>
         <Text type='body' color={COLORS.N500}>
-          <Value assetId={side === 'buy' ? 'THB' : assetId}>
-            {remainingBalance}
-          </Value>
+          <Value assetId={this.getGiveAsset()}>{remainingBalance}</Value>
           {` available`}
         </Text>
         <View style={styles.assetBoxesContainer}>
@@ -301,7 +334,9 @@ export default class TradeScreen extends React.Component<
       <ScreenWithKeyboard
         backButtonType='close'
         onPressBackButton={this.state.executed ? undefined : this.onClose}
-        submitButtonText={this.state.executed ? 'Done' : _.capitalize(orderType)}
+        submitButtonText={
+          this.state.executed ? 'Done' : _.capitalize(orderType)
+        }
         activeSubmitButton={this.isSubmitable()}
         onPessSubmitButton={this.state.executed ? this.pressDone : this.execute}
       >
@@ -311,8 +346,16 @@ export default class TradeScreen extends React.Component<
               <TradeResult
                 orderType={orderType}
                 assetId={this.props.navigation.getParam('assetId', 'BTC')}
-                cryptoAmount={orderType === 'buy' ? this.state.tradeResultTake : this.state.tradeResultGive}
-                thbAmount={orderType === 'sell' ? this.state.tradeResultTake : this.state.tradeResultGive}
+                cryptoAmount={
+                  orderType === 'buy'
+                    ? this.state.tradeResultTake
+                    : this.state.tradeResultGive
+                }
+                thbAmount={
+                  orderType === 'sell'
+                    ? this.state.tradeResultTake
+                    : this.state.tradeResultGive
+                }
               />
             ) : (
               this.renderTradeBody(autoFocus)
