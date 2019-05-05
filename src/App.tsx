@@ -6,10 +6,9 @@ import Sentry from 'sentry-expo'
 import preloadAssets from './preloadAsssets'
 import AppNavigator from './AppNavigator'
 import { logEvent } from './analytics'
-import { getErrorDetail } from './utils'
 
 // NOTE: for testing Sentry locally
-Sentry.enableInExpoDevelopment = true
+// Sentry.enableInExpoDevelopment = true
 Sentry.config(
   'https://7461bec2f42c41cdafde6f0048ac0047@sentry.io/1438488'
 ).install()
