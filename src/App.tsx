@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Platform } from 'react-native'
+import { Platform, NetInfo } from 'react-native'
 import { AppLoading, Updates, Constants } from 'expo'
 import { createAppContainer } from 'react-navigation'
 import Sentry from 'sentry-expo'
@@ -10,7 +10,9 @@ import { alert } from './utils'
 
 // NOTE: for testing Sentry locally
 // Sentry.enableInExpoDevelopment = true
-Sentry.config('https://7461bec2f42c41cdafde6f0048ac0047@sentry.io/1438488').install()
+Sentry.config(
+  'https://7461bec2f42c41cdafde6f0048ac0047@sentry.io/1438488'
+).install()
 
 // HACK: to make (number).toLocaleString to work correctly for Android
 if (Platform.OS === 'android') {
@@ -36,9 +38,13 @@ export default class App extends React.Component<{}, State> {
   }
 
   public async checkNewVersion () {
-    if (Constants.manifest.releaseChannel) { // Not dev mode
+    if (Constants.manifest.releaseChannel) {
       try {
         const { isAvailable } = await Updates.checkForUpdateAsync()
+        Sentry.captureException(Error(`the value of isAvailable = ${isAvailable}`))
+        const { type } = await NetInfo.getConnectionInfo()
+        Sentry.captureException(Error(`internet connection = ${type}`))
+
         if (isAvailable) {
           const { isNew } = await Updates.fetchUpdateAsync()
           if (isNew) {
@@ -53,19 +59,20 @@ export default class App extends React.Component<{}, State> {
     }
   }
 
-  public async loadAssetsAsync () {
+  public loadAssetsAsync = async () => {
     await this.checkNewVersion()
     await preloadAssets()
   }
 
   public render () {
-    return !this.state.isReady
-      ? (
-        <AppLoading
-          startAsync={this.loadAssetsAsync}
-          onFinish={() => this.setState({ isReady: true })}
-          onError={Sentry.captureException}
-        />
-      ) : <AppContainer />
+    return !this.state.isReady ? (
+      <AppLoading
+        startAsync={this.loadAssetsAsync}
+        onFinish={() => this.setState({ isReady: true })}
+        onError={Sentry.captureException}
+      />
+    ) : (
+      <AppContainer />
+    )
   }
 }
