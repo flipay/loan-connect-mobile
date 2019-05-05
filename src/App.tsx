@@ -1,15 +1,15 @@
 import * as React from 'react'
-import { Platform, NetInfo } from 'react-native'
+import { Platform, NetInfo, Alert } from 'react-native'
 import { AppLoading, Updates, Constants } from 'expo'
 import { createAppContainer } from 'react-navigation'
 import Sentry from 'sentry-expo'
 import preloadAssets from './preloadAsssets'
 import AppNavigator from './AppNavigator'
 import { logEvent } from './analytics'
-import { alert } from './utils'
+import { getErrorDetail } from './utils'
 
 // NOTE: for testing Sentry locally
-// Sentry.enableInExpoDevelopment = true
+Sentry.enableInExpoDevelopment = true
 Sentry.config(
   'https://7461bec2f42c41cdafde6f0048ac0047@sentry.io/1438488'
 ).install()
@@ -37,25 +37,39 @@ export default class App extends React.Component<{}, State> {
     logEvent('open-the-app')
   }
 
-  public async checkNewVersion () {
+  public postError (message: string) {
+    Alert.alert(
+      message,
+      'Please contact our customer support team',
+      [{ text: 'Reload the app', onPress: Updates.reload }],
+      { cancelable: false }
+    )
+  }
+
+  public checkNewVersion = async () => {
     if (Constants.manifest.releaseChannel) {
       try {
         const { isAvailable } = await Updates.checkForUpdateAsync()
-        Sentry.captureException(Error(`the value of isAvailable = ${isAvailable}`))
-        const { type } = await NetInfo.getConnectionInfo()
-        Sentry.captureException(Error(`internet connection = ${type}`))
-
         if (isAvailable) {
           const { isNew } = await Updates.fetchUpdateAsync()
           if (isNew) {
             Updates.reloadFromCache()
           } else {
-            alert(Error('Do not get a new version'))
+            const message = 'Could not get the new version of Flipay'
+            this.postError(message)
+            Sentry.captureException(Error(message))
           }
         }
       } catch (err) {
-        alert(err)
+        const { type } = await NetInfo.getConnectionInfo()
+        let errorMessage = 'Please connect to the internet.'
+        if (type !== 'none') {
+          errorMessage = 'Have a problem on updating new version of Flipay'
+          Sentry.captureException(err)
+        }
+        this.postError(errorMessage)
       }
+
     }
   }
 
