@@ -1,21 +1,14 @@
 import * as React from 'react'
 import _ from 'lodash'
-import { View, StyleSheet, AsyncStorage } from 'react-native'
+import { View, AsyncStorage } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { setUpRequest, unlock } from './requests'
 import { checkLoginStatus, clearToken } from './secureStorage'
 import { isFirstRun, runFirstTime } from './asyncStorage'
-import { COLORS } from './constants/styleGuides'
-import { Text } from './components'
 import { logEvent } from './analytics'
 
-interface State {
-  pin: string
-}
-
 export default class Start extends React.Component<
-  NavigationScreenProps,
-  State
+  NavigationScreenProps
 > {
   public async componentDidMount () {
     setUpRequest(this.props.navigation)
@@ -64,17 +57,6 @@ export default class Start extends React.Component<
   }
 
   public render () {
-    return (
-      <View style={styles.screen}>
-        <Text>nothing</Text>
-      </View>
-    )
+    return <View style={{ flex: 1 }} />
   }
 }
-
-const styles = StyleSheet.create({
-  screen: {
-    backgroundColor: COLORS.WHITE,
-    flex: 1
-  }
-})
