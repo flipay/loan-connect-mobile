@@ -1,11 +1,12 @@
 import * as React from 'react'
 import { Platform } from 'react-native'
-import { AppLoading } from 'expo'
+import { AppLoading, Updates, Constants } from 'expo'
 import { createAppContainer } from 'react-navigation'
 import Sentry from 'sentry-expo'
 import preloadAssets from './preloadAsssets'
 import AppNavigator from './AppNavigator'
 import { logEvent } from './analytics'
+import { alert } from './utils'
 
 // NOTE: for testing Sentry locally
 // Sentry.enableInExpoDevelopment = true
@@ -34,7 +35,26 @@ export default class App extends React.Component<{}, State> {
     logEvent('open-the-app')
   }
 
+  public async checkNewVersion () {
+    if (Constants.manifest.releaseChannel) { // Not dev mode
+      try {
+        const { isAvailable } = await Updates.checkForUpdateAsync()
+        if (isAvailable) {
+          const { isNew } = await Updates.fetchUpdateAsync()
+          if (isNew) {
+            Updates.reloadFromCache()
+          } else {
+            alert(Error('Do not get a new version'))
+          }
+        }
+      } catch (err) {
+        alert(err)
+      }
+    }
+  }
+
   public async loadAssetsAsync () {
+    await this.checkNewVersion()
     await preloadAssets()
   }
 
