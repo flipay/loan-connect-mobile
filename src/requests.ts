@@ -154,6 +154,7 @@ export async function getAmount (
   amount: number,
   provider: string
 ) {
+  if (amount === 0) { return 0 }
   const response = await axios.get(
     `/rates/${orderType === 'buy' ? 'THB' : assetId}/${
       orderType === 'sell' ? 'THB' : assetId
