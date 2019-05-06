@@ -246,10 +246,10 @@ export default class TradeScreen extends React.Component<
   }
 
   public renderFooter () {
-    if (!this.state.lastFetchSuccessfullyGiveAmount) {
+    if (!this.state.lastFetchSuccessfullyGiveAmount || !toNumber(this.state.lastFetchSuccessfullyGiveAmount)) {
       return null
     }
-    if (!this.state.lastFetchSuccessfullyTakeAmount) {
+    if (!this.state.lastFetchSuccessfullyTakeAmount || !toNumber(this.state.lastFetchSuccessfullyTakeAmount)) {
       return null
     }
 
