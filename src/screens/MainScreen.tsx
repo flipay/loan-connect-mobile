@@ -40,7 +40,6 @@ export default class MainScreen extends React.Component<
   private willFocusSubscription: any
 
   public componentDidMount () {
-    this.fetchData()
     this.willFocusSubscription = this.props.navigation.addListener(
       'willFocus',
       () => {
