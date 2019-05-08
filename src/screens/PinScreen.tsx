@@ -159,21 +159,27 @@ export default class PinScreen extends React.Component<
 
   public render () {
     return (
-      <View style={styles.screen}>
+      <View style={{ flex: 1 }}>
         <StatusBar barStyle='dark-content' />
         <FullScreenLoading visible={this.state.loading} />
-        <Image
-          style={{ width: 96, height: 35.6, marginTop: 72 }}
-          source={require('../img/flipay_horizontal_logo.png')}
-        />
-        <Text type='title' style={styles.title}>
-          {this.props.navigation.getParam('title', 'Create a PIN')}
-        </Text>
-        {this.renderDots()}
-        <View style={styles.errorArea}>
-          {!!this.state.errorMessage && this.renderErrorMessage()}
+        <View style={styles.screen}>
+          <View style={styles.content}>
+            <Image
+              style={{ width: 96, height: 35.6 }}
+              source={require('../img/flipay_horizontal_logo.png')}
+            />
+            <Text type='title' style={styles.title}>
+              {this.props.navigation.getParam('title', 'Create a PIN')}
+            </Text>
+            <View>
+            {this.renderDots()}
+              <View style={styles.errorArea}>
+                {!!this.state.errorMessage && this.renderErrorMessage()}
+              </View>
+            </View>
+          </View>
+          {this.renderNumPad()}
         </View>
-        {this.renderNumPad()}
       </View>
     )
   }
@@ -184,13 +190,21 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.WHITE,
     flex: 1,
     alignItems: 'center',
-    marginHorizontal: 40
+    margin: 30,
+    marginTop: 50,
+    justifyContent: 'space-between'
   },
-  title: {
-    marginTop: 30
+  content: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'space-around'
+  },
+  dotsArea: {
+    paddingTop: 20,
+    alignItems: 'center'
   },
   dots: {
-    marginTop: 42,
+    paddingTop: 30,
     flexDirection: 'row'
   },
   dot: {
@@ -209,12 +223,12 @@ const styles = StyleSheet.create({
     width: 25
   },
   errorArea: {
-    height: 24,
-    marginTop: 20,
-    marginBottom: 35
+    height: 40
   },
   errorMessageRow: {
+    marginTop: 15,
     flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center'
   },
   closeIcon: {
