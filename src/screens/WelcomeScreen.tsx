@@ -76,7 +76,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   description: {
-    marginTop: 28
+    marginTop: 28,
+    textAlign: 'center'
   },
   button: {
     width: '100%',
