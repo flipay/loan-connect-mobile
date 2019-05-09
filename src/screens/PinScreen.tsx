@@ -1,6 +1,6 @@
 import * as React from 'react'
 import _ from 'lodash'
-import { View, Image, StatusBar, StyleSheet } from 'react-native'
+import { View, Image, StatusBar, StyleSheet, Dimensions } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { AntDesign, Ionicons } from '@expo/vector-icons'
 import { COLORS } from '../constants/styleGuides'
@@ -185,19 +185,23 @@ export default class PinScreen extends React.Component<
   }
 }
 
+const iPhoneX = Dimensions.get('window').height > 800
+const iPhone5 = Dimensions.get('window').height < 600
+
 const styles = StyleSheet.create({
   screen: {
     backgroundColor: COLORS.WHITE,
     flex: 1,
     alignItems: 'center',
     margin: 30,
-    marginTop: 50,
+    marginTop: iPhoneX ? 80 : 50,
     justifyContent: 'space-between'
   },
   content: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'space-around'
+    alignItems: 'center'
+  },
+  title: {
+    marginTop: iPhone5 ? 30 : 60
   },
   dotsArea: {
     paddingTop: 20,
