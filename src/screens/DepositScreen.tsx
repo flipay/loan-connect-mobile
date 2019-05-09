@@ -58,11 +58,11 @@ export default class DepositScreen extends React.Component<
             </Text>
             <Text color={COLORS.N600}>Name</Text>
           </View>
-          <View>
+          <View style={styles.detailColumn}>
             <Text color={COLORS.N800} style={styles.row}>
               855-0-51723-2
             </Text>
-            <Text color={COLORS.N800}>นาย ภาณุมาชร์ อนันตชัยวณิช</Text>
+            <Text color={COLORS.N800}>Mr Panumarch Anantachaiwanich</Text>
           </View>
         </View>
       </View>
@@ -177,6 +177,9 @@ const styles = StyleSheet.create({
   },
   labelColumn: {
     marginRight: 9
+  },
+  detailColumn: {
+    flex: 1
   },
   row: {
     marginBottom: 6
