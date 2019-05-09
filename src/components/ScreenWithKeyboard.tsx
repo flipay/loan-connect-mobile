@@ -158,8 +158,6 @@ const styles = StyleSheet.create({
     padding: 10
   },
   content: {
-    flex: 1,
-    paddingTop: 20,
-    paddingHorizontal: 20
+    padding: 20
   }
 })
