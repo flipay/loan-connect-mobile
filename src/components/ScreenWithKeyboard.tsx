@@ -85,18 +85,6 @@ export default class Screen extends React.Component<Props, State> {
               accessible={false}
             >
               <View style={styles.safeArea}>
-                {this.props.onPressBackButton && (
-                  <TouchableOpacity
-                    style={styles.backButton}
-                    onPress={this.props.onPressBackButton}
-                  >
-                    <AntDesign
-                      name={this.props.backButtonType}
-                      size={28}
-                      color={COLORS.N800}
-                    />
-                  </TouchableOpacity>
-                )}
                 <View style={styles.container}>
                   <StatusBar
                     barStyle={
@@ -106,6 +94,18 @@ export default class Screen extends React.Component<Props, State> {
                     }
                   />
                   <ScrollView>
+                    {this.props.onPressBackButton && (
+                      <TouchableOpacity
+                        style={styles.backButton}
+                        onPress={this.props.onPressBackButton}
+                      >
+                        <AntDesign
+                          name={this.props.backButtonType}
+                          size={28}
+                          color={COLORS.N800}
+                        />
+                      </TouchableOpacity>
+                    )}
                     <View style={styles.content}>
                       {this.props.children(
                         this.state.keyboardAvoidingViewKey ===
@@ -144,11 +144,9 @@ const styles = StyleSheet.create({
     marginTop: Platform.OS === 'android' ? Constants.statusBarHeight : 0
   },
   safeArea: {
-    flex: 1,
-    position: 'relative'
+    flex: 1
   },
   container: {
-    paddingTop: 20,
     flex: 1,
     justifyContent: 'space-between'
   },
@@ -161,6 +159,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+    paddingTop: 20,
     paddingHorizontal: 20
   }
 })
