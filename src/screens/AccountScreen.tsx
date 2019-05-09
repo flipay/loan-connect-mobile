@@ -54,7 +54,7 @@ export default class AccountScreen extends React.Component<
   public renderLineRecord () {
     return (
       <Record onPress={this.onPressLine}>
-        <View>
+        <View style={styles.contactLebel}>
           <View style={styles.lineFirstRow}>
             <View style={styles.lineLeftSide}>
               <Text type='headline'>Contact us</Text>
@@ -141,6 +141,9 @@ const styles = StyleSheet.create({
   },
   lineLeftSide: {
     flexDirection: 'row'
+  },
+  contactLebel: {
+    flex: 1
   },
   contactDetail: {
     flexDirection: 'row',
