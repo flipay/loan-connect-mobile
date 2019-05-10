@@ -18,6 +18,7 @@ import Link from './Link'
 import FullScreenLoading from './FullScreenLoading'
 import Record from './Record'
 import Activity from './Activity'
+import TransferModal from './TransferModal'
 
 export {
   AssetCard,
@@ -38,5 +39,6 @@ export {
   Link,
   FullScreenLoading,
   Record,
-  Activity
+  Activity,
+  TransferModal
 }

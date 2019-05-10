@@ -14,7 +14,6 @@ import Button from './Button'
 import Asset from './Asset'
 import Value from './Value'
 import Layer from './Layer'
-import Text from './Text'
 import { COLORS } from '../constants'
 import { AssetId } from '../types'
 import { logEvent } from '../analytics'
@@ -26,6 +25,7 @@ interface Props {
   price?: number
   expanded: boolean
   onPress: () => void
+  onPressTranferButton: () => void
 }
 
 interface State {
@@ -135,25 +135,11 @@ export default class AssetCard extends React.Component<
     )
   }
 
-  public onPressTransferButton = () => {
-    this.setState({
-      transferModalVisible: true
-    })
-  }
-
   public renderTransferButton () {
     return (
-      <TouchableOpacity onPress={this.onPressTransferButton} style={styles.transferButton}>
+      <TouchableOpacity onPress={this.props.onPressTranferButton} style={styles.transferButton}>
         <FontAwesome name='exchange' color={COLORS.P400} />
       </TouchableOpacity>
-    )
-  }
-
-  public renderTransferModal () {
-    return this.state.transferModalVisible && (
-      <Modal>
-        <Text>Modal Ja</Text>
-      </Modal>
     )
   }
 
@@ -172,7 +158,6 @@ export default class AssetCard extends React.Component<
               this.props.expanded && styles.expandedContainer
             ]}
           >
-            {this.renderTransferModal()}
             <Asset id={this.props.id} />
             {!this.props.expanded && (
               <View style={styles.rightSection}>

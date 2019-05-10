@@ -9,7 +9,7 @@ import {
 } from 'react-native'
 import { LinearGradient } from 'expo'
 import { NavigationScreenProps } from 'react-navigation'
-import { Text, AssetCard, Button } from '../components'
+import { Text, AssetCard, Button, TransferModal } from '../components'
 import { COLORS, ASSETS } from '../constants'
 import { AssetId, Asset } from '../types'
 import { getPortfolio } from '../requests'
@@ -22,6 +22,7 @@ interface State {
   assets: Array<Asset>
   refreshing: boolean
   hasDeposited: boolean
+  transferModalVisible: boolean
 }
 
 export default class MainScreen extends React.Component<
@@ -34,7 +35,8 @@ export default class MainScreen extends React.Component<
       selectedAsset: null,
       assets: [],
       refreshing: false,
-      hasDeposited: true
+      hasDeposited: true,
+      transferModalVisible: false
     }
   }
   private willFocusSubscription: any
@@ -141,6 +143,18 @@ export default class MainScreen extends React.Component<
     this.setState({ refreshing: false })
   }
 
+  public renderTransferModal () {
+    if (!this.state.transferModalVisible || !this.state.selectedAsset) { return null }
+    return (
+      <TransferModal
+        assetId={this.state.selectedAsset}
+        onPressDoposit={() => this.props.navigation.navigate('Deposit', { assetId: this.state.selectedAsset })}
+        onPressWithdraw={() => this.props.navigation.navigate('Deposit', { assetId: this.state.selectedAsset })}
+        onPressOutside={() => this.setState({ transferModalVisible: false })}
+      />
+    )
+  }
+
   public render () {
     return (
       <View style={{ flex: 1 }}>
@@ -179,6 +193,7 @@ export default class MainScreen extends React.Component<
                     expanded={expanded}
                     onPress={() => this.onPress(asset.id)}
                     navigation={this.props.navigation}
+                    onPressTranferButton={() => this.setState({ transferModalVisible: true })}
                   />
                   {index !== this.state.assets.length - 1 && (
                     <View
@@ -190,6 +205,7 @@ export default class MainScreen extends React.Component<
             })}
           </View>
         </ScrollView>
+        {this.renderTransferModal()}
       </View>
     )
   }
