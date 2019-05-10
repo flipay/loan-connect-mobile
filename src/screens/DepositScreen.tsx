@@ -2,9 +2,10 @@ import * as React from 'react'
 import { View, StyleSheet, Image, TouchableOpacity, Linking } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { AntDesign } from '@expo/vector-icons'
-import { Text, ScreenWithKeyboard } from '../components'
-import { COLORS, CONTACTS } from '../constants'
+import { Text, ScreenWithKeyboard, Button } from '../components'
+import { COLORS, CONTACTS, ASSETS } from '../constants'
 import { logEvent } from '../analytics'
+import { AssetId } from '../types'
 
 export default class DepositScreen extends React.Component<
   NavigationScreenProps
@@ -35,20 +36,26 @@ export default class DepositScreen extends React.Component<
     )
   }
 
+  public onPressCopyButton = () => {
+
+  }
+
   public renderFirstBullet () {
+    const assetId: AssetId = this.props.navigation.getParam('assetId', 'THB')
+    const assetName = ASSETS[assetId].name
     return this.renderBullet(
       <Text color={COLORS.N700}>
-        1. Transfer your cash into the following account.
+        {`1. Transfer your ${assetName} into the following ${assetId === 'THB' ? 'account' : 'wallet'}.`}
       </Text>
       ,
       <View style={styles.transferDetail}>
         <View style={styles.depositBank}>
           <Image
-            source={require('../img/bank_bbl.png')}
+            source={assetId === 'THB' ? require('../img/bank_bbl.png') : ASSETS[assetId].image}
             style={{ width: 20, height: 20 }}
           />
           <Text type='button' color={COLORS.N800} style={styles.bank}>
-            Bangkok Bank
+            {assetId === 'THB' ? 'Bangkok Bank' : `Flipay ${assetName} address`}
           </Text>
         </View>
         <View style={styles.transferDetailTable}>
@@ -65,6 +72,7 @@ export default class DepositScreen extends React.Component<
             <Text color={COLORS.N800}>Mr Panumarch Anantachaiwanich</Text>
           </View>
         </View>
+        <Button onPress={this.onPressCopyButton} style={styles.copyButton}>{`Copy ${assetId === 'THB' ? 'Acc No.' : 'Address' }`}</Button>
       </View>
     )
   }
@@ -110,10 +118,11 @@ export default class DepositScreen extends React.Component<
   }
 
   public renderSteps () {
+    const assetId: AssetId = this.props.navigation.getParam('assetId', 'THB')
     return (
       <View>
         <Text type='button' color={COLORS.N800}>
-          Please follow the following steps to deposit
+          {`Follow the steps below to deposit ${ASSETS[assetId].name}`}
         </Text>
         {this.renderFirstBullet()}
         {this.renderSecondBullet()}
@@ -171,6 +180,10 @@ const styles = StyleSheet.create({
   bank: {
     marginLeft: 10,
     marginBottom: 15
+  },
+  copyButton: {
+    marginTop: 8,
+    backgroundColor: COLORS.N300
   },
   transferDetailTable: {
     flexDirection: 'row'
