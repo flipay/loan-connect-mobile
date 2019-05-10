@@ -5,13 +5,16 @@ import {
   View,
   StyleSheet,
   Animated,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  TouchableOpacity,
+  Modal
 } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
 import Button from './Button'
 import Asset from './Asset'
 import Value from './Value'
 import Layer from './Layer'
+import Text from './Text'
 import { COLORS } from '../constants'
 import { AssetId } from '../types'
 import { logEvent } from '../analytics'
@@ -28,6 +31,7 @@ interface Props {
 interface State {
   cardHeight: Animated.Value
   cardHorizontalMargin: Animated.Value
+  transferModalVisible: boolean
 }
 
 export default class AssetCard extends React.Component<
@@ -38,7 +42,8 @@ export default class AssetCard extends React.Component<
     super(props)
     this.state = {
       cardHeight: new Animated.Value(80),
-      cardHorizontalMargin: new Animated.Value(12)
+      cardHorizontalMargin: new Animated.Value(12),
+      transferModalVisible: false
     }
   }
 
@@ -100,9 +105,12 @@ export default class AssetCard extends React.Component<
       </Value>
     ) : (
       <View style={styles.coinMainContent}>
-        <Value assetId={this.props.id} fontType='title'>
-          {this.props.amount}
-        </Value>
+        <View style={{ flexDirection: 'row' }}>
+          <Value assetId={this.props.id} fontType='title'>
+            {this.props.amount}
+          </Value>
+          {this.renderTransferButton()}
+        </View>
         <Value assetId='THB' fontType='body'>
           {(this.props.price || 0) * this.props.amount}
         </Value>
@@ -127,6 +135,28 @@ export default class AssetCard extends React.Component<
     )
   }
 
+  public onPressTransferButton = () => {
+    this.setState({
+      transferModalVisible: true
+    })
+  }
+
+  public renderTransferButton () {
+    return (
+      <TouchableOpacity onPress={this.onPressTransferButton} style={styles.transferButton}>
+        <FontAwesome name='exchange' color={COLORS.P400} />
+      </TouchableOpacity>
+    )
+  }
+
+  public renderTransferModal () {
+    return this.state.transferModalVisible && (
+      <Modal>
+        <Text>Modal Ja</Text>
+      </Modal>
+    )
+  }
+
   public render () {
     return (
       <TouchableWithoutFeedback onPress={this.props.onPress}>
@@ -142,6 +172,7 @@ export default class AssetCard extends React.Component<
               this.props.expanded && styles.expandedContainer
             ]}
           >
+            {this.renderTransferModal()}
             <Asset id={this.props.id} />
             {!this.props.expanded && (
               <View style={styles.rightSection}>
@@ -197,6 +228,18 @@ const styles = StyleSheet.create({
     width: 16,
     height: 16,
     marginRight: 8
+  },
+  transferButton: {
+    position: 'absolute',
+    right: -40,
+    marginLeft: 10,
+    backgroundColor: COLORS.N200,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 15,
+    width: 30,
+    height: 30,
+    color: COLORS.P400
   },
   upIcon: {
     position: 'absolute',
