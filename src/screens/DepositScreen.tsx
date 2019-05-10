@@ -1,23 +1,31 @@
 import * as React from 'react'
-import { View, StyleSheet, Image, TouchableOpacity, Linking } from 'react-native'
+import { View, StyleSheet, Image, TouchableOpacity, Linking, Clipboard } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { AntDesign } from '@expo/vector-icons'
 import { Text, ScreenWithKeyboard, Button } from '../components'
 import { COLORS, CONTACTS, ASSETS } from '../constants'
 import { logEvent } from '../analytics'
 import { AssetId } from '../types'
+import { alert } from '../utils'
+
+interface State {
+  copied: boolean
+}
 
 export default class DepositScreen extends React.Component<
-  NavigationScreenProps
+  NavigationScreenProps,
+  State
 > {
+  constructor (props: NavigationScreenProps) {
+    super(props)
+    this.state = {
+      copied: false
+    }
+  }
 
   public onPressBackButton = () => {
     logEvent('deposit/press-back-button')
     this.props.navigation.goBack()
-  }
-
-  public onChangeValue = (value: string) => {
-    this.setState({ amount: value })
   }
 
   public onPressSubmit = async () => {
@@ -31,18 +39,27 @@ export default class DepositScreen extends React.Component<
         <Text color={COLORS.N700} style={styles.bulletTitle}>
           {main}
         </Text>
-        {detail}
+        <View>
+          {detail}
+        </View>
       </View>
     )
   }
 
-  public onPressCopyButton = () => {
+  public onPressCopyButton = (address: string) => {
+    try {
+      Clipboard.setString(address)
+      this.setState({ copied: true })
+    } catch (err) {
+      alert(err)
+    }
 
   }
 
   public renderFirstBullet () {
     const assetId: AssetId = this.props.navigation.getParam('assetId', 'THB')
     const assetName = ASSETS[assetId].name
+    const addressType = assetId === 'THB' ? 'Acc No.' : 'Address'
     return this.renderBullet(
       <Text color={COLORS.N700}>
         {`1. Transfer your ${assetName} into the following ${assetId === 'THB' ? 'account' : 'wallet'}.`}
@@ -58,21 +75,27 @@ export default class DepositScreen extends React.Component<
             {assetId === 'THB' ? 'Bangkok Bank' : `Flipay ${assetName} address`}
           </Text>
         </View>
-        <View style={styles.transferDetailTable}>
-          <View style={styles.labelColumn}>
-            <Text color={COLORS.N600} style={styles.row}>
-              Acc No.
+        <View>
+          <View style={styles.addressRow}>
+            <Text color={COLORS.N600} style={styles.transferLabel}>
+              {addressType}
             </Text>
-            <Text color={COLORS.N600}>Name</Text>
+            <Text color={COLORS.N800} style={styles.transferValue}>
+              {ASSETS[assetId].address}
+            </Text>
           </View>
-          <View style={styles.detailColumn}>
-            <Text color={COLORS.N800} style={styles.row}>
-              855-0-51723-2
-            </Text>
-            <Text color={COLORS.N800}>Mr Panumarch Anantachaiwanich</Text>
+          <View style={styles.detailRow}>
+            <Text color={COLORS.N600} style={styles.transferLabel}>Name</Text>
+            <Text color={COLORS.N800} style={styles.transferValue}>Mr Panumarch Anantachaiwanich</Text>
           </View>
         </View>
-        <Button onPress={this.onPressCopyButton} style={styles.copyButton}>{`Copy ${assetId === 'THB' ? 'Acc No.' : 'Address' }`}</Button>
+        <Button
+          onPress={() => this.onPressCopyButton(ASSETS[assetId].address)}
+          inactive={this.state.copied}
+          style={styles.copyButton}
+        >
+          {this.state.copied ? 'Copied' : `Copy ${addressType}`}
+        </Button>
       </View>
     )
   }
@@ -185,13 +208,17 @@ const styles = StyleSheet.create({
     marginTop: 8,
     backgroundColor: COLORS.N300
   },
-  transferDetailTable: {
-    flexDirection: 'row'
-  },
-  labelColumn: {
+  addressRow: {
+    flexDirection: 'row',
     marginRight: 9
   },
-  detailColumn: {
+  detailRow: {
+    flexDirection: 'row'
+  },
+  transferLabel: {
+    width: 60
+  },
+  transferValue: {
     flex: 1
   },
   row: {
