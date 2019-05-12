@@ -11,4 +11,5 @@ export interface Asset {
   decimal: number
   amount?: number
   price?: number
+  address: string
 }

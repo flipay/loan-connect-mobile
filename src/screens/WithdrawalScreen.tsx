@@ -5,19 +5,19 @@ import {
 } from 'react-native'
 import _ from 'lodash'
 import { NavigationScreenProps } from 'react-navigation'
-import { Text, ScreenWithKeyboard, AssetBox, TextBox, Picker } from '../components'
+import { Text, ScreenWithKeyboard, AssetBox, TextBox, Picker, Value } from '../components'
 import { withdraw } from '../requests'
 import { toNumber, alert } from '../utils'
-import { ACCOUNT_ISSUERS } from '../constants'
-import { Issuer } from '../types'
+import { ACCOUNT_ISSUERS, COLORS, ASSETS } from '../constants'
+import { Issuer, AssetId } from '../types'
 import { logEvent } from '../analytics'
 
-const boxes = ['amount', 'accountNumber', 'accountName']
+const boxes = ['amount', 'address', 'accountName']
 type Box = typeof boxes[number]
 
 interface State {
   amount: string
-  accountNumber: string
+  address: string
   accountName: string
   accountIssuer?: Issuer
   activeBox: Box
@@ -33,7 +33,7 @@ export default class WithdrawalScreen extends React.Component<
     super(props)
     this.state = {
       amount: '',
-      accountNumber: '',
+      address: '',
       accountName: '',
       accountIssuer: 'kbank',
       activeBox: 'amount',
@@ -42,11 +42,18 @@ export default class WithdrawalScreen extends React.Component<
   }
 
   public isSubmitButtonActive = () => {
-    if (this.state.amount
-      && this.state.accountNumber
-      && this.state.accountName
-      && this.state.accountIssuer
-    ) { return true }
+    const assetId: AssetId = this.props.navigation.getParam('assetId', 'THB')
+    if (assetId === 'THB') {
+      if (this.state.amount
+        && this.state.address
+        && this.state.accountName
+        && this.state.accountIssuer
+      ) { return true }
+    } else {
+      if (this.state.amount
+        && this.state.address
+      ) { return true }
+    }
     return false
   }
 
@@ -60,9 +67,9 @@ export default class WithdrawalScreen extends React.Component<
     this.setState({ activeBox: 'amount' })
   }
 
-  public onPressAccountNumberBox = () => {
+  public onPressAddressBox = () => {
     logEvent('withdrawal/press-account-number-box')
-    this.setState({ activeBox: 'accountNumber' })
+    this.setState({ activeBox: 'address' })
   }
 
   public onPressAccountNameBox = () => {
@@ -76,7 +83,7 @@ export default class WithdrawalScreen extends React.Component<
     if (box === boxes[0]) {
       this.setState({ amount: value })
     } else if (box === boxes[1]) {
-      this.setState({ accountNumber: value })
+      this.setState({ address: value })
     } else if (box === boxes[2]) {
       this.setState({ accountName: value })
     }
@@ -87,9 +94,11 @@ export default class WithdrawalScreen extends React.Component<
     if (!this.state.submitted) {
       logEvent('withdrawal/press-submit-button')
       try {
+        const assetId: AssetId = this.props.navigation.getParam('assetId', 'THB')
         await withdraw(
+          assetId,
           toNumber(this.state.amount),
-          this.state.accountNumber,
+          this.state.address,
           this.state.accountName,
           this.state.accountIssuer
         )
@@ -108,7 +117,41 @@ export default class WithdrawalScreen extends React.Component<
     this.setState({ accountIssuer: value })
   }
 
+  public renderCashContent () {
+    return (
+      <View>
+        <TextBox
+          description='Account name'
+          onPress={this.onPressAccountNameBox}
+          onChangeValue={(value) => this.onChangeValue(boxes[2], value)}
+          active={this.state.activeBox === boxes[2]}
+          value={this.state.accountName}
+        />
+        <Text type='caption'>Account Issuer</Text>
+        <Picker
+          selectedValue={this.state.accountIssuer}
+          onValueChange={this.onSelectIssuer}
+          data={ACCOUNT_ISSUERS}
+        />
+      </View>
+    )
+  }
+
+  public renderResult () {
+    const assetId: AssetId = this.props.navigation.getParam('assetId', 'THB')
+    const addressType = assetId === 'THB' ? 'bank account' : `${ASSETS[assetId].name} address`
+    return (
+      <View style={styles.resultContainer}>
+        <Text type='title' style={styles.header}>{`Withdrawal ${ASSETS[assetId].name}`}</Text>
+        <Text>{`We’ll transfer to your ${addressType} within 24 hours. We may reach out to you by phone if we need more information.`}</Text>
+      </View>
+    )
+  }
+
   public render () {
+    const assetId: AssetId = this.props.navigation.getParam('assetId', 'THB')
+    const remainingBalance = this.props.navigation.getParam('remainingBalance')
+    const description = `${ASSETS[assetId].name} address`
     return (
       <ScreenWithKeyboard
         backButtonType='close'
@@ -119,45 +162,39 @@ export default class WithdrawalScreen extends React.Component<
         fullScreenLoading={false}
       >
         {(autoFocus: boolean) => (
-          <View style={styles.body}>
-            <Text type='title' style={styles.title}>Withdrawal</Text>
-            {!this.state.submitted
-              ? (
+          <View style={styles.container}>
+            {this.state.submitted
+              ? this.renderResult()
+              : (
                 <View>
-                  <AssetBox
-                    autoFocus={autoFocus}
-                    description='Withdrawal amount'
-                    assetId='THB'
-                    onPress={this.onPressAmountBox}
-                    onChangeValue={(value) => this.onChangeValue(boxes[0], value)}
-                    active={this.state.activeBox === boxes[0]}
-                    value={this.state.amount}
-                  />
-                  <TextBox
-                    description='Account number'
-                    placeholder='000000'
-                    onPress={this.onPressAccountNumberBox}
-                    onChangeValue={(value) => this.onChangeValue(boxes[1], value)}
-                    active={this.state.activeBox === boxes[1]}
-                    value={this.state.accountNumber}
-                    numberPad={true}
-                  />
-                  <TextBox
-                    description='Account name'
-                    onPress={this.onPressAccountNameBox}
-                    onChangeValue={(value) => this.onChangeValue(boxes[2], value)}
-                    active={this.state.activeBox === boxes[2]}
-                    value={this.state.accountName}
-                  />
-                  <Text type='caption'>Account Issuer</Text>
-                  <Picker
-                    selectedValue={this.state.accountIssuer}
-                    onValueChange={this.onSelectIssuer}
-                    data={ACCOUNT_ISSUERS}
-                  />
+                  <View style={styles.header}>
+                    <Text type='title'>{`Withdraw ${ASSETS[assetId].name}`}</Text>
+                    <Text type='body' color={COLORS.N500}>
+                      <Value assetId={assetId}>{remainingBalance}</Value>
+                      {` available`}
+                    </Text>
+                  </View>
+                  <View style={styles.content}>
+                    <AssetBox
+                      autoFocus={autoFocus}
+                      description='Withdrawal amount'
+                      assetId={assetId}
+                      onPress={this.onPressAmountBox}
+                      onChangeValue={(value) => this.onChangeValue(boxes[0], value)}
+                      active={this.state.activeBox === boxes[0]}
+                      value={this.state.amount}
+                    />
+                    <TextBox
+                      description={assetId === 'THB' ? 'Account number' : description}
+                      onPress={this.onPressAddressBox}
+                      onChangeValue={(value) => this.onChangeValue(boxes[1], value)}
+                      active={this.state.activeBox === boxes[1]}
+                      value={this.state.address}
+                      numberPad={true}
+                    />
+                    {assetId === 'THB' && this.renderCashContent()}
+                  </View>
                 </View>
-              ) : (
-                <Text>We’ll transfer to your bank account within 24 hours. We may reach out to you by phone if we need more information.</Text>
               )
             }
           </View>
@@ -168,12 +205,20 @@ export default class WithdrawalScreen extends React.Component<
 }
 
 const styles = StyleSheet.create({
-  body: {
+  container: {
     flex: 1,
     paddingTop: 20,
+    alignItems: 'center',
+    width: '100%'
+  },
+  resultContainer: {
     alignItems: 'center'
   },
-  title: {
+  header: {
+    alignItems: 'center',
     paddingBottom: 20
+  },
+  content: {
+    width: '100%'
   }
 })

@@ -5,7 +5,8 @@ import {
   View,
   StyleSheet,
   Animated,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  TouchableOpacity,
 } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
 import Button from './Button'
@@ -23,6 +24,7 @@ interface Props {
   price?: number
   expanded: boolean
   onPress: () => void
+  onPressTranferButton: () => void
 }
 
 interface State {
@@ -70,12 +72,15 @@ export default class AssetCard extends React.Component<
 
   public onPressDepositButton = () => {
     logEvent('main/press-deposit-button')
-    this.props.navigation.navigate('Deposit')
+    this.props.navigation.navigate('Deposit', { assetId: 'THB' })
   }
 
   public onPressWithdrawButton = () => {
     logEvent('main/press-withdraw-button')
-    this.props.navigation.navigate('Withdrawal')
+    this.props.navigation.navigate('Withdrawal', {
+      assetId: 'THB',
+      remainingBalance: this.props.amount
+    })
   }
 
   public onPressButton = (side: 'buy' | 'sell') => {
@@ -100,9 +105,12 @@ export default class AssetCard extends React.Component<
       </Value>
     ) : (
       <View style={styles.coinMainContent}>
-        <Value assetId={this.props.id} fontType='title'>
-          {this.props.amount}
-        </Value>
+        <View style={{ flexDirection: 'row' }}>
+          <Value assetId={this.props.id} fontType='title'>
+            {this.props.amount}
+          </Value>
+          {this.renderTransferButton()}
+        </View>
         <Value assetId='THB' fontType='body'>
           {(this.props.price || 0) * this.props.amount}
         </Value>
@@ -124,6 +132,14 @@ export default class AssetCard extends React.Component<
         <View style={styles.spacing} />
         <ActionBotton onPress={() => this.onPressButton('sell')}>Sell</ActionBotton>
       </View>
+    )
+  }
+
+  public renderTransferButton () {
+    return (
+      <TouchableOpacity onPress={this.props.onPressTranferButton} style={styles.transferButton}>
+        <FontAwesome name='exchange' color={COLORS.P200} />
+      </TouchableOpacity>
     )
   }
 
@@ -197,6 +213,17 @@ const styles = StyleSheet.create({
     width: 16,
     height: 16,
     marginRight: 8
+  },
+  transferButton: {
+    position: 'absolute',
+    right: -40,
+    marginLeft: 10,
+    backgroundColor: COLORS.N200,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 15,
+    width: 30,
+    height: 30
   },
   upIcon: {
     position: 'absolute',
