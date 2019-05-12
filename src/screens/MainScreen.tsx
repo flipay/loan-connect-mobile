@@ -136,6 +136,11 @@ export default class MainScreen extends React.Component<
     )
   }
 
+  public onPressTransferButton = (assetId: AssetId) => {
+    logEvent('main/press-transfer-button', { assetId })
+    this.setState({ transferModalVisible: true })
+  }
+
   public onRefresh = async () => {
     logEvent('main/pull-the-screen-to-reload')
     this.setState({ refreshing: true })
@@ -143,30 +148,43 @@ export default class MainScreen extends React.Component<
     this.setState({ refreshing: false })
   }
 
-  public onPressDeposit = () => {
-    this.setState({ transferModalVisible: false })
-    this.props.navigation.navigate('Deposit', { assetId: this.state.selectedAsset })
+  public onPressDeposit = (assetId: AssetId) => {
+    return () => {
+      logEvent('main/press-deposit-button-on-tranfer-modal', { assetId })
+      this.setState({ transferModalVisible: false })
+      this.props.navigation.navigate('Deposit', { assetId: this.state.selectedAsset })
+    }
   }
 
-  public onPressWithdraw = (remainingBalance: number) => {
-    this.setState({ transferModalVisible: false })
-    this.props.navigation.navigate('Withdrawal', {
-      assetId: this.state.selectedAsset,
-      remainingBalance
-    })
+  public onPressWithdraw = (remainingBalance: number, assetId: AssetId) => {
+    return () => {
+      logEvent('main/press-withdraw-button-on-tranfer-modal', { assetId })
+      this.setState({ transferModalVisible: false })
+      this.props.navigation.navigate('Withdrawal', {
+        assetId: this.state.selectedAsset,
+        remainingBalance
+      })
+    }
+  }
+
+  public onPressOutsideModal = (assetId: AssetId) => {
+    return () => {
+      logEvent('main/press-outside-tranfer-modal', { assetId })
+      this.setState({ transferModalVisible: false })
+    }
   }
 
   public renderTransferModal () {
-    if (!this.state.transferModalVisible || !this.state.selectedAsset) { return null }
-
+    if (!this.state.transferModalVisible) { return null }
+    if (!this.state.selectedAsset) { return null }
     const selectedAsset = _.find(this.state.assets, (asset) => asset.id === this.state.selectedAsset)
     if (!selectedAsset) { return null }
     return (
       <TransferModal
         assetId={this.state.selectedAsset}
-        onPressDeposit={this.onPressDeposit}
-        onPressWithdraw={() => this.onPressWithdraw(selectedAsset.amount || 0)}
-        onPressOutside={() => this.setState({ transferModalVisible: false })}
+        onPressDeposit={this.onPressDeposit(this.state.selectedAsset)}
+        onPressWithdraw={this.onPressWithdraw(selectedAsset.amount || 0, this.state.selectedAsset)}
+        onPressOutside={this.onPressOutsideModal(this.state.selectedAsset)}
       />
     )
   }
@@ -209,7 +227,7 @@ export default class MainScreen extends React.Component<
                     expanded={expanded}
                     onPress={() => this.onPress(asset.id)}
                     navigation={this.props.navigation}
-                    onPressTranferButton={() => this.setState({ transferModalVisible: true })}
+                    onPressTranferButton={() => this.onPressTransferButton(asset.id)}
                   />
                   {index !== this.state.assets.length - 1 && (
                     <View
