@@ -393,7 +393,7 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   footer: {
-    marginVertical: 20,
+    marginTop: 20,
     marginHorizontal: 50,
     alignItems: 'center'
   }
