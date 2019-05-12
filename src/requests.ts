@@ -194,6 +194,7 @@ export async function getCompetitorTHBAmounts (
       )
     } catch (err) {
       Sentry.captureException(err)
+      amount = getErrorCode(err)
     }
     return [providerId, amount]
   })
