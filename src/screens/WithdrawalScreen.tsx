@@ -190,7 +190,7 @@ export default class WithdrawalScreen extends React.Component<
                       onChangeValue={(value) => this.onChangeValue(boxes[1], value)}
                       active={this.state.activeBox === boxes[1]}
                       value={this.state.address}
-                      numberPad={true}
+                      numberPad={assetId === 'THB'}
                     />
                     {assetId === 'THB' && this.renderCashContent()}
                   </View>

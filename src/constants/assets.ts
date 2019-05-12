@@ -2,6 +2,8 @@ import { AssetId, Asset } from '../types'
 
 type AssetTypes = { [key in AssetId]: Asset }
 
+const etheruemBlockchainAddress = '0x9e1D9c3A2947D37f169113730da2026a113Ce78B'
+
 export const ASSETS: AssetTypes = {
   THB: {
     id: 'THB',
@@ -27,8 +29,17 @@ export const ASSETS: AssetTypes = {
     image: require('../img/icon_eth.png'),
     unit: 'ETH',
     decimal: 6,
-    address: '0x9e1D9c3A2947D37f169113730da2026a113Ce78B',
+    address: etheruemBlockchainAddress,
     order: 2
+  },
+  BNB: {
+    id: 'BNB',
+    name: 'Binance Coin',
+    image: require('../img/icon_binance.png'),
+    unit: 'BNB',
+    decimal: 5,
+    address: etheruemBlockchainAddress,
+    order: 3
   },
   OMG: {
     id: 'OMG',
@@ -36,7 +47,7 @@ export const ASSETS: AssetTypes = {
     image: require('../img/icon_omg.png'),
     unit: 'OMG',
     decimal: 4,
-    address: '0x9e1D9c3A2947D37f169113730da2026a113Ce78B',
-    order: 3
+    address: etheruemBlockchainAddress,
+    order: 4
   }
 }

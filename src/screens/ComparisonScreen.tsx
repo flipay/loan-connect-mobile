@@ -57,9 +57,11 @@ export default class ComparisonScreen extends React.Component<
           amount: _.round(flipayAmount)
         })
       } else {
+        const value = competitorAmounts[provider.id]
+        const amount = Number(value)
         return ({
           ...provider,
-          amount: _.round(competitorAmounts[provider.id])
+          amount: isNaN(amount) ? value : _.round(amount)
         })
       }
     })
@@ -78,7 +80,7 @@ export default class ComparisonScreen extends React.Component<
         ) : (
           <View style={styles.captionRow}>
             <MaterialCommunityIcons
-              name={side ? 'trending-up' : 'trending-down'}
+              name={side === 'buy' ? 'trending-up' : 'trending-down'}
               color='#FE4747'
               style={styles.downTrendIcon}
             />
@@ -92,6 +94,11 @@ export default class ComparisonScreen extends React.Component<
     )
   }
 
+  public renderInvalidCase (errorCode: string) {
+    const errorMessage = errorCode === 'maximum_exceeded' ? 'Insufficient Volume' : 'Unavailable'
+    return <Text type='caption' color={COLORS.N500}>{errorMessage}</Text>
+  }
+
   public renderRecord (data: FormattedRecord, index: number) {
     const image = data.image
     const source = resolveAssetSource(image)
@@ -99,9 +106,9 @@ export default class ComparisonScreen extends React.Component<
       <View style={styles.tableRecord} key={data.name}>
         <Image source={image} style={{ width: source.width / 2, height: source.height / 2 }} />
         <View style={styles.rightPartRecord}>
-          {isNaN(data.amount)
-            ? <Text type='caption' color={COLORS.N500}>Unavailable</Text>
-            : this.renderValidRecord(data, index)
+          {typeof data.amount === 'number'
+            ? this.renderValidRecord(data, index)
+            : this.renderInvalidCase(data.amount)
           }
         </View>
       </View>
@@ -113,11 +120,10 @@ export default class ComparisonScreen extends React.Component<
     }
     const roundedBestAmount = _.round(sortedRecords[0].amount)
     const formatedRecords = _.map(sortedRecords, record => {
-      const roundedAmount = _.round(record.amount)
+      const amount = record.amount
       return {
         ...record,
-        amount: roundedAmount,
-        difference: Math.abs(roundedAmount - roundedBestAmount)
+        difference: Math.abs(amount - roundedBestAmount)
       }
     })
     return (
@@ -175,7 +181,6 @@ export default class ComparisonScreen extends React.Component<
 
   public render () {
     const side = this.props.navigation.getParam('side', 'sell')
-    const flipayAmount = this.props.navigation.getParam('flipayAmount', 'sell')
     const structuredData = this.getStructuredData()
 
     // NOTE: _.sortBy will preserve the order the the value is the same
@@ -185,7 +190,7 @@ export default class ComparisonScreen extends React.Component<
       return record.amount * (side === 'sell' ? -1 : 1)
     })
     const best = sortedRecords[0]
-    const worst = _.findLast(sortedRecords, (record) => !isNaN(record.amount))
+    const worst = _.findLast(sortedRecords, (record) => (typeof record.amount === 'number'))
     if (!worst) { return null }
     return (
       <LinearGradient
@@ -198,7 +203,7 @@ export default class ComparisonScreen extends React.Component<
           <View style={styles.content}>
             <StatusBar barStyle='light-content' />
             <CloseButton onPress={this.onClose} color={COLORS.WHITE} />
-            {this.renderTitle(flipayAmount, worst.amount)}
+            {this.renderTitle()}
             {this.renderSubtitle(best)}
             {this.renderTable(sortedRecords)}
           </View>

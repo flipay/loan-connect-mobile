@@ -27,7 +27,7 @@ export default class Button extends React.Component<Props> {
 
 const styles = StyleSheet.create({
   container: {
-    height: 60,
+    height: 50,
     paddingHorizontal: 25,
     justifyContent: 'center',
     alignItems: 'center',

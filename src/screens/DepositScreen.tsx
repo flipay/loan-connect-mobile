@@ -84,10 +84,10 @@ export default class DepositScreen extends React.Component<
               {ASSETS[assetId].address}
             </Text>
           </View>
-          <View style={styles.detailRow}>
+          {assetId === 'THB' && <View style={styles.detailRow}>
             <Text color={COLORS.N600} style={styles.transferLabel}>Name</Text>
             <Text color={COLORS.N800} style={styles.transferValue}>Mr Panumarch Anantachaiwanich</Text>
-          </View>
+          </View>}
         </View>
         <Button
           onPress={() => this.onPressCopyButton(ASSETS[assetId].address)}
@@ -141,11 +141,10 @@ export default class DepositScreen extends React.Component<
   }
 
   public renderSteps () {
-    const assetId: AssetId = this.props.navigation.getParam('assetId', 'THB')
     return (
       <View>
         <Text type='button' color={COLORS.N800}>
-          Please follow the following steps
+          Please follow the following steps.
         </Text>
         {this.renderFirstBullet()}
         {this.renderSecondBullet()}
