@@ -145,7 +145,7 @@ export default class DepositScreen extends React.Component<
     return (
       <View>
         <Text type='button' color={COLORS.N800}>
-          {`Follow the steps below to deposit ${ASSETS[assetId].name}`}
+          Please follow the following steps
         </Text>
         {this.renderFirstBullet()}
         {this.renderSecondBullet()}
@@ -155,6 +155,8 @@ export default class DepositScreen extends React.Component<
   }
 
   public render () {
+    const assetId: AssetId = this.props.navigation.getParam('assetId', 'THB')
+
     return (
       <ScreenWithKeyboard
         backButtonType='close'
@@ -166,7 +168,7 @@ export default class DepositScreen extends React.Component<
         {(autoFocus: boolean) => (
           <View style={styles.body}>
             <Text type='title' style={styles.title}>
-              Deposit
+              {`Deposit ${ASSETS[assetId].name}`}
             </Text>
             {this.renderSteps()}
           </View>

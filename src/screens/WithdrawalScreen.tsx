@@ -5,11 +5,11 @@ import {
 } from 'react-native'
 import _ from 'lodash'
 import { NavigationScreenProps } from 'react-navigation'
-import { Text, ScreenWithKeyboard, AssetBox, TextBox, Picker } from '../components'
+import { Text, ScreenWithKeyboard, AssetBox, TextBox, Picker, Value } from '../components'
 import { withdraw } from '../requests'
 import { toNumber, alert } from '../utils'
-import { ACCOUNT_ISSUERS } from '../constants'
-import { Issuer } from '../types'
+import { ACCOUNT_ISSUERS, COLORS, ASSETS } from '../constants'
+import { Issuer, AssetId } from '../types'
 import { logEvent } from '../analytics'
 
 const boxes = ['amount', 'accountNumber', 'accountName']
@@ -108,7 +108,19 @@ export default class WithdrawalScreen extends React.Component<
     this.setState({ accountIssuer: value })
   }
 
+  public renderResult () {
+    return (
+      <View>
+        <Text type='title' style={styles.title}>{`Withdrawal ${ASSETS[assetId].name}`}</Text>
+        <Text>We’ll transfer to your bank account within 24 hours. We may reach out to you by phone if we need more information.</Text>
+      </View>
+    )
+  }
+
   public render () {
+    const assetId: AssetId = this.props.navigation.getParam('assetId', 'THB')
+    const remainingBalance = this.props.navigation.getParam('remainingBalance')
+
     return (
       <ScreenWithKeyboard
         backButtonType='close'
@@ -119,45 +131,52 @@ export default class WithdrawalScreen extends React.Component<
         fullScreenLoading={false}
       >
         {(autoFocus: boolean) => (
-          <View style={styles.body}>
-            <Text type='title' style={styles.title}>Withdrawal</Text>
-            {!this.state.submitted
-              ? (
+          <View style={styles.container}>
+            {this.state.submitted
+              ? this.renderResult()
+              : (
                 <View>
-                  <AssetBox
-                    autoFocus={autoFocus}
-                    description='Withdrawal amount'
-                    assetId='THB'
-                    onPress={this.onPressAmountBox}
-                    onChangeValue={(value) => this.onChangeValue(boxes[0], value)}
-                    active={this.state.activeBox === boxes[0]}
-                    value={this.state.amount}
-                  />
-                  <TextBox
-                    description='Account number'
-                    placeholder='000000'
-                    onPress={this.onPressAccountNumberBox}
-                    onChangeValue={(value) => this.onChangeValue(boxes[1], value)}
-                    active={this.state.activeBox === boxes[1]}
-                    value={this.state.accountNumber}
-                    numberPad={true}
-                  />
-                  <TextBox
-                    description='Account name'
-                    onPress={this.onPressAccountNameBox}
-                    onChangeValue={(value) => this.onChangeValue(boxes[2], value)}
-                    active={this.state.activeBox === boxes[2]}
-                    value={this.state.accountName}
-                  />
-                  <Text type='caption'>Account Issuer</Text>
-                  <Picker
-                    selectedValue={this.state.accountIssuer}
-                    onValueChange={this.onSelectIssuer}
-                    data={ACCOUNT_ISSUERS}
-                  />
+                  <View style={styles.header}>
+                    <Text type='title'>{`Withdrawal ${ASSETS[assetId].name}`}</Text>
+                    <Text type='body' color={COLORS.N500}>
+                      <Value assetId={assetId}>{remainingBalance}</Value>
+                      {` available`}
+                    </Text>
+                  </View>
+                  <View>
+                    <AssetBox
+                      autoFocus={autoFocus}
+                      description='Withdrawal amount'
+                      assetId={assetId}
+                      onPress={this.onPressAmountBox}
+                      onChangeValue={(value) => this.onChangeValue(boxes[0], value)}
+                      active={this.state.activeBox === boxes[0]}
+                      value={this.state.amount}
+                    />
+                    <TextBox
+                      description='Account number'
+                      placeholder='000000'
+                      onPress={this.onPressAccountNumberBox}
+                      onChangeValue={(value) => this.onChangeValue(boxes[1], value)}
+                      active={this.state.activeBox === boxes[1]}
+                      value={this.state.accountNumber}
+                      numberPad={true}
+                    />
+                    <TextBox
+                      description='Account name'
+                      onPress={this.onPressAccountNameBox}
+                      onChangeValue={(value) => this.onChangeValue(boxes[2], value)}
+                      active={this.state.activeBox === boxes[2]}
+                      value={this.state.accountName}
+                    />
+                    <Text type='caption'>Account Issuer</Text>
+                    <Picker
+                      selectedValue={this.state.accountIssuer}
+                      onValueChange={this.onSelectIssuer}
+                      data={ACCOUNT_ISSUERS}
+                    />
+                  </View>
                 </View>
-              ) : (
-                <Text>We’ll transfer to your bank account within 24 hours. We may reach out to you by phone if we need more information.</Text>
               )
             }
           </View>
@@ -168,12 +187,13 @@ export default class WithdrawalScreen extends React.Component<
 }
 
 const styles = StyleSheet.create({
-  body: {
+  container: {
     flex: 1,
     paddingTop: 20,
     alignItems: 'center'
   },
-  title: {
+  header: {
+    alignItems: 'center',
     paddingBottom: 20
   }
 })

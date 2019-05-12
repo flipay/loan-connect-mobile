@@ -7,7 +7,6 @@ import {
   Animated,
   TouchableWithoutFeedback,
   TouchableOpacity,
-  Modal
 } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
 import Button from './Button'
@@ -73,12 +72,15 @@ export default class AssetCard extends React.Component<
 
   public onPressDepositButton = () => {
     logEvent('main/press-deposit-button')
-    this.props.navigation.navigate('Deposit')
+    this.props.navigation.navigate('Deposit', { assetId: 'THB' })
   }
 
   public onPressWithdrawButton = () => {
     logEvent('main/press-withdraw-button')
-    this.props.navigation.navigate('Withdrawal')
+    this.props.navigation.navigate('Withdrawal', {
+      assetId: 'THB',
+      remainingBalance: this.props.amount
+    })
   }
 
   public onPressButton = (side: 'buy' | 'sell') => {

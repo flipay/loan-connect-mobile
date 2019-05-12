@@ -148,18 +148,24 @@ export default class MainScreen extends React.Component<
     this.props.navigation.navigate('Deposit', { assetId: this.state.selectedAsset })
   }
 
-  public onPressWithdraw = () => {
+  public onPressWithdraw = (remainingBalance: number) => {
     this.setState({ transferModalVisible: false })
-    this.props.navigation.navigate('Withdrawal', { assetId: this.state.selectedAsset })
+    this.props.navigation.navigate('Withdrawal', {
+      assetId: this.state.selectedAsset,
+      remainingBalance
+    })
   }
 
   public renderTransferModal () {
     if (!this.state.transferModalVisible || !this.state.selectedAsset) { return null }
+
+    const selectedAsset = _.find(this.state.assets, (asset) => asset.id === this.state.selectedAsset)
+    if (!selectedAsset) { return null }
     return (
       <TransferModal
         assetId={this.state.selectedAsset}
         onPressDeposit={this.onPressDeposit}
-        onPressWithdraw={this.onPressWithdraw}
+        onPressWithdraw={() => this.onPressWithdraw(selectedAsset.amount || 0)}
         onPressOutside={() => this.setState({ transferModalVisible: false })}
       />
     )
