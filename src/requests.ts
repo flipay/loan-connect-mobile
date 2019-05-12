@@ -216,17 +216,27 @@ export async function deposit (assetId: AssetId, amount: number) {
 }
 
 export async function withdraw (
+  assetId: AssetId,
   amount: number,
-  accountNumber: string,
-  accountName: string,
-  accountIssuer: string
+  address: string,
+  accountName?: string,
+  accountIssuer?: string
 ) {
-  await axios.post('withdrawals', {
-    amount,
-    bank_account_number: accountNumber,
-    bank_account_name: accountName,
-    bank_account_issuer: accountIssuer
-  })
+  if (assetId === 'THB') {
+    await axios.post('withdrawals', {
+      asset: assetId,
+      amount,
+      bank_account_number: address,
+      bank_account_name: accountName,
+      bank_account_issuer: accountIssuer
+    })
+  } else {
+    await axios.post('withdrawals', {
+      asset: assetId,
+      amount,
+      address
+    })
+  }
 }
 
 export async function order (

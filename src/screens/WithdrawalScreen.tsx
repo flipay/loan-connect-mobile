@@ -94,7 +94,9 @@ export default class WithdrawalScreen extends React.Component<
     if (!this.state.submitted) {
       logEvent('withdrawal/press-submit-button')
       try {
+        const assetId: AssetId = this.props.navigation.getParam('assetId', 'THB')
         await withdraw(
+          assetId,
           toNumber(this.state.amount),
           this.state.address,
           this.state.accountName,
