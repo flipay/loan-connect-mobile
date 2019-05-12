@@ -139,10 +139,11 @@ export default class WithdrawalScreen extends React.Component<
 
   public renderResult () {
     const assetId: AssetId = this.props.navigation.getParam('assetId', 'THB')
+    const addressType = assetId === 'THB' ? 'bank account' : `${ASSETS[assetId].name} address`
     return (
       <View style={styles.resultContainer}>
         <Text type='title' style={styles.header}>{`Withdrawal ${ASSETS[assetId].name}`}</Text>
-        <Text>We’ll transfer to your bank account within 24 hours. We may reach out to you by phone if we need more information.</Text>
+        <Text>{`We’ll transfer to your ${addressType} within 24 hours. We may reach out to you by phone if we need more information.`}</Text>
       </View>
     )
   }
