@@ -30,6 +30,15 @@ export const ASSETS: AssetTypes = {
     address: '0x9e1D9c3A2947D37f169113730da2026a113Ce78B',
     order: 2
   },
+  BNB: {
+    id: 'BNB',
+    name: 'Binance Coin',
+    image: require('../img/icon_binance.png'),
+    unit: 'BNB',
+    decimal: 5,
+    address: '0x9e1D9c3A2947D37f169113730da2026a113Ce78B',
+    order: 3
+  },
   OMG: {
     id: 'OMG',
     name: 'OmiseGo',
@@ -37,6 +46,6 @@ export const ASSETS: AssetTypes = {
     unit: 'OMG',
     decimal: 4,
     address: '0x9e1D9c3A2947D37f169113730da2026a113Ce78B',
-    order: 3
+    order: 4
   }
 }

@@ -12,24 +12,30 @@ import { identify } from './analytics'
 
 let navigation: any
 let lockTimeout: any
+let btcPrice: any
 
 async function getMarketPrice (assetId: AssetId) {
   if (assetId === 'THB') { return 1 }
-  const bxAssetId: { [key in AssetId]: string } = {
-    THB: '',
-    BTC: '1',
-    ETH: '21',
-    OMG: '26'
-  }
   try {
-    const response = await axios.get(`trade/?pairing=${bxAssetId[assetId]}`, {
-      baseURL: 'https://bx.in.th/api/',
+    const response = await axios.get(`tickers?exchange=BX.in.th&pair=${assetId}-THB`, {
+      baseURL: 'https://api.coinstats.app/public/v1/',
       headers: ''
     })
-    const price = _.last(_.get(response, 'data.trades')).rate
-    return Number(price)
+    const price = response.data.tickers[0].price
+    if (assetId === 'BTC') {
+      btcPrice = price
+    }
+    return price
   } catch (err) {
-    return undefined
+    try {
+      const response = await axios.get(`tickers?exchange=Binance&pair=${assetId}-BTC`, {
+        baseURL: 'https://api.coinstats.app/public/v1/',
+        headers: ''
+      })
+      return response.data.tickers[0].price * btcPrice
+    } catch (err) {
+      return undefined
+    }
   }
 }
 
