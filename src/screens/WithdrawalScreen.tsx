@@ -137,13 +137,13 @@ export default class WithdrawalScreen extends React.Component<
               : (
                 <View>
                   <View style={styles.header}>
-                    <Text type='title'>{`Withdrawal ${ASSETS[assetId].name}`}</Text>
+                    <Text type='title'>{`Withdraw ${ASSETS[assetId].name}`}</Text>
                     <Text type='body' color={COLORS.N500}>
                       <Value assetId={assetId}>{remainingBalance}</Value>
                       {` available`}
                     </Text>
                   </View>
-                  <View>
+                  <View style={styles.content}>
                     <AssetBox
                       autoFocus={autoFocus}
                       description='Withdrawal amount'
@@ -190,10 +190,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 20,
-    alignItems: 'center'
+    alignItems: 'center',
+    width: '100%'
   },
   header: {
     alignItems: 'center',
     paddingBottom: 20
+  },
+  content: {
+    width: '100%'
   }
 })
