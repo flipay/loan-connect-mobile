@@ -6,13 +6,14 @@ import {
   StyleSheet,
   Animated,
   TouchableWithoutFeedback,
-  TouchableOpacity,
+  TouchableOpacity
 } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
 import Button from './Button'
 import Asset from './Asset'
 import Value from './Value'
 import Layer from './Layer'
+import Text from './Text'
 import { COLORS } from '../constants'
 import { AssetId } from '../types'
 import { logEvent } from '../analytics'
@@ -135,7 +136,7 @@ export default class AssetCard extends React.Component<
   public renderTransferButton () {
     return (
       <TouchableOpacity onPress={this.props.onPressTranferButton} style={styles.transferButton}>
-        <FontAwesome name='exchange' color={COLORS.P400} />
+        <Text color={COLORS.P400} style={{ fontFamily: 'flipay-icon' }}></Text>
       </TouchableOpacity>
     )
   }
