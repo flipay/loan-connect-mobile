@@ -31,7 +31,6 @@ interface Props {
 interface State {
   cardHeight: Animated.Value
   cardHorizontalMargin: Animated.Value
-  transferModalVisible: boolean
 }
 
 export default class AssetCard extends React.Component<
@@ -42,8 +41,7 @@ export default class AssetCard extends React.Component<
     super(props)
     this.state = {
       cardHeight: new Animated.Value(80),
-      cardHorizontalMargin: new Animated.Value(12),
-      transferModalVisible: false
+      cardHorizontalMargin: new Animated.Value(12)
     }
   }
 
@@ -138,7 +136,7 @@ export default class AssetCard extends React.Component<
   public renderTransferButton () {
     return (
       <TouchableOpacity onPress={this.props.onPressTranferButton} style={styles.transferButton}>
-        <FontAwesome name='exchange' color={COLORS.P400} />
+        <FontAwesome name='exchange' color={COLORS.P200} />
       </TouchableOpacity>
     )
   }
@@ -223,8 +221,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 15,
     width: 30,
-    height: 30,
-    color: COLORS.P400
+    height: 30
   },
   upIcon: {
     position: 'absolute',
