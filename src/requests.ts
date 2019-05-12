@@ -225,7 +225,8 @@ export async function withdraw (
     amount,
     bank_account_number: accountNumber,
     bank_account_name: accountName,
-    bank_account_issuer: accountIssuer
+    bank_account_issuer: accountIssuer,
+    asset: 'THB'
   })
 }
 
