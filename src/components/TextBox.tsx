@@ -15,6 +15,7 @@ interface Props {
   onPress: () => void
   onChangeValue: (value: string) => void
   active: boolean
+  autoCorrect?: boolean
   value?: string
   numberPad?: boolean
 }
@@ -50,6 +51,7 @@ export default class TextBox extends React.Component<Props> {
             value={this.props.value}
             keyboardType={this.props.numberPad ? 'decimal-pad' : 'default'}
             onFocus={this.props.onPress}
+            autoCorrect={this.props.autoCorrect}
           />
         </View>
       </Layer>
