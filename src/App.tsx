@@ -69,7 +69,7 @@ export default class App extends React.Component<{}, State> {
   }
 
   public fetchNewVersionIfAvailable = async () => {
-    const action = async () => {
+    const fetchNewVersion = async () => {
       const { isNew } = await Updates.fetchUpdateAsync()
       if (isNew) {
         Updates.reloadFromCache()
@@ -79,7 +79,7 @@ export default class App extends React.Component<{}, State> {
         Sentry.captureException(Error(message))
       }
     }
-    await this.checkNewVersion(action)
+    await this.checkNewVersion(fetchNewVersion)
   }
 
   public checkNewVersion = async (action: () => void) => {
