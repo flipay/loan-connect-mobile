@@ -52,12 +52,7 @@ export default class App extends React.Component<{}, State> {
       if (Constants.manifest.releaseChannel) {
         const { isAvailable } = await Updates.checkForUpdateAsync()
         if (isAvailable) {
-          Alert.alert(
-            'New Version Available',
-            'Please reload the app.',
-            [{ text: 'Reload', onPress: Updates.reload }],
-            { cancelable: false }
-          )
+          Updates.reload()
         }
       }
     }
