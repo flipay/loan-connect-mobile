@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   transferLabel: {
-    width: 60
+    marginRight: 10
   },
   transferValue: {
     flex: 1
