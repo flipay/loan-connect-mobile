@@ -122,6 +122,7 @@ export default class WithdrawalScreen extends React.Component<
       <View>
         <TextBox
           description='Account name'
+          autoCorrect={false} // Thai language doesn't handle autocomplete correctly
           onPress={this.onPressAccountNameBox}
           onChangeValue={(value) => this.onChangeValue(boxes[2], value)}
           active={this.state.activeBox === boxes[2]}

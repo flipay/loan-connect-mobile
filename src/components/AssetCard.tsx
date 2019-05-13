@@ -134,6 +134,7 @@ export default class AssetCard extends React.Component<
   }
 
   public renderTransferButton () {
+    if (this.props.id === 'THB') { return null }
     return (
       <TouchableOpacity onPress={this.props.onPressTranferButton} style={styles.transferButton}>
         <Text color={COLORS.P400} style={{ fontFamily: 'flipay-icon' }}></Text>
