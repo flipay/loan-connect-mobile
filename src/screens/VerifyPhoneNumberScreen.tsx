@@ -280,7 +280,6 @@ export default class VerifyPhoneNumberScreen extends React.Component<
   public render () {
     return (
       <ScreenWithKeyboard
-        disableTouchOutside={true}
         backButtonType='arrowleft'
         onPressBackButton={this.onPressBackButon}
         onPessSubmitButton={this.onNextStep}

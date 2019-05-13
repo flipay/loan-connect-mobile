@@ -26,7 +26,6 @@ interface Props {
   activeSubmitButton?: boolean
   submitButtonText?: string
   onPessSubmitButton?: () => void
-  disableTouchOutside?: boolean
   fullScreenLoading?: boolean
 }
 
@@ -77,53 +76,45 @@ export default class Screen extends React.Component<Props, State> {
           behavior='height'
         >
           <SafeAreaView style={styles.safeAreaContainer}>
-            <TouchableWithoutFeedback
-              style={styles.safeArea}
-              onPress={
-                this.props.disableTouchOutside ? _.noop : Keyboard.dismiss
-              }
-              accessible={false}
-            >
-              <View style={styles.safeArea}>
-                <View style={styles.container}>
-                  <StatusBar
-                    barStyle={
-                      this.props.statusBar === 'black'
-                        ? 'dark-content'
-                        : 'light-content'
-                    }
-                  />
-                  <ScrollView>
-                    {this.props.onPressBackButton && (
-                      <TouchableOpacity
-                        style={styles.backButton}
-                        onPress={this.props.onPressBackButton}
-                      >
-                        <AntDesign
-                          name={this.props.backButtonType}
-                          size={28}
-                          color={COLORS.N800}
-                        />
-                      </TouchableOpacity>
-                    )}
-                    <View style={styles.content}>
-                      {this.props.children(
-                        this.state.keyboardAvoidingViewKey ===
-                          DEFAULT_KEYBOARD_KEY
-                      )}
-                    </View>
-                  </ScrollView>
-                  {this.props.onPessSubmitButton && (
-                    <SubmitButton
-                      onPress={this.props.onPessSubmitButton}
-                      active={this.props.activeSubmitButton}
+            <View style={styles.safeArea}>
+              <View style={styles.container}>
+                <StatusBar
+                  barStyle={
+                    this.props.statusBar === 'black'
+                      ? 'dark-content'
+                      : 'light-content'
+                  }
+                />
+                <ScrollView>
+                  {this.props.onPressBackButton && (
+                    <TouchableOpacity
+                      style={styles.backButton}
+                      onPress={this.props.onPressBackButton}
                     >
-                      {this.props.submitButtonText || 'Next'}
-                    </SubmitButton>
+                      <AntDesign
+                        name={this.props.backButtonType}
+                        size={28}
+                        color={COLORS.N800}
+                      />
+                    </TouchableOpacity>
                   )}
-                </View>
+                  <View style={styles.content}>
+                    {this.props.children(
+                      this.state.keyboardAvoidingViewKey ===
+                        DEFAULT_KEYBOARD_KEY
+                    )}
+                  </View>
+                </ScrollView>
+                {this.props.onPessSubmitButton && (
+                  <SubmitButton
+                    onPress={this.props.onPessSubmitButton}
+                    active={this.props.activeSubmitButton}
+                  >
+                    {this.props.submitButtonText || 'Next'}
+                  </SubmitButton>
+                )}
               </View>
-            </TouchableWithoutFeedback>
+            </View>
             {this.props.fullScreenLoading && (
               <FullScreenLoading visible={this.props.fullScreenLoading} />
             )}

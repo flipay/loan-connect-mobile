@@ -9,7 +9,7 @@ import {
 } from 'react-native'
 import { LinearGradient } from 'expo'
 import { NavigationScreenProps } from 'react-navigation'
-import { Text, AssetCard, Button } from '../components'
+import { Text, AssetCard, Button, TransferModal } from '../components'
 import { COLORS, ASSETS } from '../constants'
 import { AssetId, Asset } from '../types'
 import { getPortfolio } from '../requests'
@@ -22,6 +22,7 @@ interface State {
   assets: Array<Asset>
   refreshing: boolean
   hasDeposited: boolean
+  transferModalVisible: boolean
 }
 
 export default class MainScreen extends React.Component<
@@ -34,7 +35,8 @@ export default class MainScreen extends React.Component<
       selectedAsset: null,
       assets: [],
       refreshing: false,
-      hasDeposited: true
+      hasDeposited: true,
+      transferModalVisible: false
     }
   }
   private willFocusSubscription: any
@@ -134,11 +136,57 @@ export default class MainScreen extends React.Component<
     )
   }
 
+  public onPressTransferButton = (assetId: AssetId) => {
+    logEvent('main/press-transfer-button', { assetId })
+    this.setState({ transferModalVisible: true })
+  }
+
   public onRefresh = async () => {
     logEvent('main/pull-the-screen-to-reload')
     this.setState({ refreshing: true })
     await this.fetchData()
     this.setState({ refreshing: false })
+  }
+
+  public onPressDeposit = (assetId: AssetId) => {
+    return () => {
+      logEvent('main/press-deposit-button-on-tranfer-modal', { assetId })
+      this.setState({ transferModalVisible: false })
+      this.props.navigation.navigate('Deposit', { assetId: this.state.selectedAsset })
+    }
+  }
+
+  public onPressWithdraw = (remainingBalance: number, assetId: AssetId) => {
+    return () => {
+      logEvent('main/press-withdraw-button-on-tranfer-modal', { assetId })
+      this.setState({ transferModalVisible: false })
+      this.props.navigation.navigate('Withdrawal', {
+        assetId: this.state.selectedAsset,
+        remainingBalance
+      })
+    }
+  }
+
+  public onPressOutsideModal = (assetId: AssetId) => {
+    return () => {
+      logEvent('main/press-outside-tranfer-modal', { assetId })
+      this.setState({ transferModalVisible: false })
+    }
+  }
+
+  public renderTransferModal () {
+    if (!this.state.transferModalVisible) { return null }
+    if (!this.state.selectedAsset) { return null }
+    const selectedAsset = _.find(this.state.assets, (asset) => asset.id === this.state.selectedAsset)
+    if (!selectedAsset) { return null }
+    return (
+      <TransferModal
+        assetId={this.state.selectedAsset}
+        onPressDeposit={this.onPressDeposit(this.state.selectedAsset)}
+        onPressWithdraw={this.onPressWithdraw(selectedAsset.amount || 0, this.state.selectedAsset)}
+        onPressOutside={this.onPressOutsideModal(this.state.selectedAsset)}
+      />
+    )
   }
 
   public render () {
@@ -179,6 +227,7 @@ export default class MainScreen extends React.Component<
                     expanded={expanded}
                     onPress={() => this.onPress(asset.id)}
                     navigation={this.props.navigation}
+                    onPressTranferButton={() => this.onPressTransferButton(asset.id)}
                   />
                   {index !== this.state.assets.length - 1 && (
                     <View
@@ -190,6 +239,7 @@ export default class MainScreen extends React.Component<
             })}
           </View>
         </ScrollView>
+        {this.renderTransferModal()}
       </View>
     )
   }

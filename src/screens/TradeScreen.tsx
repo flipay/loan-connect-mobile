@@ -261,6 +261,19 @@ export default class TradeScreen extends React.Component<
         : toNumber(this.state.lastFetchSuccessfullyTakeAmount),
       this.state.competitorThbAmounts
     )
+    let countError = 0
+    _.map(this.state.competitorThbAmounts, (amount) => {
+      if (isNaN(Number(amount))) { countError++ }
+    })
+    if (countError === _.map(this.state.competitorThbAmounts).length) {
+      return (
+        <View style={styles.footer}>
+          <Text color={COLORS.N500} style={{ textAlign: 'center' }}>
+            Flipay is the only provider having this pair and volume.
+          </Text>
+        </View>
+      )
+    }
     return (
       <View style={styles.footer}>
         <Text color={COLORS.N500}>
@@ -381,6 +394,7 @@ const styles = StyleSheet.create({
   },
   footer: {
     marginTop: 20,
+    marginHorizontal: 50,
     alignItems: 'center'
   }
 })

@@ -17,7 +17,8 @@ export default async function preloadAssets () {
 
   const fontPromise = Font.loadAsync({
     nunito: require('../assets/fonts/Nunito-Regular.ttf'),
-    'nunito-semibold': require('../assets/fonts/Nunito-Regular.ttf')
+    'nunito-semibold': require('../assets/fonts/Nunito-Regular.ttf'),
+    'flipay-icon': require('../assets/fonts/Flipay-Icon.ttf')
     // 'font-awesome': FontAwesome.font
   })
 

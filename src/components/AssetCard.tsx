@@ -5,13 +5,15 @@ import {
   View,
   StyleSheet,
   Animated,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  TouchableOpacity
 } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
 import Button from './Button'
 import Asset from './Asset'
 import Value from './Value'
 import Layer from './Layer'
+import Text from './Text'
 import { COLORS } from '../constants'
 import { AssetId } from '../types'
 import { logEvent } from '../analytics'
@@ -23,6 +25,7 @@ interface Props {
   price?: number
   expanded: boolean
   onPress: () => void
+  onPressTranferButton: () => void
 }
 
 interface State {
@@ -70,12 +73,15 @@ export default class AssetCard extends React.Component<
 
   public onPressDepositButton = () => {
     logEvent('main/press-deposit-button')
-    this.props.navigation.navigate('Deposit')
+    this.props.navigation.navigate('Deposit', { assetId: 'THB' })
   }
 
   public onPressWithdrawButton = () => {
     logEvent('main/press-withdraw-button')
-    this.props.navigation.navigate('Withdrawal')
+    this.props.navigation.navigate('Withdrawal', {
+      assetId: 'THB',
+      remainingBalance: this.props.amount
+    })
   }
 
   public onPressButton = (side: 'buy' | 'sell') => {
@@ -127,6 +133,15 @@ export default class AssetCard extends React.Component<
     )
   }
 
+  public renderTransferButton () {
+    if (this.props.id === 'THB') { return null }
+    return (
+      <TouchableOpacity onPress={this.props.onPressTranferButton} style={styles.transferButton}>
+        <Text color={COLORS.P400} style={{ fontFamily: 'flipay-icon' }}></Text>
+      </TouchableOpacity>
+    )
+  }
+
   public render () {
     return (
       <TouchableWithoutFeedback onPress={this.props.onPress}>
@@ -142,6 +157,7 @@ export default class AssetCard extends React.Component<
               this.props.expanded && styles.expandedContainer
             ]}
           >
+            {this.props.expanded && this.renderTransferButton()}
             <Asset id={this.props.id} />
             {!this.props.expanded && (
               <View style={styles.rightSection}>
@@ -173,6 +189,8 @@ export default class AssetCard extends React.Component<
   }
 }
 
+const paddingLeft = 20
+
 const styles = StyleSheet.create({
   expandedContainer: {
     flexDirection: 'column',
@@ -181,7 +199,7 @@ const styles = StyleSheet.create({
   },
   container: {
     height: '100%',
-    padding: 20,
+    padding: paddingLeft,
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between'
@@ -197,6 +215,17 @@ const styles = StyleSheet.create({
     width: 16,
     height: 16,
     marginRight: 8
+  },
+  transferButton: {
+    position: 'absolute',
+    left: paddingLeft,
+    top: 20,
+    backgroundColor: COLORS.N200,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 4,
+    width: 30,
+    height: 30
   },
   upIcon: {
     position: 'absolute',
