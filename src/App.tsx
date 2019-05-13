@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Platform, NetInfo, Alert } from 'react-native'
+import { Platform, NetInfo, Alert, AppState } from 'react-native'
 import { AppLoading, Updates, Constants } from 'expo'
 import { createAppContainer } from 'react-navigation'
 import Sentry from 'sentry-expo'
@@ -21,19 +21,47 @@ if (Platform.OS === 'android') {
 
 const AppContainer = createAppContainer(AppNavigator)
 
+type AppStateType = 'active' | 'background' | 'inactive'
+
 interface State {
   isReady: boolean
+  appState: AppStateType
 }
 
 export default class App extends React.Component<{}, State> {
   constructor (props: {}) {
     super(props)
     this.state = {
-      isReady: false
+      isReady: false,
+      appState: AppState.currentState
     }
   }
+
   public componentDidMount () {
     logEvent('open-the-app')
+    AppState.addEventListener('change', this.handleAppStateChange)
+
+  }
+
+  public componentWillUnmount () {
+    AppState.removeEventListener('change', this.handleAppStateChange)
+  }
+
+  public handleAppStateChange = async (nextAppState: AppStateType) => {
+    if (this.state.appState !== 'acitve' && nextAppState === 'active') {
+      if (Constants.manifest.releaseChannel) {
+        const { isAvailable } = await Updates.checkForUpdateAsync()
+        if (isAvailable) {
+          Alert.alert(
+            'New Version Available',
+            'Please reload the app.',
+            [{ text: 'Reload', onPress: Updates.reload }],
+            { cancelable: false }
+          )
+        }
+      }
+    }
+    this.setState({ appState: nextAppState })
   }
 
   public postError (message: string) {
