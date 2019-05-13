@@ -233,7 +233,6 @@ export default class VerifyPhoneNumberScreen extends React.Component<
             <Text color={COLORS.Y400}>{` ${this.state.timer}s`}</Text>
           </Text>
           {!!this.state.errorMessage && this.renderError(this.state.errorMessage)}
-          {!!this.state.errorMessage && this.renderResendLink()}
         </View>
       )
     } else {
