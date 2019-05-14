@@ -1,6 +1,6 @@
 import * as React from 'react'
 import _ from 'lodash'
-import { View, Image, StatusBar, StyleSheet } from 'react-native'
+import { View, Image, StatusBar, StyleSheet, Dimensions } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { AntDesign, Ionicons } from '@expo/vector-icons'
 import { COLORS } from '../constants/styleGuides'
@@ -12,7 +12,9 @@ interface State {
   loading: boolean
 }
 
-type Index = 0 | 1 | 2 | 3
+type Index = 0 | 1 | 2 | 3 | 4 | 5
+
+const pinLength = 6
 
 export default class PinScreen extends React.Component<
   NavigationScreenProps,
@@ -38,7 +40,7 @@ export default class PinScreen extends React.Component<
   }
 
   public async componentDidUpdate (prevProps: NavigationScreenProps, prevState: State) {
-    if (prevState.pin.length === 3 && this.state.pin.length === 4) {
+    if (prevState.pin.length === pinLength - 1 && this.state.pin.length === pinLength) {
       await this.props.navigation.getParam('onSuccess')(
         this.state.pin,
         this.props.navigation,
@@ -47,7 +49,7 @@ export default class PinScreen extends React.Component<
         () => this.setState({ loading: false }),
         () => this.setState({ pin: '' })
       )
-    } else if (prevState.pin.length === 4 && this.state.pin.length < 4 && this.state.errorMessage) {
+    } else if (prevState.pin.length === pinLength && this.state.pin.length < pinLength && this.state.errorMessage) {
       this.setState({ errorMessage: '' })
     }
   }
@@ -57,7 +59,7 @@ export default class PinScreen extends React.Component<
   }
 
   public onPressNum = (digit: number) => {
-    if (this.state.pin.length < 4) {
+    if (this.state.pin.length < pinLength) {
       this.setState({ pin: this.state.pin + String(digit) })
     }
   }
@@ -104,6 +106,10 @@ export default class PinScreen extends React.Component<
         {this.renderDot(2)}
         {this.renderSpacing()}
         {this.renderDot(3)}
+        {this.renderSpacing()}
+        {this.renderDot(4)}
+        {this.renderSpacing()}
+        {this.renderDot(5)}
       </View>
     )
   }
@@ -153,38 +159,56 @@ export default class PinScreen extends React.Component<
 
   public render () {
     return (
-      <View style={styles.screen}>
+      <View style={{ flex: 1 }}>
         <StatusBar barStyle='dark-content' />
         <FullScreenLoading visible={this.state.loading} />
-        <Image
-          style={{ width: 96, height: 35.6, marginTop: 72 }}
-          source={require('../img/flipay_horizontal_logo.png')}
-        />
-        <Text type='title' style={styles.title}>
-          {this.props.navigation.getParam('title', 'Create a PIN')}
-        </Text>
-        {this.renderDots()}
-        <View style={styles.errorArea}>
-          {!!this.state.errorMessage && this.renderErrorMessage()}
+        <View style={styles.screen}>
+          <View style={styles.content}>
+            <Image
+              style={{ width: 96, height: 35.6 }}
+              source={require('../img/flipay_horizontal_logo.png')}
+            />
+            <Text type='title' style={styles.title}>
+              {this.props.navigation.getParam('title', 'Create a PIN')}
+            </Text>
+            <View>
+            {this.renderDots()}
+              <View style={styles.errorArea}>
+                {!!this.state.errorMessage && this.renderErrorMessage()}
+              </View>
+            </View>
+          </View>
+          {this.renderNumPad()}
         </View>
-        {this.renderNumPad()}
       </View>
     )
   }
 }
+
+const iPhoneX = Dimensions.get('window').height > 800
+const iPhone5 = Dimensions.get('window').height < 600
 
 const styles = StyleSheet.create({
   screen: {
     backgroundColor: COLORS.WHITE,
     flex: 1,
     alignItems: 'center',
-    marginHorizontal: 40
+    margin: 30,
+    marginTop: iPhoneX ? 80 : 50,
+    justifyContent: 'space-between'
+  },
+  content: {
+    alignItems: 'center'
   },
   title: {
-    marginTop: 30
+    marginTop: iPhone5 ? 30 : 60
+  },
+  dotsArea: {
+    paddingTop: 20,
+    alignItems: 'center'
   },
   dots: {
-    marginTop: 42,
+    paddingTop: 30,
     flexDirection: 'row'
   },
   dot: {
@@ -200,15 +224,15 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.R400
   },
   spacing: {
-    width: 32
+    width: 25
   },
   errorArea: {
-    height: 24,
-    marginTop: 20,
-    marginBottom: 35
+    height: 40
   },
   errorMessageRow: {
+    marginTop: 15,
     flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center'
   },
   closeIcon: {

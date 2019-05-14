@@ -12,6 +12,7 @@ import {
   ScrollView,
   SafeAreaView
 } from 'react-native'
+import { Constants } from 'expo'
 import { AntDesign } from '@expo/vector-icons'
 import { COLORS } from '../constants'
 import SubmitButton from './SubmitButton'
@@ -25,7 +26,6 @@ interface Props {
   activeSubmitButton?: boolean
   submitButtonText?: string
   onPessSubmitButton?: () => void
-  disableTouchOutside?: boolean
   fullScreenLoading?: boolean
 }
 
@@ -75,14 +75,8 @@ export default class Screen extends React.Component<Props, State> {
           style={styles.screen}
           behavior='height'
         >
-          <SafeAreaView style={styles.screen}>
-            <TouchableWithoutFeedback
-              style={styles.screen}
-              onPress={
-                this.props.disableTouchOutside ? _.noop : Keyboard.dismiss
-              }
-              accessible={false}
-            >
+          <SafeAreaView style={styles.safeAreaContainer}>
+            <View style={styles.safeArea}>
               <View style={styles.container}>
                 <StatusBar
                   barStyle={
@@ -120,7 +114,7 @@ export default class Screen extends React.Component<Props, State> {
                   </SubmitButton>
                 )}
               </View>
-            </TouchableWithoutFeedback>
+            </View>
             {this.props.fullScreenLoading && (
               <FullScreenLoading visible={this.props.fullScreenLoading} />
             )}
@@ -133,24 +127,28 @@ export default class Screen extends React.Component<Props, State> {
 
 const styles = StyleSheet.create({
   screen: {
+    flex: 1,
+    backgroundColor: COLORS.WHITE
+  },
+  safeAreaContainer: {
+    flex: 1,
+    marginTop: Platform.OS === 'android' ? Constants.statusBarHeight : 0
+  },
+  safeArea: {
     flex: 1
   },
   container: {
     flex: 1,
-    justifyContent: 'space-between',
-    position: 'relative',
-    backgroundColor: COLORS.WHITE
+    justifyContent: 'space-between'
   },
   backButton: {
     zIndex: 1,
     position: 'absolute',
     left: 12,
-    top: 8,
+    top: 0,
     padding: 10
   },
   content: {
-    flex: 1,
-    // paddingTop: 20,
-    paddingHorizontal: 20
+    padding: 20
   }
 })

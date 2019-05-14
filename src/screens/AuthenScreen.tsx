@@ -1,9 +1,9 @@
 import * as React from 'react'
 import _ from 'lodash'
-import { Amplitude } from 'expo'
 import { NavigationScreenProps } from 'react-navigation'
 import { TextInput, StyleSheet, Keyboard, SafeAreaView } from 'react-native'
 import { authen } from '../requests'
+import { logEvent } from '../analytics'
 
 import { ScreenWithKeyboard, Text, Layer } from '../components'
 
@@ -27,7 +27,7 @@ export default class AuthenScreen extends React.Component<
   }
 
   public onPressSubmit = async () => {
-    Amplitude.logEvent('authen/submit-phone-number')
+    logEvent('authen/submit-phone-number')
     // NOTE: I have to close the Keyboard first otherwise
     // it will not work on the next page.
     Keyboard.dismiss()
@@ -47,7 +47,7 @@ export default class AuthenScreen extends React.Component<
   }
 
   public onPressBackButton = () => {
-    Amplitude.logEvent('authen/press-back-button')
+    logEvent('authen/press-back-button')
     this.props.navigation.goBack()
   }
 

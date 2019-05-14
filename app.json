@@ -5,7 +5,7 @@
     "slug": "flipay",
     "privacy": "unlisted",
     "sdkVersion": "32.0.0",
-    "version": "0.3.0",
+    "version": "0.4.1",
     "orientation": "portrait",
     "primaryColor": "#fff",
     "icon": "./assets/icons/app-icon.png",
@@ -20,6 +20,9 @@
         "ttf",
         "mp4"
       ]
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
     },
     "ios": {
       "supportsTablet": true,

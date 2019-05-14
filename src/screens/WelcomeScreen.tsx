@@ -7,16 +7,17 @@ import {
   StyleSheet
 } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
-import { LinearGradient, Amplitude, Asset } from 'expo'
+import { LinearGradient, Asset } from 'expo'
 import { Text } from '../components'
 import { COLORS } from '../constants'
+import { logEvent } from '../analytics' 
 
 export default class WelcomeScreen extends React.Component<
   NavigationScreenProps
 > {
 
   public onPressButton = () => {
-    Amplitude.logEvent('welcome/press-create-account-or-login-button')
+    logEvent('welcome/press-create-account-or-login-button')
     this.props.navigation.navigate('Authen')
   }
 
@@ -29,7 +30,7 @@ export default class WelcomeScreen extends React.Component<
           source={{ uri }}
         />
         <Text style={styles.description} color={COLORS.WHITE}>
-          Creating the Borderless world of Banking
+          Exchange cryptocurrencies at the best rate
         </Text>
       </View>
     )
@@ -75,7 +76,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   description: {
-    marginTop: 28
+    marginTop: 28,
+    textAlign: 'center'
   },
   button: {
     width: '100%',

@@ -8,27 +8,34 @@ import { ASSETS, COMPETITOR_IDS } from './constants'
 import { setToken, getToken } from './secureStorage'
 import { setPhoneNumber, markFirstDepositAsDone } from './asyncStorage'
 import { getErrorCode, getErrorDetail, alert } from './utils'
+import { identify } from './analytics'
 
 let navigation: any
 let lockTimeout: any
+let btcPrice: any
 
 async function getMarketPrice (assetId: AssetId) {
   if (assetId === 'THB') { return 1 }
-  const bxAssetId: { [key in AssetId]: string } = {
-    THB: '',
-    BTC: '1',
-    ETH: '21',
-    OMG: '26'
-  }
   try {
-    const response = await axios.get(`trade/?pairing=${bxAssetId[assetId]}`, {
-      baseURL: 'https://bx.in.th/api/',
+    const response = await axios.get(`tickers?exchange=BX.in.th&pair=${assetId}-THB`, {
+      baseURL: 'https://api.coinstats.app/public/v1/',
       headers: ''
     })
-    const price = _.last(_.get(response, 'data.trades')).rate
-    return Number(price)
+    const price = response.data.tickers[0].price
+    if (assetId === 'BTC') {
+      btcPrice = price
+    }
+    return price
   } catch (err) {
-    return undefined
+    try {
+      const response = await axios.get(`tickers?exchange=Binance&pair=${assetId}-BTC`, {
+        baseURL: 'https://api.coinstats.app/public/v1/',
+        headers: ''
+      })
+      return response.data.tickers[0].price * btcPrice
+    } catch (err) {
+      return undefined
+    }
   }
 }
 
@@ -62,9 +69,15 @@ function setAuthorization (token: string) {
   setLockTimeout()
 }
 
-export async function setUpPin (token: string, pin: string) {
+export async function finalizeAuthenProcess (token: string, pin: string) {
   await setToken(token, pin)
   setAuthorization(token)
+  const { data } = await axios.get('users/me')
+  if (data && data.data) {
+    const { uid, phone_number } = data.data
+    identify(uid, { phone_number })
+    setPhoneNumber('0' + phone_number.substring(2))
+  }
 }
 
 export async function unlock (pin: string) {
@@ -100,9 +113,6 @@ export async function authen (phoneNumber: string) {
       default:
         alert(signUpErr)
     }
-  }
-  if (response) {
-    setPhoneNumber(phoneNumber)
   }
   return response && response.data
 }
@@ -150,6 +160,7 @@ export async function getAmount (
   amount: number,
   provider: string
 ) {
+  if (amount === 0) { return 0 }
   const response = await axios.get(
     `/rates/${orderType === 'buy' ? 'THB' : assetId}/${
       orderType === 'sell' ? 'THB' : assetId
@@ -183,6 +194,7 @@ export async function getCompetitorTHBAmounts (
       )
     } catch (err) {
       Sentry.captureException(err)
+      amount = getErrorCode(err)
     }
     return [providerId, amount]
   })
@@ -211,17 +223,27 @@ export async function deposit (assetId: AssetId, amount: number) {
 }
 
 export async function withdraw (
+  assetId: AssetId,
   amount: number,
-  accountNumber: string,
-  accountName: string,
-  accountIssuer: string
+  address: string,
+  accountName?: string,
+  accountIssuer?: string
 ) {
-  await axios.post('withdrawals', {
-    amount,
-    bank_account_number: accountNumber,
-    bank_account_name: accountName,
-    bank_account_issuer: accountIssuer
-  })
+  if (assetId === 'THB') {
+    await axios.post('withdrawals', {
+      asset: assetId,
+      amount,
+      bank_account_number: address,
+      bank_account_name: accountName,
+      bank_account_issuer: accountIssuer
+    })
+  } else {
+    await axios.post('withdrawals', {
+      asset: assetId,
+      amount,
+      address
+    })
+  }
 }
 
 export async function order (

@@ -7,23 +7,17 @@ import { NavigationScreenProps } from 'react-navigation'
 import { lock } from '../requests'
 import { getPhoneNumber } from '../asyncStorage'
 import { Text, Record } from '../components'
-import { COLORS } from '../constants'
+import { COLORS, CONTACTS } from '../constants'
+import { logEvent } from '../analytics'
 
 interface State {
   phoneNumber?: string | null
 }
 
-export default class ProfileScreen extends React.Component<
+export default class AccountScreen extends React.Component<
   NavigationScreenProps,
   State
 > {
-  public async componentDidMount () {
-    const phoneNumber = await getPhoneNumber()
-    this.setState({
-      phoneNumber
-    })
-  }
-
   public constructor (props: NavigationScreenProps) {
     super(props)
     this.state = {
@@ -31,14 +25,36 @@ export default class ProfileScreen extends React.Component<
     }
   }
 
+  private navListener: any = null
+
+  public async componentDidMount () {
+    this.navListener = this.props.navigation.addListener('didFocus', () => {
+      StatusBar.setBarStyle('dark-content')
+    })
+    const phoneNumber = await getPhoneNumber()
+    this.setState({
+      phoneNumber
+    })
+  }
+
+  public componentWillUnmount () {
+    this.navListener.remove()
+  }
+
   public onPressLine = () => {
-    Linking.openURL('https://line.me/R/ti/p/@flipay')
+    logEvent('account/press-contact-us-by-line')
+    Linking.openURL(CONTACTS.LINE_LINK)
+  }
+
+  public onPressSignOut = () => {
+    logEvent('account/press-sign-out')
+    lock()
   }
 
   public renderLineRecord () {
     return (
       <Record onPress={this.onPressLine}>
-        <View>
+        <View style={styles.contactLebel}>
           <View style={styles.lineFirstRow}>
             <View style={styles.lineLeftSide}>
               <Text type='headline'>Contact us</Text>
@@ -71,7 +87,7 @@ export default class ProfileScreen extends React.Component<
             {`${Constants.manifest.version} (Private Beta)`}
           </Text>
         </Record>
-        <TouchableOpacity onPress={lock} style={styles.error}>
+        <TouchableOpacity onPress={this.onPressSignOut} style={styles.error}>
           <Text type='headline' color={COLORS.R400}>
             Sign out
           </Text>
@@ -83,8 +99,6 @@ export default class ProfileScreen extends React.Component<
   public render () {
     return (
       <View style={styles.screen}>
-        <StatusBar barStyle='dark-content' />
-
         <View style={styles.header}>
           <View style={styles.headerDetail}>
             <Text type='caption'>ACCOUNT</Text>
@@ -105,7 +119,8 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     paddingHorizontal: 20,
-    paddingTop: 52
+    paddingTop: 52,
+    backgroundColor: COLORS.WHITE
   },
   header: {
     flexDirection: 'row',
@@ -126,6 +141,9 @@ const styles = StyleSheet.create({
   },
   lineLeftSide: {
     flexDirection: 'row'
+  },
+  contactLebel: {
+    flex: 1
   },
   contactDetail: {
     flexDirection: 'row',

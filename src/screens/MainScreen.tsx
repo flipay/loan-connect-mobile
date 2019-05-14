@@ -7,20 +7,22 @@ import {
   View,
   StyleSheet
 } from 'react-native'
-import { LinearGradient, Amplitude } from 'expo'
+import { LinearGradient } from 'expo'
 import { NavigationScreenProps } from 'react-navigation'
-import { Text, AssetCard, Button } from '../components'
+import { Text, AssetCard, Button, TransferModal } from '../components'
 import { COLORS, ASSETS } from '../constants'
 import { AssetId, Asset } from '../types'
 import { getPortfolio } from '../requests'
 import { hasEverDeposit } from '../asyncStorage'
 import { alert, toString } from '../utils'
+import { logEvent } from '../analytics'
 
 interface State {
   selectedAsset?: AssetId | null
   assets: Array<Asset>
   refreshing: boolean
   hasDeposited: boolean
+  transferModalVisible: boolean
 }
 
 export default class MainScreen extends React.Component<
@@ -33,16 +35,19 @@ export default class MainScreen extends React.Component<
       selectedAsset: null,
       assets: [],
       refreshing: false,
-      hasDeposited: true
+      hasDeposited: true,
+      transferModalVisible: false
     }
   }
   private willFocusSubscription: any
 
   public componentDidMount () {
-    this.fetchData()
     this.willFocusSubscription = this.props.navigation.addListener(
       'willFocus',
-      () => { this.fetchData() }
+      () => {
+        StatusBar.setBarStyle('light-content')
+        this.fetchData()
+      }
     )
   }
 
@@ -68,12 +73,12 @@ export default class MainScreen extends React.Component<
 
   public onPress = (assetId: AssetId) => {
     if (this.state.selectedAsset === assetId) {
-      Amplitude.logEventWithProperties('main/close-asset-card', {
+      logEvent('main/close-asset-card', {
         assetId: assetId
       })
       this.setState({ selectedAsset: null })
     } else {
-      Amplitude.logEventWithProperties('main/open-asset-card', {
+      logEvent('main/open-asset-card', {
         assetId: assetId
       })
       this.setState({ selectedAsset: assetId })
@@ -84,12 +89,17 @@ export default class MainScreen extends React.Component<
     return this.getSumBalance() === 0 && !this.state.hasDeposited
   }
 
+  public onPressDepositFromWelcomeMessage = () => {
+    logEvent('main/press-deposit-from-welcome-message')
+    this.props.navigation.navigate('Deposit')
+  }
+
   public renderWelcomeMessage () {
     return (
       <View style={styles.welcomeSection}>
         <Text color={COLORS.WHITE} style={styles.welcome}>Welcome to Flipay!</Text>
-        <Text type='title' color={COLORS.WHITE} style={styles.howMuch}>How much would you like to start investment?</Text>
-        <Button onPress={() => this.props.navigation.navigate('Deposit')}>Deposit your money</Button>
+        <Text type='title' color={COLORS.WHITE} style={styles.howMuch}>How much would you like to start the investment?</Text>
+        <Button onPress={this.onPressDepositFromWelcomeMessage}>Deposit your money</Button>
       </View>
     )
   }
@@ -126,16 +136,62 @@ export default class MainScreen extends React.Component<
     )
   }
 
+  public onPressTransferButton = (assetId: AssetId) => {
+    logEvent('main/press-transfer-button', { assetId })
+    this.setState({ transferModalVisible: true })
+  }
+
   public onRefresh = async () => {
+    logEvent('main/pull-the-screen-to-reload')
     this.setState({ refreshing: true })
     await this.fetchData()
     this.setState({ refreshing: false })
   }
 
+  public onPressDeposit = (assetId: AssetId) => {
+    return () => {
+      logEvent('main/press-deposit-button-on-tranfer-modal', { assetId })
+      this.setState({ transferModalVisible: false })
+      this.props.navigation.navigate('Deposit', { assetId: this.state.selectedAsset })
+    }
+  }
+
+  public onPressWithdraw = (remainingBalance: number, assetId: AssetId) => {
+    return () => {
+      logEvent('main/press-withdraw-button-on-tranfer-modal', { assetId })
+      this.setState({ transferModalVisible: false })
+      this.props.navigation.navigate('Withdrawal', {
+        assetId: this.state.selectedAsset,
+        remainingBalance
+      })
+    }
+  }
+
+  public onPressOutsideModal = (assetId: AssetId) => {
+    return () => {
+      logEvent('main/press-outside-tranfer-modal', { assetId })
+      this.setState({ transferModalVisible: false })
+    }
+  }
+
+  public renderTransferModal () {
+    if (!this.state.transferModalVisible) { return null }
+    if (!this.state.selectedAsset) { return null }
+    const selectedAsset = _.find(this.state.assets, (asset) => asset.id === this.state.selectedAsset)
+    if (!selectedAsset) { return null }
+    return (
+      <TransferModal
+        assetId={this.state.selectedAsset}
+        onPressDeposit={this.onPressDeposit(this.state.selectedAsset)}
+        onPressWithdraw={this.onPressWithdraw(selectedAsset.amount || 0, this.state.selectedAsset)}
+        onPressOutside={this.onPressOutsideModal(this.state.selectedAsset)}
+      />
+    )
+  }
+
   public render () {
     return (
       <View style={{ flex: 1 }}>
-        <StatusBar barStyle='light-content' />
         <ScrollView
           style={{
             backgroundColor: '#fff',
@@ -171,6 +227,7 @@ export default class MainScreen extends React.Component<
                     expanded={expanded}
                     onPress={() => this.onPress(asset.id)}
                     navigation={this.props.navigation}
+                    onPressTranferButton={() => this.onPressTransferButton(asset.id)}
                   />
                   {index !== this.state.assets.length - 1 && (
                     <View
@@ -182,6 +239,7 @@ export default class MainScreen extends React.Component<
             })}
           </View>
         </ScrollView>
+        {this.renderTransferModal()}
       </View>
     )
   }

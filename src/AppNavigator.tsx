@@ -18,10 +18,11 @@ import DepositScreen from './screens/DepositScreen'
 import WithdrawalScreen from './screens/WithdrawalScreen'
 import ComparisonScreen from './screens/ComparisonScreen'
 // import ActivityScreen from './screens/ActivityScreen'
-import ProfileScreen from './screens/ProfileScreen'
+import AccountScreen from './screens/AccountScreen'
 import PinScreen from './screens/PinScreen'
-
+import { Text } from './components'
 import { COLORS } from './constants'
+import { logEvent } from './analytics'
 
 const AuthStack = createStackNavigator(
   {
@@ -67,7 +68,10 @@ const MainApp = createBottomTabNavigator(
     Home: {
       screen: HomeStack,
       navigationOptions: {
-        title: 'Buy/Sell'
+        tabBarOnPress: ({ navigation }: any) => {
+          logEvent('tab-bar/press-buy-sell-menu')
+          navigation.navigate('Home')
+        }
       }
     },
     // Activity: {
@@ -76,10 +80,13 @@ const MainApp = createBottomTabNavigator(
     //     title: 'Activity'
     //   }
     // },
-    Profile: {
-      screen: ProfileScreen,
+    Account: {
+      screen: AccountScreen,
       navigationOptions: {
-        title: 'Account'
+        tabBarOnPress: ({ navigation }: any) => {
+          logEvent('tab-bar/press-account-menu')
+          navigation.navigate('Account')
+        }
       }
     }
   },
@@ -90,19 +97,21 @@ const MainApp = createBottomTabNavigator(
         let IconComponent = FontAwesome
         let iconName
         if (routeName === 'Home') {
-          iconName = 'exchange'
+          return <Text style={{ fontFamily: 'flipay-icon', fontSize: 28 }} color={tintColor || undefined}></Text>
         } else if (routeName === 'Activity') {
           IconComponent = MaterialIcons
           iconName = 'history'
         } else {
-          iconName = 'user-circle-o'
+          return <Text style={{ fontFamily: 'flipay-icon', fontSize: 28 }} color={tintColor || undefined}></Text>
         }
         return <IconComponent name={iconName} size={25} color={tintColor || undefined} />
       }
     }),
     tabBarOptions: {
+      showLabel: false,
       activeTintColor: COLORS.P400,
-      inactiveTintColor: COLORS.N400
+      inactiveTintColor: COLORS.N400,
+      style: { borderTopColor: COLORS.N300 }
     }
   }
 )
