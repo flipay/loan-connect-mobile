@@ -38,7 +38,7 @@ export const ASSETS: AssetTypes = {
     image: require('../img/icon_binance.png'),
     unit: 'BNB',
     decimal: 5,
-    address: etheruemBlockchainAddress,
+    address: 'bnb1cqhh44pxqw87vcm3grzvs5la9zn3ldcx6r7k3w',
     order: 3
   },
   OMG: {
