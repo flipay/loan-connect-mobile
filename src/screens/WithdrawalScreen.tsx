@@ -108,6 +108,7 @@ export default class WithdrawalScreen extends React.Component<
           assetId,
           toNumber(this.state.amount),
           this.state.address,
+          this.state.tag,
           this.state.accountName,
           this.state.accountIssuer
         )

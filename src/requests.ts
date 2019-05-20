@@ -226,6 +226,7 @@ export async function withdraw (
   assetId: AssetId,
   amount: number,
   address: string,
+  tag?: string,
   accountName?: string,
   accountIssuer?: string
 ) {
@@ -241,7 +242,8 @@ export async function withdraw (
     await axios.post('withdrawals', {
       asset: assetId,
       amount,
-      address
+      address,
+      crypto_transaction_identifier: tag
     })
   }
 }
