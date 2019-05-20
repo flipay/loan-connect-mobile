@@ -86,6 +86,7 @@ export default class DepositScreen extends React.Component<
         </View>
         <View>
           {this.renderDetailRow(addressType, ASSETS[assetId].address)}
+          {ASSETS[assetId].tag && this.renderDetailRow('Name tag', ASSETS[assetId].tag)}
           {assetId === 'THB' && this.renderDetailRow('Name', 'Mr Panumarch Anantachaiwanich')}
         </View>
         <Button

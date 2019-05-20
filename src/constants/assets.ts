@@ -32,6 +32,16 @@ export const ASSETS: AssetTypes = {
     address: etheruemBlockchainAddress,
     order: 2
   },
+  XRP: {
+    id: 'XRP',
+    name: 'XRP',
+    image: require('../img/icon_xrp.png'),
+    unit: 'XRP',
+    decimal: 2,
+    address: 'rp7Fq2NQVRJxQJvUZ4o8ZzsTSocvgYoBbs',
+    tag: '1001263698',
+    order: 3
+  },
   BNB: {
     id: 'BNB',
     name: 'Binance Coin',
@@ -39,7 +49,7 @@ export const ASSETS: AssetTypes = {
     unit: 'BNB',
     decimal: 5,
     address: 'bnb1cqhh44pxqw87vcm3grzvs5la9zn3ldcx6r7k3w',
-    order: 3
+    order: 4
   },
   OMG: {
     id: 'OMG',
@@ -48,6 +58,6 @@ export const ASSETS: AssetTypes = {
     unit: 'OMG',
     decimal: 4,
     address: etheruemBlockchainAddress,
-    order: 4
+    order: 5
   }
 }
