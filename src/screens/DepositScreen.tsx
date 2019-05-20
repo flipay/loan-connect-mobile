@@ -56,6 +56,15 @@ export default class DepositScreen extends React.Component<
 
   }
 
+  public renderDetailRow (label: string, value: string) {
+    return (
+      <View style={styles.detailRow}>
+        <Text color={COLORS.N600} style={styles.transferLabel}>{label}</Text>
+        <Text color={COLORS.N800} style={styles.transferValue}>{value}</Text>
+      </View>
+    )
+  }
+
   public renderFirstBullet () {
     const assetId: AssetId = this.props.navigation.getParam('assetId', 'THB')
     const assetName = ASSETS[assetId].name
@@ -76,18 +85,8 @@ export default class DepositScreen extends React.Component<
           </Text>
         </View>
         <View>
-          <View style={styles.addressRow}>
-            <Text color={COLORS.N600} style={styles.transferLabel}>
-              {addressType}
-            </Text>
-            <Text color={COLORS.N800} style={styles.transferValue}>
-              {ASSETS[assetId].address}
-            </Text>
-          </View>
-          {assetId === 'THB' && <View style={styles.detailRow}>
-            <Text color={COLORS.N600} style={styles.transferLabel}>Name</Text>
-            <Text color={COLORS.N800} style={styles.transferValue}>Mr Panumarch Anantachaiwanich</Text>
-          </View>}
+          {this.renderDetailRow(addressType, ASSETS[assetId].address)}
+          {assetId === 'THB' && this.renderDetailRow('Name', 'Mr Panumarch Anantachaiwanich')}
         </View>
         <Button
           onPress={() => this.onPressCopyButton(ASSETS[assetId].address)}
@@ -208,10 +207,6 @@ const styles = StyleSheet.create({
   copyButton: {
     marginTop: 8,
     backgroundColor: COLORS.N300
-  },
-  addressRow: {
-    flexDirection: 'row',
-    marginRight: 9
   },
   detailRow: {
     flexDirection: 'row'
