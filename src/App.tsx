@@ -6,7 +6,6 @@ import Sentry from 'sentry-expo'
 import preloadAssets from './preloadAsssets'
 import AppNavigator from './AppNavigator'
 import { logEvent } from './analytics'
-import { FullScreenLoading } from './components'
 
 // NOTE: for testing Sentry locally
 // Sentry.enableInExpoDevelopment = true
@@ -27,7 +26,6 @@ type AppStateType = 'active' | 'background' | 'inactive'
 interface State {
   isReady: boolean
   appState: AppStateType
-  loading: boolean
 }
 
 export default class App extends React.Component<{}, State> {
@@ -35,8 +33,7 @@ export default class App extends React.Component<{}, State> {
     super(props)
     this.state = {
       isReady: false,
-      appState: AppState.currentState,
-      loading: false
+      appState: AppState.currentState
     }
   }
 
@@ -52,9 +49,7 @@ export default class App extends React.Component<{}, State> {
 
   public handleAppStateChange = async (nextAppState: AppStateType) => {
     if (this.state.appState !== 'acitve' && nextAppState === 'active') {
-      this.setState({ loading: true })
       await this.checkNewVersion(Updates.reloadFromCache)
-      this.setState({ loading: false })
     }
     this.setState({ appState: nextAppState })
   }
@@ -113,11 +108,6 @@ export default class App extends React.Component<{}, State> {
         onFinish={() => this.setState({ isReady: true })}
         onError={Sentry.captureException}
       />
-    ) : (
-      <View style={{ flex: 1 }}>
-        <FullScreenLoading visible={this.state.loading} />
-        <AppContainer />
-      </View>
-    )
+    ) : <AppContainer />
   }
 }
