@@ -12,12 +12,13 @@ import { ACCOUNT_ISSUERS, COLORS, ASSETS } from '../constants'
 import { Issuer, AssetId } from '../types'
 import { logEvent } from '../analytics'
 
-const boxes = ['amount', 'address', 'accountName']
+const boxes = ['amount', 'address', 'tag', 'accountName']
 type Box = typeof boxes[number]
 
 interface State {
   amount: string
   address: string
+  tag: string
   accountName: string
   accountIssuer?: Issuer
   activeBox: Box
@@ -34,6 +35,7 @@ export default class WithdrawalScreen extends React.Component<
     this.state = {
       amount: '',
       address: '',
+      tag: '',
       accountName: '',
       accountIssuer: 'kbank',
       activeBox: 'amount',
@@ -72,6 +74,11 @@ export default class WithdrawalScreen extends React.Component<
     this.setState({ activeBox: 'address' })
   }
 
+  public onPressTagBox = () => {
+    logEvent('withdrawal/press-tag-box')
+    this.setState({ activeBox: 'tag' })
+  }
+
   public onPressAccountNameBox = () => {
     logEvent('withdrawal/press-account-name-box')
     this.setState({ activeBox: 'accountName' })
@@ -85,6 +92,8 @@ export default class WithdrawalScreen extends React.Component<
     } else if (box === boxes[1]) {
       this.setState({ address: value })
     } else if (box === boxes[2]) {
+      this.setState({ tag: value })
+    } else if (box === boxes[3]) {
       this.setState({ accountName: value })
     }
   }
@@ -124,8 +133,8 @@ export default class WithdrawalScreen extends React.Component<
           description='Account name'
           autoCorrect={false} // Thai language doesn't handle autocomplete correctly
           onPress={this.onPressAccountNameBox}
-          onChangeValue={(value) => this.onChangeValue(boxes[2], value)}
-          active={this.state.activeBox === boxes[2]}
+          onChangeValue={(value) => this.onChangeValue(boxes[3], value)}
+          active={this.state.activeBox === boxes[3]}
           value={this.state.accountName}
         />
         <Text type='caption'>Account Issuer</Text>
@@ -193,6 +202,14 @@ export default class WithdrawalScreen extends React.Component<
                       value={this.state.address}
                       numberPad={assetId === 'THB'}
                     />
+                    {ASSETS[assetId].tag && <TextBox
+                      description='Tag name'
+                      onPress={this.onPressTagBox}
+                      onChangeValue={(value) => this.onChangeValue(boxes[2], value)}
+                      active={this.state.activeBox === boxes[2]}
+                      value={this.state.tag}
+                      numberPad={true}
+                    />}
                     {assetId === 'THB' && this.renderCashContent()}
                   </View>
                 </View>
