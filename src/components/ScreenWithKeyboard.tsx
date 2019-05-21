@@ -85,7 +85,7 @@ export default class Screen extends React.Component<Props, State> {
                       : 'light-content'
                   }
                 />
-                <ScrollView>
+                <ScrollView keyboardShouldPersistTaps='always'>
                   {this.props.onPressBackButton && (
                     <TouchableOpacity
                       style={styles.backButton}
