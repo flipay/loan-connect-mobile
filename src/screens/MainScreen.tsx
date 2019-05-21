@@ -114,7 +114,7 @@ export default class MainScreen extends React.Component<
       >
         {this.shouldShowWelcomeMessage()
           ? this.renderWelcomeMessage()
-          : (
+          : !_.isEmpty(this.state.assets) && (
             <View style={styles.headerTextContainer}>
               <Text type='caption' color={COLORS.P100}>
                 TOTAL VALUE
