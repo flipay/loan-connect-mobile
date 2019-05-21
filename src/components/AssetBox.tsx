@@ -15,6 +15,7 @@ interface Props {
   onChangeValue: (value: string) => void
   active: boolean
   value?: string
+  error?: string
 }
 
 export default class AssetBox extends React.Component<Props> {
@@ -61,44 +62,65 @@ export default class AssetBox extends React.Component<Props> {
     }
   }
 
+  public renderErrorMessage () {
+    return this.props.error && (
+      <Text type='caption' color={COLORS.R400}>
+        {this.props.error}
+      </Text>
+    )
+  }
+
+  public getDescriptionColor () {
+    if (this.props.error) {
+      return COLORS.R400
+    } else if (this.props.active) {
+      return COLORS.P400
+    } else {
+      return COLORS.N500
+    }
+  }
+
   public render () {
     const { image, unit } = ASSETS[this.props.assetId]
     return (
-      <Layer
-        style={styles.container}
-        onPress={this.onPress}
-        active={this.props.active}
-      >
-        <View style={styles.leftContainer}>
-          <Text type='caption' color={this.props.active ? COLORS.P400 : COLORS.N500}>
-            {this.props.description}
-          </Text>
-          <TextInput
-            ref={element => {
-              this.input = element
-            }}
-            style={styles.textInput}
-            maxLength={10}
-            autoFocus={this.props.autoFocus}
-            placeholderTextColor={this.props.active ? COLORS.P100 : COLORS.N300}
-            selectionColor={COLORS.P400}
-            onChangeText={text =>
-              this.props.onChangeValue(this.formatNumberInString(text))
-            }
-            value={this.props.value}
-            keyboardType='decimal-pad'
-            placeholder='0'
-            onFocus={this.props.onPress}
-          />
-        </View>
-        <View style={styles.rightContainer}>
-          <Image
-            source={image}
-            style={{ width: 16, height: 16, marginRight: 8 }}
-          />
-          <Text>{unit}</Text>
-        </View>
-      </Layer>
+      <View>
+        <Layer
+          style={[styles.container, this.props.error && styles.errorContainer]}
+          onPress={this.onPress}
+          active={this.props.active}
+        >
+          <View style={styles.leftContainer}>
+            <Text type='caption' color={this.getDescriptionColor()}>
+              {this.props.description}
+            </Text>
+            <TextInput
+              ref={element => {
+                this.input = element
+              }}
+              style={styles.textInput}
+              maxLength={10}
+              autoFocus={this.props.autoFocus}
+              placeholderTextColor={this.props.active ? COLORS.P100 : COLORS.N300}
+              selectionColor={COLORS.P400}
+              onChangeText={text =>
+                this.props.onChangeValue(this.formatNumberInString(text))
+              }
+              value={this.props.value}
+              keyboardType='decimal-pad'
+              placeholder='0'
+              onFocus={this.props.onPress}
+            />
+          </View>
+          <View style={styles.rightContainer}>
+            <Image
+              source={image}
+              style={{ width: 16, height: 16, marginRight: 8 }}
+            />
+            <Text>{unit}</Text>
+          </View>
+        </Layer>
+        {this.renderErrorMessage()}
+      </View>
     )
   }
 }
@@ -106,6 +128,10 @@ export default class AssetBox extends React.Component<Props> {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row'
+  },
+  errorContainer: {
+    borderColor: COLORS.R400,
+    borderWidth: 1
   },
   leftContainer: {
     flex: 2,

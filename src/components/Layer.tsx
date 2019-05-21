@@ -34,7 +34,8 @@ const styles = StyleSheet.create({
     shadowColor: 'black',
     shadowOffset: { height: 1, width: 0 },
     shadowOpacity: 0.2,
-    shadowRadius: 2
+    shadowRadius: 2,
+    borderRadius: 4
   },
   activeContainer: {
     shadowOffset: { height: 4, width: 0 },
