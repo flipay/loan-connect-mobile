@@ -70,17 +70,14 @@ export default class AssetBox extends React.Component<Props> {
         active={this.props.active}
       >
         <View style={styles.leftContainer}>
-          <Text type='caption' color={COLORS.N500}>
+          <Text type='caption' color={this.props.active ? COLORS.P400 : COLORS.N500}>
             {this.props.description}
           </Text>
           <TextInput
             ref={element => {
               this.input = element
             }}
-            style={[
-              styles.textInput,
-              this.props.active && styles.activeTextInput
-            ]}
+            style={styles.textInput}
             maxLength={10}
             autoFocus={this.props.autoFocus}
             placeholderTextColor={this.props.active ? COLORS.P100 : COLORS.N300}
