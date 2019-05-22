@@ -37,12 +37,12 @@ export default class TextBox extends React.Component<Props> {
         active={this.props.active}
       >
         <View style={styles.leftContainer}>
-          <Text type='caption' color={COLORS.N500}>{this.props.description}</Text>
+          <Text type='caption' color={this.props.active ? COLORS.P400 : COLORS.N500}>{this.props.description}</Text>
           <TextInput
             ref={element => {
               this.input = element
             }}
-            style={[styles.textInput, this.props.active && styles.activeTextInput]}
+            style={styles.textInput}
             autoFocus={this.props.autoFocus}
             placeholder={this.props.placeholder}
             placeholderTextColor={this.props.active ? COLORS.P100 : COLORS.N300}
@@ -71,9 +71,6 @@ const styles = StyleSheet.create({
     fontSize: FONT_TYPES['large-title'].fontSize,
     fontFamily: FONT_TYPES['large-title'].fontFamily,
     color: COLORS.N800
-  },
-  activeTextInput: {
-    color: COLORS.P400
   },
   rightContainer: {
     flex: 1,

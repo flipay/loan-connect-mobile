@@ -31,6 +31,7 @@ export function getErrorDetail (err: Error) {
 
 export function alert (err: Error) {
   Sentry.captureException(err)
+  console.log('========error========', JSON.stringify(err, undefined, 2))
   return Alert.alert(`Something went wrong: ${getErrorDetail(err)}`)
 }
 
