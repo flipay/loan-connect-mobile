@@ -5,7 +5,7 @@ import { NavigationScreenProps } from 'react-navigation'
 import {
   Text,
   Value,
-  AssetBox,
+  AssetBoxWithBalance,
   AssetBoxTemp,
   TradeResult,
   ScreenWithKeyboard,
@@ -308,7 +308,7 @@ export default class TradeScreen extends React.Component<
           {` available`}
         </Text>
         <View style={styles.assetBoxesContainer}>
-          <AssetBox
+          <AssetBoxWithBalance
             autoFocus={autoFocus}
             description={side === 'buy' ? 'You buy with' : 'You sell'}
             assetId={side === 'buy' ? 'THB' : assetId}
@@ -316,6 +316,9 @@ export default class TradeScreen extends React.Component<
             onChangeValue={(value: string) => this.onChangeValue('give', value)}
             active={this.state.activeAssetBox === 'give'}
             value={this.state.giveAssetBoxValue}
+            onPressMax={() => { console.log('press max') }}
+            onPressHalf={() => { console.log('press Half') }}
+            balance={remainingBalance}
           />
           <AssetBoxTemp
             description={
