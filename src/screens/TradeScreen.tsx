@@ -303,10 +303,7 @@ export default class TradeScreen extends React.Component<
         <Text type='title'>
           {`${_.capitalize(side)} ${ASSETS[assetId].name}`}
         </Text>
-        <Text type='body' color={COLORS.N500}>
-          <Value assetId={this.getGiveAsset()}>{remainingBalance}</Value>
-          {` available`}
-        </Text>
+
         <View style={styles.assetBoxesContainer}>
           <AssetBoxWithBalance
             autoFocus={autoFocus}
