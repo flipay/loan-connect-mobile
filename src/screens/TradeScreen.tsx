@@ -4,7 +4,6 @@ import { StyleSheet, View, Alert } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import {
   Text,
-  Value,
   AssetBoxWithBalance,
   AssetBoxTemp,
   TradeResult,
@@ -298,6 +297,8 @@ export default class TradeScreen extends React.Component<
       'remainingBalance',
       0
     )
+
+    const giveSideAssetId = side === 'buy' ? 'THB' : assetId
     return (
       <View style={styles.body}>
         <Text type='title'>
@@ -308,13 +309,13 @@ export default class TradeScreen extends React.Component<
           <AssetBoxWithBalance
             autoFocus={autoFocus}
             description={side === 'buy' ? 'You buy with' : 'You sell'}
-            assetId={side === 'buy' ? 'THB' : assetId}
+            assetId={giveSideAssetId}
             onPress={() => this.onPressAssetBox('give')}
             onChangeValue={(value: string) => this.onChangeValue('give', value)}
             active={this.state.activeAssetBox === 'give'}
             value={this.state.giveAssetBoxValue}
-            onPressMax={() => { console.log('press max') }}
-            onPressHalf={() => { console.log('press Half') }}
+            onPressMax={() => this.onChangeValue('give', toString(remainingBalance, ASSETS[giveSideAssetId].decimal))}
+            onPressHalf={() => this.onChangeValue('give', toString(remainingBalance / 2, ASSETS[giveSideAssetId].decimal))}
             balance={remainingBalance}
           />
           <AssetBoxTemp
