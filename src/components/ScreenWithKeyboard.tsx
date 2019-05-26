@@ -14,10 +14,12 @@ import {
 import { Constants } from 'expo'
 import { AntDesign } from '@expo/vector-icons'
 import { COLORS } from '../constants'
+import Text from './Text'
 import SubmitButton from './SubmitButton'
 import FullScreenLoading from './FullScreenLoading'
 
 interface Props {
+  title?: string
   children: (autoFocus: boolean) => any
   statusBar?: 'white' | 'black'
   onPressBackButton?: () => void
@@ -66,6 +68,10 @@ export default class Screen extends React.Component<Props, State> {
     })
   }
 
+  public hasHeader () {
+    return !!this.props.onPressBackButton || !!this.props.title
+  }
+
   public render () {
     return (
       <View style={styles.screen}>
@@ -84,22 +90,34 @@ export default class Screen extends React.Component<Props, State> {
                       : 'light-content'
                   }
                 />
-                <ScrollView
-                  keyboardShouldPersistTaps='handled'
-                >
-                  {this.props.onPressBackButton && (
-                    <TouchableOpacity
-                      style={styles.backButton}
-                      onPress={this.props.onPressBackButton}
-                    >
-                      <AntDesign
-                        name={this.props.backButtonType}
-                        size={28}
-                        color={COLORS.N800}
-                      />
-                    </TouchableOpacity>
-                  )}
-                  <View style={styles.content}>
+                {this.hasHeader() && (
+                  <View style={styles.backButtonRow}>
+                    {!!this.props.onPressBackButton && (
+                      <Text type='headline'>{this.props.title}</Text>
+                    )}
+                    {!!this.props.title && (
+                      <View style={styles.backButtonContainer}>
+                        <TouchableOpacity
+                          style={styles.backButton}
+                          onPress={this.props.onPressBackButton}
+                        >
+                          <AntDesign
+                            name={this.props.backButtonType}
+                            size={28}
+                            color={COLORS.N800}
+                          />
+                        </TouchableOpacity>
+                      </View>
+                    )}
+                  </View>
+                )}
+                <ScrollView keyboardShouldPersistTaps='handled'>
+                  <View
+                    style={[
+                      styles.content,
+                      this.hasHeader() && styles.contentWithHeader
+                    ]}
+                  >
                     {this.props.children(
                       this.state.keyboardAvoidingViewKey ===
                         DEFAULT_KEYBOARD_KEY
@@ -142,14 +160,29 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-between'
   },
+  backButtonRow: {
+    flexDirection: 'row',
+    height: 55,
+    borderBottomColor: COLORS.N200,
+    borderBottomWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
   backButton: {
-    zIndex: 1,
-    position: 'absolute',
-    left: 12,
-    top: 0,
     padding: 10
   },
   content: {
     padding: 20
+  },
+  contentWithHeader: {
+    paddingTop: 0
+  },
+  backButtonContainer: {
+    flexDirection: 'row',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0
   }
 })

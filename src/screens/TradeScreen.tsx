@@ -301,10 +301,6 @@ export default class TradeScreen extends React.Component<
     const giveSideAssetId = side === 'buy' ? 'THB' : assetId
     return (
       <View style={styles.body}>
-        <Text type='title'>
-          {`${_.capitalize(side)} ${ASSETS[assetId].name}`}
-        </Text>
-
         <View style={styles.assetBoxesContainer}>
           <AssetBoxWithBalance
             autoFocus={autoFocus}
@@ -343,13 +339,15 @@ export default class TradeScreen extends React.Component<
   }
 
   public render () {
-    const orderType = this.props.navigation.getParam('side', 'buy')
+    const side = this.props.navigation.getParam('side', 'buy')
+    const assetId: AssetId = this.props.navigation.getParam('assetId', 'BTC')
     return (
       <ScreenWithKeyboard
         backButtonType='close'
+        title={`${_.capitalize(side)} ${ASSETS[assetId].name}`}
         onPressBackButton={this.state.executed ? undefined : this.onClose}
         submitButtonText={
-          this.state.executed ? 'Done' : _.capitalize(orderType)
+          this.state.executed ? 'Done' : _.capitalize(side)
         }
         activeSubmitButton={this.isSubmitable()}
         onPessSubmitButton={this.state.executed ? this.pressDone : this.execute}
@@ -358,15 +356,15 @@ export default class TradeScreen extends React.Component<
           <View style={styles.bodyContainer}>
             {this.state.executed ? (
               <TradeResult
-                orderType={orderType}
+                orderType={side}
                 assetId={this.props.navigation.getParam('assetId', 'BTC')}
                 cryptoAmount={
-                  orderType === 'buy'
+                  side === 'buy'
                     ? this.state.tradeResultTake
                     : this.state.tradeResultGive
                 }
                 thbAmount={
-                  orderType === 'sell'
+                  side === 'sell'
                     ? this.state.tradeResultTake
                     : this.state.tradeResultGive
                 }
@@ -386,15 +384,14 @@ const styles = StyleSheet.create({
     flex: 1
   },
   body: {
-    paddingTop: 10,
+    paddingTop: 20,
     alignItems: 'center'
   },
   assetBoxesContainer: {
-    marginTop: 20,
     width: '100%'
   },
   footer: {
-    marginTop: 20,
+    marginTop: 10,
     marginHorizontal: 50,
     alignItems: 'center'
   }
