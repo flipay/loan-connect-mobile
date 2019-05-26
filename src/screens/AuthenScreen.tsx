@@ -88,7 +88,7 @@ export default class AuthenScreen extends React.Component<
 
 const styles = StyleSheet.create({
   title: {
-    marginTop: 62
+    marginTop: 7
   },
   layer: {
     marginTop: 44,

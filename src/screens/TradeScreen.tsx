@@ -344,7 +344,7 @@ export default class TradeScreen extends React.Component<
     return (
       <ScreenWithKeyboard
         backButtonType='close'
-        title={`${_.capitalize(side)} ${ASSETS[assetId].name}`}
+        title={!this.state.executed ? `${_.capitalize(side)} ${ASSETS[assetId].name}` : undefined}
         onPressBackButton={this.state.executed ? undefined : this.onClose}
         submitButtonText={
           this.state.executed ? 'Done' : _.capitalize(side)
