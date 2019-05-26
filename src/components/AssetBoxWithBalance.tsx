@@ -71,6 +71,7 @@ const styles = StyleSheet.create({
     marginBottom: 16
   },
   balanceSection: {
+    marginTop: 12,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center'
@@ -83,6 +84,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 13,
     paddingVertical: 6,
     borderRadius: 4,
-    marginRight: 8,
+    marginRight: 8
   }
 })
