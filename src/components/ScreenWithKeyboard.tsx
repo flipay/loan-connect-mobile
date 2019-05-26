@@ -69,7 +69,7 @@ export default class Screen extends React.Component<Props, State> {
   }
 
   public hasHeader () {
-    return !!this.props.onPressBackButton || !!this.props.title
+    return this.props.onPressBackButton || !!this.props.title
   }
 
   public render () {
@@ -91,11 +91,11 @@ export default class Screen extends React.Component<Props, State> {
                   }
                 />
                 {this.hasHeader() && (
-                  <View style={styles.backButtonRow}>
-                    {!!this.props.onPressBackButton && (
+                  <View style={[styles.headerRow, !!this.props.title && styles.headerRowBorder]}>
+                    {!!this.props.title && (
                       <Text type='headline'>{this.props.title}</Text>
                     )}
-                    {!!this.props.title && (
+                    {this.props.onPressBackButton && (
                       <View style={styles.backButtonContainer}>
                         <TouchableOpacity
                           style={styles.backButton}
@@ -160,13 +160,15 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-between'
   },
-  backButtonRow: {
+  headerRow: {
     flexDirection: 'row',
     height: 55,
-    borderBottomColor: COLORS.N200,
-    borderBottomWidth: 1,
     alignItems: 'center',
     justifyContent: 'center'
+  },
+  headerRowBorder: {
+    borderBottomColor: COLORS.N200,
+    borderBottomWidth: 1
   },
   backButton: {
     padding: 10

@@ -5,9 +5,9 @@ import {
 } from 'react-native'
 import _ from 'lodash'
 import { NavigationScreenProps } from 'react-navigation'
-import { Text, ScreenWithKeyboard, AssetBox, TextBox, Picker, Value } from '../components'
+import { Text, ScreenWithKeyboard, AssetBox, TextBox, Picker, Value, AssetBoxWithBalance } from '../components'
 import { withdraw } from '../requests'
-import { toNumber, alert } from '../utils'
+import { toNumber, toString, alert } from '../utils'
 import { ACCOUNT_ISSUERS, COLORS, ASSETS } from '../constants'
 import { Issuer, AssetId } from '../types'
 import { logEvent } from '../analytics'
@@ -171,6 +171,7 @@ export default class WithdrawalScreen extends React.Component<
         submitButtonText={this.state.submitted ? 'OK' : 'Submit'}
         onPessSubmitButton={this.onPressSubmit}
         fullScreenLoading={false}
+        title={`Withdraw ${ASSETS[assetId].name}`}
       >
         {(autoFocus: boolean) => (
           <View style={styles.container}>
@@ -178,15 +179,8 @@ export default class WithdrawalScreen extends React.Component<
               ? this.renderResult()
               : (
                 <View>
-                  <View style={styles.header}>
-                    <Text type='title'>{`Withdraw ${ASSETS[assetId].name}`}</Text>
-                    <Text type='body' color={COLORS.N500}>
-                      <Value assetId={assetId}>{remainingBalance}</Value>
-                      {` available`}
-                    </Text>
-                  </View>
                   <View style={styles.content}>
-                    <AssetBox
+                    <AssetBoxWithBalance
                       autoFocus={autoFocus}
                       description='Withdrawal amount'
                       assetId={assetId}
@@ -194,6 +188,9 @@ export default class WithdrawalScreen extends React.Component<
                       onChangeValue={(value) => this.onChangeValue(boxes[0], value)}
                       active={this.state.activeBox === boxes[0]}
                       value={this.state.amount}
+                      balance={remainingBalance}
+                      onPressMax={() => this.setState({ amount: toString(remainingBalance, 0) })}
+                      onPressHalf={() => this.setState({ amount: toString(remainingBalance / 2, 0) })}
                     />
                     <TextBox
                       description={assetId === 'THB' ? 'Account number' : description}
