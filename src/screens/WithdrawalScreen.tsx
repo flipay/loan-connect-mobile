@@ -131,6 +131,7 @@ export default class WithdrawalScreen extends React.Component<
     return (
       <View>
         <TextBox
+          style={styles.textBox}
           description='Account name'
           autoCorrect={false} // Thai language doesn't handle autocomplete correctly
           onPress={this.onPressAccountNameBox}
@@ -193,6 +194,7 @@ export default class WithdrawalScreen extends React.Component<
                       onPressHalf={() => this.setState({ amount: toString(remainingBalance / 2, 0) })}
                     />
                     <TextBox
+                      style={styles.textBox}
                       description={assetId === 'THB' ? 'Account number' : description}
                       onPress={this.onPressAddressBox}
                       onChangeValue={(value) => this.onChangeValue(boxes[1], value)}
@@ -236,5 +238,8 @@ const styles = StyleSheet.create({
   },
   content: {
     width: '100%'
+  },
+  textBox: {
+    marginBottom: 16
   }
 })
