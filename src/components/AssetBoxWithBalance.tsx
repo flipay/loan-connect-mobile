@@ -41,7 +41,7 @@ export default class AssetBoxWithBalance extends React.Component<Props> {
         </View>
         <Text type='caption'>
           <Text>{`Balance `}</Text>
-          <Value assetId='THB'>{this.props.balance}</Value>
+          <Value assetId={this.props.assetId}>{this.props.balance}</Value>
         </Text>
       </View>
     )
