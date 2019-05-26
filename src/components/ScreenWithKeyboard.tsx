@@ -3,7 +3,6 @@ import _ from 'lodash'
 import {
   View,
   KeyboardAvoidingView,
-  TouchableWithoutFeedback,
   StyleSheet,
   TouchableOpacity,
   StatusBar,
@@ -85,7 +84,9 @@ export default class Screen extends React.Component<Props, State> {
                       : 'light-content'
                   }
                 />
-                <ScrollView keyboardShouldPersistTaps='always'>
+                <ScrollView
+                  keyboardShouldPersistTaps='handled'
+                >
                   {this.props.onPressBackButton && (
                     <TouchableOpacity
                       style={styles.backButton}
