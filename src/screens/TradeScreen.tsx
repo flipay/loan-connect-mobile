@@ -1,6 +1,7 @@
 import * as React from 'react'
 import _ from 'lodash'
 import { StyleSheet, View, Alert } from 'react-native'
+import Sentry from 'sentry-expo'
 import { NavigationScreenProps } from 'react-navigation'
 import {
   Text,
@@ -11,7 +12,7 @@ import {
   Link
 } from '../components'
 import { COLORS, ASSETS, THBAmountTypes } from '../constants'
-import { AssetId, OrderPart, OrderType } from '../types'
+import { AssetId, OrderPart } from '../types'
 import { getAmount, order, getCompetitorTHBAmounts } from '../requests'
 import {
   toNumber,
@@ -168,7 +169,7 @@ export default class TradeScreen extends React.Component<
           giveAssetBoxWarningMessage: 'Maximum amount exceeded'
         })
       } else if (err.message !== 'below_minimum') {
-        throw (err)
+        Sentry.captureException(err)
       }
     }
   }
