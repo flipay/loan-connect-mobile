@@ -110,30 +110,24 @@ export default class TradeScreen extends React.Component<
           : toNumber(this.state.giveAssetBoxValue)
       )
       if (this.mounted) {
-        if (activeAssetBox === 'give') {
-          this.setState({
-            competitorThbAmounts: result,
-            lastFetchSuccessfullyGiveAmount: initialValue,
-            lastFetchSuccessfullyTakeAmount: flipayResponseValue,
-            giveAssetBoxErrorMessage: '',
-            takeAssetBoxValue: flipayResponseValue,
-            loading: false
-          })
-        } else {
-          this.setState({
-            competitorThbAmounts: result,
-            lastFetchSuccessfullyGiveAmount: flipayResponseValue,
-            lastFetchSuccessfullyTakeAmount: initialValue,
-            giveAssetBoxValue: flipayResponseValue,
-            giveAssetBoxErrorMessage: '',
-            loading: false
-          })
-        }
+        this.setState({
+          competitorThbAmounts: result,
+          lastFetchSuccessfullyGiveAmount: initialValue,
+          lastFetchSuccessfullyTakeAmount: flipayResponseValue,
+          giveAssetBoxErrorMessage: '',
+          takeAssetBoxValue: flipayResponseValue,
+          loading: false
+        })
       }
     } catch (err) {
       if (getErrorCode(err) === 'rate_unavailable') {
         this.setState({
-          giveAssetBoxErrorMessage: 'Maximum amount exceeded'
+          competitorThbAmounts: undefined,
+          lastFetchSuccessfullyGiveAmount: initialValue,
+          lastFetchSuccessfullyTakeAmount: undefined,
+          giveAssetBoxErrorMessage: 'Maximum amount exceeded',
+          takeAssetBoxValue: '',
+          loading: false
         })
       } else {
         throw(err)
