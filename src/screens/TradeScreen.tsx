@@ -135,6 +135,8 @@ export default class TradeScreen extends React.Component<
         this.setState({
           giveAssetBoxErrorMessage: 'Maximum amount exceeded'
         })
+      } else {
+        throw(err)
       }
     }
 
