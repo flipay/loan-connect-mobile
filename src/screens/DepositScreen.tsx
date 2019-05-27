@@ -163,12 +163,10 @@ export default class DepositScreen extends React.Component<
         submitButtonText='Done'
         onPessSubmitButton={this.onPressSubmit}
         fullScreenLoading={false}
+        title={`Deposit ${ASSETS[assetId].name}`}
       >
         {(autoFocus: boolean) => (
           <View style={styles.body}>
-            <Text type='title' style={styles.title}>
-              {`Deposit ${ASSETS[assetId].name}`}
-            </Text>
             {this.renderSteps()}
           </View>
         )}

@@ -18,6 +18,7 @@ interface Props {
   autoCorrect?: boolean
   value?: string
   numberPad?: boolean
+  style: any
 }
 
 export default class TextBox extends React.Component<Props> {
@@ -32,7 +33,7 @@ export default class TextBox extends React.Component<Props> {
   public render () {
     return (
       <Layer
-        style={styles.container}
+        style={[styles.container, this.props.style]}
         onPress={this.onPress}
         active={this.props.active}
       >
