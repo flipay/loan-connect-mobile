@@ -11,7 +11,7 @@ import {
   Link
 } from '../components'
 import { COLORS, ASSETS, THBAmountTypes } from '../constants'
-import { AssetId, OrderPart } from '../types'
+import { AssetId, OrderPart, OrderType } from '../types'
 import { getAmount, order, getCompetitorTHBAmounts } from '../requests'
 import {
   toNumber,
@@ -28,6 +28,7 @@ interface State {
   activeAssetBox: AssetBoxType
   giveAssetBoxValue: string
   takeAssetBoxValue: string
+  giveAssetBoxErrorMessage?: string
   typing: boolean
   loading: boolean
   lastFetchSuccessfullyGiveAmount?: string
@@ -80,6 +81,39 @@ export default class TradeScreen extends React.Component<
     clearTimeout(this.timeout)
   }
 
+  public disableTrade (errorMessage?: string) {
+    if (this.mounted) {
+      this.setState({
+        competitorThbAmounts: undefined,
+        lastFetchSuccessfullyGiveAmount: undefined,
+        lastFetchSuccessfullyTakeAmount: undefined,
+        giveAssetBoxErrorMessage: errorMessage,
+        takeAssetBoxValue: '',
+        loading: false
+      })
+    }
+  }
+
+  public handleMinimumAmount (initialAmount: number, flipayResponseAmount: number) {
+    const side = this.props.navigation.getParam('side', 'buy')
+    const assetId: AssetId = this.props.navigation.getParam('assetId', 'BTC')
+    const minimumThaiAmount = 300
+    const thaiAmount = side === 'buy' ? initialAmount : flipayResponseAmount
+    const cryptoAmount = side === 'buy' ? flipayResponseAmount : initialAmount
+    if (thaiAmount > 0 && thaiAmount < minimumThaiAmount) {
+      let minimumAmount
+      if (side === 'buy') {
+        minimumAmount = `${minimumThaiAmount} THB`
+      } else {
+        const buffer = 1.05
+        const multiplier = minimumThaiAmount / thaiAmount
+        const minimumCryptoAmount = multiplier * cryptoAmount * buffer
+        minimumAmount = `${toString(minimumCryptoAmount, ASSETS[assetId].decimal)} ${ASSETS[assetId].unit}`
+      }
+      throw(Error(`${minimumAmount} is the minimum amount.`))
+    }
+  }
+
   public getAmount = async () => {
     const activeAssetBox = this.state.activeAssetBox
     const initialValue =
@@ -90,41 +124,52 @@ export default class TradeScreen extends React.Component<
     let flipayResponseValue = '0'
     const side = this.props.navigation.getParam('side', 'buy')
     const assetId: AssetId = this.props.navigation.getParam('assetId', 'BTC')
-    const amount = await getAmount(
-      side,
-      assetId,
-      activeAssetBox,
-      num,
-      'liquid'
-    )
-    const responseAsset = side === 'buy' ? assetId : 'THB'
-    flipayResponseValue = toString(amount, ASSETS[responseAsset].decimal)
-    const result = await getCompetitorTHBAmounts(
-      this.props.navigation.getParam('side', 'buy'),
-      this.props.navigation.getParam('assetId', 'BTC'),
-      this.props.navigation.getParam('side', 'buy') === 'buy'
-        ? amount
-        : toNumber(this.state.giveAssetBoxValue)
-    )
-    if (this.mounted) {
-      if (activeAssetBox === 'give') {
+    try {
+      const amount = await getAmount(
+        side,
+        assetId,
+        activeAssetBox,
+        num,
+        'liquid'
+      )
+      const responseAsset = side === 'buy' ? assetId : 'THB'
+      flipayResponseValue = toString(amount, ASSETS[responseAsset].decimal)
+      const result = await getCompetitorTHBAmounts(
+        side,
+        assetId,
+        side === 'buy'
+          ? amount
+          : toNumber(this.state.giveAssetBoxValue)
+      )
+
+      if (toNumber(flipayResponseValue) === 0) {
+        this.disableTrade()
+        return
+      }
+
+      this.handleMinimumAmount(toNumber(initialValue), toNumber(flipayResponseValue))
+
+      if (this.mounted) {
         this.setState({
           competitorThbAmounts: result,
           lastFetchSuccessfullyGiveAmount: initialValue,
           lastFetchSuccessfullyTakeAmount: flipayResponseValue,
+          giveAssetBoxErrorMessage: undefined,
           takeAssetBoxValue: flipayResponseValue,
           loading: false
         })
+      }
+    } catch (err) {
+      if (getErrorCode(err) === 'rate_unavailable') {
+        this.disableTrade('Maximum amount exceeded')
+      } else if (err.message) {
+        this.disableTrade(err.message)
       } else {
-        this.setState({
-          competitorThbAmounts: result,
-          lastFetchSuccessfullyGiveAmount: flipayResponseValue,
-          lastFetchSuccessfullyTakeAmount: initialValue,
-          giveAssetBoxValue: flipayResponseValue,
-          loading: false
-        })
+        this.disableTrade()
+        throw (err)
       }
     }
+
   }
 
   public onPressAssetBox = (assetBox: AssetBoxType) => {
@@ -313,6 +358,7 @@ export default class TradeScreen extends React.Component<
             onPressMax={() => this.onChangeValue('give', toString(remainingBalance, ASSETS[giveSideAssetId].decimal))}
             onPressHalf={() => this.onChangeValue('give', toString(remainingBalance / 2, ASSETS[giveSideAssetId].decimal))}
             balance={remainingBalance}
+            error={this.state.giveAssetBoxErrorMessage}
           />
           <AssetBoxTemp
             description={
