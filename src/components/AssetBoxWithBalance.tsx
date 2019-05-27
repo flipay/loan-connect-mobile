@@ -15,6 +15,7 @@ interface Props {
   onChangeValue: (value: string) => void
   active: boolean
   value?: string
+  warning?: string
   error?: string
   balance: number
   onPressMax: () => void
@@ -58,6 +59,7 @@ export default class AssetBoxWithBalance extends React.Component<Props> {
           onChangeValue={this.props.onChangeValue}
           active={this.props.active}
           value={this.props.value}
+          warning={this.props.warning}
           error={this.props.error}
         />
         {this.renderBalanceSection()}

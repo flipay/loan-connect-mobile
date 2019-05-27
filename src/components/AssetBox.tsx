@@ -15,6 +15,7 @@ interface Props {
   onChangeValue: (value: string) => void
   active: boolean
   value?: string
+  warning?: string
   error?: string
 }
 
@@ -63,16 +64,28 @@ export default class AssetBox extends React.Component<Props> {
   }
 
   public renderErrorMessage () {
-    return !!this.props.error && (
-      <Text type='caption' color={COLORS.R400} style={styles.errorMessage}>
-        {this.props.error}
-      </Text>
-    )
+    if (this.props.error) {
+      return (
+        <Text type='caption' color={COLORS.R400} style={styles.errorMessage}>
+          {this.props.error}
+        </Text>
+      )
+    } else if (this.props.warning) {
+      return (
+        <Text type='caption' color={COLORS.Y400} style={styles.errorMessage}>
+          {this.props.warning}
+        </Text>
+      )
+    } else {
+      return null
+    }
   }
 
-  public getDescriptionColor () {
+  public getColor () {
     if (this.props.error) {
       return COLORS.R400
+    } else if (this.props.warning) {
+      return COLORS.Y400
     } else if (this.props.active) {
       return COLORS.P400
     } else {
@@ -85,12 +98,12 @@ export default class AssetBox extends React.Component<Props> {
     return (
       <View>
         <Layer
-          style={[styles.container, this.props.error && styles.errorContainer]}
+          style={[styles.container, this.props.warning && styles.warningContainer, this.props.error && styles.errorContainer]}
           onPress={this.onPress}
           active={this.props.active}
         >
           <View style={styles.leftContainer}>
-            <Text type='caption' color={this.getDescriptionColor()}>
+            <Text type='caption' color={this.getColor()}>
               {this.props.description}
             </Text>
             <TextInput
@@ -101,7 +114,7 @@ export default class AssetBox extends React.Component<Props> {
               maxLength={10}
               autoFocus={this.props.autoFocus}
               placeholderTextColor={this.props.active ? COLORS.P100 : COLORS.N300}
-              selectionColor={this.props.error ? COLORS.R400 : COLORS.P400}
+              selectionColor={this.getColor()}
               onChangeText={text =>
                 this.props.onChangeValue(this.formatNumberInString(text))
               }
@@ -128,6 +141,10 @@ export default class AssetBox extends React.Component<Props> {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row'
+  },
+  warningContainer: {
+    borderColor: COLORS.Y400,
+    borderWidth: 1
   },
   errorContainer: {
     borderColor: COLORS.R400,
