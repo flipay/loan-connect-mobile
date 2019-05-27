@@ -1,5 +1,4 @@
 import React from 'react'
-import { TextStyle } from 'react-native'
 import Text from './Text'
 import { AssetId, FontType } from '../types'
 import { ASSETS } from '../constants'

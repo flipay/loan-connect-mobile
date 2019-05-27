@@ -287,7 +287,7 @@ export default class VerifyPhoneNumberScreen extends React.Component<
       >
         {(autoFocus: boolean) => (
           <SafeAreaView style={styles.content}>
-            <Text type='title' style={styles.title}>{`Enter the 6-digit code sent to ${this.props.navigation.getParam(
+            <Text type='title'>{`Enter the 6-digit code sent to ${this.props.navigation.getParam(
               'phoneNumber',
               '08XXXXXXXX'
             )} (Ref: ${this.props.navigation.getParam('refCode', 'XXXX')})`}</Text>
@@ -304,9 +304,6 @@ export default class VerifyPhoneNumberScreen extends React.Component<
 const styles = StyleSheet.create({
   content: {
     flex: 1
-  },
-  title: {
-    marginTop: 42
   },
   boxes: {
     marginTop: 24,
