@@ -81,19 +81,6 @@ export default class TradeScreen extends React.Component<
     clearTimeout(this.timeout)
   }
 
-  public disableTrade (errorMessage?: string) {
-    if (this.mounted) {
-      this.setState({
-        competitorThbAmounts: undefined,
-        lastFetchSuccessfullyGiveAmount: undefined,
-        lastFetchSuccessfullyTakeAmount: undefined,
-        giveAssetBoxWarningMessage: errorMessage,
-        takeAssetBoxValue: '',
-        loading: false
-      })
-    }
-  }
-
   public handleMinimumAmount (initialAmount: number, flipayResponseAmount: number) {
     const side = this.props.navigation.getParam('side', 'buy')
     const assetId: AssetId = this.props.navigation.getParam('assetId', 'BTC')
@@ -110,7 +97,22 @@ export default class TradeScreen extends React.Component<
         const minimumCryptoAmount = multiplier * cryptoAmount * buffer
         minimumAmount = `${toString(minimumCryptoAmount, ASSETS[assetId].decimal)} ${ASSETS[assetId].unit}`
       }
-      throw(Error(`${minimumAmount} is the minimum amount.`))
+      this.setState({
+        giveAssetBoxWarningMessage: `${minimumAmount} is the minimum amount.`
+      })
+      throw(Error('below_minimum'))
+    }
+  }
+
+  public disableTrade = () => {
+    if (this.mounted) {
+      this.setState({
+        competitorThbAmounts: undefined,
+        lastFetchSuccessfullyGiveAmount: undefined,
+        lastFetchSuccessfullyTakeAmount: undefined,
+        takeAssetBoxValue: '',
+        loading: false
+      })
     }
   }
 
@@ -160,16 +162,15 @@ export default class TradeScreen extends React.Component<
         })
       }
     } catch (err) {
+      this.disableTrade()
       if (getErrorCode(err) === 'rate_unavailable') {
-        this.disableTrade('Maximum amount exceeded')
-      } else if (err.message) {
-        this.disableTrade(err.message)
-      } else {
-        this.disableTrade()
+        this.setState({
+          giveAssetBoxWarningMessage: 'Maximum amount exceeded'
+        })
+      } else if (err.message !== 'below_minimum') {
         throw (err)
       }
     }
-
   }
 
   public onPressAssetBox = (assetBox: AssetBoxType) => {
