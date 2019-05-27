@@ -23,7 +23,7 @@ export const COLORS = {
   G400: '#41DC89',
   R400: '#FE4747',
   R200: '#EE9595',
-  Y400: '#FBB328',
+  Y400: '#FFA800',
   WHITE: '#FFFFFF'
 }
 
