@@ -28,7 +28,7 @@ interface State {
   activeAssetBox: AssetBoxType
   giveAssetBoxValue: string
   takeAssetBoxValue: string
-  giveAssetBoxErrorMessage: string
+  giveAssetBoxErrorMessage?: string
   typing: boolean
   loading: boolean
   lastFetchSuccessfullyGiveAmount?: string
@@ -52,7 +52,6 @@ export default class TradeScreen extends React.Component<
       activeAssetBox: 'give',
       giveAssetBoxValue: '',
       takeAssetBoxValue: '',
-      giveAssetBoxErrorMessage: '',
       typing: false,
       loading: false,
       executed: false,
@@ -82,7 +81,7 @@ export default class TradeScreen extends React.Component<
     clearTimeout(this.timeout)
   }
 
-  public showError (errorMessage: string) {
+  public disableTrade (errorMessage?: string) {
     if (this.mounted) {
       this.setState({
         competitorThbAmounts: undefined,
@@ -92,6 +91,26 @@ export default class TradeScreen extends React.Component<
         takeAssetBoxValue: '',
         loading: false
       })
+    }
+  }
+
+  public handleMinimumAmount (initialAmount: number, flipayResponseAmount: number) {
+    const side = this.props.navigation.getParam('side', 'buy')
+    const assetId: AssetId = this.props.navigation.getParam('assetId', 'BTC')
+    const minimumThaiAmount = 300
+    const thaiAmount = side === 'buy' ? initialAmount : flipayResponseAmount
+    const cryptoAmount = side === 'buy' ? flipayResponseAmount : initialAmount
+    if (thaiAmount > 0 && thaiAmount < minimumThaiAmount) {
+      let minimumAmount
+      if (side === 'buy') {
+        minimumAmount = `${minimumThaiAmount} THB`
+      } else {
+        const buffer = 1.05
+        const multiplier = minimumThaiAmount / thaiAmount
+        const minimumCryptoAmount = multiplier * cryptoAmount * buffer
+        minimumAmount = `${toString(minimumCryptoAmount, ASSETS[assetId].decimal)} ${ASSETS[assetId].unit}`
+      }
+      throw(Error(`${minimumAmount} is the minimum amount.`))
     }
   }
 
@@ -122,37 +141,32 @@ export default class TradeScreen extends React.Component<
           ? amount
           : toNumber(this.state.giveAssetBoxValue)
       )
-      const minimumThaiAmount = 300
-      const thaiAmount = side === 'buy' ? toNumber(initialValue) : toNumber(flipayResponseValue)
-      const cryptoAmount = side === 'buy' ? toNumber(flipayResponseValue) : toNumber(initialValue)
-      if (thaiAmount < minimumThaiAmount) {
-        let minimumAmount
-        if (side === 'buy') {
-          minimumAmount = `${minimumThaiAmount} THB`
-        } else {
-          const buffer = 1.1
-          const multiplier = minimumThaiAmount / thaiAmount
-          const minimumCryptoAmount = multiplier * cryptoAmount * buffer
-          minimumAmount = `${toString(minimumCryptoAmount, ASSETS[assetId].decimal)} ${ASSETS[assetId].unit}`
-        }
-        this.showError(`${minimumAmount} is the minimum amount.`)
+
+      if (toNumber(flipayResponseValue) === 0) {
+        this.disableTrade()
         return
       }
+
+      this.handleMinimumAmount(toNumber(initialValue), toNumber(flipayResponseValue))
+
       if (this.mounted) {
         this.setState({
           competitorThbAmounts: result,
           lastFetchSuccessfullyGiveAmount: initialValue,
           lastFetchSuccessfullyTakeAmount: flipayResponseValue,
-          giveAssetBoxErrorMessage: '',
+          giveAssetBoxErrorMessage: undefined,
           takeAssetBoxValue: flipayResponseValue,
           loading: false
         })
       }
     } catch (err) {
-      if (getErrorCode(err) === 'rate_unavailable') { // NOTE: Not enough reserve
-        this.showError('Maximum amount exceeded')
+      if (getErrorCode(err) === 'rate_unavailable') {
+        this.disableTrade('Maximum amount exceeded')
+      } else if (err.message) {
+        this.disableTrade(err.message)
       } else {
-        throw(err)
+        this.disableTrade()
+        throw (err)
       }
     }
 
