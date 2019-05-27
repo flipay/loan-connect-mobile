@@ -11,7 +11,7 @@ import {
   Link
 } from '../components'
 import { COLORS, ASSETS, THBAmountTypes } from '../constants'
-import { AssetId, OrderPart } from '../types'
+import { AssetId, OrderPart, OrderType } from '../types'
 import { getAmount, order, getCompetitorTHBAmounts } from '../requests'
 import {
   toNumber,
@@ -82,6 +82,19 @@ export default class TradeScreen extends React.Component<
     clearTimeout(this.timeout)
   }
 
+  public showError (errorMessage: string) {
+    if (this.mounted) {
+      this.setState({
+        competitorThbAmounts: undefined,
+        lastFetchSuccessfullyGiveAmount: undefined,
+        lastFetchSuccessfullyTakeAmount: undefined,
+        giveAssetBoxErrorMessage: errorMessage,
+        takeAssetBoxValue: '',
+        loading: false
+      })
+    }
+  }
+
   public getAmount = async () => {
     const activeAssetBox = this.state.activeAssetBox
     const initialValue =
@@ -103,12 +116,28 @@ export default class TradeScreen extends React.Component<
       const responseAsset = side === 'buy' ? assetId : 'THB'
       flipayResponseValue = toString(amount, ASSETS[responseAsset].decimal)
       const result = await getCompetitorTHBAmounts(
-        this.props.navigation.getParam('side', 'buy'),
-        this.props.navigation.getParam('assetId', 'BTC'),
-        this.props.navigation.getParam('side', 'buy') === 'buy'
+        side,
+        assetId,
+        side === 'buy'
           ? amount
           : toNumber(this.state.giveAssetBoxValue)
       )
+      const minimumThaiAmount = 300
+      const thaiAmount = side === 'buy' ? toNumber(initialValue) : toNumber(flipayResponseValue)
+      const cryptoAmount = side === 'buy' ? toNumber(flipayResponseValue) : toNumber(initialValue)
+      if (thaiAmount < minimumThaiAmount) {
+        let minimumAmount
+        if (side === 'buy') {
+          minimumAmount = `${minimumThaiAmount} THB`
+        } else {
+          const buffer = 1.1
+          const multiplier = minimumThaiAmount / thaiAmount
+          const minimumCryptoAmount = multiplier * cryptoAmount * buffer
+          minimumAmount = `${toString(minimumCryptoAmount, ASSETS[assetId].decimal)} ${ASSETS[assetId].unit}`
+        }
+        this.showError(`${minimumAmount} is the minimum amount.`)
+        return
+      }
       if (this.mounted) {
         this.setState({
           competitorThbAmounts: result,
@@ -120,15 +149,8 @@ export default class TradeScreen extends React.Component<
         })
       }
     } catch (err) {
-      if (getErrorCode(err) === 'rate_unavailable') {
-        this.setState({
-          competitorThbAmounts: undefined,
-          lastFetchSuccessfullyGiveAmount: initialValue,
-          lastFetchSuccessfullyTakeAmount: undefined,
-          giveAssetBoxErrorMessage: 'Maximum amount exceeded',
-          takeAssetBoxValue: '',
-          loading: false
-        })
+      if (getErrorCode(err) === 'rate_unavailable') { // NOTE: Not enough reserve
+        this.showError('Maximum amount exceeded')
       } else {
         throw(err)
       }
