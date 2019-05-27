@@ -64,7 +64,7 @@ export default class AssetBox extends React.Component<Props> {
 
   public renderErrorMessage () {
     return !!this.props.error && (
-      <Text type='caption' color={COLORS.R400}>
+      <Text type='caption' color={COLORS.R400} style={styles.errorMessage}>
         {this.props.error}
       </Text>
     )
@@ -101,7 +101,7 @@ export default class AssetBox extends React.Component<Props> {
               maxLength={10}
               autoFocus={this.props.autoFocus}
               placeholderTextColor={this.props.active ? COLORS.P100 : COLORS.N300}
-              selectionColor={COLORS.P400}
+              selectionColor={this.props.error ? COLORS.R400 : COLORS.P400}
               onChangeText={text =>
                 this.props.onChangeValue(this.formatNumberInString(text))
               }
@@ -153,5 +153,8 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     paddingLeft: 16
+  },
+  errorMessage: {
+    marginTop: 8
   }
 })

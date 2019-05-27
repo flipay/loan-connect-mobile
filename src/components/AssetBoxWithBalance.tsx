@@ -34,7 +34,7 @@ export default class AssetBoxWithBalance extends React.Component<Props> {
 
   public renderBalanceSection () {
     return (
-      <View style={styles.balanceSection}>
+      <View style={[styles.balanceSection, !!this.props.error && styles.errorBalanceSection]}>
         <View style={styles.buttonGroup}>
           {this.renderSmallbutton('Max', this.props.onPressMax)}
           {this.renderSmallbutton('Half', this.props.onPressHalf)}
@@ -75,6 +75,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center'
+  },
+  errorBalanceSection: {
+    marginTop: 8
   },
   buttonGroup: {
     flexDirection: 'row'
