@@ -28,7 +28,7 @@ interface State {
   activeAssetBox: AssetBoxType
   giveAssetBoxValue: string
   takeAssetBoxValue: string
-  giveAssetBoxErrorMessage?: string
+  giveAssetBoxWarningMessage?: string
   typing: boolean
   loading: boolean
   lastFetchSuccessfullyGiveAmount?: string
@@ -87,7 +87,7 @@ export default class TradeScreen extends React.Component<
         competitorThbAmounts: undefined,
         lastFetchSuccessfullyGiveAmount: undefined,
         lastFetchSuccessfullyTakeAmount: undefined,
-        giveAssetBoxErrorMessage: errorMessage,
+        giveAssetBoxWarningMessage: errorMessage,
         takeAssetBoxValue: '',
         loading: false
       })
@@ -154,7 +154,7 @@ export default class TradeScreen extends React.Component<
           competitorThbAmounts: result,
           lastFetchSuccessfullyGiveAmount: initialValue,
           lastFetchSuccessfullyTakeAmount: flipayResponseValue,
-          giveAssetBoxErrorMessage: undefined,
+          giveAssetBoxWarningMessage: undefined,
           takeAssetBoxValue: flipayResponseValue,
           loading: false
         })
@@ -358,7 +358,7 @@ export default class TradeScreen extends React.Component<
             onPressMax={() => this.onChangeValue('give', toString(remainingBalance, ASSETS[giveSideAssetId].decimal))}
             onPressHalf={() => this.onChangeValue('give', toString(remainingBalance / 2, ASSETS[giveSideAssetId].decimal))}
             balance={remainingBalance}
-            error={this.state.giveAssetBoxErrorMessage}
+            warning={this.state.giveAssetBoxWarningMessage}
           />
           <AssetBoxTemp
             description={
