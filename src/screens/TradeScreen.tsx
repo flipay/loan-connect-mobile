@@ -28,6 +28,7 @@ interface State {
   activeAssetBox: AssetBoxType
   giveAssetBoxValue: string
   takeAssetBoxValue: string
+  giveAssetBoxErrorMessage: string
   typing: boolean
   loading: boolean
   lastFetchSuccessfullyGiveAmount?: string
@@ -51,6 +52,7 @@ export default class TradeScreen extends React.Component<
       activeAssetBox: 'give',
       giveAssetBoxValue: '',
       takeAssetBoxValue: '',
+      giveAssetBoxErrorMessage: '',
       typing: false,
       loading: false,
       executed: false,
@@ -90,41 +92,52 @@ export default class TradeScreen extends React.Component<
     let flipayResponseValue = '0'
     const side = this.props.navigation.getParam('side', 'buy')
     const assetId: AssetId = this.props.navigation.getParam('assetId', 'BTC')
-    const amount = await getAmount(
-      side,
-      assetId,
-      activeAssetBox,
-      num,
-      'liquid'
-    )
-    const responseAsset = side === 'buy' ? assetId : 'THB'
-    flipayResponseValue = toString(amount, ASSETS[responseAsset].decimal)
-    const result = await getCompetitorTHBAmounts(
-      this.props.navigation.getParam('side', 'buy'),
-      this.props.navigation.getParam('assetId', 'BTC'),
-      this.props.navigation.getParam('side', 'buy') === 'buy'
-        ? amount
-        : toNumber(this.state.giveAssetBoxValue)
-    )
-    if (this.mounted) {
-      if (activeAssetBox === 'give') {
+    try {
+      const amount = await getAmount(
+        side,
+        assetId,
+        activeAssetBox,
+        num,
+        'liquid'
+      )
+      const responseAsset = side === 'buy' ? assetId : 'THB'
+      flipayResponseValue = toString(amount, ASSETS[responseAsset].decimal)
+      const result = await getCompetitorTHBAmounts(
+        this.props.navigation.getParam('side', 'buy'),
+        this.props.navigation.getParam('assetId', 'BTC'),
+        this.props.navigation.getParam('side', 'buy') === 'buy'
+          ? amount
+          : toNumber(this.state.giveAssetBoxValue)
+      )
+      if (this.mounted) {
+        if (activeAssetBox === 'give') {
+          this.setState({
+            competitorThbAmounts: result,
+            lastFetchSuccessfullyGiveAmount: initialValue,
+            lastFetchSuccessfullyTakeAmount: flipayResponseValue,
+            giveAssetBoxErrorMessage: '',
+            takeAssetBoxValue: flipayResponseValue,
+            loading: false
+          })
+        } else {
+          this.setState({
+            competitorThbAmounts: result,
+            lastFetchSuccessfullyGiveAmount: flipayResponseValue,
+            lastFetchSuccessfullyTakeAmount: initialValue,
+            giveAssetBoxValue: flipayResponseValue,
+            giveAssetBoxErrorMessage: '',
+            loading: false
+          })
+        }
+      }
+    } catch (err) {
+      if (getErrorCode(err) === 'rate_unavailable') {
         this.setState({
-          competitorThbAmounts: result,
-          lastFetchSuccessfullyGiveAmount: initialValue,
-          lastFetchSuccessfullyTakeAmount: flipayResponseValue,
-          takeAssetBoxValue: flipayResponseValue,
-          loading: false
-        })
-      } else {
-        this.setState({
-          competitorThbAmounts: result,
-          lastFetchSuccessfullyGiveAmount: flipayResponseValue,
-          lastFetchSuccessfullyTakeAmount: initialValue,
-          giveAssetBoxValue: flipayResponseValue,
-          loading: false
+          giveAssetBoxErrorMessage: 'Maximum amount exceeded'
         })
       }
     }
+
   }
 
   public onPressAssetBox = (assetBox: AssetBoxType) => {
@@ -313,6 +326,7 @@ export default class TradeScreen extends React.Component<
             onPressMax={() => this.onChangeValue('give', toString(remainingBalance, ASSETS[giveSideAssetId].decimal))}
             onPressHalf={() => this.onChangeValue('give', toString(remainingBalance / 2, ASSETS[giveSideAssetId].decimal))}
             balance={remainingBalance}
+            error={this.state.giveAssetBoxErrorMessage}
           />
           <AssetBoxTemp
             description={

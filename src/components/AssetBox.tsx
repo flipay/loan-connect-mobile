@@ -63,7 +63,7 @@ export default class AssetBox extends React.Component<Props> {
   }
 
   public renderErrorMessage () {
-    return this.props.error && (
+    return !!this.props.error && (
       <Text type='caption' color={COLORS.R400}>
         {this.props.error}
       </Text>
