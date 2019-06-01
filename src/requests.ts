@@ -5,7 +5,7 @@ import Promise from 'bluebird'
 import Sentry from 'sentry-expo'
 import { OrderType, OrderPart, AssetId } from './types'
 import { ASSETS, COMPETITOR_IDS } from './constants'
-import { setToken, getToken } from './secureStorage'
+import { setToken, getToken, clearToken } from './secureStorage'
 import { setPhoneNumber, markFirstDepositAsDone } from './asyncStorage'
 import { getErrorCode, getErrorDetail, alert } from './utils'
 import { identify } from './analytics'
@@ -44,6 +44,26 @@ export function setUpRequest (nav: any) {
   // 'http://192.168.0.4:8000'
   axios.defaults.baseURL = 'https://api.flipay.co/v1/'
   navigation = nav
+
+  axios.interceptors.response.use((response) => {
+    return response
+  }, (err) => {
+    if (getErrorCode(err) === 'unauthorized') {
+      Alert.alert(
+        'The login token has expired.',
+        'Please login again.',
+        [{
+          text: 'OK',
+          onPress: async () => {
+            await clearToken()
+            navigation.navigate('Starter')
+          }
+        }],
+        { cancelable: false }
+      )
+    }
+    return Promise.reject(err)
+  })
 }
 
 function setLockTimeout () {
