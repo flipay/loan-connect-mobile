@@ -6,6 +6,7 @@ import Text from './Text'
 
 interface Props {
   id: AssetId
+  withUnit?: boolean
   style?: any
   bodySize?: boolean
 }
@@ -26,6 +27,12 @@ export default class Asset extends React.Component<Props> {
           style={bodySize ? styles.bodySizeText : styles.text}
         >
           {name}
+        </Text>
+        <Text
+          type={bodySize ? 'body' : 'headline'}
+          color={COLORS.N800}
+        >
+          {` (${ASSETS[this.props.id].unit})`}
         </Text>
       </View>
     )
