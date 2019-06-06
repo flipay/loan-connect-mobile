@@ -10,6 +10,7 @@ import { FontAwesome } from '@expo/vector-icons'
 
 import Starter from './Starter'
 import MarketScreen from './screens/MarketScreen'
+import AssetScreen from './screens/AssetScreen'
 import WalletsScreen from './screens/WalletsScreen'
 import WelcomeScreen from './screens/WelcomeScreen'
 import AuthenScreen from './screens/AuthenScreen'
@@ -44,12 +45,28 @@ const VerificationStack = createStackNavigator(
   }
 )
 
+const MarketStack = createStackNavigator(
+  {
+    Market: { screen: MarketScreen },
+    Asset: { screen: AssetScreen },
+    Trade: { screen: TradeScreen }
+  },
+  {
+    mode: 'modal',
+    headerMode: 'none',
+    navigationOptions: ({ navigation }) => {
+      return {
+        tabBarVisible: navigation.state.index === 0
+      }
+    }
+  }
+)
+
 const WalletsStack = createStackNavigator(
   {
     Wallets: { screen: WalletsScreen },
     Deposit: { screen: DepositScreen },
     Withdrawal: { screen: WithdrawalScreen },
-    Trade: { screen: TradeScreen },
     Comparison: { screen: ComparisonScreen }
   },
   {
@@ -66,7 +83,7 @@ const WalletsStack = createStackNavigator(
 const MainApp = createBottomTabNavigator(
   {
     Market: {
-      screen: MarketScreen,
+      screen: MarketStack,
       navigationOptions: {
         tabBarOnPress: ({ navigation }: any) => {
           logEvent('tab-bar/press-market-menu')

@@ -1,6 +1,7 @@
 import * as React from 'react'
 import _ from 'lodash'
-import { View, StyleSheet, Image } from 'react-native'
+import { View, StyleSheet, Image, TouchableOpacity } from 'react-native'
+import { NavigationScreenProps } from 'react-navigation'
 import { Text, Layer, Value, ChangeBox } from '../components'
 import { AssetId } from '../types'
 import { ASSETS, COLORS } from '../constants'
@@ -15,9 +16,9 @@ interface State {
   assets: Array<Asset>
 }
 
-export default class MarketScreen extends React.Component<{}, State> {
+export default class MarketScreen extends React.Component<NavigationScreenProps, State> {
 
-  public constructor (props: {}) {
+  public constructor (props: NavigationScreenProps) {
     super(props)
     this.state = {
       assets: []
@@ -45,6 +46,10 @@ export default class MarketScreen extends React.Component<{}, State> {
     })
   }
 
+  public onPressAsset = (assetId: AssetId) => {
+    this.props.navigation.navigate('Asset', { assetId })
+  }
+
   public renderAssetIdentity (asset: Asset) {
     return (
       <View style={styles.assetIdentity}>
@@ -68,11 +73,11 @@ export default class MarketScreen extends React.Component<{}, State> {
 
   public renderAsset (asset: Asset, index: number) {
     return (
-      <View key={asset.id}>
-        <View style={styles.asset}>
+      <View key={asset.id} style={styles.assetContainer}>
+        <TouchableOpacity style={styles.asset} onPress={() => this.onPressAsset(asset.id)}>
           {this.renderAssetIdentity(asset)}
           {this.renderPriceDetail(asset)}
-        </View>
+        </TouchableOpacity>
         {index !== this.state.assets.length - 1 && <View style={styles.line} />}
       </View>
     )
@@ -80,7 +85,7 @@ export default class MarketScreen extends React.Component<{}, State> {
 
   public renderMarketData () {
     return (
-      <Layer style={styles.layer}>
+      <Layer>
         {_.map(this.state.assets, (asset, index) => this.renderAsset(asset, index))}
       </Layer>
     )
@@ -103,7 +108,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     backgroundColor: COLORS.N100
   },
-  layer: {
+  assetContainer: {
     paddingHorizontal: 12
   },
   asset: {
