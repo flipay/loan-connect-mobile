@@ -3,7 +3,7 @@ import _ from 'lodash'
 import { View, StyleSheet, Image } from 'react-native'
 import { Text, Layer, Value, ChangeBox } from '../components'
 import { AssetId } from '../types'
-import { ASSETS } from '../constants'
+import { ASSETS, COLORS } from '../constants'
 
 interface Asset {
   id: AssetId
@@ -17,8 +17,8 @@ interface State {
 
 export default class MarketScreen extends React.Component<{}, State> {
 
-  public constructor () {
-    super({})
+  public constructor (props: {}) {
+    super(props)
     this.state = {
       assets: []
     }
@@ -48,7 +48,7 @@ export default class MarketScreen extends React.Component<{}, State> {
   public renderAssetIdentity (asset: Asset) {
     return (
       <View style={styles.assetIdentity}>
-        <Image source={ASSETS[asset.id].image} style={{ width: 24, height: 24 }}/>
+        <Image source={ASSETS[asset.id].image} style={styles.icon}/>
         <View>
           <Text type='headline'>{ASSETS[asset.id].name}</Text>
           <Text type='caption'>{ASSETS[asset.id].unit}</Text>
@@ -66,26 +66,29 @@ export default class MarketScreen extends React.Component<{}, State> {
     )
   }
 
-  public renderAsset (asset: Asset) {
+  public renderAsset (asset: Asset, index: number) {
     return (
-      <View style={styles.asset}>
-        {this.renderAssetIdentity(asset)}
-        {this.renderPriceDetail(asset)}
+      <View key={asset.id}>
+        <View style={styles.asset}>
+          {this.renderAssetIdentity(asset)}
+          {this.renderPriceDetail(asset)}
+        </View>
+        {index !== this.state.assets.length - 1 && <View style={styles.line} />}
       </View>
     )
   }
 
   public renderMarketData () {
     return (
-      <Layer>
-        {_.map(this.state.assets, asset => this.renderAsset(asset))}
+      <Layer style={styles.layer}>
+        {_.map(this.state.assets, (asset, index) => this.renderAsset(asset, index))}
       </Layer>
     )
   }
 
   public render () {
     return (
-      <View style={{ flex: 1 }}>
+      <View style={styles.screen}>
         <Text type='large-title'>Market</Text>
         <Text type='body'>See what's going on in crypto market</Text>
         {this.renderMarketData()}
@@ -95,14 +98,28 @@ export default class MarketScreen extends React.Component<{}, State> {
 }
 
 const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    paddingHorizontal: 12,
+    backgroundColor: COLORS.N100
+  },
+  layer: {
+    paddingHorizontal: 12
+  },
   asset: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center'
+    alignItems: 'center',
+    paddingVertical: 22
   },
   assetIdentity: {
     flexDirection: 'row',
     alignItems: 'center'
+  },
+  icon: {
+    width: 24,
+    height: 24,
+    marginRight: 8
   },
   priceDetail: {
     flex: 1,
@@ -114,7 +131,8 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     justifyContent: 'flex-end'
   },
-  changeBox: {
-    flexDirection: 'row'
+  line: {
+    height: 1,
+    backgroundColor: COLORS.N200
   }
 })
