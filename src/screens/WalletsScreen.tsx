@@ -25,7 +25,7 @@ interface State {
   transferModalVisible: boolean
 }
 
-export default class MainScreen extends React.Component<
+export default class WalletsScreen extends React.Component<
   NavigationScreenProps,
   State
 > {
@@ -73,12 +73,12 @@ export default class MainScreen extends React.Component<
 
   public onPress = (assetId: AssetId) => {
     if (this.state.selectedAsset === assetId) {
-      logEvent('main/close-asset-card', {
+      logEvent('wallets/close-asset-card', {
         assetId: assetId
       })
       this.setState({ selectedAsset: null })
     } else {
-      logEvent('main/open-asset-card', {
+      logEvent('wallets/open-asset-card', {
         assetId: assetId
       })
       this.setState({ selectedAsset: assetId })
@@ -90,7 +90,7 @@ export default class MainScreen extends React.Component<
   }
 
   public onPressDepositFromWelcomeMessage = () => {
-    logEvent('main/press-deposit-from-welcome-message')
+    logEvent('wallets/press-deposit-from-welcome-message')
     this.props.navigation.navigate('Deposit')
   }
 
@@ -137,12 +137,12 @@ export default class MainScreen extends React.Component<
   }
 
   public onPressTransferButton = (assetId: AssetId) => {
-    logEvent('main/press-transfer-button', { assetId })
+    logEvent('wallets/press-transfer-button', { assetId })
     this.setState({ transferModalVisible: true })
   }
 
   public onRefresh = async () => {
-    logEvent('main/pull-the-screen-to-reload')
+    logEvent('wallets/pull-the-screen-to-reload')
     this.setState({ refreshing: true })
     await this.fetchData()
     this.setState({ refreshing: false })
@@ -150,7 +150,7 @@ export default class MainScreen extends React.Component<
 
   public onPressDeposit = (assetId: AssetId) => {
     return () => {
-      logEvent('main/press-deposit-button-on-tranfer-modal', { assetId })
+      logEvent('wallets/press-deposit-button-on-tranfer-modal', { assetId })
       this.setState({ transferModalVisible: false })
       this.props.navigation.navigate('Deposit', { assetId: this.state.selectedAsset })
     }
@@ -158,7 +158,7 @@ export default class MainScreen extends React.Component<
 
   public onPressWithdraw = (remainingBalance: number, assetId: AssetId) => {
     return () => {
-      logEvent('main/press-withdraw-button-on-tranfer-modal', { assetId })
+      logEvent('wallets/press-withdraw-button-on-tranfer-modal', { assetId })
       this.setState({ transferModalVisible: false })
       this.props.navigation.navigate('Withdrawal', {
         assetId: this.state.selectedAsset,
@@ -169,7 +169,7 @@ export default class MainScreen extends React.Component<
 
   public onPressOutsideModal = (assetId: AssetId) => {
     return () => {
-      logEvent('main/press-outside-tranfer-modal', { assetId })
+      logEvent('wallets/press-outside-tranfer-modal', { assetId })
       this.setState({ transferModalVisible: false })
     }
   }

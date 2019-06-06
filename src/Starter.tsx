@@ -35,7 +35,7 @@ export default class Start extends React.Component<
           try {
             startLoading()
             await unlock(pin)
-            this.goToMain(stackNavigationLogInPin)
+            this.goToMainApp(stackNavigationLogInPin)
           } catch (err) {
             stopLoading()
             logEvent('unlock/wrong-pin')
@@ -51,7 +51,7 @@ export default class Start extends React.Component<
     }
   }
 
-  public goToMain (navigation: any) {
+  public goToMainApp (navigation: any) {
     logEvent('unlock/successfully-unlock')
     navigation.navigate('Market')
   }

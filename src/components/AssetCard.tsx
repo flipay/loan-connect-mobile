@@ -72,12 +72,12 @@ export default class AssetCard extends React.Component<
   }
 
   public onPressDepositButton = () => {
-    logEvent('main/press-deposit-button')
+    logEvent('wallets/press-deposit-button')
     this.props.navigation.navigate('Deposit', { assetId: 'THB' })
   }
 
   public onPressWithdrawButton = () => {
-    logEvent('main/press-withdraw-button')
+    logEvent('wallets/press-withdraw-button')
     this.props.navigation.navigate('Withdrawal', {
       assetId: 'THB',
       remainingBalance: this.props.amount
@@ -85,7 +85,7 @@ export default class AssetCard extends React.Component<
   }
 
   public onPressButton = (side: 'buy' | 'sell') => {
-    logEvent('main/press-trade-button', {
+    logEvent('wallets/press-trade-button', {
       assetId: this.props.id,
       side
     })
