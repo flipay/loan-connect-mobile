@@ -2,6 +2,7 @@
 import AssetCard from './AssetCard'
 import Button from './Button'
 import CloseButton from './CloseButton'
+import ChangeBox from './ChangeBox'
 import Text from './Text'
 import Value from './Value'
 import TextBox from './TextBox'
@@ -25,6 +26,7 @@ export {
   AssetCard,
   Button,
   CloseButton,
+  ChangeBox,
   Text,
   Value,
   TextBox,
