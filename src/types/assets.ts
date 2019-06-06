@@ -7,10 +7,11 @@ export interface Asset {
   name: string
   image: ImageSourcePropType
   unit: string
-  order: number
   decimal: number
   amount?: number
   price?: number
   address: string
   tag?: string
+  about?: string
+  order: number
 }
