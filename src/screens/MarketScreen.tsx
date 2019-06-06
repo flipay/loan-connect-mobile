@@ -47,8 +47,8 @@ export default class MarketScreen extends React.Component<{}, State> {
 
   public renderAssetIdentity (asset: Asset) {
     return (
-      <View>
-        <Image source={ASSETS[asset.id].image} />
+      <View style={styles.assetIdentity}>
+        <Image source={ASSETS[asset.id].image} style={{ width: 24, height: 24 }}/>
         <View>
           <Text type='headline'>{ASSETS[asset.id].name}</Text>
           <Text type='caption'>{ASSETS[asset.id].unit}</Text>
@@ -60,7 +60,7 @@ export default class MarketScreen extends React.Component<{}, State> {
   public renderPriceDetail (asset: Asset) {
     return (
       <View style={styles.priceDetail}>
-        <Value assetId='THB'>{asset.price}</Value>
+        <Value assetId='THB' style={styles.price}>{asset.price}</Value>
         <ChangeBox value={asset.dailyChange} />
       </View>
     )
@@ -97,11 +97,22 @@ export default class MarketScreen extends React.Component<{}, State> {
 const styles = StyleSheet.create({
   asset: {
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  },
+  assetIdentity: {
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   priceDetail: {
     flex: 1,
-    flexDirection: 'row'
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  price: {
+    flex: 1,
+    textAlign: 'right',
+    justifyContent: 'flex-end'
   },
   changeBox: {
     flexDirection: 'row'

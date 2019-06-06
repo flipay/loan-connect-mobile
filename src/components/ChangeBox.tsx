@@ -17,14 +17,15 @@ export default class ChangeBox extends React.Component<Props> {
   }
 
   public getColor () {
-    return this.isNegative ? COLORS.R400 : COLORS.G400
+    return this.isNegative() ? COLORS.R400 : COLORS.G400
   }
 
   public render () {
-    const valueInString = toString(this.props.value, 2)
+    const valueInString = toString(Math.abs(this.props.value), 2)
     return (
-      <View style={[styles.container, { backgroundColor: this.getColor() }]}>
+      <View style={[styles.container, { backgroundColor: this.getColor() + '15' }]}>
         <MaterialIcons
+          size={20}
           name={this.isNegative() ? 'arrow-drop-down' : 'arrow-drop-up'}
           color={this.getColor()}
         />
@@ -36,9 +37,10 @@ export default class ChangeBox extends React.Component<Props> {
 
 const styles = StyleSheet.create({
   container: {
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: 8,
     paddingVertical: 4,
-    opacity: 0.15,
     borderRadius: 4
   }
 })
