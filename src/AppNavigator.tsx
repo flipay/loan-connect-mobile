@@ -6,9 +6,10 @@ import {
   createBottomTabNavigator
 } from 'react-navigation'
 
-import { FontAwesome, MaterialIcons } from '@expo/vector-icons'
+import { FontAwesome } from '@expo/vector-icons'
 
 import Starter from './Starter'
+import MarketScreen from './screens/MarketScreen'
 import MainScreen from './screens/MainScreen'
 import WelcomeScreen from './screens/WelcomeScreen'
 import AuthenScreen from './screens/AuthenScreen'
@@ -17,7 +18,6 @@ import TradeScreen from './screens/TradeScreen'
 import DepositScreen from './screens/DepositScreen'
 import WithdrawalScreen from './screens/WithdrawalScreen'
 import ComparisonScreen from './screens/ComparisonScreen'
-// import ActivityScreen from './screens/ActivityScreen'
 import AccountScreen from './screens/AccountScreen'
 import PinScreen from './screens/PinScreen'
 import { Text } from './components'
@@ -65,21 +65,24 @@ const HomeStack = createStackNavigator(
 
 const MainApp = createBottomTabNavigator(
   {
+    Market: {
+      screen: MarketScreen,
+      navigationOptions: {
+        tabBarOnPress: ({ navigation }: any) => {
+          logEvent('tab-bar/press-market-menu')
+          navigation.navigate('Market')
+        }
+      }
+    },
     Home: {
       screen: HomeStack,
       navigationOptions: {
         tabBarOnPress: ({ navigation }: any) => {
-          logEvent('tab-bar/press-buy-sell-menu')
+          logEvent('tab-bar/press-wallets-menu')
           navigation.navigate('Home')
         }
       }
     },
-    // Activity: {
-    //   screen: ActivityScreen,
-    //   navigationOptions: {
-    //     title: 'Activity'
-    //   }
-    // },
     Account: {
       screen: AccountScreen,
       navigationOptions: {
@@ -94,17 +97,15 @@ const MainApp = createBottomTabNavigator(
     defaultNavigationOptions: ({ navigation }) => ({
       tabBarIcon: ({ tintColor }) => {
         const { routeName } = navigation.state
-        let IconComponent = FontAwesome
         let iconName
         if (routeName === 'Home') {
           return <Text style={{ fontFamily: 'flipay-icon', fontSize: 28 }} color={tintColor || undefined}></Text>
-        } else if (routeName === 'Activity') {
-          IconComponent = MaterialIcons
-          iconName = 'history'
+        } else if (routeName === 'Market') {
+          iconName = 'line-chart'
         } else {
           return <Text style={{ fontFamily: 'flipay-icon', fontSize: 28 }} color={tintColor || undefined}></Text>
         }
-        return <IconComponent name={iconName} size={25} color={tintColor || undefined} />
+        return <FontAwesome name={iconName} size={25} color={tintColor || undefined} />
       }
     }),
     tabBarOptions: {

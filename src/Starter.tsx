@@ -53,7 +53,7 @@ export default class Start extends React.Component<
 
   public goToMain (navigation: any) {
     logEvent('unlock/successfully-unlock')
-    navigation.navigate('Main')
+    navigation.navigate('Market')
   }
 
   public render () {
