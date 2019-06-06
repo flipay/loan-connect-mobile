@@ -6,9 +6,7 @@ import { OrderType, OrderPart, AssetId } from '../types'
 import { ASSETS, COMPETITOR_IDS } from '../constants'
 import { getErrorCode } from '../utils'
 
-let btcPrice: any
-
-async function getMarketPrice (assetId: AssetId) {
+async function getMarketPrice (assetId: AssetId, btcPrice: number) {
   if (assetId === 'THB') { return 1 }
   try {
     const response = await axios.get(`tickers?exchange=BX.in.th&pair=${assetId}-THB`, {
@@ -16,12 +14,10 @@ async function getMarketPrice (assetId: AssetId) {
       headers: ''
     })
     const price = response.data.tickers[0].price
-    if (assetId === 'BTC') {
-      btcPrice = price
-    }
     return price
   } catch (err) {
     try {
+      // NOTE: handle the assets which are not available in BX Thailand
       const response = await axios.get(`tickers?exchange=Binance&pair=${assetId}-BTC`, {
         baseURL: 'https://api.coinstats.app/public/v1/',
         headers: ''
@@ -44,15 +40,17 @@ async function getAssetData (assetId: AssetId, assets: any) {
       throw(err)
     }
   }
-  const price = await getMarketPrice(assetId)
+  const price = await getMarketPrice(assetId, assets.BTC.price)
   assets[assetId].price = price
 }
 
 export async function getPortfolio () {
   const assets = ASSETS
   const assetIds = _.map(assets, asset => asset.id)
-
-  await Promise.map(assetIds, (id) => {
+  const btcAssetId = 'BTC'
+  const normalAssetIds = _.reject(assetIds, (id) => id === btcAssetId)
+  await getAssetData(btcAssetId, assets)
+  await Promise.map(normalAssetIds, (id) => {
     return getAssetData(id, assets)
   })
 
