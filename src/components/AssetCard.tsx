@@ -166,7 +166,7 @@ export default class AssetCard extends React.Component<
                     {this.props.amount}
                   </Value>
                   {this.props.id !== 'THB' && <Value assetId='THB' fontType='caption'>
-                    {(this.props.price || 1) * this.props.amount}
+                    {(this.props.price || 0) * this.props.amount}
                   </Value>}
                 </View>
                 <FontAwesome name='angle-down' size={16} color={COLORS.N400} />

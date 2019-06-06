@@ -154,7 +154,6 @@ export default class WithdrawalScreen extends React.Component<
     const addressType = assetId === 'THB' ? 'bank account' : `${ASSETS[assetId].name} address`
     return (
       <View style={styles.resultContainer}>
-        <Text type='title' style={styles.header}>{`Withdrawal ${ASSETS[assetId].name}`}</Text>
         <Text>{`We’ll transfer to your ${addressType} within 24 hours. We may reach out to you by phone if we need more information.`}</Text>
       </View>
     )
@@ -190,8 +189,8 @@ export default class WithdrawalScreen extends React.Component<
                       active={this.state.activeBox === boxes[0]}
                       value={this.state.amount}
                       balance={remainingBalance}
-                      onPressMax={() => this.setState({ amount: toString(remainingBalance, 0) })}
-                      onPressHalf={() => this.setState({ amount: toString(remainingBalance / 2, 0) })}
+                      onPressMax={() => this.setState({ amount: toString(remainingBalance, ASSETS[assetId].decimal) })}
+                      onPressHalf={() => this.setState({ amount: toString(remainingBalance / 2, ASSETS[assetId].decimal) })}
                     />
                     <TextBox
                       style={styles.textBox}
