@@ -60,6 +60,7 @@ export default class AssetScreen extends React.Component<NavigationScreenProps> 
     return (
       <Layer style={styles.footer}>
         <Button primary={true} onPress={() => this.onPressTradeButton('buy')} style={styles.tradeButton}>Buy</Button>
+        <View style={styles.space} />
         <Button primary={true} onPress={() => this.onPressTradeButton('sell')} style={styles.tradeButton}>Sell</Button>
       </Layer>
     )
@@ -107,6 +108,12 @@ const styles = StyleSheet.create({
     flex: 1
   },
   footer: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    paddingTop: 12,
+    paddingHorizontal: 20,
+    paddingBottom: 46
+  },
+  space: {
+    width: 11
   }
 })
