@@ -8,7 +8,7 @@ import {
   AssetBoxWithBalance,
   AssetBoxTemp,
   TradeResult,
-  ScreenWithKeyboard,
+  Screen,
   Link
 } from '../components'
 import { COLORS, ASSETS, THBAmountTypes } from '../constants'
@@ -390,7 +390,7 @@ export default class TradeScreen extends React.Component<
     const side = this.props.navigation.getParam('side', 'buy')
     const assetId: AssetId = this.props.navigation.getParam('assetId', 'BTC')
     return (
-      <ScreenWithKeyboard
+      <Screen
         backButtonType='close'
         title={!this.state.executed ? `${_.capitalize(side)} ${ASSETS[assetId].name}` : undefined}
         onPressBackButton={this.state.executed ? undefined : this.onClose}
@@ -422,7 +422,7 @@ export default class TradeScreen extends React.Component<
             )}
           </View>
         )}
-      </ScreenWithKeyboard>
+      </Screen>
     )
   }
 }

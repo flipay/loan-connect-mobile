@@ -5,7 +5,7 @@ import { TextInput, StyleSheet, Keyboard, SafeAreaView } from 'react-native'
 import { authen } from '../requests'
 import { logEvent } from '../analytics'
 
-import { ScreenWithKeyboard, Text, Layer } from '../components'
+import { Screen, Text, Layer } from '../components'
 
 interface State {
   phoneNumber: string
@@ -53,7 +53,7 @@ export default class AuthenScreen extends React.Component<
 
   public render () {
     return (
-      <ScreenWithKeyboard
+      <Screen
         backButtonType='arrowleft'
         onPressBackButton={this.onPressBackButton}
         activeSubmitButton={this.state.phoneNumber.length === 10}
@@ -81,7 +81,7 @@ export default class AuthenScreen extends React.Component<
               </Layer>
           </SafeAreaView>
         )}
-      </ScreenWithKeyboard>
+      </Screen>
     )
   }
 }

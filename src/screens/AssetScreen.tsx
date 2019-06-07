@@ -2,7 +2,7 @@
 import * as React from 'react'
 import _ from 'lodash'
 import { View, StyleSheet } from 'react-native'
-import { Text, ScreenWithKeyboard, Asset, Button, Layer } from '../components'
+import { Text, Screen, Asset, Button, Layer } from '../components'
 import { NavigationScreenProps } from 'react-navigation'
 import { AssetId, OrderType } from '../types'
 import { ASSETS, COLORS } from '../constants'
@@ -51,7 +51,7 @@ export default class AssetScreen extends React.Component<NavigationScreenProps> 
 
   public render () {
     return (
-      <ScreenWithKeyboard
+      <Screen
         title={this.renderTitle}
         renderFooter={this.renderFooter}
         onPressBackButton={this.onPressBackButton}
@@ -61,7 +61,7 @@ export default class AssetScreen extends React.Component<NavigationScreenProps> 
             {this.renderAboutSection()}
           </View>
         )}
-      </ScreenWithKeyboard>
+      </Screen>
     )
   }
 }

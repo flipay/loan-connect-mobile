@@ -15,7 +15,7 @@ import SubmitButton from './SubmitButton'
 import Layer from './Layer'
 import Asset from './Asset'
 import Key from './Key'
-import ScreenWithKeyboard from './ScreenWithKeyboard'
+import Screen from './Screen'
 import Link from './Link'
 import FullScreenLoading from './FullScreenLoading'
 import Record from './Record'
@@ -39,7 +39,7 @@ export {
   Layer,
   Asset,
   Key,
-  ScreenWithKeyboard,
+  Screen,
   Link,
   FullScreenLoading,
   Record,
