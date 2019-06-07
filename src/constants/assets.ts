@@ -52,7 +52,7 @@ export const ASSETS: AssetTypes = {
     unit: 'BNB',
     decimal: 5,
     address: 'bnb1cqhh44pxqw87vcm3grzvs5la9zn3ldcx6r7k3w',
-    about: 'BNB is the native cryptocurrency of Binance chain that powers the Binance decentralized exchange. It can be used to for other purposes in the Binance ecosystem.',
+    about: 'BNB is the native cryptocurrency of Binance chain that powers the Binance decentralized exchange. It\'s also used for other purposes in the Binance ecosystem.',
     order: 4
   },
   OMG: {

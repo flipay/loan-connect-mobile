@@ -20,6 +20,7 @@ import FullScreenLoading from './FullScreenLoading'
 
 interface Props {
   title?: string | any
+  renderFooter?: () => any
   children: (autoFocus: boolean) => any
   statusBar?: 'white' | 'black'
   onPressBackButton?: () => void
@@ -129,6 +130,7 @@ export default class Screen extends React.Component<Props, State> {
                     )}
                   </View>
                 </ScrollView>
+                {this.props.renderFooter && this.props.renderFooter()}
                 {this.props.onPessSubmitButton && (
                   <SubmitButton
                     onPress={this.props.onPessSubmitButton}
