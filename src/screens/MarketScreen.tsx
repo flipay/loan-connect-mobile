@@ -53,7 +53,14 @@ export default class MarketScreen extends React.Component<NavigationScreenProps,
   public renderAssetIdentity (asset: Asset) {
     return (
       <View style={styles.assetIdentity}>
-        <Image source={ASSETS[asset.id].image} style={styles.icon}/>
+        <Image
+          source={ASSETS[asset.id].image}
+          style={{
+            width: 24,
+            height: 24,
+            marginRight: 8
+          }}
+        />
         <View>
           <Text type='headline'>{ASSETS[asset.id].name}</Text>
           <Text type='caption'>{ASSETS[asset.id].unit}</Text>
@@ -119,11 +126,6 @@ const styles = StyleSheet.create({
   assetIdentity: {
     flexDirection: 'row',
     alignItems: 'center'
-  },
-  icon: {
-    width: 24,
-    height: 24,
-    marginRight: 8
   },
   priceDetail: {
     flex: 1,
