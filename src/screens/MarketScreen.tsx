@@ -46,8 +46,8 @@ export default class MarketScreen extends React.Component<NavigationScreenProps,
     })
   }
 
-  public onPressAsset = (assetId: AssetId) => {
-    this.props.navigation.navigate('Asset', { assetId })
+  public onPressAsset = (asset: Asset) => {
+    this.props.navigation.navigate('Asset', asset)
   }
 
   public renderAssetIdentity (asset: Asset) {
@@ -74,7 +74,7 @@ export default class MarketScreen extends React.Component<NavigationScreenProps,
   public renderAsset (asset: Asset, index: number) {
     return (
       <View key={asset.id} style={styles.assetContainer}>
-        <TouchableOpacity style={styles.asset} onPress={() => this.onPressAsset(asset.id)}>
+        <TouchableOpacity style={styles.asset} onPress={() => this.onPressAsset(asset)}>
           {this.renderAssetIdentity(asset)}
           {this.renderPriceDetail(asset)}
         </TouchableOpacity>

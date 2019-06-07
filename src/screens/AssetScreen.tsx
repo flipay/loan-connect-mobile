@@ -2,10 +2,11 @@
 import * as React from 'react'
 import _ from 'lodash'
 import { View, StyleSheet } from 'react-native'
-import { Text, Screen, Asset, Button, Layer } from '../components'
+import { Text, Screen, Asset, Button, Layer, ChangeBox } from '../components'
 import { NavigationScreenProps } from 'react-navigation'
 import { AssetId, OrderType } from '../types'
 import { ASSETS, COLORS } from '../constants'
+import { toString } from '../utils'
 
 export default class AssetScreen extends React.Component<NavigationScreenProps> {
   public onPressBackButton = () => {
@@ -20,8 +21,23 @@ export default class AssetScreen extends React.Component<NavigationScreenProps> 
     )
   }
 
+  public renderPriceSection () {
+    const price = this.props.navigation.getParam('price')
+    const dailyChange = this.props.navigation.getParam('dailyChange')
+    return this.renderSection(
+      <View style={styles.priceSection}>
+        <View style={styles.price}>
+          <Text type='large-title'>{toString(price, ASSETS.THB.decimal)}</Text>
+          <Text type='headline'>{`  ${ASSETS.THB.unit}`}</Text>
+        </View>
+        <ChangeBox value={dailyChange} />
+        <Text type='caption' style={styles.dailyChange}>24hr change</Text>
+      </View>
+    )
+  }
+
   public renderAboutSection () {
-    const assetId: AssetId = this.props.navigation.getParam('assetId')
+    const assetId: AssetId = this.props.navigation.getParam('id')
     return this.renderSection(
       <View>
         <Text type='title'>{`About ${_.capitalize(ASSETS[assetId].name)}`}</Text>
@@ -31,12 +47,12 @@ export default class AssetScreen extends React.Component<NavigationScreenProps> 
   }
 
   public onPressTradeButton = (side: OrderType) => {
-    const assetId: AssetId = this.props.navigation.getParam('assetId')
+    const assetId: AssetId = this.props.navigation.getParam('id')
     this.props.navigation.navigate('Trade', { side, assetId })
   }
 
   public renderTitle = () => {
-    const assetId: AssetId = this.props.navigation.getParam('assetId')
+    const assetId: AssetId = this.props.navigation.getParam('id')
     return <Asset id={assetId} withUnit={true} />
   }
 
@@ -58,6 +74,7 @@ export default class AssetScreen extends React.Component<NavigationScreenProps> 
       >
         {() => (
           <View style={{ flex: 1 }}>
+            {this.renderPriceSection()}
             {this.renderAboutSection()}
           </View>
         )}
@@ -71,6 +88,17 @@ const styles = StyleSheet.create({
     paddingVertical: 24,
     borderBottomWidth: 1,
     borderBottomColor: COLORS.N200
+  },
+  priceSection: {
+    alignItems: 'center'
+  },
+  price: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8
+  },
+  dailyChange: {
+    marginTop: 5
   },
   aboutContent: {
     marginTop: 16
