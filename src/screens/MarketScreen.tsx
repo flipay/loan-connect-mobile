@@ -2,7 +2,7 @@ import * as React from 'react'
 import _ from 'lodash'
 import { View, StyleSheet, Image, TouchableOpacity } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
-import { Text, Layer, Value, ChangeBox } from '../components'
+import { Text, Layer, Value, ChangeBox, Screen } from '../components'
 import { AssetId } from '../types'
 import { ASSETS, COLORS } from '../constants'
 
@@ -93,21 +93,20 @@ export default class MarketScreen extends React.Component<NavigationScreenProps,
 
   public render () {
     return (
-      <View style={styles.screen}>
-        <Text type='large-title'>Market</Text>
-        <Text type='body'>See what's going on in crypto market</Text>
-        {this.renderMarketData()}
-      </View>
+      <Screen>
+        {() => (
+          <View>
+            <Text type='large-title'>Market</Text>
+            <Text type='body'>See what's going on in crypto market</Text>
+            {this.renderMarketData()}
+          </View>
+        )}
+      </Screen>
     )
   }
 }
 
 const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    paddingHorizontal: 12,
-    backgroundColor: COLORS.N100
-  },
   assetContainer: {
     paddingHorizontal: 12
   },
