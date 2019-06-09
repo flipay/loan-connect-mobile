@@ -64,34 +64,23 @@ export default class App extends React.Component<{}, State> {
   }
 
   public fetchNewVersionIfAvailable = async () => {
-    Sentry.captureException(Error('under fetch newversion if avilable'))
     const fetchNewVersion = async () => {
-      Sentry.captureException(Error('start fetch new version'))
       const { isNew } = await Updates.fetchUpdateAsync()
-      Sentry.captureException(Error(`is new ja: ${isNew}`))
 
       if (isNew) {
-        Sentry.captureException(Error(`before reload from cache`))
-        await Updates.reloadFromCache()
-        Sentry.captureException(Error(`after reload from cache`))
-
+        Updates.reloadFromCache()
       } else {
-        Sentry.captureException(Error(`else ja`))
         const message = 'Could not get the new version of Flipay'
         this.postError(message)
-        Sentry.captureException(Error(message))
       }
     }
     await this.checkNewVersion(fetchNewVersion)
   }
 
   public checkNewVersion = async (action: () => void) => {
-    Sentry.captureException(Error('check new version'))
     if (Constants.manifest.releaseChannel) {
-      Sentry.captureException(Error('have release channel'))
       try {
         const { isAvailable } = await Updates.checkForUpdateAsync()
-        Sentry.captureException(Error(`iavailable ja:'${isAvailable}`))
         if (isAvailable) {
           await action()
         }
@@ -109,7 +98,6 @@ export default class App extends React.Component<{}, State> {
 
   public loadAssetsAsync = async () => {
     await this.fetchNewVersionIfAvailable()
-    Sentry.captureException(Error('finish fetch new version if available'))
     await preloadAssets()
   }
 
