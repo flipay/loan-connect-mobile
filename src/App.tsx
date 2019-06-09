@@ -68,9 +68,15 @@ export default class App extends React.Component<{}, State> {
     const fetchNewVersion = async () => {
       Sentry.captureException(Error('start fetch new version'))
       const { isNew } = await Updates.fetchUpdateAsync()
+      Sentry.captureException(Error(`is new ja: ${isNew}`))
+
       if (isNew) {
-        Updates.reloadFromCache()
+        Sentry.captureException(Error(`before reload from cache`))
+        await Updates.reloadFromCache()
+        Sentry.captureException(Error(`after reload from cache`))
+
       } else {
+        Sentry.captureException(Error(`else ja`))
         const message = 'Could not get the new version of Flipay'
         this.postError(message)
         Sentry.captureException(Error(message))
