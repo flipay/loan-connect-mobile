@@ -64,7 +64,9 @@ export default class App extends React.Component<{}, State> {
   }
 
   public fetchNewVersionIfAvailable = async () => {
+    Sentry.captureException(Error('under fetch newversion if avilable'))
     const fetchNewVersion = async () => {
+      Sentry.captureException(Error('start fetch new version'))
       const { isNew } = await Updates.fetchUpdateAsync()
       if (isNew) {
         Updates.reloadFromCache()
@@ -78,9 +80,12 @@ export default class App extends React.Component<{}, State> {
   }
 
   public checkNewVersion = async (action: () => void) => {
+    Sentry.captureException(Error('check new version'))
     if (Constants.manifest.releaseChannel) {
+      Sentry.captureException(Error('have release channel'))
       try {
         const { isAvailable } = await Updates.checkForUpdateAsync()
+        Sentry.captureException(Error(`iavailable ja:'${isAvailable}`))
         if (isAvailable) {
           await action()
         }
@@ -98,6 +103,7 @@ export default class App extends React.Component<{}, State> {
 
   public loadAssetsAsync = async () => {
     await this.fetchNewVersionIfAvailable()
+    Sentry.captureException(Error('finish fetch new version if available'))
     await preloadAssets()
   }
 
