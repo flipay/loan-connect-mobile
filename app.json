@@ -30,7 +30,8 @@
       "buildNumber": "7"
     },
     "android": {
-      "package": "co.flipay.flipay"
+      "package": "co.flipay.flipay",
+      "versionCode": 3
     },
     "hooks": {
       "postPublish": [
