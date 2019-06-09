@@ -3,6 +3,7 @@ import _ from 'lodash'
 import { View, AsyncStorage } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { setUpRequest, unlock } from './requests'
+import Sentry from 'sentry-expo'
 import { checkLoginStatus, clearToken } from './secureStorage'
 import { isFirstRun, runFirstTime } from './asyncStorage'
 import { logEvent } from './analytics'
@@ -11,6 +12,7 @@ export default class Start extends React.Component<
   NavigationScreenProps
 > {
   public async componentDidMount () {
+    Sentry.captureException(Error('Start running already'))
     setUpRequest(this.props.navigation)
 
     // NOTE: for testing first run
