@@ -5,15 +5,16 @@ import { NavigationScreenProps } from 'react-navigation'
 import { Text, Layer, Value, ChangeBox, Screen } from '../components'
 import { AssetId } from '../types'
 import { ASSETS, COLORS } from '../constants'
+import { fetchMarketPrices } from '../requests'
 
-interface Asset {
+interface PriceData {
   id: AssetId
   price: number,
   dailyChange: number
 }
 
 interface State {
-  assets: Array<Asset>
+  priceDataSet: Array<PriceData>
 }
 
 export default class MarketScreen extends React.Component<NavigationScreenProps, State> {
@@ -21,7 +22,7 @@ export default class MarketScreen extends React.Component<NavigationScreenProps,
   public constructor (props: NavigationScreenProps) {
     super(props)
     this.state = {
-      assets: []
+      priceDataSet: []
     }
   }
 
@@ -29,32 +30,20 @@ export default class MarketScreen extends React.Component<NavigationScreenProps,
     this.fetchMarketData()
   }
 
-  public fetchMarketData () {
-    this.setState({
-      assets: [
-        {
-          id: 'BTC',
-          price: 20,
-          dailyChange: 30.234234
-        },
-        {
-          id: 'BNB',
-          price: 234234234,
-          dailyChange: -8.234234
-        }
-      ]
-    })
+  public async fetchMarketData () {
+    const marketPrices = await fetchMarketPrices()
+    this.setState({ priceDataSet: marketPrices })
   }
 
-  public onPressAsset = (asset: Asset) => {
-    this.props.navigation.navigate('Asset', asset)
+  public onPressAsset = (priceData: PriceData) => {
+    this.props.navigation.navigate('Asset', priceData)
   }
 
-  public renderAssetIdentity (asset: Asset) {
+  public renderAssetIdentity (priceData: PriceData) {
     return (
       <View style={styles.assetIdentity}>
         <Image
-          source={ASSETS[asset.id].image}
+          source={ASSETS[priceData.id].image}
           style={{
             width: 24,
             height: 24,
@@ -62,30 +51,30 @@ export default class MarketScreen extends React.Component<NavigationScreenProps,
           }}
         />
         <View>
-          <Text type='headline'>{ASSETS[asset.id].name}</Text>
-          <Text type='caption'>{ASSETS[asset.id].unit}</Text>
+          <Text type='headline'>{ASSETS[priceData.id].name}</Text>
+          <Text type='caption'>{ASSETS[priceData.id].unit}</Text>
         </View>
       </View>
     )
   }
 
-  public renderPriceDetail (asset: Asset) {
+  public renderPriceDetail (priceData: PriceData) {
     return (
       <View style={styles.priceDetail}>
-        <Value assetId='THB' style={styles.price}>{asset.price}</Value>
-        <ChangeBox value={asset.dailyChange} />
+        <Value assetId='THB' style={styles.price}>{priceData.price}</Value>
+        <ChangeBox value={priceData.dailyChange} />
       </View>
     )
   }
 
-  public renderAsset (asset: Asset, index: number) {
+  public renderAsset (priceData: PriceData, index: number) {
     return (
-      <View key={asset.id} style={styles.assetContainer}>
-        <TouchableOpacity style={styles.asset} onPress={() => this.onPressAsset(asset)}>
-          {this.renderAssetIdentity(asset)}
-          {this.renderPriceDetail(asset)}
+      <View key={priceData.id} style={styles.assetContainer}>
+        <TouchableOpacity style={styles.asset} onPress={() => this.onPressAsset(priceData)}>
+          {this.renderAssetIdentity(priceData)}
+          {this.renderPriceDetail(priceData)}
         </TouchableOpacity>
-        {index !== this.state.assets.length - 1 && <View style={styles.line} />}
+        {index !== this.state.priceDataSet.length - 1 && <View style={styles.line} />}
       </View>
     )
   }
@@ -93,14 +82,17 @@ export default class MarketScreen extends React.Component<NavigationScreenProps,
   public renderMarketData () {
     return (
       <Layer>
-        {_.map(this.state.assets, (asset, index) => this.renderAsset(asset, index))}
+        {_.map(this.state.priceDataSet, (asset, index) => this.renderAsset(asset, index))}
       </Layer>
     )
   }
 
   public render () {
     return (
-      <Screen>
+      <Screen
+        statusBar='black'
+        style={styles.screen}
+      >
         {() => (
           <View>
             <Text type='large-title'>Market</Text>
@@ -114,6 +106,9 @@ export default class MarketScreen extends React.Component<NavigationScreenProps,
 }
 
 const styles = StyleSheet.create({
+  screen: {
+    paddingHorizontal: 12
+  },
   assetContainer: {
     paddingHorizontal: 12
   },

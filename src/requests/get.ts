@@ -34,6 +34,38 @@ interface AssetData {
   priceInBTC?: number
 }
 
+export async function fetchMarketPrices () {
+  const assets = _.map(ASSETS)
+  const results = await Bluebird.map(assets, async (asset) => {
+    let priceInTHB
+    let priceInBTC
+    if (asset.priceSource === 'bxth') {
+      priceInTHB = await getPriceInTHB(asset.id)
+    } else {
+      priceInBTC = await getPriceInBTC(asset.id)
+    }
+    return {
+      ...asset,
+      priceInTHB,
+      priceInBTC
+    }
+  })
+
+  const btc = _.find(results, (asset) => asset.id === 'BTC')
+  let btcPrice: number
+  if (btc) {
+    btcPrice = btc.priceInTHB || 0
+  }
+
+  return _.map(results, (asset) => {
+    return {
+      id: asset.id,
+      price: asset.priceInTHB ? asset.priceInTHB : ((asset.priceInBTC || 0) * btcPrice),
+      dailyChange: 24
+    }
+  })
+}
+
 async function getAssetData (assetId: AssetId): Promise<AssetData> {
   let amount
   try {

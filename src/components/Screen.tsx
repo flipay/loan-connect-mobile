@@ -29,6 +29,7 @@ interface Props {
   submitButtonText?: string
   onPessSubmitButton?: () => void
   fullScreenLoading?: boolean
+  style?: any
 }
 
 interface State {
@@ -121,7 +122,8 @@ export default class Screen extends React.Component<Props, State> {
                   <View
                     style={[
                       styles.content,
-                      this.hasHeader() && styles.contentWithHeader
+                      this.hasHeader() && styles.contentWithHeader,
+                      this.props.style
                     ]}
                   >
                     {this.props.children(
