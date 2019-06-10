@@ -6,6 +6,7 @@ import { Text, Layer, Value, ChangeBox, Screen } from '../components'
 import { AssetId } from '../types'
 import { ASSETS, COLORS } from '../constants'
 import { fetchPriceDataSet } from '../requests'
+import { PricesContextConsumer } from '../context';
 
 interface PriceData {
   id: AssetId
@@ -94,11 +95,18 @@ export default class MarketScreen extends React.Component<NavigationScreenProps,
         style={styles.screen}
       >
         {() => (
-          <View>
-            <Text type='large-title'>Market</Text>
-            <Text type='body'>See what's going on in crypto market</Text>
-            {this.renderMarketData()}
-          </View>
+            <PricesContextConsumer>
+              {({ prices, updatePrices }) => (
+                <View>
+                  <Text type='large-title'>{`Market ${prices}`}</Text>
+                  <Text type='body'>See what's going on in crypto market</Text>
+                  <TouchableOpacity onPress={() => updatePrices()}>
+                    <Text>aldkfjaskldfjasdklfjdsalfj</Text>
+                  </TouchableOpacity>
+                  {this.renderMarketData()}
+                </View>
+              )}
+            </PricesContextConsumer>
         )}
       </Screen>
     )

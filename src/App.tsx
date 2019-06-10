@@ -3,6 +3,7 @@ import { Platform, NetInfo, Alert, AppState, View } from 'react-native'
 import { AppLoading, Updates, Constants } from 'expo'
 import { createAppContainer } from 'react-navigation'
 import Sentry from 'sentry-expo'
+import { ContextProvider } from './context'
 import preloadAssets from './preloadAsssets'
 import AppNavigator from './AppNavigator'
 import { logEvent } from './analytics'
@@ -108,6 +109,10 @@ export default class App extends React.Component<{}, State> {
         onFinish={() => this.setState({ isReady: true })}
         onError={Sentry.captureException}
       />
-    ) : <AppContainer />
+    ) : (
+      <ContextProvider>
+        <AppContainer />
+      </ContextProvider>
+    )
   }
 }
