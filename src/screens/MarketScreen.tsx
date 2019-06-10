@@ -5,7 +5,7 @@ import { NavigationScreenProps } from 'react-navigation'
 import { Text, Layer, Value, ChangeBox, Screen } from '../components'
 import { AssetId } from '../types'
 import { ASSETS, COLORS } from '../constants'
-import { fetchMarketPrices } from '../requests'
+import { fetchPriceDataSet } from '../requests'
 
 interface PriceData {
   id: AssetId
@@ -31,7 +31,7 @@ export default class MarketScreen extends React.Component<NavigationScreenProps,
   }
 
   public async fetchMarketData () {
-    const marketPrices = await fetchMarketPrices()
+    const marketPrices = await fetchPriceDataSet()
     this.setState({ priceDataSet: marketPrices })
   }
 

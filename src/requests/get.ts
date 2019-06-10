@@ -25,6 +25,7 @@ async function getPriceInBTC (assetId: AssetId): Promise<number> {
     baseURL: 'https://api.coinstats.app/public/v1/',
     headers: ''
   })
+
   return response.data.tickers[0].price
 }
 
@@ -32,6 +33,31 @@ interface AssetData {
   amount: number,
   price?: number,
   priceInBTC?: number
+}
+
+export async function fetchPriceDataSet () {
+  const request = axios.create({
+    baseURL: 'https://api.coinstats.app/public/v1/'
+  })
+  const cryptoMarketDataPromise = request.get('coins?skip=0&limit=150')
+  const fiatMarketDataPromise = request.get('fiats')
+  const responses = await Promise.all([cryptoMarketDataPromise, fiatMarketDataPromise])
+  const [cryptoMarketDataResponse, fiatMarketDataResponse] = responses
+  const thbPerDollar = _.find(fiatMarketDataResponse.data, (fiat) => fiat.name === 'THB').rate
+
+  const cryptos = _.reject(ASSETS, (asset) => asset.id === 'THB')
+  return _.map(cryptos, (crypto) => {
+    const { id } = crypto
+    const data = _.find(cryptoMarketDataResponse.data.coins, (coin) => coin.symbol === id)
+    const price = data.price * thbPerDollar
+    const dailyChange = data.priceChange1d
+    return {
+      id,
+      price,
+      dailyChange
+    }
+  })
+
 }
 
 export async function fetchMarketPrices () {
