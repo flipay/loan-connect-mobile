@@ -66,12 +66,12 @@ export default class App extends React.Component<{}, State> {
   public fetchNewVersionIfAvailable = async () => {
     const fetchNewVersion = async () => {
       const { isNew } = await Updates.fetchUpdateAsync()
+
       if (isNew) {
         Updates.reloadFromCache()
       } else {
         const message = 'Could not get the new version of Flipay'
         this.postError(message)
-        Sentry.captureException(Error(message))
       }
     }
     await this.checkNewVersion(fetchNewVersion)
