@@ -11,7 +11,7 @@ import { FontAwesome } from '@expo/vector-icons'
 import Starter from './Starter'
 import MarketScreen from './screens/MarketScreen'
 import AssetScreen from './screens/AssetScreen'
-import WalletsScreen from './screens/WalletsScreen'
+import PortfolioScreen from './screens/PortfolioScreen'
 import WelcomeScreen from './screens/WelcomeScreen'
 import AuthenScreen from './screens/AuthenScreen'
 import VerifyPhoneNumberScreen from './screens/VerifyPhoneNumberScreen'
@@ -62,9 +62,9 @@ const MarketStack = createStackNavigator(
   }
 )
 
-const WalletsStack = createStackNavigator(
+const PortfolioStack = createStackNavigator(
   {
-    Wallets: { screen: WalletsScreen },
+    Portfolio: { screen: PortfolioScreen },
     Deposit: { screen: DepositScreen },
     Withdrawal: { screen: WithdrawalScreen },
     Comparison: { screen: ComparisonScreen }
@@ -91,12 +91,12 @@ const MainApp = createBottomTabNavigator(
         }
       }
     },
-    Wallets: {
-      screen: WalletsStack,
+    Portfolio: {
+      screen: PortfolioStack,
       navigationOptions: {
         tabBarOnPress: ({ navigation }: any) => {
-          logEvent('tab-bar/press-wallets-menu')
-          navigation.navigate('Wallets')
+          logEvent('tab-bar/press-portfolio-menu')
+          navigation.navigate('Portfolio')
         }
       }
     },
@@ -115,7 +115,7 @@ const MainApp = createBottomTabNavigator(
       tabBarIcon: ({ tintColor }) => {
         const { routeName } = navigation.state
         let iconName
-        if (routeName === 'Wallets') {
+        if (routeName === 'Portfolio') {
           return <Text style={{ fontFamily: 'flipay-icon', fontSize: 28 }} color={tintColor || undefined}></Text>
         } else if (routeName === 'Market') {
           iconName = 'line-chart'

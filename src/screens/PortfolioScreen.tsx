@@ -25,7 +25,7 @@ interface State {
   transferModalVisible: boolean
 }
 
-export default class WalletsScreen extends React.Component<
+export default class PortfolioScreen extends React.Component<
   NavigationScreenProps,
   State
 > {
@@ -73,12 +73,12 @@ export default class WalletsScreen extends React.Component<
 
   public onPress = (assetId: AssetId) => {
     if (this.state.selectedAsset === assetId) {
-      logEvent('wallets/close-asset-card', {
+      logEvent('portfolio/close-asset-card', {
         assetId: assetId
       })
       this.setState({ selectedAsset: null })
     } else {
-      logEvent('wallets/open-asset-card', {
+      logEvent('portfolio/open-asset-card', {
         assetId: assetId
       })
       this.setState({ selectedAsset: assetId })
@@ -90,7 +90,7 @@ export default class WalletsScreen extends React.Component<
   }
 
   public onPressDepositFromWelcomeMessage = () => {
-    logEvent('wallets/press-deposit-from-welcome-message')
+    logEvent('portfolio/press-deposit-from-welcome-message')
     this.props.navigation.navigate('Deposit')
   }
 
@@ -137,12 +137,12 @@ export default class WalletsScreen extends React.Component<
   }
 
   public onPressTransferButton = (assetId: AssetId) => {
-    logEvent('wallets/press-transfer-button', { assetId })
+    logEvent('portfolio/press-transfer-button', { assetId })
     this.setState({ transferModalVisible: true })
   }
 
   public onRefresh = async () => {
-    logEvent('wallets/pull-the-screen-to-reload')
+    logEvent('portfolio/pull-the-screen-to-reload')
     this.setState({ refreshing: true })
     await this.fetchData()
     this.setState({ refreshing: false })
@@ -150,7 +150,7 @@ export default class WalletsScreen extends React.Component<
 
   public onPressDeposit = (assetId: AssetId) => {
     return () => {
-      logEvent('wallets/press-deposit-button-on-tranfer-modal', { assetId })
+      logEvent('portfolio/press-deposit-button-on-tranfer-modal', { assetId })
       this.setState({ transferModalVisible: false })
       this.props.navigation.navigate('Deposit', { assetId: this.state.selectedAsset })
     }
@@ -158,7 +158,7 @@ export default class WalletsScreen extends React.Component<
 
   public onPressWithdraw = (remainingBalance: number, assetId: AssetId) => {
     return () => {
-      logEvent('wallets/press-withdraw-button-on-tranfer-modal', { assetId })
+      logEvent('portfolio/press-withdraw-button-on-tranfer-modal', { assetId })
       this.setState({ transferModalVisible: false })
       this.props.navigation.navigate('Withdrawal', {
         assetId: this.state.selectedAsset,
@@ -169,7 +169,7 @@ export default class WalletsScreen extends React.Component<
 
   public onPressOutsideModal = (assetId: AssetId) => {
     return () => {
-      logEvent('wallets/press-outside-tranfer-modal', { assetId })
+      logEvent('portfolio/press-outside-tranfer-modal', { assetId })
       this.setState({ transferModalVisible: false })
     }
   }
