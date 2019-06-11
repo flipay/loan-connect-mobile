@@ -70,6 +70,10 @@ export async function finalizeAuthenProcess (token: string, pin: string) {
   }
 }
 
+export function isLocked () {
+  return !axios.defaults.headers.common.Authorization
+}
+
 export async function unlock (pin: string) {
   const token = await getToken(pin)
   setAuthorization(token)

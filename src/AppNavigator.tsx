@@ -1,5 +1,5 @@
-
 import * as React from 'react'
+import _ from 'lodash'
 import {
   createStackNavigator,
   createSwitchNavigator,
@@ -24,6 +24,27 @@ import PinScreen from './screens/PinScreen'
 import { Text } from './components'
 import { COLORS } from './constants'
 import { logEvent } from './analytics'
+import { unlock, isLocked } from './requests'
+
+const PRIVATE_ROUTES = {
+  PORTFOLIO: 'Portfolio',
+  TRADE: 'Trade',
+  DEPOSIT: 'Deposit',
+  WITHDRAWAL: 'Withdrawal',
+  ACCOUNT: 'Account',
+  COMPARISON: 'Comparison'
+}
+
+const privateRoutes = _.map(PRIVATE_ROUTES)
+
+const {
+  PORTFOLIO,
+  TRADE,
+  DEPOSIT,
+  WITHDRAWAL,
+  ACCOUNT,
+  COMPARISON
+} = PRIVATE_ROUTES
 
 const AuthStack = createStackNavigator(
   {
@@ -49,7 +70,7 @@ const MarketStack = createStackNavigator(
   {
     Market: { screen: MarketScreen },
     Asset: { screen: AssetScreen },
-    Trade: { screen: TradeScreen }
+    [TRADE]: { screen: TradeScreen }
   },
   {
     mode: 'modal',
@@ -64,10 +85,10 @@ const MarketStack = createStackNavigator(
 
 const PortfolioStack = createStackNavigator(
   {
-    Portfolio: { screen: PortfolioScreen },
-    Deposit: { screen: DepositScreen },
-    Withdrawal: { screen: WithdrawalScreen },
-    Comparison: { screen: ComparisonScreen }
+    [PORTFOLIO]: { screen: PortfolioScreen },
+    [DEPOSIT]: { screen: DepositScreen },
+    [WITHDRAWAL]: { screen: WithdrawalScreen },
+    [COMPARISON]: { screen: ComparisonScreen }
   },
   {
     mode: 'modal',
@@ -80,7 +101,7 @@ const PortfolioStack = createStackNavigator(
   }
 )
 
-const MainApp = createBottomTabNavigator(
+const AppContent = createBottomTabNavigator(
   {
     Market: {
       screen: MarketStack,
@@ -100,7 +121,7 @@ const MainApp = createBottomTabNavigator(
         }
       }
     },
-    Account: {
+    [ACCOUNT]: {
       screen: AccountScreen,
       navigationOptions: {
         tabBarOnPress: ({ navigation }: any) => {
@@ -116,13 +137,33 @@ const MainApp = createBottomTabNavigator(
         const { routeName } = navigation.state
         let iconName
         if (routeName === 'Portfolio') {
-          return <Text style={{ fontFamily: 'flipay-icon', fontSize: 28 }} color={tintColor || undefined}></Text>
+          return (
+            <Text
+              style={{ fontFamily: 'flipay-icon', fontSize: 28 }}
+              color={tintColor || undefined}
+            >
+              
+            </Text>
+          )
         } else if (routeName === 'Market') {
           iconName = 'line-chart'
         } else {
-          return <Text style={{ fontFamily: 'flipay-icon', fontSize: 28 }} color={tintColor || undefined}></Text>
+          return (
+            <Text
+              style={{ fontFamily: 'flipay-icon', fontSize: 28 }}
+              color={tintColor || undefined}
+            >
+              
+            </Text>
+          )
         }
-        return <FontAwesome name={iconName} size={25} color={tintColor || undefined} />
+        return (
+          <FontAwesome
+            name={iconName}
+            size={25}
+            color={tintColor || undefined}
+          />
+        )
       }
     }),
     tabBarOptions: {
@@ -134,9 +175,73 @@ const MainApp = createBottomTabNavigator(
   }
 )
 
-export default createSwitchNavigator({
+const MainApp = createStackNavigator(
+  {
+    AppContent: { screen: AppContent },
+    Unlock: { screen: PinScreen }
+  },
+  {
+    headerMode: 'none'
+  }
+)
+
+const defaultGetStateForAction = MainApp.router.getStateForAction
+
+MainApp.router.getStateForAction = (action, state) => {
+  if (
+    action.type === 'Navigation/NAVIGATE' &&
+    _.includes(privateRoutes, action.routeName) &&
+    isLocked()
+  ) {
+    const { routes } = state
+    return {
+      ...state,
+      index: 1,
+      routes: [
+        ...routes,
+        {
+          routeName: 'Unlock',
+          key: 'Unlock',
+          params: {
+            title: 'Unlock with PIN',
+            onSuccess: (...args: Array<any>) => onUnlockPinSuccessfully(...args, action.routeName)
+          }
+        }
+      ]
+    }
+  }
+  return defaultGetStateForAction(action, state)
+}
+
+async function onUnlockPinSuccessfully (
+  pin: string,
+  stackNavigationLogInPin: any,
+  setErrorConfirm: (errorMessage: string) => void,
+  startLoading: () => void,
+  stopLoading: () => void,
+  clearPin: () => void,
+  destinationRoute: string
+) {
+  try {
+    startLoading()
+    await unlock(pin)
+    logEvent('unlock/successfully-unlock')
+    stackNavigationLogInPin.navigate(destinationRoute)
+  } catch (err) {
+    stopLoading()
+    logEvent('unlock/wrong-pin')
+    setErrorConfirm('Wrong PIN')
+    setTimeout(() => {
+      clearPin()
+    }, 1000)
+  }
+}
+
+const AppNavigator = createSwitchNavigator({
   Starter,
   Verification: VerificationStack,
   MainApp,
   Auth: AuthStack
 })
+
+export default AppNavigator

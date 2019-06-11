@@ -92,7 +92,7 @@ export default class VerifyPhoneNumberScreen extends React.Component<
             startLoading()
             await finalizeAuthenProcess(this.accessToken, secondPin)
             logEvent('confirm-pin/successfully-setting-pin')
-            stackNavigationConmfirmPin.navigate('Main')
+            stackNavigationConmfirmPin.navigate('Market')
           } catch (error) {
             logEvent('confirm-pin/error-setting-pin')
             setErrorConfirm(error.message)
