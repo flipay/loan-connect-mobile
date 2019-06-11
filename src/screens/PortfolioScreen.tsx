@@ -123,7 +123,7 @@ export default class PortfolioScreen extends React.Component<
           ? this.renderWelcomeMessage()
           : !_.isEmpty(this.state.assets) && (
               <View style={styles.headerTextContainer}>
-                <Text type='large-title' color={COLORS.WHITE}>Portfolio</Text>
+                <Text type='large-title' bold={true} color={COLORS.WHITE}>Portfolio</Text>
                 <View style={styles.rightHeader}>
                   <Text type='caption' color={COLORS.P100}>
                     Total value

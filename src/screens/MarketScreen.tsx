@@ -90,7 +90,7 @@ export default class MarketScreen extends React.Component<NavigationScreenProps,
   public renderHeader () {
     return (
       <View style={styles.headerContent}>
-        <Text type='large-title' color={COLORS.WHITE}>Market</Text>
+        <Text type='large-title' bold={true} color={COLORS.WHITE}>Market</Text>
         <Text color={COLORS.WHITE}>See what's going on in crypto market</Text>
       </View>
     )
