@@ -123,19 +123,22 @@ export default class PortfolioScreen extends React.Component<
           ? this.renderWelcomeMessage()
           : !_.isEmpty(this.state.assets) && (
               <View style={styles.headerTextContainer}>
-                <Text type='caption' color={COLORS.P100}>
-                  TOTAL VALUE
-                </Text>
-                <Text style={styles.totalValueContainer}>
-                  <Text color={COLORS.WHITE}>฿</Text>
-                  <Text
-                    type='large-title'
-                    style={styles.totalValue}
-                    color={COLORS.WHITE}
-                  >
-                    {` ${toString(this.getSumBalance(), ASSETS.THB.decimal)}`}
+                <Text type='large-title' color={COLORS.WHITE}>Portfolio</Text>
+                <View style={styles.rightHeader}>
+                  <Text type='caption' color={COLORS.P100}>
+                    Total value
                   </Text>
-                </Text>
+                  <Text style={styles.totalValueContainer}>
+                    <Text color={COLORS.WHITE}>฿</Text>
+                    <Text
+                      type='title'
+                      style={styles.totalValue}
+                      color={COLORS.WHITE}
+                    >
+                      {` ${toString(this.getSumBalance(), ASSETS.THB.decimal)}`}
+                    </Text>
+                  </Text>
+                </View>
               </View>
             )}
       </View>
@@ -264,14 +267,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   headerTextContainer: {
-    alignItems: 'center'
+    alignItems: 'flex-start',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  rightHeader: {
+    alignItems: 'flex-end'
   },
   screenContent: {
     paddingHorizontal: 0
   },
   totalValueContainer: {
-    color: COLORS.WHITE,
-    marginTop: 8
+    color: COLORS.WHITE
   },
   totalValue: {
     marginLeft: 8
