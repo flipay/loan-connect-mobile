@@ -1,15 +1,18 @@
 import * as React from 'react'
 import _ from 'lodash'
 import {
-  ScrollView,
-  RefreshControl,
   StatusBar,
   View,
   StyleSheet
 } from 'react-native'
-import { LinearGradient } from 'expo'
 import { NavigationScreenProps } from 'react-navigation'
-import { Text, AssetCard, Button, TransferModal } from '../components'
+import {
+  Text,
+  AssetCard,
+  Button,
+  TransferModal,
+  ScreenWithCover
+} from '../components'
 import { COLORS, ASSETS } from '../constants'
 import { AssetId, Asset } from '../types'
 import { getPortfolio } from '../requests'
@@ -57,7 +60,10 @@ export default class PortfolioScreen extends React.Component<
 
   public async fetchData () {
     try {
-      const [assets, hasDeposited] = await Promise.all([getPortfolio(), hasEverDeposit()])
+      const [assets, hasDeposited] = await Promise.all([
+        getPortfolio(),
+        hasEverDeposit()
+      ])
       this.setState({ assets, hasDeposited })
     } catch (err) {
       alert(err)
@@ -97,42 +103,42 @@ export default class PortfolioScreen extends React.Component<
   public renderWelcomeMessage () {
     return (
       <View style={styles.welcomeSection}>
-        <Text color={COLORS.WHITE} style={styles.welcome}>Welcome to Flipay!</Text>
-        <Text type='title' color={COLORS.WHITE} style={styles.howMuch}>How much would you like to start the investment?</Text>
-        <Button onPress={this.onPressDepositFromWelcomeMessage}>Deposit your money</Button>
+        <Text color={COLORS.WHITE} style={styles.welcome}>
+          Welcome to Flipay!
+        </Text>
+        <Text type='title' color={COLORS.WHITE} style={styles.howMuch}>
+          How much would you like to start the investment?
+        </Text>
+        <Button onPress={this.onPressDepositFromWelcomeMessage}>
+          Deposit your money
+        </Button>
       </View>
     )
   }
 
   public renderHeader () {
     return (
-      <LinearGradient
-        colors={[COLORS.P400, COLORS.C500]}
-        start={[0.3, 0.7]}
-        end={[2, -0.8]}
-        style={[styles.header, this.shouldShowWelcomeMessage() && { height: 404 }]}
-      >
+      <View>
         {this.shouldShowWelcomeMessage()
           ? this.renderWelcomeMessage()
           : !_.isEmpty(this.state.assets) && (
-            <View style={styles.headerTextContainer}>
-              <Text type='caption' color={COLORS.P100}>
-                TOTAL VALUE
-              </Text>
-              <Text style={styles.totalValueContainer}>
-                <Text color={COLORS.WHITE}>฿</Text>
-                <Text
-                  type='large-title'
-                  style={styles.totalValue}
-                  color={COLORS.WHITE}
-                >
-                  {` ${toString(this.getSumBalance(), ASSETS.THB.decimal)}`}
+              <View style={styles.headerTextContainer}>
+                <Text type='caption' color={COLORS.P100}>
+                  TOTAL VALUE
                 </Text>
-              </Text>
-            </View>
-          )
-        }
-      </LinearGradient>
+                <Text style={styles.totalValueContainer}>
+                  <Text color={COLORS.WHITE}>฿</Text>
+                  <Text
+                    type='large-title'
+                    style={styles.totalValue}
+                    color={COLORS.WHITE}
+                  >
+                    {` ${toString(this.getSumBalance(), ASSETS.THB.decimal)}`}
+                  </Text>
+                </Text>
+              </View>
+            )}
+      </View>
     )
   }
 
@@ -152,7 +158,9 @@ export default class PortfolioScreen extends React.Component<
     return () => {
       logEvent('portfolio/press-deposit-button-on-tranfer-modal', { assetId })
       this.setState({ transferModalVisible: false })
-      this.props.navigation.navigate('Deposit', { assetId: this.state.selectedAsset })
+      this.props.navigation.navigate('Deposit', {
+        assetId: this.state.selectedAsset
+      })
     }
   }
 
@@ -175,15 +183,27 @@ export default class PortfolioScreen extends React.Component<
   }
 
   public renderTransferModal () {
-    if (!this.state.transferModalVisible) { return null }
-    if (!this.state.selectedAsset) { return null }
-    const selectedAsset = _.find(this.state.assets, (asset) => asset.id === this.state.selectedAsset)
-    if (!selectedAsset) { return null }
+    if (!this.state.transferModalVisible) {
+      return null
+    }
+    if (!this.state.selectedAsset) {
+      return null
+    }
+    const selectedAsset = _.find(
+      this.state.assets,
+      asset => asset.id === this.state.selectedAsset
+    )
+    if (!selectedAsset) {
+      return null
+    }
     return (
       <TransferModal
         assetId={this.state.selectedAsset}
         onPressDeposit={this.onPressDeposit(this.state.selectedAsset)}
-        onPressWithdraw={this.onPressWithdraw(selectedAsset.amount || 0, this.state.selectedAsset)}
+        onPressWithdraw={this.onPressWithdraw(
+          selectedAsset.amount || 0,
+          this.state.selectedAsset
+        )}
         onPressOutside={this.onPressOutsideModal(this.state.selectedAsset)}
       />
     )
@@ -191,56 +211,46 @@ export default class PortfolioScreen extends React.Component<
 
   public render () {
     return (
-      <View style={{ flex: 1 }}>
-        <ScrollView
-          style={{
-            backgroundColor: '#fff',
-            flex: 1
-          }}
-          refreshControl={
-            <RefreshControl
-              refreshing={this.state.refreshing}
-              onRefresh={this.onRefresh}
-              progressBackgroundColor={COLORS.P400}
-              tintColor={COLORS.P400}
-            />
-          }
-        >
-          {this.renderHeader()}
-          <View style={styles.cardsContainer}>
-            {this.state.assets.map((asset: Asset, index) => {
-              const expanded =
-                !!this.state.selectedAsset &&
-                this.state.selectedAsset === asset.id
-              return (
-                <View key={asset.id}>
-                  {index !== 0 && (
-                    <View
-                      style={expanded ? styles.bigSpace : styles.smallSpace}
-                    />
-                  )}
-                  <AssetCard
-                    id={asset.id}
-                    cash={_.get(this.state.assets, '[0].amount', 0)}
-                    amount={asset.amount || 0}
-                    price={asset.price}
-                    expanded={expanded}
-                    onPress={() => this.onPress(asset.id)}
-                    navigation={this.props.navigation}
-                    onPressTranferButton={() => this.onPressTransferButton(asset.id)}
+      <ScreenWithCover
+        header={this.renderHeader()}
+        refreshing={this.state.refreshing}
+        onRefresh={this.onRefresh}
+        contentStyle={styles.screenContent}
+      >
+        <View>
+          {this.state.assets.map((asset: Asset, index) => {
+            const expanded =
+              !!this.state.selectedAsset &&
+              this.state.selectedAsset === asset.id
+            return (
+              <View key={asset.id}>
+                {index !== 0 && (
+                  <View
+                    style={expanded ? styles.bigSpace : styles.smallSpace}
                   />
-                  {index !== this.state.assets.length - 1 && (
-                    <View
-                      style={expanded ? styles.bigSpace : styles.smallSpace}
-                    />
-                  )}
-                </View>
-              )
-            })}
-          </View>
-        </ScrollView>
-        {this.renderTransferModal()}
-      </View>
+                )}
+                <AssetCard
+                  id={asset.id}
+                  cash={_.get(this.state.assets, '[0].amount', 0)}
+                  amount={asset.amount || 0}
+                  price={asset.price}
+                  expanded={expanded}
+                  onPress={() => this.onPress(asset.id)}
+                  navigation={this.props.navigation}
+                  onPressTranferButton={() =>
+                    this.onPressTransferButton(asset.id)
+                  }
+                />
+                {index !== this.state.assets.length - 1 && (
+                  <View
+                    style={expanded ? styles.bigSpace : styles.smallSpace}
+                  />
+                )}
+              </View>
+            )
+          })}
+        </View>
+      </ScreenWithCover>
     )
   }
 }
@@ -256,16 +266,15 @@ const styles = StyleSheet.create({
   headerTextContainer: {
     alignItems: 'center'
   },
+  screenContent: {
+    paddingHorizontal: 0
+  },
   totalValueContainer: {
     color: COLORS.WHITE,
     marginTop: 8
   },
   totalValue: {
     marginLeft: 8
-  },
-  cardsContainer: {
-    position: 'relative',
-    top: -24
   },
   bigSpace: {
     height: 12

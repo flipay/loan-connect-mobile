@@ -155,8 +155,6 @@ export default class AssetCard extends React.Component<
   }
 }
 
-const paddingLeft = 20
-
 const styles = StyleSheet.create({
   expandedContainer: {
     flexDirection: 'column',
@@ -165,7 +163,7 @@ const styles = StyleSheet.create({
   },
   container: {
     height: '100%',
-    padding: paddingLeft,
+    padding: 20,
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between'

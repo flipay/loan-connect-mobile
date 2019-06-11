@@ -87,13 +87,23 @@ export default class MarketScreen extends React.Component<NavigationScreenProps,
     )
   }
 
+  public renderHeader () {
+    return (
+      <View style={styles.headerContent}>
+        <Text type='large-title' color={COLORS.WHITE}>Market</Text>
+        <Text color={COLORS.WHITE}>See what's going on in crypto market</Text>
+      </View>
+    )
+  }
+
   public render () {
     return (
-      <ScreenWithCover>
-        <View style={styles.headerContent}>
-          <Text type='large-title' color={COLORS.WHITE}>Market</Text>
-          <Text color={COLORS.WHITE}>See what's going on in crypto market</Text>
-        </View>
+      <ScreenWithCover
+        header={this.renderHeader()}
+        refreshing={false}
+        onRefresh={() => {}}
+      >
+
         {this.renderMarketData()}
       </ScreenWithCover>
     )
