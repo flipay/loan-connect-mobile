@@ -16,6 +16,7 @@ import Layer from './Layer'
 import Asset from './Asset'
 import Key from './Key'
 import Screen from './Screen'
+import ScreenWithCover from './ScreenWithCover'
 import Link from './Link'
 import FullScreenLoading from './FullScreenLoading'
 import Record from './Record'
@@ -40,6 +41,7 @@ export {
   Asset,
   Key,
   Screen,
+  ScreenWithCover,
   Link,
   FullScreenLoading,
   Record,
