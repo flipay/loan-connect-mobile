@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { ScrollView, RefreshControl, View, StyleSheet } from 'react-native'
+import { withNavigation, NavigationScreenProps } from 'react-navigation'
 import { COLORS } from '../constants'
 
 interface Props {
@@ -10,10 +11,28 @@ interface Props {
   contentStyle?: any
 }
 
-export default class ScreenWithCover extends React.Component<Props> {
+class ScreenWithCover extends React.Component<Props & NavigationScreenProps> {
+  private willFocusSubscription: any
+  private scrollView: any
+  public componentDidMount () {
+    this.willFocusSubscription = this.props.navigation.addListener(
+      'willFocus',
+      () => {
+        this.scrollView.scrollTo({ y: 0, animated: false })
+      }
+    )
+  }
+
+  public componentWillUnmount () {
+    this.willFocusSubscription.remove()
+  }
+
   public render () {
     return (
       <ScrollView
+        ref={element => {
+          this.scrollView = element
+        }}
         style={styles.screen}
         refreshControl={
           <RefreshControl
@@ -34,6 +53,8 @@ export default class ScreenWithCover extends React.Component<Props> {
     )
   }
 }
+
+export default withNavigation(ScreenWithCover)
 
 const paddingHorizontal = 12
 
