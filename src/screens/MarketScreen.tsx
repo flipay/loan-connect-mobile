@@ -7,6 +7,7 @@ import { AssetId } from '../types'
 import { ASSETS, COLORS } from '../constants'
 import { fetchPriceDataSet } from '../requests'
 import { PricesContextConsumer } from '../context';
+import { ScrollView } from 'react-native-gesture-handler';
 
 interface PriceData {
   id: AssetId
@@ -90,32 +91,35 @@ export default class MarketScreen extends React.Component<NavigationScreenProps,
 
   public render () {
     return (
-      <Screen
-        statusBar='black'
-        style={styles.screen}
-      >
-        {() => (
-            <PricesContextConsumer>
-              {({ prices, updatePrices }) => (
-                <View>
-                  <Text type='large-title'>{`Market ${prices}`}</Text>
-                  <Text type='body'>See what's going on in crypto market</Text>
-                  <TouchableOpacity onPress={() => updatePrices()}>
-                    <Text>aldkfjaskldfjasdklfjdsalfj</Text>
-                  </TouchableOpacity>
-                  {this.renderMarketData()}
-                </View>
-              )}
-            </PricesContextConsumer>
-        )}
-      </Screen>
+      <ScrollView style={styles.screen}>
+        <View style={styles.headerBackground} />
+        <View style={styles.screenContent}>
+          <View style={styles.headerContent}>
+            <Text type='large-title' color={COLORS.WHITE}>Market</Text>
+            <Text color={COLORS.WHITE}>See what's going on in crypto market</Text>
+          </View>
+          {this.renderMarketData()}
+        </View>
+      </ScrollView>
     )
   }
 }
 
 const styles = StyleSheet.create({
   screen: {
-    paddingHorizontal: 12
+    flex: 1
+  },
+  headerBackground: {
+    backgroundColor: 'purple',
+    height: 206
+  },
+  screenContent: {
+    paddingHorizontal: 12,
+    position: 'relative',
+    top: -126
+  },
+  headerContent: {
+    marginBottom: 24
   },
   assetContainer: {
     paddingHorizontal: 12
