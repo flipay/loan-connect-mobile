@@ -181,6 +181,7 @@ const MainApp = createStackNavigator(
     Unlock: { screen: PinScreen }
   },
   {
+    mode: 'modal',
     headerMode: 'none'
   }
 )
@@ -204,6 +205,7 @@ MainApp.router.getStateForAction = (action, state) => {
           key: 'Unlock',
           params: {
             title: 'Unlock with PIN',
+            closable: true,
             onSuccess: (...args: Array<any>) => onUnlockPinSuccessfully(...args, action.routeName)
           }
         }

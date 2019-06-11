@@ -4,7 +4,7 @@ import { View, Image, StatusBar, StyleSheet, Dimensions } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { AntDesign, Ionicons } from '@expo/vector-icons'
 import { COLORS } from '../constants/styleGuides'
-import { Text, Key, FullScreenLoading } from '../components'
+import { Text, Key, FullScreenLoading, CloseButton } from '../components'
 
 interface State {
   pin: string
@@ -70,6 +70,10 @@ export default class PinScreen extends React.Component<
         pin: this.state.pin.slice(0, this.state.pin.length - 1)
       })
     }
+  }
+
+  public onClose = () => {
+    this.props.navigation.goBack()
   }
 
   public setError = (errorMessage: string) => {
@@ -158,9 +162,11 @@ export default class PinScreen extends React.Component<
   }
 
   public render () {
+    const closable = this.props.navigation.getParam('closable')
     return (
       <View style={{ flex: 1 }}>
         <StatusBar barStyle='dark-content' />
+        {closable && <CloseButton onPress={this.onClose} />}
         <FullScreenLoading visible={this.state.loading} />
         <View style={styles.screen}>
           <View style={styles.content}>
