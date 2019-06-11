@@ -11,8 +11,6 @@ interface Props {
   bodySize?: boolean
 }
 
-const DEFAULT_TEXT_TYPE = 'headline'
-
 export default class Asset extends React.Component<Props> {
   public render () {
     const { bodySize } = this.props
@@ -28,12 +26,12 @@ export default class Asset extends React.Component<Props> {
         >
           {name}
         </Text>
-        <Text
+        {this.props.withUnit && <Text
           type={bodySize ? 'body' : 'headline'}
           color={COLORS.N800}
         >
           {` (${ASSETS[this.props.id].unit})`}
-        </Text>
+        </Text>}
       </View>
     )
   }
