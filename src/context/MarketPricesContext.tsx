@@ -1,19 +1,13 @@
 
 import * as React from 'react'
 import _ from 'lodash'
-import { AssetId } from '../types'
+import { MarketPrice } from '../types'
 import { fetchMarketPrices } from '../requests'
 
 const MarketPricesContext = React.createContext({
   marketPrices: [],
   fetchMarketPrices: _.noop
 })
-
-interface MarketPrice {
-  id: AssetId
-  price: number,
-  dailyChange: number
-}
 
 interface Props {
   children: any

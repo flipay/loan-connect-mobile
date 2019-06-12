@@ -3,14 +3,8 @@ import _ from 'lodash'
 import { View, StyleSheet, Image, TouchableOpacity } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { Text, Layer, Value, ChangeBox, ScreenWithCover } from '../components'
-import { AssetId } from '../types'
 import { ASSETS, COLORS } from '../constants'
-
-interface MarketPrice {
-  id: AssetId
-  price: number,
-  dailyChange: number
-}
+import { MarketPrice } from '../types'
 
 interface Props {
   marketPrices: Array<MarketPrice>
