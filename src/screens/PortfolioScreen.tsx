@@ -91,7 +91,7 @@ export default class PortfolioScreen extends React.Component<
     }
   }
 
-  public shouldShowWelcomeMessage () {
+  public shouldShowDepositSuggestion () {
     return this.getSumBalance() === 0 && !this.state.hasDeposited
   }
 
@@ -100,18 +100,15 @@ export default class PortfolioScreen extends React.Component<
     this.props.navigation.navigate('Deposit')
   }
 
-  public renderWelcomeMessage () {
+  public renderDepositSuggestion () {
     return (
-      <View style={styles.welcomeSection}>
-        <Text color={COLORS.WHITE} style={styles.welcome}>
-          Welcome to Flipay!
+      <View style={styles.depositSuggestionSection}>
+        <Text type='title' bold={true} color={COLORS.WHITE} style={styles.howMuch}>
+          Before you can start trading, please deposit your assets first.
         </Text>
-        <Text type='title' color={COLORS.WHITE} style={styles.howMuch}>
-          How much would you like to start the investment?
+        <Text color={COLORS.WHITE}>
+          Available assets are as follows.
         </Text>
-        <Button onPress={this.onPressDepositFromWelcomeMessage}>
-          Deposit your money
-        </Button>
       </View>
     )
   }
@@ -119,8 +116,8 @@ export default class PortfolioScreen extends React.Component<
   public renderHeader () {
     return (
       <View>
-        {this.shouldShowWelcomeMessage()
-          ? this.renderWelcomeMessage()
+        {this.shouldShowDepositSuggestion()
+          ? this.renderDepositSuggestion()
           : !_.isEmpty(this.state.assets) && (
               <View style={styles.headerTextContainer}>
                 <Text type='large-title' bold={true} color={COLORS.WHITE}>Portfolio</Text>
@@ -289,15 +286,13 @@ const styles = StyleSheet.create({
   smallSpace: {
     height: 4
   },
-  welcomeSection: {
+  depositSuggestionSection: {
     alignItems: 'flex-start',
+    justifyContent: 'center',
     width: '100%',
-    padding: 28
-  },
-  welcome: {
-    marginBottom: 8
+    height: 300
   },
   howMuch: {
-    marginBottom: 24
+    marginBottom: 10
   }
 })

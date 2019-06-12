@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
     paddingHorizontal,
     backgroundColor: COLORS.P400,
     justifyContent: 'center',
-    height: 206
+    minHeight: 206
   },
   screenContent: {
     paddingHorizontal,
