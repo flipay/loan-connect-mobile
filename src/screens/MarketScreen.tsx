@@ -62,7 +62,7 @@ export default class MarketScreen extends React.Component<NavigationScreenProps,
     return (
       <View style={styles.priceDetail}>
         <Value assetId='THB' style={styles.price}>{priceData.price}</Value>
-        <ChangeBox value={priceData.dailyChange} />
+        <ChangeBox value={priceData.dailyChange} style={styles.changeBox} />
       </View>
     )
   }
@@ -136,6 +136,11 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: 'right',
     justifyContent: 'flex-end'
+  },
+  changeBox: {
+    marginLeft: 10,
+    width: 80,
+    justifyContent: 'center'
   },
   line: {
     height: 1,
