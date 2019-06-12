@@ -12,6 +12,7 @@ export interface Asset {
   priceSource: PriceSource
   amount?: number
   price?: number
+  dailyChange?: number
   address: string
   tag?: string
   about?: string

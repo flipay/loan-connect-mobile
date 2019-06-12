@@ -4,10 +4,10 @@ import { View, StyleSheet, Image, TouchableOpacity } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { Text, Layer, Value, ChangeBox, ScreenWithCover } from '../components'
 import { ASSETS, COLORS } from '../constants'
-import { MarketPrice } from '../types'
+import { MarketPrices, Asset } from '../types'
 
 interface Props {
-  marketPrices: Array<MarketPrice>
+  marketPrices: MarketPrices
   fetchMarketPrices: () => void
 }
 
@@ -33,15 +33,15 @@ export default class MarketScreen extends React.Component<Props & NavigationScre
     this.setState({ refreshing: false })
   }
 
-  public onPressAsset = (marketPrice: MarketPrice) => {
-    this.props.navigation.navigate('Asset', marketPrice)
+  public onPressAsset = (crypto: Asset) => {
+    this.props.navigation.navigate('Asset', crypto)
   }
 
-  public renderAssetIdentity (marketPrice: MarketPrice) {
+  public renderAssetIdentity (crypto: Asset) {
     return (
       <View style={styles.assetIdentity}>
         <Image
-          source={ASSETS[marketPrice.id].image}
+          source={crypto.image}
           style={{
             width: 24,
             height: 24,
@@ -49,38 +49,43 @@ export default class MarketScreen extends React.Component<Props & NavigationScre
           }}
         />
         <View>
-          <Text type='headline'>{ASSETS[marketPrice.id].name}</Text>
-          <Text type='caption'>{ASSETS[marketPrice.id].unit}</Text>
+          <Text type='headline'>{crypto.name}</Text>
+          <Text type='caption'>{crypto.unit}</Text>
         </View>
       </View>
     )
   }
 
-  public renderPriceDetail (marketPrice: MarketPrice) {
+  public renderPriceDetail (crypto: Asset) {
     return (
       <View style={styles.priceDetail}>
-        <Value assetId='THB' style={styles.price}>{marketPrice.price}</Value>
-        <ChangeBox value={marketPrice.dailyChange} style={styles.changeBox} />
+        {crypto.price && <Value assetId='THB' style={styles.price}>{crypto.price}</Value>}
+        {crypto.dailyChange && <ChangeBox value={crypto.dailyChange} style={styles.changeBox} />}
       </View>
     )
   }
 
-  public renderAsset (marketPrice: MarketPrice, index: number) {
+  public renderCrypto (crypto: Asset, index: number) {
     return (
-      <View key={marketPrice.id} style={styles.assetContainer}>
-        <TouchableOpacity style={styles.asset} onPress={() => this.onPressAsset(marketPrice)}>
-          {this.renderAssetIdentity(marketPrice)}
-          {this.renderPriceDetail(marketPrice)}
+      <View key={index} style={styles.assetContainer}>
+        <TouchableOpacity style={styles.asset} onPress={() => this.onPressAsset(crypto)}>
+          {this.renderAssetIdentity(crypto)}
+          {this.renderPriceDetail(crypto)}
         </TouchableOpacity>
-        {index !== this.props.marketPrices.length - 1 && <View style={styles.line} />}
+        {index !== _.map(this.props.marketPrices).length - 1 && <View style={styles.line} />}
       </View>
     )
   }
 
   public renderMarketData () {
+    const cryptos = _(ASSETS)
+      .map((asset) => ({ ...asset, ...this.props.marketPrices[asset.id] }))
+      .reject((asset) => asset.id === 'THB')
+      .sortBy((asset) => asset.order)
+      .value()
     return (
       <Layer>
-        {_.map(this.props.marketPrices, (asset, index) => this.renderAsset(asset, index))}
+        {_.map(cryptos, (crypto, index) => this.renderCrypto(crypto, index))}
       </Layer>
     )
   }
