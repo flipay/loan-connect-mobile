@@ -2,38 +2,9 @@ import axios from 'axios'
 import _ from 'lodash'
 import Bluebird from 'bluebird'
 import Sentry from 'sentry-expo'
-import { OrderType, OrderPart, AssetId } from '../types'
+import { OrderType, OrderPart, AssetId, Asset, Balance } from '../types'
 import { ASSETS, COMPETITOR_IDS } from '../constants'
 import { getErrorCode } from '../utils'
-
-async function getPriceInTHB (assetId: AssetId): Promise<number | undefined> {
-  if (assetId === 'THB') { return 1 }
-  try {
-    const response = await axios.get(`tickers?exchange=BX.in.th&pair=${assetId}-THB`, {
-      baseURL: 'https://api.coinstats.app/public/v1/',
-      headers: ''
-    })
-    const price = response.data.tickers[0].price
-    return price
-  } catch (err) {
-    return undefined
-  }
-}
-
-async function getPriceInBTC (assetId: AssetId): Promise<number> {
-  const response = await axios.get(`tickers?exchange=Binance&pair=${assetId}-BTC`, {
-    baseURL: 'https://api.coinstats.app/public/v1/',
-    headers: ''
-  })
-
-  return response.data.tickers[0].price
-}
-
-interface AssetData {
-  amount: number,
-  price?: number,
-  priceInBTC?: number
-}
 
 export async function fetchMarketPrices () {
   const request = axios.create({
@@ -45,12 +16,19 @@ export async function fetchMarketPrices () {
   const [cryptoMarketDataResponse, fiatMarketDataResponse] = responses
   const thbPerDollar = _.find(fiatMarketDataResponse.data, (fiat) => fiat.name === 'THB').rate
 
-  const cryptos = _.reject(ASSETS, (asset) => asset.id === 'THB')
-  return _.map(cryptos, (crypto) => {
-    const { id } = crypto
-    const data = _.find(cryptoMarketDataResponse.data.coins, (coin) => coin.symbol === id)
-    const price = data.price * thbPerDollar
-    const dailyChange = data.priceChange1d
+  return _.map(ASSETS, (asset) => {
+    const { id } = asset
+    let price
+    let dailyChange
+    if (id === 'THB') {
+      price = 1
+      dailyChange = 1
+    } else {
+      const data = _.find(cryptoMarketDataResponse.data.coins, (coin) => coin.symbol === id)
+      price = data.price * thbPerDollar
+      dailyChange = data.priceChange1d
+    }
+
     return {
       id,
       price,
@@ -60,53 +38,18 @@ export async function fetchMarketPrices () {
 
 }
 
-async function getAssetData (assetId: AssetId): Promise<AssetData> {
-  let amount
-  try {
-    const response = await axios.get(`wallets/${assetId}/balance`)
-    amount = Number(response.data.data.amount)
-  } catch (err) {
-    if (getErrorCode(err) === 'resource_not_found') {
-      amount = 0
-    } else {
-      throw(err)
-    }
-  }
-  const price = await getPriceInTHB(assetId)
-  let priceInBTC
-  if (!price) {
-    priceInBTC = await getPriceInBTC(assetId)
-  }
-
-  return { amount, price, priceInBTC }
-}
-
-export async function getPortfolio () {
-  const assets = ASSETS
-  const assetIds = _.map(assets, asset => asset.id)
-  let assetsWithData = await Bluebird.map(assetIds, async (id) => {
-    const assetData = await getAssetData(id)
+export async function fetchBalances (): Promise<Array<Balance>> {
+  const assets = _.map(ASSETS)
+  const balances = await Bluebird.map(assets, async (asset: Asset) => {
+    const { id } = asset
+    const response = await axios.get(`wallets/${id}/balance`)
+    const amount = Number(response.data.data.amount)
     return {
-      ...assets[id],
-      ...assetData
+      id,
+      amount
     }
   })
-
-  // NOTE: handle when there is not THB price in BX Thailand
-  const btc = _.find(assetsWithData, (asset) => asset.id === 'BTC')
-  if (btc) {
-    const btcPrice = btc.price
-    assetsWithData = _.map(assetsWithData, (asset) => {
-      if (!asset.price && asset.priceInBTC && btcPrice) {
-        return {
-          ...asset,
-          price: asset.priceInBTC * btcPrice
-        }
-      }
-      return asset
-    })
-  }
-  return _.sortBy(assetsWithData, asset => asset.order)
+  return balances
 }
 
 export async function getAmount (

@@ -9,34 +9,37 @@ import { NavigationScreenProps } from 'react-navigation'
 import {
   Text,
   AssetCard,
-  Button,
   TransferModal,
   ScreenWithCover
 } from '../components'
 import { COLORS, ASSETS } from '../constants'
-import { AssetId, Asset } from '../types'
-import { getPortfolio } from '../requests'
+import { AssetId, Asset, Balance, MarketPrice } from '../types'
 import { hasEverDeposit } from '../asyncStorage'
 import { alert, toString } from '../utils'
 import { logEvent } from '../analytics'
 
+interface Props {
+  balances: Array<Balance>
+  fetchBalances: () => void
+  marketPrices: Array<MarketPrice>
+  fetchMarketPrices: () => void
+}
+
 interface State {
   selectedAsset?: AssetId | null
-  assets: Array<Asset>
   refreshing: boolean
   hasDeposited: boolean
   transferModalVisible: boolean
 }
 
 export default class PortfolioScreen extends React.Component<
-  NavigationScreenProps,
+  Props & NavigationScreenProps,
   State
 > {
-  constructor (props: NavigationScreenProps) {
+  constructor (props: Props & NavigationScreenProps) {
     super(props)
     this.state = {
       selectedAsset: null,
-      assets: [],
       refreshing: false,
       hasDeposited: true,
       transferModalVisible: false
@@ -60,19 +63,20 @@ export default class PortfolioScreen extends React.Component<
 
   public async fetchData () {
     try {
-      const [assets, hasDeposited] = await Promise.all([
-        getPortfolio(),
+      const [, , hasDeposited] = await Promise.all([
+        this.props.fetchMarketPrices(),
+        this.props.fetchBalances()
         hasEverDeposit()
       ])
-      this.setState({ assets, hasDeposited })
+      this.setState({ hasDeposited })
     } catch (err) {
       alert(err)
     }
   }
 
-  public getSumBalance () {
+  public getSumBalance (assets: Array<Asset>) {
     return _.sumBy(
-      this.state.assets,
+      assets,
       asset => (asset.price || 1) * (asset.amount || 0)
     )
   }
@@ -91,8 +95,8 @@ export default class PortfolioScreen extends React.Component<
     }
   }
 
-  public shouldShowDepositSuggestion () {
-    return this.getSumBalance() === 0 && !this.state.hasDeposited
+  public shouldShowDepositSuggestion (assets: Array<Asset>) {
+    return this.getSumBalance(assets) === 0 && !this.state.hasDeposited
   }
 
   public onPressDepositFromWelcomeMessage = () => {
@@ -113,12 +117,12 @@ export default class PortfolioScreen extends React.Component<
     )
   }
 
-  public renderHeader () {
+  public renderHeader (assets: Array<Asset>) {
     return (
       <View>
-        {this.shouldShowDepositSuggestion()
+        {this.shouldShowDepositSuggestion(assets)
           ? this.renderDepositSuggestion()
-          : !_.isEmpty(this.state.assets) && (
+          : !_.isEmpty(assets) && (
               <View style={styles.headerTextContainer}>
                 <Text type='large-title' bold={true} color={COLORS.WHITE}>Portfolio</Text>
                 <View style={styles.rightHeader}>
@@ -132,7 +136,7 @@ export default class PortfolioScreen extends React.Component<
                       style={styles.totalValue}
                       color={COLORS.WHITE}
                     >
-                      {` ${toString(this.getSumBalance(), ASSETS.THB.decimal)}`}
+                      {` ${toString(this.getSumBalance(assets), ASSETS.THB.decimal)}`}
                     </Text>
                   </Text>
                 </View>
@@ -182,7 +186,13 @@ export default class PortfolioScreen extends React.Component<
     }
   }
 
-  public renderTransferModal () {
+  public getAssets (balances: Array<Balance>, marketPrices: Array<Balance>): Array<Asset> {
+
+
+
+  }
+
+  public renderTransferModal (assets: Array<Asset>) {
     if (!this.state.transferModalVisible) {
       return null
     }
@@ -190,7 +200,7 @@ export default class PortfolioScreen extends React.Component<
       return null
     }
     const selectedAsset = _.find(
-      this.state.assets,
+      assets,
       asset => asset.id === this.state.selectedAsset
     )
     if (!selectedAsset) {
@@ -210,15 +220,17 @@ export default class PortfolioScreen extends React.Component<
   }
 
   public render () {
+    const assets = this.getAssets(this.props.balances, this.props.marketPrices)
+
     return (
       <ScreenWithCover
-        header={this.renderHeader()}
+        header={this.renderHeader(assets)}
         refreshing={this.state.refreshing}
         onRefresh={this.onRefresh}
         contentStyle={styles.screenContent}
       >
         <View>
-          {this.state.assets.map((asset: Asset, index) => {
+          {assets.map((asset: Asset, index: number) => {
             const expanded =
               !!this.state.selectedAsset &&
               this.state.selectedAsset === asset.id
@@ -231,7 +243,7 @@ export default class PortfolioScreen extends React.Component<
                 )}
                 <AssetCard
                   id={asset.id}
-                  cash={_.get(this.state.assets, '[0].amount', 0)}
+                  cash={_.get(assets, '[0].amount', 0)}
                   amount={asset.amount || 0}
                   price={asset.price}
                   expanded={expanded}
@@ -241,7 +253,7 @@ export default class PortfolioScreen extends React.Component<
                     this.onPressTransferButton(asset.id)
                   }
                 />
-                {index !== this.state.assets.length - 1 && (
+                {index !== assets.length - 1 && (
                   <View
                     style={expanded ? styles.bigSpace : styles.smallSpace}
                   />
