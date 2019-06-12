@@ -5,45 +5,32 @@ import { NavigationScreenProps } from 'react-navigation'
 import { Text, Layer, Value, ChangeBox, ScreenWithCover } from '../components'
 import { AssetId } from '../types'
 import { ASSETS, COLORS } from '../constants'
-import { fetchPriceDataSet } from '../requests'
 
-interface PriceData {
+interface MarketPrice {
   id: AssetId
   price: number,
   dailyChange: number
 }
 
-interface State {
-  priceDataSet: Array<PriceData>
+interface Props {
+  marketPrices: Array<MarketPrice>
+  fetchMarketPrices: () => void
 }
 
-export default class MarketScreen extends React.Component<NavigationScreenProps, State> {
-
-  public constructor (props: NavigationScreenProps) {
-    super(props)
-    this.state = {
-      priceDataSet: []
-    }
-  }
-
+export default class MarketScreen extends React.Component<Props & NavigationScreenProps, State> {
   public componentDidMount () {
-    this.fetchMarketData()
+    this.props.fetchMarketPrices()
   }
 
-  public async fetchMarketData () {
-    const marketPrices = await fetchPriceDataSet()
-    this.setState({ priceDataSet: marketPrices })
+  public onPressAsset = (marketPrice: MarketPrice) => {
+    this.props.navigation.navigate('Asset', marketPrice)
   }
 
-  public onPressAsset = (priceData: PriceData) => {
-    this.props.navigation.navigate('Asset', priceData)
-  }
-
-  public renderAssetIdentity (priceData: PriceData) {
+  public renderAssetIdentity (marketPrice: MarketPrice) {
     return (
       <View style={styles.assetIdentity}>
         <Image
-          source={ASSETS[priceData.id].image}
+          source={ASSETS[marketPrice.id].image}
           style={{
             width: 24,
             height: 24,
@@ -51,30 +38,30 @@ export default class MarketScreen extends React.Component<NavigationScreenProps,
           }}
         />
         <View>
-          <Text type='headline'>{ASSETS[priceData.id].name}</Text>
-          <Text type='caption'>{ASSETS[priceData.id].unit}</Text>
+          <Text type='headline'>{ASSETS[marketPrice.id].name}</Text>
+          <Text type='caption'>{ASSETS[marketPrice.id].unit}</Text>
         </View>
       </View>
     )
   }
 
-  public renderPriceDetail (priceData: PriceData) {
+  public renderPriceDetail (marketPrice: MarketPrice) {
     return (
       <View style={styles.priceDetail}>
-        <Value assetId='THB' style={styles.price}>{priceData.price}</Value>
-        <ChangeBox value={priceData.dailyChange} style={styles.changeBox} />
+        <Value assetId='THB' style={styles.price}>{marketPrice.price}</Value>
+        <ChangeBox value={marketPrice.dailyChange} style={styles.changeBox} />
       </View>
     )
   }
 
-  public renderAsset (priceData: PriceData, index: number) {
+  public renderAsset (marketPrice: MarketPrice, index: number) {
     return (
-      <View key={priceData.id} style={styles.assetContainer}>
-        <TouchableOpacity style={styles.asset} onPress={() => this.onPressAsset(priceData)}>
-          {this.renderAssetIdentity(priceData)}
-          {this.renderPriceDetail(priceData)}
+      <View key={marketPrice.id} style={styles.assetContainer}>
+        <TouchableOpacity style={styles.asset} onPress={() => this.onPressAsset(marketPrice)}>
+          {this.renderAssetIdentity(marketPrice)}
+          {this.renderPriceDetail(marketPrice)}
         </TouchableOpacity>
-        {index !== this.state.priceDataSet.length - 1 && <View style={styles.line} />}
+        {index !== this.props.marketPrices.length - 1 && <View style={styles.line} />}
       </View>
     )
   }
@@ -82,7 +69,7 @@ export default class MarketScreen extends React.Component<NavigationScreenProps,
   public renderMarketData () {
     return (
       <Layer>
-        {_.map(this.state.priceDataSet, (asset, index) => this.renderAsset(asset, index))}
+        {_.map(this.props.marketPrices, (asset, index) => this.renderAsset(asset, index))}
       </Layer>
     )
   }

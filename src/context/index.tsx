@@ -1,6 +1,6 @@
 
 import * as React from 'react'
-import { PricesContextProvider, PricesContextConsumer } from './PricesContext'
+import { MarketPricesContextProvider, MarketPricesContextConsumer } from './MarketPricesContext'
 
 interface Props {
   children: any
@@ -9,13 +9,13 @@ interface Props {
 export class ContextProvider extends React.Component<Props> {
   public render () {
     return (
-      <PricesContextProvider>
+      <MarketPricesContextProvider>
         {this.props.children}
-      </PricesContextProvider>
+      </MarketPricesContextProvider>
     )
   }
 }
 
 export {
-  PricesContextConsumer
+  MarketPricesContextConsumer
 }

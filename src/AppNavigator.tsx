@@ -8,6 +8,8 @@ import {
 
 import { FontAwesome } from '@expo/vector-icons'
 
+import { MarketPricesContextConsumer } from './context'
+
 import Starter from './Starter'
 import MarketScreen from './screens/MarketScreen'
 import AssetScreen from './screens/AssetScreen'
@@ -68,7 +70,14 @@ const VerificationStack = createStackNavigator(
 
 const MarketStack = createStackNavigator(
   {
-    Market: { screen: MarketScreen },
+    Market: { screen: (navigation: any) => (
+      <MarketPricesContextConsumer>
+        {({ marketPrices, fetchMarketPrices }) => (
+          <MarketScreen navigation={navigation} fetchMarketPrices={fetchMarketPrices} marketPrices={marketPrices} />
+        )}
+      </MarketPricesContextConsumer>
+    )
+    },
     Asset: { screen: AssetScreen },
     [TRADE]: { screen: TradeScreen }
   },
