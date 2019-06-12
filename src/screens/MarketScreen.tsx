@@ -7,7 +7,7 @@ import { ASSETS, COLORS } from '../constants'
 import { MarketPrices, Asset } from '../types'
 
 interface Props {
-  marketPrices: MarketPrices
+  marketPrices?: MarketPrices
   fetchMarketPrices: () => void
 }
 

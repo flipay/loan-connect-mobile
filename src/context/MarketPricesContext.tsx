@@ -5,7 +5,7 @@ import { MarketPrices } from '../types'
 import { fetchMarketPrices } from '../requests'
 
 const MarketPricesContext = React.createContext({
-  marketPrices: [],
+  marketPrices: undefined,
   fetchMarketPrices: _.noop
 })
 

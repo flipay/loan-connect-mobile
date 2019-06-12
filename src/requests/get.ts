@@ -2,7 +2,7 @@ import axios from 'axios'
 import _ from 'lodash'
 import Bluebird from 'bluebird'
 import Sentry from 'sentry-expo'
-import { OrderType, OrderPart, AssetId, Asset, Balance } from '../types'
+import { OrderType, OrderPart, AssetId, Asset, MarketPrices } from '../types'
 import { ASSETS, COMPETITOR_IDS } from '../constants'
 import { getErrorCode } from '../utils'
 
@@ -16,40 +16,38 @@ export async function fetchMarketPrices () {
   const [cryptoMarketDataResponse, fiatMarketDataResponse] = responses
   const thbPerDollar = _.find(fiatMarketDataResponse.data, (fiat) => fiat.name === 'THB').rate
 
-  return _.map(ASSETS, (asset) => {
-    const { id } = asset
-    let price
-    let dailyChange
-    if (id === 'THB') {
-      price = 1
-      dailyChange = 1
-    } else {
-      const data = _.find(cryptoMarketDataResponse.data.coins, (coin) => coin.symbol === id)
-      price = data.price * thbPerDollar
-      dailyChange = data.priceChange1d
-    }
+  return _(ASSETS)
+    .map((asset) => {
+      const { id } = asset
+      let price
+      let dailyChange
+      if (id === 'THB') {
+        price = 1
+        dailyChange = 1
+      } else {
+        const data = _.find(cryptoMarketDataResponse.data.coins, (coin) => coin.symbol === id)
+        price = data.price * thbPerDollar
+        dailyChange = data.priceChange1d
+      }
 
-    return {
-      id,
-      price,
-      dailyChange
-    }
-  })
-
+      return [id, { price, dailyChange }]
+    })
+    .fromPairs()
+    .value()
 }
 
-export async function fetchBalances (): Promise<Array<Balance>> {
+export async function fetchBalances () {
   const assets = _.map(ASSETS)
   const balances = await Bluebird.map(assets, async (asset: Asset) => {
     const { id } = asset
     const response = await axios.get(`wallets/${id}/balance`)
     const amount = Number(response.data.data.amount)
-    return {
+    return [
       id,
       amount
-    }
+    ]
   })
-  return balances
+  return _.fromPairs(balances)
 }
 
 export async function getAmount (

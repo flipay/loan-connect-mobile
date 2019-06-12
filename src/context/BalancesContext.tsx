@@ -1,11 +1,11 @@
 
 import * as React from 'react'
 import _ from 'lodash'
-import { Balance } from '../types'
+import { Balances } from '../types'
 import { fetchBalances } from '../requests'
 
 const BalancesContext = React.createContext({
-  balances: [],
+  balances: undefined,
   fetchBalances: _.noop
 })
 
@@ -14,7 +14,7 @@ interface Props {
 }
 
 interface State {
-  balances: Array<Balance>
+  balances?: Balances
 }
 
 export const BalancesContextConsumer = BalancesContext.Consumer
@@ -24,7 +24,7 @@ export class BalancesContextProvider extends React.Component<Props, State> {
     super(props)
 
     this.state = {
-      balances: []
+      balances: undefined
     }
   }
 

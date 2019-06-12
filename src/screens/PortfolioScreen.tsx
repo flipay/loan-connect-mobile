@@ -13,15 +13,15 @@ import {
   ScreenWithCover
 } from '../components'
 import { COLORS, ASSETS } from '../constants'
-import { AssetId, Asset, Balance, MarketPrice } from '../types'
+import { AssetId, Asset, Balances, MarketPrices } from '../types'
 import { hasEverDeposit } from '../asyncStorage'
 import { alert, toString } from '../utils'
 import { logEvent } from '../analytics'
 
 interface Props {
-  balances: Array<Balance>
+  balances: Balances
   fetchBalances: () => void
-  marketPrices: Array<MarketPrice>
+  marketPrices: MarketPrices
   fetchMarketPrices: () => void
 }
 
@@ -65,7 +65,7 @@ export default class PortfolioScreen extends React.Component<
     try {
       const [, , hasDeposited] = await Promise.all([
         this.props.fetchMarketPrices(),
-        this.props.fetchBalances()
+        this.props.fetchBalances(),
         hasEverDeposit()
       ])
       this.setState({ hasDeposited })
@@ -186,10 +186,16 @@ export default class PortfolioScreen extends React.Component<
     }
   }
 
-  public getAssets (balances: Array<Balance>, marketPrices: Array<Balance>): Array<Asset> {
-
-
-
+  public getAssets (balances: Balances, marketPrices: MarketPrices) {
+    if (!balances || !marketPrices) { return [] }
+    return _(ASSETS)
+      .map((asset) => ({
+        ...asset,
+        ...marketPrices[asset.id],
+        amount: balances[asset.id]
+      }))
+      .sortBy((asset) => asset.order)
+      .value()
   }
 
   public renderTransferModal (assets: Array<Asset>) {
