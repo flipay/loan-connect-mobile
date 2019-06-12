@@ -17,9 +17,26 @@ interface Props {
   fetchMarketPrices: () => void
 }
 
+interface State {
+  refreshing: boolean
+}
+
 export default class MarketScreen extends React.Component<Props & NavigationScreenProps, State> {
+
+  constructor (props: Props & NavigationScreenProps) {
+    super(props)
+    this.state = {
+      refreshing: false
+    }
+  }
   public componentDidMount () {
     this.props.fetchMarketPrices()
+  }
+
+  public onRefresh = async () => {
+    this.setState({ refreshing: true })
+    await this.props.fetchMarketPrices()
+    this.setState({ refreshing: false })
   }
 
   public onPressAsset = (marketPrice: MarketPrice) => {
@@ -87,8 +104,8 @@ export default class MarketScreen extends React.Component<Props & NavigationScre
     return (
       <ScreenWithCover
         header={this.renderHeader()}
-        refreshing={false}
-        onRefresh={() => {}}
+        refreshing={this.state.refreshing}
+        onRefresh={this.onRefresh}
       >
 
         {this.renderMarketData()}

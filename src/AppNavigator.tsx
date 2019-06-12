@@ -70,7 +70,7 @@ const VerificationStack = createStackNavigator(
 
 const MarketStack = createStackNavigator(
   {
-    Market: { screen: (navigation: any) => (
+    Market: { screen: ({ navigation }: any) => (
       <MarketPricesContextConsumer>
         {({ marketPrices, fetchMarketPrices }) => (
           <MarketScreen navigation={navigation} fetchMarketPrices={fetchMarketPrices} marketPrices={marketPrices} />
