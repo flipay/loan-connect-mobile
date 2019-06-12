@@ -1,7 +1,7 @@
 
 import * as React from 'react'
 import _ from 'lodash'
-import { MarketPrice } from '../types'
+import { MarketPrices } from '../types'
 import { fetchMarketPrices } from '../requests'
 
 const MarketPricesContext = React.createContext({
@@ -14,7 +14,7 @@ interface Props {
 }
 
 interface State {
-  marketPrices: Array<MarketPrice>
+  marketPrices?: MarketPrices
 }
 
 export const MarketPricesContextConsumer = MarketPricesContext.Consumer
@@ -24,7 +24,7 @@ export class MarketPricesContextProvider extends React.Component<Props, State> {
     super(props)
 
     this.state = {
-      marketPrices: []
+      marketPrices: undefined
     }
   }
 
