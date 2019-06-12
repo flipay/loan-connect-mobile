@@ -40,7 +40,7 @@ export default class AssetScreen extends React.Component<NavigationScreenProps> 
     const assetId: AssetId = this.props.navigation.getParam('id')
     return this.renderSection(
       <View>
-        <Text type='title'>{`About ${_.capitalize(ASSETS[assetId].name)}`}</Text>
+        <Text type='title'>{`About ${ASSETS[assetId].name}`}</Text>
         <Text style={styles.aboutContent}>{ASSETS[assetId].about}</Text>
       </View>
     )
