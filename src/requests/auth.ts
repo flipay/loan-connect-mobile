@@ -10,6 +10,7 @@ import { PRIVATE_ROUTES } from '../constants'
 import { getCurrentRouteName, navigate } from '../navigation'
 
 let lockTimeout: any
+let timeout: any
 let shownUnauthorizedAlert: any
 
 export function setUpRequest (nav: any) {
@@ -19,7 +20,7 @@ export function setUpRequest (nav: any) {
   axios.interceptors.response.use((response) => {
     return response
   }, (err) => {
-    if (getErrorCode(err) === 'unauthorized') {
+    if (getErrorCode(err) === 'unauthorized' && !timeout) {
       if (!shownUnauthorizedAlert) {
         Alert.alert(
           'The login token has expired.',
@@ -46,6 +47,7 @@ function setLockTimeout () {
   clearTimeout(lockTimeout)
   const min = 0.1
   lockTimeout = setTimeout(() => {
+    timeout = true
     axios.defaults.headers.common.Authorization = ''
     if (AppState.currentState === 'active') {
       const privateRoutes = _.map(PRIVATE_ROUTES)
