@@ -159,14 +159,7 @@ const AppContent = createBottomTabNavigator(
         const { routeName } = navigation.state
         let iconName
         if (routeName === 'Portfolio') {
-          return (
-            <Text
-              style={{ fontFamily: 'flipay-icon', fontSize: 28 }}
-              color={tintColor || undefined}
-            >
-              
-            </Text>
-          )
+          iconName = 'pie-chart'
         } else if (routeName === 'Market') {
           iconName = 'line-chart'
         } else {
