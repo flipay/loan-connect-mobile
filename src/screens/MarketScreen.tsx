@@ -38,9 +38,9 @@ export default class MarketScreen extends React.Component<Props & NavigationScre
     this.props.navigation.navigate('Asset', crypto)
   }
 
-  public renderAssetIdentity (crypto: Asset) {
+  public renderCryptoIdentity (crypto: Asset) {
     return (
-      <View style={styles.assetIdentity}>
+      <View style={styles.cryptoIdentity}>
         <Image
           source={crypto.image}
           style={{
@@ -68,9 +68,9 @@ export default class MarketScreen extends React.Component<Props & NavigationScre
 
   public renderCrypto (crypto: Asset, index: number) {
     return (
-      <View key={index} style={styles.assetContainer}>
-        <TouchableOpacity style={styles.asset} onPress={() => this.onPressAsset(crypto)}>
-          {this.renderAssetIdentity(crypto)}
+      <View key={index} style={styles.cryptoContainer}>
+        <TouchableOpacity style={styles.crypto} onPress={() => this.onPressAsset(crypto)}>
+          {this.renderCryptoIdentity(crypto)}
           {this.renderPriceDetail(crypto)}
         </TouchableOpacity>
         {index !== _.map(this.props.marketPrices).length - 1 && <View style={styles.line} />}
@@ -118,32 +118,30 @@ const styles = StyleSheet.create({
   headerContent: {
     marginBottom: 24
   },
-  assetContainer: {
-    paddingHorizontal: 12
+  cryptoContainer: {
+    paddingHorizontal: 16
   },
-  asset: {
+  crypto: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 22
+    paddingTop: 22,
+    paddingBottom: 16
   },
-  assetIdentity: {
+  cryptoIdentity: {
     flexDirection: 'row',
     alignItems: 'center'
   },
   priceDetail: {
     flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'flex-end'
   },
   price: {
     flex: 1,
-    textAlign: 'right',
+    marginBottom: 4,
     justifyContent: 'flex-end'
   },
   changeBox: {
-    marginLeft: 10,
-    width: 80,
     justifyContent: 'center'
   },
   line: {
