@@ -31,25 +31,24 @@ import { COLORS } from './constants'
 import { logEvent } from './analytics'
 import { unlock, isLocked } from './requests'
 
+const PORTFOLIO = 'Portfolio'
+const ACCOUNT = 'Account'
+const TRADE = 'Trade'
+const DEPOSIT = 'Deposit'
+const WITHDRAWAL = 'Withdrawal'
+const MARKET = 'Market'
+const COMPARISON = 'Comparison'
+
 const PRIVATE_ROUTES = {
-  PORTFOLIO: 'Portfolio',
-  TRADE: 'Trade',
-  DEPOSIT: 'Deposit',
-  WITHDRAWAL: 'Withdrawal',
-  ACCOUNT: 'Account',
-  COMPARISON: 'Comparison'
-}
-
-const privateRoutes = _.map(PRIVATE_ROUTES)
-
-const {
   PORTFOLIO,
   TRADE,
   DEPOSIT,
   WITHDRAWAL,
   ACCOUNT,
   COMPARISON
-} = PRIVATE_ROUTES
+}
+
+const privateRoutes = _.map(PRIVATE_ROUTES)
 
 const AuthStack = createStackNavigator(
   {
@@ -73,7 +72,7 @@ const VerificationStack = createStackNavigator(
 
 const MarketStack = createStackNavigator(
   {
-    Market: { screen: ({ navigation }: any) => (
+    [MARKET]: { screen: ({ navigation }: any) => (
       <MarketPricesContextConsumer>
         {({ marketPrices, fetchMarketPrices }) => (
           <MarketScreen navigation={navigation} fetchMarketPrices={fetchMarketPrices} marketPrices={marketPrices} />
@@ -82,7 +81,13 @@ const MarketStack = createStackNavigator(
     )
     },
     Asset: { screen: AssetScreen },
-    [TRADE]: { screen: TradeScreen }
+    [TRADE]: { screen: ({ navigation }: any) => (
+      <BalancesContextConsumer>
+        {(args) => (
+          <TradeScreen navigation={navigation} {...args} />
+        )}
+      </BalancesContextConsumer>
+    )}
   },
   {
     mode: 'modal',
@@ -125,7 +130,7 @@ const PortfolioStack = createStackNavigator(
 
 const AppContent = createBottomTabNavigator(
   {
-    Market: {
+    MarketStack: {
       screen: MarketStack,
       navigationOptions: {
         tabBarOnPress: ({ navigation }: any) => {
@@ -134,7 +139,7 @@ const AppContent = createBottomTabNavigator(
         }
       }
     },
-    Portfolio: {
+    PortfolioStack: {
       screen: PortfolioStack,
       navigationOptions: {
         tabBarOnPress: ({ navigation }: any) => {
@@ -158,9 +163,9 @@ const AppContent = createBottomTabNavigator(
       tabBarIcon: ({ tintColor }) => {
         const { routeName } = navigation.state
         let iconName
-        if (routeName === 'Portfolio') {
+        if (routeName === 'PortfolioStack') {
           iconName = 'pie-chart'
-        } else if (routeName === 'Market') {
+        } else if (routeName === 'MarketStack') {
           iconName = 'line-chart'
         } else {
           return (
@@ -204,30 +209,36 @@ const MainApp = createStackNavigator(
 const defaultGetStateForAction = MainApp.router.getStateForAction
 
 MainApp.router.getStateForAction = (action, state) => {
+  const newDefaultState = defaultGetStateForAction(action, state)
   if (
     action.type === 'Navigation/NAVIGATE' &&
     _.includes(privateRoutes, action.routeName) &&
     isLocked()
   ) {
-    const { routes } = state
-    return {
-      ...state,
-      index: 1,
-      routes: [
-        ...routes,
-        {
-          routeName: 'Unlock',
-          key: 'Unlock',
-          params: {
-            title: 'Unlock with PIN',
-            closable: true,
-            onSuccess: (...args: Array<any>) => onUnlockPinSuccessfully(...args, action.routeName)
-          }
-        }
-      ]
-    }
+    return handlePrivateScreens(action, state)
   }
-  return defaultGetStateForAction(action, state)
+
+  return newDefaultState
+}
+
+function handlePrivateScreens (action: any, state: any) {
+  const { routes } = state
+  return {
+    ...state,
+    index: 1,
+    routes: [
+      ...routes,
+      {
+        routeName: 'Unlock',
+        key: 'Unlock',
+        params: {
+          title: 'Unlock with PIN',
+          closable: true,
+          onSuccess: (...args: Array<any>) => onUnlockPinSuccessfully(...args, action.routeName)
+        }
+      }
+    ]
+  }
 }
 
 async function onUnlockPinSuccessfully (

@@ -383,7 +383,7 @@ export default class TradeScreen extends React.Component<
       side: this.props.navigation.getParam('side'),
       assetId: this.props.navigation.getParam('assetId')
     })
-    this.props.navigation.goBack()
+    this.props.navigation.navigate('Portfolio')
   }
 
   public render () {
