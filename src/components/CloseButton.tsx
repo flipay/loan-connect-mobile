@@ -25,8 +25,6 @@ const styles = StyleSheet.create({
   closeButton: {
     zIndex: 1,
     position: 'absolute',
-    left: 5,
-    top: 8,
     padding: 6
   }
 })

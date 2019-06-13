@@ -202,7 +202,7 @@ export default class ComparisonScreen extends React.Component<
         <SafeAreaView style={styles.screen}>
           <View style={styles.content}>
             <StatusBar barStyle='light-content' />
-            <CloseButton onPress={this.onClose} color={COLORS.WHITE} />
+            <CloseButton onPress={this.onClose} color={COLORS.WHITE} top={8} left={5} />
             {this.renderTitle()}
             {this.renderSubtitle(best)}
             {this.renderTable(sortedRecords)}
