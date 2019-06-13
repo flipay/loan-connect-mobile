@@ -1,7 +1,6 @@
 import * as React from 'react'
 import _ from 'lodash'
 import {
-  StatusBar,
   View,
   StyleSheet
 } from 'react-native'
@@ -51,7 +50,6 @@ export default class PortfolioScreen extends React.Component<
     this.willFocusSubscription = this.props.navigation.addListener(
       'willFocus',
       () => {
-        StatusBar.setBarStyle('light-content')
         this.fetchData()
       }
     )

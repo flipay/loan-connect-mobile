@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { ScrollView, RefreshControl, View, StyleSheet } from 'react-native'
+import { StatusBar, ScrollView, RefreshControl, View, StyleSheet } from 'react-native'
 import { withNavigation, NavigationScreenProps } from 'react-navigation'
 import { COLORS } from '../constants'
 
@@ -18,6 +18,7 @@ class ScreenWithCover extends React.Component<Props & NavigationScreenProps> {
     this.willFocusSubscription = this.props.navigation.addListener(
       'willFocus',
       () => {
+        StatusBar.setBarStyle('light-content')
         this.scrollView.scrollTo({ y: 0, animated: false })
       }
     )
