@@ -2,7 +2,8 @@ import * as React from 'react'
 import _ from 'lodash'
 import { View, StyleSheet, Image, TouchableOpacity } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
-import { Text, Layer, Value, ChangeBox, ScreenWithCover } from '../components'
+import { showPrice } from '../utils'
+import { Text, Layer, ChangeBox, ScreenWithCover } from '../components'
 import { ASSETS, COLORS } from '../constants'
 import { MarketPrices, Asset } from '../types'
 
@@ -59,7 +60,7 @@ export default class MarketScreen extends React.Component<Props & NavigationScre
   public renderPriceDetail (crypto: Asset) {
     return (
       <View style={styles.priceDetail}>
-        {crypto.price && <Value assetId='THB' style={styles.price}>{crypto.price}</Value>}
+        {crypto.price && <Text style={styles.price} color={COLORS.N800}>{`${showPrice(crypto.price)} THB`}</Text>}
         {crypto.dailyChange && <ChangeBox value={crypto.dailyChange} style={styles.changeBox} />}
       </View>
     )
