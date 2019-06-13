@@ -225,7 +225,7 @@ function handlePrivateScreens (action: any, state: any) {
         params: {
           title: 'Unlock with PIN',
           closable: true,
-          onSuccess: (...args: Array<any>) => onUnlockPinSuccessfully(...args, action.routeName)
+          onSuccess: (...args: Array<any>) => onUnlockPinSuccessfully(...args, action)
         }
       }
     ]
@@ -239,13 +239,13 @@ async function onUnlockPinSuccessfully (
   startLoading: () => void,
   stopLoading: () => void,
   clearPin: () => void,
-  destinationRoute: string
+  action: any
 ) {
   try {
     startLoading()
     await unlock(pin)
     logEvent('unlock/successfully-unlock')
-    stackNavigationLogInPin.navigate(destinationRoute)
+    stackNavigationLogInPin.navigate(action.routeName, action.params)
   } catch (err) {
     stopLoading()
     logEvent('unlock/wrong-pin')

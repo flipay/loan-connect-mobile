@@ -163,7 +163,7 @@ export default class ComparisonScreen extends React.Component<
 
   public renderSubtitle (best: RequestedRecord) {
     const side = this.props.navigation.getParam('side', 'sell')
-    const assetId: AssetId = this.props.navigation.getParam('assetId', 'bitcoin')
+    const assetId: AssetId = this.props.navigation.getParam('assetId', 'BTC')
     const cryptoAmount = this.props.navigation.getParam('cryptoAmount', 1000)
     const quility = best.id === 'liquid' ? 'best' : 'competitive'
     return (

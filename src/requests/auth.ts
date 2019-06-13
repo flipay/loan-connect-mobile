@@ -45,7 +45,7 @@ export function setUpRequest (nav: any) {
 
 function setLockTimeout () {
   clearTimeout(lockTimeout)
-  const min = 0.1
+  const min = 30
   lockTimeout = setTimeout(() => {
     timeout = true
     axios.defaults.headers.common.Authorization = ''
