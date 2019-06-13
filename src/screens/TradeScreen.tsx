@@ -2,7 +2,7 @@ import * as React from 'react'
 import _ from 'lodash'
 import { StyleSheet, View, Alert } from 'react-native'
 import Sentry from 'sentry-expo'
-import { NavigationScreenProps } from 'react-navigation'
+import { NavigationScreenProps, StackActions, NavigationActions } from 'react-navigation'
 import {
   Text,
   AssetBoxWithBalance,
@@ -386,6 +386,12 @@ export default class TradeScreen extends React.Component<
       side: this.props.navigation.getParam('side'),
       assetId: this.props.navigation.getParam('assetId')
     })
+    const resetAction = StackActions.reset({
+      index: 0,
+      key: 'MarketStack',
+      actions: [NavigationActions.navigate({ routeName: 'Market' })]
+    })
+    this.props.navigation.dispatch(resetAction)
     this.props.navigation.navigate('Portfolio')
   }
 
