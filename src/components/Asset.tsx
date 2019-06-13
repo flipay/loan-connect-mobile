@@ -6,11 +6,10 @@ import Text from './Text'
 
 interface Props {
   id: AssetId
+  withUnit?: boolean
   style?: any
   bodySize?: boolean
 }
-
-const DEFAULT_TEXT_TYPE = 'headline'
 
 export default class Asset extends React.Component<Props> {
   public render () {
@@ -27,6 +26,12 @@ export default class Asset extends React.Component<Props> {
         >
           {name}
         </Text>
+        {this.props.withUnit && <Text
+          type={bodySize ? 'body' : 'headline'}
+          color={COLORS.N800}
+        >
+          {` (${ASSETS[this.props.id].unit})`}
+        </Text>}
       </View>
     )
   }

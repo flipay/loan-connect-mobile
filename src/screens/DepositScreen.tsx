@@ -2,7 +2,7 @@ import * as React from 'react'
 import { View, StyleSheet, Image, TouchableOpacity, Linking, Clipboard } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { AntDesign } from '@expo/vector-icons'
-import { Text, ScreenWithKeyboard, Button } from '../components'
+import { Text, Screen, Button } from '../components'
 import { COLORS, CONTACTS, ASSETS } from '../constants'
 import { logEvent } from '../analytics'
 import { AssetId } from '../types'
@@ -157,7 +157,7 @@ export default class DepositScreen extends React.Component<
     const assetId: AssetId = this.props.navigation.getParam('assetId', 'THB')
 
     return (
-      <ScreenWithKeyboard
+      <Screen
         backButtonType='close'
         onPressBackButton={this.onPressBackButton}
         submitButtonText='Done'
@@ -170,7 +170,7 @@ export default class DepositScreen extends React.Component<
             {this.renderSteps()}
           </View>
         )}
-      </ScreenWithKeyboard>
+      </Screen>
     )
   }
 }

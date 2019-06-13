@@ -2,6 +2,7 @@
 import AssetCard from './AssetCard'
 import Button from './Button'
 import CloseButton from './CloseButton'
+import ChangeBox from './ChangeBox'
 import Text from './Text'
 import Value from './Value'
 import TextBox from './TextBox'
@@ -14,7 +15,8 @@ import SubmitButton from './SubmitButton'
 import Layer from './Layer'
 import Asset from './Asset'
 import Key from './Key'
-import ScreenWithKeyboard from './ScreenWithKeyboard'
+import Screen from './Screen'
+import ScreenWithCover from './ScreenWithCover'
 import Link from './Link'
 import FullScreenLoading from './FullScreenLoading'
 import Record from './Record'
@@ -25,6 +27,7 @@ export {
   AssetCard,
   Button,
   CloseButton,
+  ChangeBox,
   Text,
   Value,
   TextBox,
@@ -37,7 +40,8 @@ export {
   Layer,
   Asset,
   Key,
-  ScreenWithKeyboard,
+  Screen,
+  ScreenWithCover,
   Link,
   FullScreenLoading,
   Record,

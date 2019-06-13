@@ -19,7 +19,8 @@ import SubmitButton from './SubmitButton'
 import FullScreenLoading from './FullScreenLoading'
 
 interface Props {
-  title?: string
+  title?: string | any
+  renderFooter?: () => any
   children: (autoFocus: boolean) => any
   statusBar?: 'white' | 'black'
   onPressBackButton?: () => void
@@ -28,6 +29,7 @@ interface Props {
   submitButtonText?: string
   onPessSubmitButton?: () => void
   fullScreenLoading?: boolean
+  style?: any
 }
 
 interface State {
@@ -72,6 +74,13 @@ export default class Screen extends React.Component<Props, State> {
     return this.props.onPressBackButton || !!this.props.title
   }
 
+  public renderTitle () {
+    if (!this.props.title) { return null }
+    return (typeof this.props.title) === 'string'
+      ? <Text type='headline'>{this.props.title}</Text>
+      : this.props.title()
+  }
+
   public render () {
     return (
       <View style={styles.screen}>
@@ -92,9 +101,7 @@ export default class Screen extends React.Component<Props, State> {
                 />
                 {this.hasHeader() && (
                   <View style={[styles.headerRow, !!this.props.title && styles.headerRowBorder]}>
-                    {!!this.props.title && (
-                      <Text type='headline'>{this.props.title}</Text>
-                    )}
+                    {this.renderTitle()}
                     {this.props.onPressBackButton && (
                       <View style={styles.backButtonContainer}>
                         <TouchableOpacity
@@ -115,7 +122,8 @@ export default class Screen extends React.Component<Props, State> {
                   <View
                     style={[
                       styles.content,
-                      this.hasHeader() && styles.contentWithHeader
+                      this.hasHeader() && styles.contentWithHeader,
+                      this.props.style
                     ]}
                   >
                     {this.props.children(
@@ -124,6 +132,7 @@ export default class Screen extends React.Component<Props, State> {
                     )}
                   </View>
                 </ScrollView>
+                {this.props.renderFooter && this.props.renderFooter()}
                 {this.props.onPessSubmitButton && (
                   <SubmitButton
                     onPress={this.props.onPessSubmitButton}

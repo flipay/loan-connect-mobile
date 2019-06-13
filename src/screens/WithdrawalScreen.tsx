@@ -5,10 +5,10 @@ import {
 } from 'react-native'
 import _ from 'lodash'
 import { NavigationScreenProps } from 'react-navigation'
-import { Text, ScreenWithKeyboard, AssetBox, TextBox, Picker, Value, AssetBoxWithBalance } from '../components'
+import { Text, Screen, TextBox, Picker, AssetBoxWithBalance } from '../components'
 import { withdraw } from '../requests'
 import { toNumber, toString, alert } from '../utils'
-import { ACCOUNT_ISSUERS, COLORS, ASSETS } from '../constants'
+import { ACCOUNT_ISSUERS, ASSETS } from '../constants'
 import { Issuer, AssetId } from '../types'
 import { logEvent } from '../analytics'
 
@@ -164,7 +164,7 @@ export default class WithdrawalScreen extends React.Component<
     const remainingBalance = this.props.navigation.getParam('remainingBalance')
     const description = `${ASSETS[assetId].name} address`
     return (
-      <ScreenWithKeyboard
+      <Screen
         backButtonType='close'
         onPressBackButton={this.onPressBackButton}
         activeSubmitButton={this.isSubmitButtonActive()}
@@ -216,7 +216,7 @@ export default class WithdrawalScreen extends React.Component<
             }
           </View>
         )}
-      </ScreenWithKeyboard>
+      </Screen>
     )
   }
 }
