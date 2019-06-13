@@ -166,7 +166,7 @@ export default class PinScreen extends React.Component<
     return (
       <View style={{ flex: 1 }}>
         <StatusBar barStyle='dark-content' />
-        {closable && <CloseButton onPress={this.onClose} />}
+        {closable && <CloseButton onPress={this.onClose} top={30} left={15} />}
         <FullScreenLoading visible={this.state.loading} />
         <View style={styles.screen}>
           <View style={styles.content}>
