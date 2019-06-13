@@ -1,55 +1,64 @@
 
 import axios from 'axios'
+import _ from 'lodash'
 import { Alert, AppState } from 'react-native'
 import { getErrorCode, alert } from '../utils'
 import { setToken, getToken, clearToken } from '../secureStorage'
 import { setPhoneNumber } from '../asyncStorage'
 import { identify } from '../analytics'
+import { PRIVATE_ROUTES } from '../constants'
+import { getCurrentRouteName, navigate } from '../navigation'
 
-let navigation: any
 let lockTimeout: any
+let shownUnauthorizedAlert: any
 
 export function setUpRequest (nav: any) {
   // 'https://flipay-mock-backend.herokuapp.com/'
   // 'http://192.168.0.4:8000'
   axios.defaults.baseURL = 'https://api.flipay.co/v1/'
-  navigation = nav
-
   axios.interceptors.response.use((response) => {
     return response
   }, (err) => {
     if (getErrorCode(err) === 'unauthorized') {
-      Alert.alert(
-        'The login token has expired.',
-        'Please login again.',
-        [{
-          text: 'OK',
-          onPress: async () => {
-            await clearToken()
-            navigation.navigate('Starter')
-          }
-        }],
-        { cancelable: false }
-      )
+      if (!shownUnauthorizedAlert) {
+        Alert.alert(
+          'The login token has expired.',
+          'Please login again.',
+          [{
+            text: 'OK',
+            onPress: async () => {
+              await clearToken()
+              shownUnauthorizedAlert = false
+              navigate('Starter')
+            }
+          }],
+          { cancelable: false }
+        )
+        shownUnauthorizedAlert = true
+      }
+    } else {
+      return Promise.reject(err)
     }
-    return Promise.reject(err)
   })
 }
 
 function setLockTimeout () {
   clearTimeout(lockTimeout)
-  const min = 30
+  const min = 0.1
   lockTimeout = setTimeout(() => {
     axios.defaults.headers.common.Authorization = ''
     if (AppState.currentState === 'active') {
-      Alert.alert('The session is expired. please insert PIN again.', undefined, [{
-        text: 'OK',
-        onPress: () => {
-          navigation.navigate('Starter')
-        }
-      }])
+      const privateRoutes = _.map(PRIVATE_ROUTES)
+      if (_.includes(privateRoutes, getCurrentRouteName())) {
+        Alert.alert('The session is expired. please insert PIN again.', undefined, [{
+          text: 'OK',
+          onPress: () => {
+            navigate('Starter')
+          }
+        }])
+      }
     } else {
-      navigation.navigate('Starter')
+      navigate('Starter')
     }
   }, min * 60 * 1000)
 }
@@ -82,7 +91,7 @@ export async function unlock (pin: string) {
 export async function lock () {
   clearTimeout(lockTimeout)
   axios.defaults.headers.common.Authorization = ''
-  navigation.navigate('Starter')
+  navigate('Starter')
 }
 
 export async function authen (phoneNumber: string) {

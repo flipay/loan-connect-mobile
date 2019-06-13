@@ -27,27 +27,18 @@ import ComparisonScreen from './screens/ComparisonScreen'
 import AccountScreen from './screens/AccountScreen'
 import PinScreen from './screens/PinScreen'
 import { Text } from './components'
-import { COLORS } from './constants'
+import { COLORS, PRIVATE_ROUTES } from './constants'
 import { logEvent } from './analytics'
 import { unlock, isLocked } from './requests'
 
-const PORTFOLIO = 'Portfolio'
-const ACCOUNT = 'Account'
-const TRADE = 'Trade'
-const DEPOSIT = 'Deposit'
-const WITHDRAWAL = 'Withdrawal'
-const MARKET = 'Market'
-const COMPARISON = 'Comparison'
-
-const PRIVATE_ROUTES = {
+const {
   PORTFOLIO,
   TRADE,
   DEPOSIT,
   WITHDRAWAL,
   ACCOUNT,
   COMPARISON
-}
-
+} = PRIVATE_ROUTES
 const privateRoutes = _.map(PRIVATE_ROUTES)
 
 const AuthStack = createStackNavigator(
@@ -72,7 +63,7 @@ const VerificationStack = createStackNavigator(
 
 const MarketStack = createStackNavigator(
   {
-    [MARKET]: { screen: ({ navigation }: any) => (
+    Market: { screen: ({ navigation }: any) => (
       <MarketPricesContextConsumer>
         {({ marketPrices, fetchMarketPrices }) => (
           <MarketScreen navigation={navigation} fetchMarketPrices={fetchMarketPrices} marketPrices={marketPrices} />

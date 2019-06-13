@@ -3,6 +3,7 @@ import { PROVIDERS, ProviderId, COMPETITOR_IDS, THBAmountTypes } from './provide
 import { COLORS, FONT_TYPES } from './styleGuides'
 import ACCOUNT_ISSUERS from './accountIssuers'
 import * as CONTACTS from './contacts'
+import { PRIVATE_ROUTES } from './privateRoutes'
 export {
   ASSETS,
   PROVIDERS,
@@ -12,5 +13,6 @@ export {
   COLORS,
   FONT_TYPES,
   ACCOUNT_ISSUERS,
-  CONTACTS
+  CONTACTS,
+  PRIVATE_ROUTES
 }

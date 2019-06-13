@@ -7,6 +7,7 @@ import { ContextProvider, MarketPricesContextConsumer } from './context'
 import preloadAssets from './preloadAsssets'
 import AppNavigator from './AppNavigator'
 import { logEvent } from './analytics'
+import { setTopLevelNavigator } from './navigation'
 
 // NOTE: for testing Sentry locally
 // Sentry.enableInExpoDevelopment = true
@@ -116,7 +117,9 @@ export default class App extends React.Component<{}, State> {
               />)}
           </MarketPricesContextConsumer>
         ) : (
-            <AppContainer />
+            <AppContainer
+              ref={(navigatorRef: any) => setTopLevelNavigator(navigatorRef)}
+            />
         )}
       </ContextProvider>
 
