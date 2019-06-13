@@ -78,7 +78,8 @@ const MarketStack = createStackNavigator(
           <TradeScreen navigation={navigation} {...args} />
         )}
       </BalancesContextConsumer>
-    )}
+    )},
+    [COMPARISON]: { screen: ComparisonScreen }
   },
   {
     mode: 'modal',
@@ -105,8 +106,7 @@ const PortfolioStack = createStackNavigator(
       </MarketPricesContextConsumer>
     )},
     [DEPOSIT]: { screen: DepositScreen },
-    [WITHDRAWAL]: { screen: WithdrawalScreen },
-    [COMPARISON]: { screen: ComparisonScreen }
+    [WITHDRAWAL]: { screen: WithdrawalScreen }
   },
   {
     mode: 'modal',
