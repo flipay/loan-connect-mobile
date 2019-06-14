@@ -52,7 +52,7 @@ export const ASSETS: AssetTypes = {
   BNB: {
     id: 'BNB',
     name: 'Binance Coin',
-    image: require('../img/icon_binance.png'),
+    image: require('../img/icon_bnb.png'),
     unit: 'BNB',
     decimal: 5,
     priceSource: 'binance',
