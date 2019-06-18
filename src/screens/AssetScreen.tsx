@@ -13,9 +13,9 @@ export default class AssetScreen extends React.Component<NavigationScreenProps> 
     this.props.navigation.goBack()
   }
 
-  public renderSection (content: any) {
+  public renderSection (content: any, underline: boolean) {
     return (
-      <View style={styles.section}>
+      <View style={[styles.section, underline && { borderBottomWidth: 1 }]}>
         {content}
       </View>
     )
@@ -33,17 +33,17 @@ export default class AssetScreen extends React.Component<NavigationScreenProps> 
         <ChangeBox value={dailyChange} />
         <Text type='caption' style={styles.dailyChange}>24hr change</Text>
       </View>
-    )
+    , true)
   }
 
   public renderAboutSection () {
     const assetId: AssetId = this.props.navigation.getParam('id')
     return this.renderSection(
       <View>
-        <Text type='title'>{`About ${ASSETS[assetId].name}`}</Text>
-        <Text style={styles.aboutContent}>{ASSETS[assetId].about}</Text>
+        <Text type='title' bold={true}>{`About ${ASSETS[assetId].name}`}</Text>
+        <Text style={styles.aboutContent} color={COLORS.N800}>{ASSETS[assetId].about}</Text>
       </View>
-    )
+    , false)
   }
 
   public onPressTradeButton = (side: OrderType) => {
@@ -87,7 +87,6 @@ export default class AssetScreen extends React.Component<NavigationScreenProps> 
 const styles = StyleSheet.create({
   section: {
     paddingVertical: 24,
-    borderBottomWidth: 1,
     borderBottomColor: COLORS.N200
   },
   priceSection: {
