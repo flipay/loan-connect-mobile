@@ -58,9 +58,12 @@ export default class MarketScreen extends React.Component<Props & NavigationScre
   }
 
   public renderPriceDetail (crypto: Asset) {
+    return crypto.price && <Text style={styles.price} color={COLORS.N800}>{`${showPrice(crypto.price)} THB`}</Text>
+  }
+
+  public renderDailyChange (crypto: Asset) {
     return (
-      <View style={styles.priceDetail}>
-        {crypto.price && <Text style={styles.price} color={COLORS.N800}>{`${showPrice(crypto.price)} THB`}</Text>}
+      <View style={styles.dailyChange}>
         {crypto.dailyChange && <ChangeBox value={crypto.dailyChange} style={styles.changeBox} />}
       </View>
     )
@@ -72,6 +75,7 @@ export default class MarketScreen extends React.Component<Props & NavigationScre
         <TouchableOpacity style={styles.crypto} onPress={() => this.onPressAsset(crypto)}>
           {this.renderCryptoIdentity(crypto)}
           {this.renderPriceDetail(crypto)}
+          {this.renderDailyChange(crypto)}
         </TouchableOpacity>
         {index !== _.map(this.props.marketPrices).length - 1 && <View style={styles.line} />}
       </View>
@@ -119,7 +123,6 @@ const styles = StyleSheet.create({
     marginBottom: 24
   },
   cryptoContainer: {
-    paddingHorizontal: 16
   },
   crypto: {
     flexDirection: 'row',
@@ -129,17 +132,19 @@ const styles = StyleSheet.create({
     paddingBottom: 16
   },
   cryptoIdentity: {
+    flex: 40,
+    paddingLeft: 12,
     flexDirection: 'row',
     alignItems: 'center'
   },
-  priceDetail: {
-    flex: 1,
-    alignItems: 'flex-end'
-  },
   price: {
-    flex: 1,
-    marginBottom: 4,
+    flex: 32,
     justifyContent: 'flex-end'
+  },
+  dailyChange: {
+    flex: 28,
+    paddingLeft: 8,
+    paddingRight: 12
   },
   changeBox: {
     justifyContent: 'center'
