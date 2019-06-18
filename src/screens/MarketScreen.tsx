@@ -84,7 +84,7 @@ export default class MarketScreen extends React.Component<Props & NavigationScre
           {this.renderPriceDetail(crypto)}
           {this.renderDailyChange(crypto)}
         </TouchableOpacity>
-        {index !== _.map(this.props.marketPrices).length - 1 && <View style={styles.line} />}
+        {index !== _.map(this.props.marketPrices).length - 2 && <View style={styles.line} />}
       </View>
     )
   }
