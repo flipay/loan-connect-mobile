@@ -44,13 +44,16 @@ export default class MarketScreen extends React.Component<Props & NavigationScre
         <Image
           source={crypto.image}
           style={{
-            width: 24,
-            height: 24,
-            marginRight: 8
+            width: 16,
+            height: 16,
+            marginRight: 8,
+            marginTop: 4
           }}
         />
-        <View>
-          <Text type='headline'>{crypto.name}</Text>
+        <View style={styles.cryptoText}>
+          <Text type='headline'>
+            {crypto.name}
+          </Text>
           <Text type='caption'>{crypto.unit}</Text>
         </View>
       </View>
@@ -58,7 +61,11 @@ export default class MarketScreen extends React.Component<Props & NavigationScre
   }
 
   public renderPriceDetail (crypto: Asset) {
-    return crypto.price && <Text style={styles.price} color={COLORS.N800}>{`${showPrice(crypto.price)} THB`}</Text>
+    return (
+      <View style={styles.priceContainer}>
+        {crypto.price && <Text style={styles.price} color={COLORS.N800}>{`${showPrice(crypto.price)} THB`}</Text>}
+      </View>
+    )
   }
 
   public renderDailyChange (crypto: Asset) {
@@ -128,25 +135,37 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingTop: 22,
-    paddingBottom: 16
+    minHeight: 80,
+    paddingVertical: 16
   },
   cryptoIdentity: {
-    flex: 40,
+    width: '40%',
     paddingLeft: 12,
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'flex-start'
   },
-  price: {
-    flex: 32,
+  cryptoText: {
+    flex: 1
+  },
+  priceContainer: {
+    width: '32%',
+    paddingLeft: 12,
+    flexDirection: 'row',
     justifyContent: 'flex-end'
   },
+  price: {
+    flex: 1,
+    textAlign: 'right'
+  },
   dailyChange: {
-    flex: 28,
+    width: '28%',
     paddingLeft: 8,
-    paddingRight: 12
+    paddingRight: 12,
+    flexDirection: 'row'
   },
   changeBox: {
+    flex: 1,
+    flexDirection: 'row',
     justifyContent: 'center'
   },
   line: {
