@@ -5,7 +5,7 @@ import { AntDesign } from '@expo/vector-icons'
 import { NavigationScreenProps } from 'react-navigation'
 import { finalizeAuthenProcess, submitOtp } from '../requests'
 import { COLORS } from '../constants'
-import { Text, ScreenWithKeyboard, Layer, Link } from '../components'
+import { Text, Screen, Layer, Link } from '../components'
 import { alert } from '../utils'
 import { logEvent } from '../analytics'
 
@@ -92,7 +92,7 @@ export default class VerifyPhoneNumberScreen extends React.Component<
             startLoading()
             await finalizeAuthenProcess(this.accessToken, secondPin)
             logEvent('confirm-pin/successfully-setting-pin')
-            stackNavigationConmfirmPin.navigate('Main')
+            stackNavigationConmfirmPin.navigate('Market')
           } catch (error) {
             logEvent('confirm-pin/error-setting-pin')
             setErrorConfirm(error.message)
@@ -278,7 +278,7 @@ export default class VerifyPhoneNumberScreen extends React.Component<
 
   public render () {
     return (
-      <ScreenWithKeyboard
+      <Screen
         backButtonType='arrowleft'
         onPressBackButton={this.onPressBackButon}
         onPessSubmitButton={this.onNextStep}
@@ -296,7 +296,7 @@ export default class VerifyPhoneNumberScreen extends React.Component<
             {this.renderHiddenTextInput(autoFocus)}
           </SafeAreaView>
         )}
-      </ScreenWithKeyboard>
+      </Screen>
     )
   }
 }

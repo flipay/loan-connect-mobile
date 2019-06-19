@@ -3,9 +3,11 @@ import { Platform, NetInfo, Alert, AppState, View } from 'react-native'
 import { AppLoading, Updates, Constants } from 'expo'
 import { createAppContainer } from 'react-navigation'
 import Sentry from 'sentry-expo'
+import { ContextProvider, MarketPricesContextConsumer } from './context'
 import preloadAssets from './preloadAsssets'
 import AppNavigator from './AppNavigator'
 import { logEvent } from './analytics'
+import { setTopLevelNavigator } from './navigation'
 
 // NOTE: for testing Sentry locally
 // Sentry.enableInExpoDevelopment = true
@@ -96,18 +98,31 @@ export default class App extends React.Component<{}, State> {
     }
   }
 
-  public loadAssetsAsync = async () => {
+  public loadAssetsAsync = async (fetchMarketPrices: () => void) => {
     await this.fetchNewVersionIfAvailable()
     await preloadAssets()
+    await fetchMarketPrices()
   }
 
   public render () {
-    return !this.state.isReady ? (
-      <AppLoading
-        startAsync={this.loadAssetsAsync}
-        onFinish={() => this.setState({ isReady: true })}
-        onError={Sentry.captureException}
-      />
-    ) : <AppContainer />
+    return (
+      <ContextProvider>
+        {!this.state.isReady ? (
+          <MarketPricesContextConsumer>
+            {({ fetchMarketPrices }) => (
+              <AppLoading
+                startAsync={() => this.loadAssetsAsync(fetchMarketPrices)}
+                onFinish={() => this.setState({ isReady: true })}
+                onError={Sentry.captureException}
+              />)}
+          </MarketPricesContextConsumer>
+        ) : (
+            <AppContainer
+              ref={(navigatorRef: any) => setTopLevelNavigator(navigatorRef)}
+            />
+        )}
+      </ContextProvider>
+
+    )
   }
 }

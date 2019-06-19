@@ -2,17 +2,17 @@ import * as React from 'react'
 import _ from 'lodash'
 import { StyleSheet, View, Alert } from 'react-native'
 import Sentry from 'sentry-expo'
-import { NavigationScreenProps } from 'react-navigation'
+import { NavigationScreenProps, StackActions, NavigationActions } from 'react-navigation'
 import {
   Text,
   AssetBoxWithBalance,
   AssetBoxTemp,
   TradeResult,
-  ScreenWithKeyboard,
+  Screen,
   Link
 } from '../components'
 import { COLORS, ASSETS, THBAmountTypes } from '../constants'
-import { AssetId, OrderPart } from '../types'
+import { AssetId, OrderPart, Balances } from '../types'
 import { getAmount, order, getCompetitorTHBAmounts } from '../requests'
 import {
   toNumber,
@@ -24,6 +24,11 @@ import {
 import { logEvent } from '../analytics'
 
 type AssetBoxType = OrderPart
+
+interface Props {
+  balances: Balances
+  fetchBalances: () => void
+}
 
 interface State {
   activeAssetBox: AssetBoxType
@@ -41,13 +46,13 @@ interface State {
 }
 
 export default class TradeScreen extends React.Component<
-  NavigationScreenProps,
+  Props & NavigationScreenProps,
   State
 > {
   private mounted: boolean = false
   private timeout: any
   private interval: any
-  public constructor (props: NavigationScreenProps) {
+  public constructor (props: Props & NavigationScreenProps) {
     super(props)
     this.state = {
       activeAssetBox: 'give',
@@ -61,8 +66,12 @@ export default class TradeScreen extends React.Component<
     }
   }
 
+  public async componentDidMount () {
+    await this.props.fetchBalances()
+  }
+
   public componentDidUpdate (
-    prevProps: NavigationScreenProps,
+    prevProps: Props & NavigationScreenProps,
     prevState: State
   ) {
     this.mounted = true
@@ -231,10 +240,7 @@ export default class TradeScreen extends React.Component<
     } catch (err) {
       const code = getErrorCode(err)
       if (code === 'insufficient_balance') {
-        const remainingBalance = this.props.navigation.getParam(
-          'remainingBalance',
-          0
-        )
+        const remainingBalance = this.props.balances && this.props.balances[side === 'buy' ? 'THB' : assetId]
         Alert.alert(
           `The balance is not enough. (remaining ${toString(
             remainingBalance,
@@ -340,10 +346,7 @@ export default class TradeScreen extends React.Component<
   public renderTradeBody (autoFocus: boolean) {
     const side = this.props.navigation.getParam('side', 'buy')
     const assetId: AssetId = this.props.navigation.getParam('assetId', 'BTC')
-    const remainingBalance = this.props.navigation.getParam(
-      'remainingBalance',
-      0
-    )
+    const remainingBalance = this.props.balances && this.props.balances[side === 'buy' ? 'THB' : assetId]
 
     const giveSideAssetId = side === 'buy' ? 'THB' : assetId
     return (
@@ -383,14 +386,20 @@ export default class TradeScreen extends React.Component<
       side: this.props.navigation.getParam('side'),
       assetId: this.props.navigation.getParam('assetId')
     })
-    this.props.navigation.goBack()
+    const resetAction = StackActions.reset({
+      index: 0,
+      key: 'MarketStack',
+      actions: [NavigationActions.navigate({ routeName: 'Market' })]
+    })
+    this.props.navigation.dispatch(resetAction)
+    this.props.navigation.navigate('Portfolio')
   }
 
   public render () {
     const side = this.props.navigation.getParam('side', 'buy')
     const assetId: AssetId = this.props.navigation.getParam('assetId', 'BTC')
     return (
-      <ScreenWithKeyboard
+      <Screen
         backButtonType='close'
         title={!this.state.executed ? `${_.capitalize(side)} ${ASSETS[assetId].name}` : undefined}
         onPressBackButton={this.state.executed ? undefined : this.onClose}
@@ -422,7 +431,7 @@ export default class TradeScreen extends React.Component<
             )}
           </View>
         )}
-      </ScreenWithKeyboard>
+      </Screen>
     )
   }
 }

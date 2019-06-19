@@ -21,6 +21,18 @@ export function toString (value: number, decimal: number) {
   return result
 }
 
+export function showPrice (value: number) {
+  let decimal = 0
+  for (let i = 0; i < 6 ; i++) {
+    const comparison = Math.pow(10, i)
+    if (value < comparison) {
+      decimal = 6 - i
+      break
+    }
+  }
+  return toString(value, decimal)
+}
+
 export function getErrorCode (err: Error) {
   return _.get(err, 'response.data.code')
 }

@@ -163,7 +163,7 @@ export default class ComparisonScreen extends React.Component<
 
   public renderSubtitle (best: RequestedRecord) {
     const side = this.props.navigation.getParam('side', 'sell')
-    const assetId: AssetId = this.props.navigation.getParam('assetId', 'bitcoin')
+    const assetId: AssetId = this.props.navigation.getParam('assetId', 'BTC')
     const cryptoAmount = this.props.navigation.getParam('cryptoAmount', 1000)
     const quility = best.id === 'liquid' ? 'best' : 'competitive'
     return (
@@ -202,7 +202,7 @@ export default class ComparisonScreen extends React.Component<
         <SafeAreaView style={styles.screen}>
           <View style={styles.content}>
             <StatusBar barStyle='light-content' />
-            <CloseButton onPress={this.onClose} color={COLORS.WHITE} />
+            <CloseButton onPress={this.onClose} color={COLORS.WHITE} top={8} left={5} />
             {this.renderTitle()}
             {this.renderSubtitle(best)}
             {this.renderTable(sortedRecords)}

@@ -17,7 +17,7 @@ interface Props {
   value?: string
   warning?: string
   error?: string
-  balance: number
+  balance?: number
   onPressMax: () => void
   onPressHalf: () => void
 }
@@ -40,10 +40,12 @@ export default class AssetBoxWithBalance extends React.Component<Props> {
           {this.renderSmallbutton('Max', this.props.onPressMax)}
           {this.renderSmallbutton('Half', this.props.onPressHalf)}
         </View>
-        <Text type='caption'>
-          <Text>{`Balance `}</Text>
-          <Value assetId={this.props.assetId}>{this.props.balance}</Value>
-        </Text>
+        {this.props.balance && (
+          <Text type='caption'>
+            <Text>{`Balance `}</Text>
+            <Value assetId={this.props.assetId}>{this.props.balance}</Value>
+          </Text>
+        )}
       </View>
     )
   }

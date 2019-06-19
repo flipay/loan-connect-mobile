@@ -29,7 +29,6 @@ export const COLORS = {
 
 interface Font {
   fontSize: number
-  fontFamily: 'nunito' | 'nunito-semibold'
   defaultColor: string
 }
 
@@ -38,32 +37,26 @@ type FontTypes = { [key in FontType]: Font }
 export const FONT_TYPES: FontTypes = {
   ['large-title']: {
     fontSize: 34,
-    fontFamily: 'nunito',
     defaultColor: COLORS.N800
   },
   title: {
     fontSize: 22,
-    fontFamily: 'nunito-semibold',
     defaultColor: COLORS.N800
   },
   headline: {
     fontSize: 17,
-    fontFamily: 'nunito-semibold',
     defaultColor: COLORS.N800
   },
   body: {
     fontSize: 15,
-    fontFamily: 'nunito',
     defaultColor: COLORS.N500
   },
   caption: {
     fontSize: 12,
-    fontFamily: 'nunito',
     defaultColor: COLORS.N600
   },
   button: {
     fontSize: 15,
-    fontFamily: 'nunito-semibold',
     defaultColor: COLORS.WHITE
   }
 }

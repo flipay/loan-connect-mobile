@@ -5,15 +5,13 @@ import {
   View,
   StyleSheet,
   Animated,
-  TouchableWithoutFeedback,
-  TouchableOpacity
+  TouchableWithoutFeedback
 } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
 import Button from './Button'
 import Asset from './Asset'
 import Value from './Value'
 import Layer from './Layer'
-import Text from './Text'
 import { COLORS } from '../constants'
 import { AssetId } from '../types'
 import { logEvent } from '../analytics'
@@ -25,7 +23,6 @@ interface Props {
   price?: number
   expanded: boolean
   onPress: () => void
-  onPressTranferButton: () => void
 }
 
 interface State {
@@ -72,30 +69,15 @@ export default class AssetCard extends React.Component<
   }
 
   public onPressDepositButton = () => {
-    logEvent('main/press-deposit-button')
-    this.props.navigation.navigate('Deposit', { assetId: 'THB' })
+    logEvent('portfolio/press-deposit-button')
+    this.props.navigation.navigate('Deposit', { assetId: this.props.id })
   }
 
   public onPressWithdrawButton = () => {
-    logEvent('main/press-withdraw-button')
+    logEvent('portfolio/press-withdraw-button')
     this.props.navigation.navigate('Withdrawal', {
-      assetId: 'THB',
+      assetId: this.props.id,
       remainingBalance: this.props.amount
-    })
-  }
-
-  public onPressButton = (side: 'buy' | 'sell') => {
-    logEvent('main/press-trade-button', {
-      assetId: this.props.id,
-      side
-    })
-    this.props.navigation.navigate('Trade', {
-      side,
-      assetId: this.props.id,
-      remainingBalance:
-        side === 'buy'
-          ? this.props.cash
-          : this.props.amount
     })
   }
 
@@ -118,27 +100,12 @@ export default class AssetCard extends React.Component<
 
   public renderExpandedCardDescription () {
     const ActionBotton = (props: any) => <Button {...props} style={styles.button} />
-    return this.props.id === 'THB' ? (
+    return (
       <View style={styles.buttonsContainer}>
         <ActionBotton onPress={this.onPressDepositButton}>Deposit</ActionBotton>
         <View style={styles.spacing} />
         <ActionBotton onPress={this.onPressWithdrawButton}>Withdraw</ActionBotton>
       </View>
-    ) : (
-      <View style={styles.buttonsContainer}>
-        <ActionBotton onPress={() => this.onPressButton('buy')}>Buy</ActionBotton>
-        <View style={styles.spacing} />
-        <ActionBotton onPress={() => this.onPressButton('sell')}>Sell</ActionBotton>
-      </View>
-    )
-  }
-
-  public renderTransferButton () {
-    if (this.props.id === 'THB') { return null }
-    return (
-      <TouchableOpacity onPress={this.props.onPressTranferButton} style={styles.transferButton}>
-        <Text color={COLORS.P400} style={{ fontFamily: 'flipay-icon' }}></Text>
-      </TouchableOpacity>
     )
   }
 
@@ -157,7 +124,6 @@ export default class AssetCard extends React.Component<
               this.props.expanded && styles.expandedContainer
             ]}
           >
-            {this.props.expanded && this.renderTransferButton()}
             <Asset id={this.props.id} />
             {!this.props.expanded && (
               <View style={styles.rightSection}>
@@ -189,8 +155,6 @@ export default class AssetCard extends React.Component<
   }
 }
 
-const paddingLeft = 20
-
 const styles = StyleSheet.create({
   expandedContainer: {
     flexDirection: 'column',
@@ -199,7 +163,7 @@ const styles = StyleSheet.create({
   },
   container: {
     height: '100%',
-    padding: paddingLeft,
+    padding: 20,
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between'
@@ -211,22 +175,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center'
   },
-  coinIcon: {
-    width: 16,
-    height: 16,
-    marginRight: 8
-  },
-  transferButton: {
-    position: 'absolute',
-    left: paddingLeft,
-    top: 20,
-    backgroundColor: COLORS.N200,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 4,
-    width: 30,
-    height: 30
-  },
   upIcon: {
     position: 'absolute',
     right: 22,
@@ -235,9 +183,6 @@ const styles = StyleSheet.create({
   valueContainer: {
     alignItems: 'flex-end',
     marginRight: 12
-  },
-  bahtPrice: {
-    color: COLORS.N500
   },
   buttonsContainer: {
     flexDirection: 'row'

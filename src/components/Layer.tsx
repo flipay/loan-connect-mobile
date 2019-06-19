@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
     shadowOffset: { height: 1, width: 0 },
     shadowOpacity: 0.2,
     shadowRadius: 2,
-    borderRadius: 4
+    borderRadius: 10
   },
   activeContainer: {
     shadowOffset: { height: 4, width: 0 },

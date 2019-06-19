@@ -7,6 +7,7 @@ interface Props {
   children: any
   type: FontType | 'inherit'
   color?: string
+  bold?: boolean
   style?: any
   inherit?: boolean
 }
@@ -25,7 +26,7 @@ class FlipText extends React.Component<Props> {
             fontFamily:
               this.props.type === 'inherit'
                 ? undefined
-                : FONT_TYPES[this.props.type].fontFamily,
+                : this.props.bold ? 'nunito-bold' : 'nunito',
             fontSize:
               this.props.type === 'inherit'
                 ? undefined
