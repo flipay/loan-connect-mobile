@@ -100,7 +100,7 @@ export default class Screen extends React.Component<Props, State> {
                   }
                 />
                 {this.hasHeader() && (
-                  <View style={[styles.headerRow, !!this.props.title && styles.headerRowBorder]}>
+                  <View style={[styles.headerRow, (!!this.props.title && typeof this.props.title === 'string') && styles.headerRowBorder]}>
                     {this.renderTitle()}
                     {this.props.onPressBackButton && (
                       <View style={styles.backButtonContainer}>

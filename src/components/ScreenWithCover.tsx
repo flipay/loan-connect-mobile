@@ -57,20 +57,18 @@ class ScreenWithCover extends React.Component<Props & NavigationScreenProps> {
 
 export default withNavigation(ScreenWithCover)
 
-const paddingHorizontal = 12
-
 const styles = StyleSheet.create({
   screen: {
     flex: 1
   },
   header: {
-    paddingHorizontal,
+    paddingHorizontal: 20,
     backgroundColor: COLORS.P400,
     justifyContent: 'center',
     minHeight: 206
   },
   screenContent: {
-    paddingHorizontal,
+    paddingHorizontal: 12,
     position: 'relative',
     top: -39
   }

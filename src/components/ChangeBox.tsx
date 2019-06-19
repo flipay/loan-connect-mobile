@@ -31,7 +31,7 @@ export default class ChangeBox extends React.Component<Props> {
           name={this.isNegative() ? 'arrow-drop-down' : 'arrow-drop-up'}
           color={this.getColor()}
         />
-        <Text color={this.getColor()}>{`${valueInString}%`}</Text>
+        <Text type='caption' bold={true} color={this.getColor()}>{`${valueInString}%`}</Text>
       </View>
     )
   }
