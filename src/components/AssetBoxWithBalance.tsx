@@ -40,7 +40,7 @@ export default class AssetBoxWithBalance extends React.Component<Props> {
           {this.renderSmallbutton('Max', this.props.onPressMax)}
           {this.renderSmallbutton('Half', this.props.onPressHalf)}
         </View>
-        {this.props.balance && (
+        {this.props.balance !== undefined && (
           <Text type='caption'>
             <Text>{`Balance `}</Text>
             <Value assetId={this.props.assetId}>{this.props.balance}</Value>
