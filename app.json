@@ -4,7 +4,7 @@
     "description": "",
     "slug": "flipay",
     "privacy": "unlisted",
-    "sdkVersion": "32.0.0",
+    "sdkVersion": "32.0.1",
     "version": "0.5.1",
     "orientation": "portrait",
     "primaryColor": "#fff",
