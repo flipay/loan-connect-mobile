@@ -38,7 +38,7 @@ export function getErrorCode (err: Error) {
 }
 
 export function getErrorDetail (err: Error) {
-  return JSON.stringify(_.get(err, 'response.data.errors'))
+  return _.get(err, 'response.data.errors.detail')
 }
 
 export function alert (err: Error) {
