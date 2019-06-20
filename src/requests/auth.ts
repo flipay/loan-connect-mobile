@@ -104,22 +104,33 @@ export async function authen (phoneNumber: string) {
   try {
     response = await axios.post('auth/signup', payload)
   } catch (signUpErr) {
-    switch (signUpErr.response.status) {
-      case 409:
+    switch (getErrorCode(signUpErr)) {
+      case 'conflict':
         try {
           response = await axios.post('auth/login', payload)
         } catch (logInErr) {
-          Alert.alert(logInErr.request._response)
+          if (getErrorCode(logInErr) === 'too_many_requests') {
+            handleTooManyRequests()
+          } else {
+            alert(logInErr)
+          }
         }
         break
-      case 422:
-        Alert.alert('Invalid phone number format')
+      case 'too_many_requests':
+        handleTooManyRequests()
+        break
+      case 'invalid_number':
+        alert('Invalid phone number format')
         break
       default:
         alert(signUpErr)
     }
   }
   return response && response.data
+}
+
+function handleTooManyRequests () {
+  alert('Too many reqests for OTP. You can request again after 30 seconds.')
 }
 
 export async function submitOtp (token: string, otpNumber: string) {
