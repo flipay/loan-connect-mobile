@@ -15,7 +15,7 @@ import {
 
 import Starter from './Starter'
 import MarketScreen from './screens/MarketScreen'
-import AssetScreen from './screens/AssetScreen'
+import CryptoScreen from './screens/CryptoScreen'
 import PortfolioScreen from './screens/PortfolioScreen'
 import WelcomeScreen from './screens/WelcomeScreen'
 import AuthenScreen from './screens/AuthenScreen'
@@ -71,7 +71,7 @@ const MarketStack = createStackNavigator(
       </MarketPricesContextConsumer>
     )
     },
-    Asset: { screen: AssetScreen },
+    Crypto: { screen: CryptoScreen },
     [TRADE]: { screen: ({ navigation }: any) => (
       <BalancesContextConsumer>
         {(args) => (
