@@ -4,6 +4,7 @@ import { getEnv } from './utils'
 
 type Event = 'reboost-the-app'
   | 'open-the-app'
+  | 'close-the-app'
   | 'welcome/press-create-account-or-login-button'
   | 'authen/submit-phone-number'
   | 'authen/press-back-button'
