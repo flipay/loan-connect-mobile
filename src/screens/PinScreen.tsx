@@ -73,6 +73,8 @@ export default class PinScreen extends React.Component<
   }
 
   public onClose = () => {
+    const onClose = this.props.navigation.getParam('onClose')
+    onClose()
     this.props.navigation.goBack()
   }
 
@@ -162,11 +164,11 @@ export default class PinScreen extends React.Component<
   }
 
   public render () {
-    const closable = this.props.navigation.getParam('closable')
+    const onClose = this.props.navigation.getParam('onClose')
     return (
       <View style={{ flex: 1 }}>
         <StatusBar barStyle='dark-content' />
-        {closable && <CloseButton onPress={this.onClose} top={30} left={15} />}
+        {onClose && <CloseButton onPress={this.onClose} top={30} left={15} />}
         <FullScreenLoading visible={this.state.loading} />
         <View style={styles.screen}>
           <View style={styles.content}>

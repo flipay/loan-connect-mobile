@@ -224,7 +224,9 @@ function handlePrivateScreens (action: any, state: any) {
         key: 'Unlock',
         params: {
           title: 'Unlock with PIN',
-          closable: true,
+          onClose: () => {
+            logEvent('unlock/press-back-button')
+          },
           onSuccess: (...args: Array<any>) => onUnlockPinSuccessfully(...args, action)
         }
       }
