@@ -3,6 +3,7 @@ import _ from 'lodash'
 import { getEnv } from './utils'
 
 type Event = 'reboost-the-app'
+  | 'open-the-app'
   | 'welcome/press-create-account-or-login-button'
   | 'authen/submit-phone-number'
   | 'authen/press-back-button'

@@ -42,6 +42,7 @@ export default class App extends React.Component<{}, State> {
 
   public componentDidMount () {
     logEvent('reboost-the-app')
+    logEvent('open-the-app')
     AppState.addEventListener('change', this.handleAppStateChange)
 
   }
@@ -52,6 +53,7 @@ export default class App extends React.Component<{}, State> {
 
   public handleAppStateChange = async (nextAppState: AppStateType) => {
     if (this.state.appState !== 'acitve' && nextAppState === 'active') {
+      logEvent('open-the-app')
       await this.checkNewVersion(Updates.reloadFromCache)
     }
     this.setState({ appState: nextAppState })
