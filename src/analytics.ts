@@ -1,5 +1,6 @@
 import { Amplitude, Constants } from 'expo'
 import _ from 'lodash'
+import { getEnv } from './utils'
 
 type Event = 'reboost-the-app'
   | 'welcome/press-create-account-or-login-button'
@@ -56,13 +57,8 @@ type Event = 'reboost-the-app'
 let isInitialized = false
 const apiKey = 'ca298c390e996d2d0ca61eeabf1a7756'
 
-function isProduction () {
-  const releaseChannel = Constants.manifest.releaseChannel
-  return _.includes(releaseChannel, 'default')
-}
-
 const initialize = () => {
-  if (!isProduction()) {
+  if (getEnv() !== 'production') {
     return
   }
   Amplitude.initialize(apiKey)
