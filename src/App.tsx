@@ -55,6 +55,8 @@ export default class App extends React.Component<{}, State> {
     if (this.state.appState !== 'acitve' && nextAppState === 'active') {
       logEvent('open-the-app')
       await this.checkNewVersion(Updates.reloadFromCache)
+    } else if (this.state.appState === 'active' && nextAppState !== 'active') {
+      logEvent('close-the-app')
     }
     this.setState({ appState: nextAppState })
   }

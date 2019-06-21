@@ -17,12 +17,14 @@ import { COLORS } from '../constants'
 import Text from './Text'
 import SubmitButton from './SubmitButton'
 import FullScreenLoading from './FullScreenLoading'
+import { logEvent } from '../analytics'
+import { getCurrentRouteName } from '../navigation'
+import { withNavigation, NavigationScreenProps } from 'react-navigation'
 
 interface Props {
   title?: string | any
   renderFooter?: () => any
   children: (autoFocus: boolean) => any
-  statusBar?: 'white' | 'black'
   onPressBackButton?: () => void
   backButtonType?: 'arrowleft' | 'close'
   activeSubmitButton?: boolean
@@ -38,14 +40,14 @@ interface State {
 
 const DEFAULT_KEYBOARD_KEY = 'keyboardAvoidingViewKey'
 
-export default class Screen extends React.Component<Props, State> {
+class Screen extends React.Component<Props & NavigationScreenProps, State> {
   public static defaultProps = {
-    backButtonType: 'arrowleft',
-    statusBar: 'black'
+    backButtonType: 'arrowleft'
   }
   private keyboardHideListener: any
+  private willFocusSubscription: any
 
-  public constructor (props: Props) {
+  public constructor (props: Props & NavigationScreenProps) {
     super(props)
     this.state = {
       keyboardAvoidingViewKey: DEFAULT_KEYBOARD_KEY
@@ -54,6 +56,15 @@ export default class Screen extends React.Component<Props, State> {
 
   public componentDidMount () {
     // using keyboardWillHide is better but it does not work for android
+
+    this.willFocusSubscription = this.props.navigation.addListener(
+      'willFocus',
+      () => {
+        logEvent(`${_.toLower(getCurrentRouteName(this.props.navigation.state))}/land-on-the-screen`)
+        StatusBar.setBarStyle('dark-content')
+      }
+    )
+
     this.keyboardHideListener = Keyboard.addListener(
       Platform.OS === 'android' ? 'keyboardDidHide' : 'keyboardWillHide',
       this.handleKeyboardHide.bind(this)
@@ -62,6 +73,7 @@ export default class Screen extends React.Component<Props, State> {
 
   public componentWillUnmount () {
     this.keyboardHideListener.remove()
+    this.willFocusSubscription.remove()
   }
 
   public handleKeyboardHide () {
@@ -92,13 +104,6 @@ export default class Screen extends React.Component<Props, State> {
           <SafeAreaView style={styles.safeAreaContainer}>
             <View style={styles.safeArea}>
               <View style={styles.container}>
-                <StatusBar
-                  barStyle={
-                    this.props.statusBar === 'black'
-                      ? 'dark-content'
-                      : 'light-content'
-                  }
-                />
                 {this.hasHeader() && (
                   <View style={[styles.headerRow, (!!this.props.title && typeof this.props.title === 'string') && styles.headerRowBorder]}>
                     {this.renderTitle()}
@@ -152,6 +157,8 @@ export default class Screen extends React.Component<Props, State> {
     )
   }
 }
+
+export default withNavigation(Screen)
 
 const styles = StyleSheet.create({
   screen: {

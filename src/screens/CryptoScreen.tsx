@@ -111,6 +111,10 @@ const styles = StyleSheet.create({
     flex: 1
   },
   footer: {
+    shadowRadius: 1,
+    shadowOpacity: 0.05,
+    shadowOffset: { height: -3, width: 0 },
+    borderBottomWidth: 0,
     flexDirection: 'row',
     paddingTop: 12,
     paddingHorizontal: 20,

@@ -5,6 +5,8 @@ import { NavigationScreenProps } from 'react-navigation'
 import { AntDesign, Ionicons } from '@expo/vector-icons'
 import { COLORS } from '../constants/styleGuides'
 import { Text, Key, FullScreenLoading, CloseButton } from '../components'
+import { logEvent } from '../analytics'
+import { getCurrentRouteName } from '../navigation'
 
 interface State {
   pin: string
@@ -34,6 +36,7 @@ export default class PinScreen extends React.Component<
     this.willFocusSubscription = this.props.navigation.addListener(
       'willFocus',
       payload => {
+        logEvent(`${_.toLower(getCurrentRouteName(this.props.navigation.state))}/land-on-the-screen`)
         this.setState({ pin: '' })
       }
     )
