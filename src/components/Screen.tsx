@@ -61,6 +61,7 @@ class Screen extends React.Component<Props & NavigationScreenProps, State> {
       'willFocus',
       () => {
         logEvent(`${_.toLower(getCurrentRouteName(this.props.navigation.state))}/land-on-the-screen`)
+        StatusBar.setBarStyle('dark-content')
       }
     )
 
@@ -103,9 +104,6 @@ class Screen extends React.Component<Props & NavigationScreenProps, State> {
           <SafeAreaView style={styles.safeAreaContainer}>
             <View style={styles.safeArea}>
               <View style={styles.container}>
-                <StatusBar
-                  barStyle='dark-content'
-                />
                 {this.hasHeader() && (
                   <View style={[styles.headerRow, (!!this.props.title && typeof this.props.title === 'string') && styles.headerRowBorder]}>
                     {this.renderTitle()}
