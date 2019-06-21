@@ -1,7 +1,7 @@
 import { Amplitude, Constants } from 'expo'
 import _ from 'lodash'
 
-type Event = 'open-the-app'
+type Event = 'reboost-the-app'
   | 'welcome/press-create-account-or-login-button'
   | 'authen/submit-phone-number'
   | 'authen/press-back-button'

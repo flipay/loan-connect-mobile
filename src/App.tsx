@@ -40,7 +40,7 @@ export default class App extends React.Component<{}, State> {
   }
 
   public componentDidMount () {
-    logEvent('open-the-app')
+    logEvent('reboost-the-app')
     AppState.addEventListener('change', this.handleAppStateChange)
 
   }
