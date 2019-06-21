@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Platform, NetInfo, Alert, AppState, View } from 'react-native'
-import { AppLoading, Updates, Constants } from 'expo'
+import { AppLoading, Updates } from 'expo'
 import { createAppContainer } from 'react-navigation'
 import Sentry from 'sentry-expo'
 import { ContextProvider, MarketPricesContextConsumer } from './context'
@@ -8,6 +8,7 @@ import preloadAssets from './preloadAsssets'
 import AppNavigator from './AppNavigator'
 import { logEvent } from './analytics'
 import { setTopLevelNavigator } from './navigation'
+import { getEnv } from './utils'
 
 // NOTE: for testing Sentry locally
 // Sentry.enableInExpoDevelopment = true
@@ -40,6 +41,7 @@ export default class App extends React.Component<{}, State> {
   }
 
   public componentDidMount () {
+    logEvent('reboost-the-app')
     logEvent('open-the-app')
     AppState.addEventListener('change', this.handleAppStateChange)
 
@@ -51,6 +53,7 @@ export default class App extends React.Component<{}, State> {
 
   public handleAppStateChange = async (nextAppState: AppStateType) => {
     if (this.state.appState !== 'acitve' && nextAppState === 'active') {
+      logEvent('open-the-app')
       await this.checkNewVersion(Updates.reloadFromCache)
     }
     this.setState({ appState: nextAppState })
@@ -80,7 +83,7 @@ export default class App extends React.Component<{}, State> {
   }
 
   public checkNewVersion = async (action: () => void) => {
-    if (Constants.manifest.releaseChannel) {
+    if (getEnv() !== 'development') {
       try {
         const { isAvailable } = await Updates.checkForUpdateAsync()
         if (isAvailable) {

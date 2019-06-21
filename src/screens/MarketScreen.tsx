@@ -6,6 +6,7 @@ import { showPrice } from '../utils'
 import { Text, Layer, ChangeBox, ScreenWithCover } from '../components'
 import { ASSETS, COLORS } from '../constants'
 import { MarketPrices, Asset } from '../types'
+import { logEvent } from '../analytics'
 
 interface Props {
   marketPrices?: MarketPrices
@@ -35,7 +36,8 @@ export default class MarketScreen extends React.Component<Props & NavigationScre
   }
 
   public onPressAsset = (crypto: Asset) => {
-    this.props.navigation.navigate('Asset', crypto)
+    logEvent('market/press-crypto-row', { assetId: crypto.id })
+    this.props.navigation.navigate('Crypto', crypto)
   }
 
   public renderCryptoIdentity (crypto: Asset) {

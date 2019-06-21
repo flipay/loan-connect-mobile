@@ -144,11 +144,6 @@ export default class PortfolioScreen extends React.Component<
     )
   }
 
-  public onPressTransferButton = (assetId: AssetId) => {
-    logEvent('portfolio/press-transfer-button', { assetId })
-    this.setState({ transferModalVisible: true })
-  }
-
   public onRefresh = async () => {
     logEvent('portfolio/pull-the-screen-to-reload')
     this.setState({ refreshing: true })
@@ -253,9 +248,6 @@ export default class PortfolioScreen extends React.Component<
                   expanded={expanded}
                   onPress={() => this.onPress(asset.id)}
                   navigation={this.props.navigation}
-                  onPressTranferButton={() =>
-                    this.onPressTransferButton(asset.id)
-                  }
                 />
                 {index !== assets.length - 1 && (
                   <View
