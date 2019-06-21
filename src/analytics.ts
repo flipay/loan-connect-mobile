@@ -84,10 +84,14 @@ export function identify (id: string, options?: object) {
 }
 
 export function logEvent (event: Event, options: any = null) {
-  maybeInitialize()
-  if (options) {
-    Amplitude.logEventWithProperties(event, options)
+  if (getEnv() === 'production') {
+    maybeInitialize()
+    if (options) {
+      Amplitude.logEventWithProperties(event, options)
+    } else {
+      Amplitude.logEvent(event)
+    }
   } else {
-    Amplitude.logEvent(event)
+    console.log('========= LogEvent =========:', event, options)
   }
 }
