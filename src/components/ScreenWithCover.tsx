@@ -1,7 +1,10 @@
 import * as React from 'react'
+import _ from 'lodash'
 import { StatusBar, ScrollView, RefreshControl, View, StyleSheet } from 'react-native'
 import { withNavigation, NavigationScreenProps } from 'react-navigation'
 import { COLORS } from '../constants'
+import { logEvent } from '../analytics'
+import { getCurrentRouteName } from '../navigation'
 
 interface Props {
   children: any
@@ -18,6 +21,7 @@ class ScreenWithCover extends React.Component<Props & NavigationScreenProps> {
     this.willFocusSubscription = this.props.navigation.addListener(
       'willFocus',
       () => {
+        logEvent(`${_.toLower(getCurrentRouteName(this.props.navigation.state))}/land-on-the-screen`)
         StatusBar.setBarStyle('light-content')
         this.scrollView.scrollTo({ y: 0, animated: false })
       }

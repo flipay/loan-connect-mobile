@@ -1,7 +1,10 @@
-import { Amplitude, Constants } from 'expo'
+import { Amplitude } from 'expo'
 import _ from 'lodash'
+import { getEnv } from './utils'
 
-type Event = 'open-the-app'
+type Event = 'reboost-the-app'
+  | 'open-the-app'
+  | 'close-the-app'
   | 'welcome/press-create-account-or-login-button'
   | 'authen/submit-phone-number'
   | 'authen/press-back-button'
@@ -20,15 +23,17 @@ type Event = 'open-the-app'
   | 'confirm-pin/pin-does-not-match'
   | 'unlock/wrong-pin'
   | 'unlock/successfully-unlock'
+  | 'unlock/press-back-button'
   | 'tab-bar/press-market-menu'
   | 'tab-bar/press-portfolio-menu'
   | 'tab-bar/press-account-menu'
+  | 'market/press-crypto-row'
+  | 'crypto/press-trade-button'
+  | 'crypto/press-back-button'
   | 'portfolio/pull-the-screen-to-reload'
   | 'portfolio/press-deposit-from-welcome-message'
   | 'portfolio/press-deposit-button'
   | 'portfolio/press-withdraw-button'
-  | 'portfolio/press-transfer-button'
-  | 'portfolio/press-trade-button'
   | 'portfolio/press-deposit-button-on-tranfer-modal'
   | 'portfolio/press-withdraw-button-on-tranfer-modal'
   | 'portfolio/press-outside-tranfer-modal'
@@ -49,6 +54,7 @@ type Event = 'open-the-app'
   | 'trade/press-back-button'
   | 'trade/press-price-comparison-link'
   | 'trade-result/press-done-button'
+  | 'comparison/land-on-the-screen'
   | 'comparison/press-close-button'
   | 'account/press-sign-out'
   | 'account/press-contact-us-by-line'
@@ -56,13 +62,8 @@ type Event = 'open-the-app'
 let isInitialized = false
 const apiKey = 'ca298c390e996d2d0ca61eeabf1a7756'
 
-function isProduction () {
-  const releaseChannel = Constants.manifest.releaseChannel
-  return _.includes(releaseChannel, 'default')
-}
-
 const initialize = () => {
-  if (!isProduction()) {
+  if (getEnv() !== 'production') {
     return
   }
   Amplitude.initialize(apiKey)
@@ -88,10 +89,14 @@ export function identify (id: string, options?: object) {
 }
 
 export function logEvent (event: Event, options: any = null) {
-  maybeInitialize()
-  if (options) {
-    Amplitude.logEventWithProperties(event, options)
+  if (getEnv() === 'production') {
+    maybeInitialize()
+    if (options) {
+      Amplitude.logEventWithProperties(event, options)
+    } else {
+      Amplitude.logEvent(event)
+    }
   } else {
-    Amplitude.logEvent(event)
+    console.log('========= LogEvent =========:', event, options)
   }
 }

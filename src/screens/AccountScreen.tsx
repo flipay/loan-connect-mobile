@@ -1,12 +1,19 @@
 import * as React from 'react'
 import _ from 'lodash'
-import { View, Linking, StyleSheet, Image, StatusBar, TouchableOpacity } from 'react-native'
+import {
+  View,
+  Linking,
+  StyleSheet,
+  Image,
+  StatusBar,
+  TouchableOpacity
+} from 'react-native'
 import { Constants } from 'expo'
 import { NavigationScreenProps } from 'react-navigation'
 
 import { lock } from '../requests'
 import { getPhoneNumber } from '../asyncStorage'
-import { Text, Record } from '../components'
+import { Text, Record, Screen } from '../components'
 import { COLORS, CONTACTS } from '../constants'
 import { logEvent } from '../analytics'
 
@@ -60,16 +67,16 @@ export default class AccountScreen extends React.Component<
               <Text type='headline'>Contact us</Text>
             </View>
           </View>
-          <Text type='caption'>
-            Give feedback, Report problems
-          </Text>
+          <Text type='caption'>Give feedback, Report problems</Text>
         </View>
         <View style={styles.contactDetail}>
           <Image
             source={require('../img/line_logo.png')}
-            style={{ width: 35 , height: 12, marginRight: 5 }}
+            style={{ width: 35, height: 12, marginRight: 5 }}
           />
-          <Text type='headline' color={COLORS.N800}>@flipay</Text>
+          <Text type='headline' color={COLORS.N800}>
+            @flipay
+          </Text>
         </View>
       </Record>
     )
@@ -80,12 +87,8 @@ export default class AccountScreen extends React.Component<
       <View>
         {this.renderLineRecord()}
         <Record>
-          <Text type='headline'>
-            Version
-          </Text>
-          <Text>
-            {`${Constants.manifest.version} (Private Beta)`}
-          </Text>
+          <Text type='headline'>Version</Text>
+          <Text>{`${Constants.manifest.version} (Private Beta)`}</Text>
         </Record>
         <TouchableOpacity onPress={this.onPressSignOut} style={styles.error}>
           <Text type='headline' color={COLORS.R400}>
@@ -98,30 +101,30 @@ export default class AccountScreen extends React.Component<
 
   public render () {
     return (
-      <View style={styles.screen}>
-        <View style={styles.header}>
-          <View style={styles.headerDetail}>
-            <Text type='caption'>ACCOUNT</Text>
-            <Text type='title'>{this.state.phoneNumber || '08XXXXXXXX'}</Text>
+      <Screen>
+        {() => (
+          <View>
+            <View style={styles.header}>
+              <View style={styles.headerDetail}>
+                <Text type='caption'>ACCOUNT</Text>
+                <Text type='title'>
+                  {this.state.phoneNumber || '08XXXXXXXX'}
+                </Text>
+              </View>
+              <Image
+                source={require('../img/default_avatar.png')}
+                style={{ width: 60, height: 60 }}
+              />
+            </View>
+            {this.renderList()}
           </View>
-          <Image
-            source={require('../img/default_avatar.png')}
-            style={{ width: 60, height: 60 }}
-          />
-        </View>
-        {this.renderList()}
-      </View>
+        )}
+      </Screen>
     )
   }
 }
 
 const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    paddingHorizontal: 20,
-    paddingTop: 52,
-    backgroundColor: COLORS.WHITE
-  },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',

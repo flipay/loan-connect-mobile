@@ -1,5 +1,6 @@
 import * as _ from 'lodash'
 import { Alert } from 'react-native'
+import { Constants } from 'expo'
 import Sentry from 'sentry-expo'
 import { THBAmountTypes } from './constants'
 import { OrderType } from './types'
@@ -81,5 +82,17 @@ export function calSaveAmount (side: OrderType, amount: number, thbAmounts?: THB
     } else {
       return amount - worstAmount
     }
+  }
+}
+
+type Env = 'production' | 'staging' | 'development'
+
+export function getEnv (): Env {
+  if (Constants.manifest.releaseChannel === 'default') {
+    return 'production'
+  } else if (Constants.manifest.releaseChannel === 'staging') {
+    return 'staging'
+  } else {
+    return 'development'
   }
 }

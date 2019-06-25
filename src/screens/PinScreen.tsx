@@ -5,6 +5,8 @@ import { NavigationScreenProps } from 'react-navigation'
 import { AntDesign, Ionicons } from '@expo/vector-icons'
 import { COLORS } from '../constants/styleGuides'
 import { Text, Key, FullScreenLoading, CloseButton } from '../components'
+import { logEvent } from '../analytics'
+import { getCurrentRouteName } from '../navigation'
 
 interface State {
   pin: string
@@ -34,6 +36,7 @@ export default class PinScreen extends React.Component<
     this.willFocusSubscription = this.props.navigation.addListener(
       'willFocus',
       payload => {
+        logEvent(`${_.toLower(getCurrentRouteName(this.props.navigation.state))}/land-on-the-screen`)
         this.setState({ pin: '' })
       }
     )
@@ -73,6 +76,8 @@ export default class PinScreen extends React.Component<
   }
 
   public onClose = () => {
+    const onClose = this.props.navigation.getParam('onClose')
+    onClose()
     this.props.navigation.goBack()
   }
 
@@ -162,11 +167,11 @@ export default class PinScreen extends React.Component<
   }
 
   public render () {
-    const closable = this.props.navigation.getParam('closable')
+    const onClose = this.props.navigation.getParam('onClose')
     return (
       <View style={{ flex: 1 }}>
         <StatusBar barStyle='dark-content' />
-        {closable && <CloseButton onPress={this.onClose} top={30} left={15} />}
+        {onClose && <CloseButton onPress={this.onClose} top={30} left={15} />}
         <FullScreenLoading visible={this.state.loading} />
         <View style={styles.screen}>
           <View style={styles.content}>

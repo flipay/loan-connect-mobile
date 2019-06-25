@@ -42,6 +42,21 @@ interface Props {
 export default class ComparisonScreen extends React.Component<
   Props & NavigationScreenProps
 > {
+
+  private willFocusSubscription: any
+  public componentDidMount () {
+    this.willFocusSubscription = this.props.navigation.addListener(
+      'willFocus',
+      () => {
+        logEvent(`comparison/land-on-the-screen`)
+      }
+    )
+  }
+
+  public componentWillUnmount () {
+    this.willFocusSubscription.remove()
+  }
+
   public onClose = () => {
     logEvent('comparison/press-close-button')
     this.props.navigation.goBack()

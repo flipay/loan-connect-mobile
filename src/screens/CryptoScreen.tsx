@@ -7,9 +7,12 @@ import { NavigationScreenProps } from 'react-navigation'
 import { AssetId, OrderType } from '../types'
 import { ASSETS, COLORS } from '../constants'
 import { toString } from '../utils'
+import { logEvent } from '../analytics'
 
-export default class AssetScreen extends React.Component<NavigationScreenProps> {
+export default class CryptoScreen extends React.Component<NavigationScreenProps> {
   public onPressBackButton = () => {
+    const assetId: AssetId = this.props.navigation.getParam('id')
+    logEvent('crypto/press-back-button', { assetId })
     this.props.navigation.goBack()
   }
 
@@ -48,6 +51,7 @@ export default class AssetScreen extends React.Component<NavigationScreenProps> 
 
   public onPressTradeButton = (side: OrderType) => {
     const assetId: AssetId = this.props.navigation.getParam('id')
+    logEvent('crypto/press-trade-button', { assetId, side })
     this.props.navigation.navigate('Trade', { side, assetId })
   }
 
@@ -107,6 +111,10 @@ const styles = StyleSheet.create({
     flex: 1
   },
   footer: {
+    shadowRadius: 1,
+    shadowOpacity: 0.05,
+    shadowOffset: { height: -3, width: 0 },
+    borderBottomWidth: 0,
     flexDirection: 'row',
     paddingTop: 12,
     paddingHorizontal: 20,
