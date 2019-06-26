@@ -191,8 +191,7 @@ const AppContent = createBottomTabNavigator(
 const MainApp = createStackNavigator(
   {
     AppContent: { screen: AppContent },
-    Unlock: { screen: PinScreen },
-    Splash: { screen: SplashScreen }
+    Unlock: { screen: PinScreen }
   },
   {
     mode: 'modal',
@@ -268,11 +267,27 @@ async function onUnlockPinSuccessfully (
   }
 }
 
-const AppNavigator = createSwitchNavigator({
+const App = createSwitchNavigator({
   Starter,
   Verification: VerificationStack,
   MainApp,
   Auth: AuthStack
 })
 
-export default AppNavigator
+export default createStackNavigator(
+  {
+    App: { screen: App },
+    Splash: { screen: SplashScreen }
+  },
+  {
+    mode: 'modal',
+    headerMode: 'none',
+    transitionConfig : () => ({
+      transitionSpec: {
+        duration: 0,
+        timing: Animated.timing,
+        easing: Easing.step0
+      }
+    })
+  }
+)
