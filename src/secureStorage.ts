@@ -1,7 +1,7 @@
 import CryptoJS from 'crypto-js'
 import { Alert } from 'react-native'
 import { SecureStore } from 'expo'
-import { navigate } from './navigation'
+import { navigate } from './services/navigation'
 
 const ENCRYPTED_TOKEN = 'flipay-encrypted-token'
 const HASHED_TOKEN = 'flipay-hashed-token'
