@@ -18,7 +18,7 @@ import Text from './Text'
 import SubmitButton from './SubmitButton'
 import FullScreenLoading from './FullScreenLoading'
 import { logEvent } from '../analytics'
-import { getCurrentRouteName } from '../navigation'
+import { getCurrentRouteName } from '../services/navigation'
 import { withNavigation, NavigationScreenProps } from 'react-navigation'
 
 interface Props {

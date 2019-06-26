@@ -7,7 +7,7 @@ import { setToken, getToken, clearToken } from '../secureStorage'
 import { setPhoneNumber } from '../asyncStorage'
 import { identify } from '../analytics'
 import { PRIVATE_ROUTES } from '../constants'
-import { getCurrentRouteName, navigate } from '../navigation'
+import { getCurrentRouteName, navigate } from '../services/navigation'
 
 let lockTimeout: any
 let timeout: any

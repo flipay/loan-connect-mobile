@@ -16,6 +16,12 @@ function navigate (routeName: string, params?: object) {
   )
 }
 
+function goBack () {
+  _navigator.dispatch(
+    NavigationActions.back
+  )
+}
+
 function getActiveRouteName (navigationState: any) {
   if (!navigationState) {
     return null
@@ -35,5 +41,6 @@ function getCurrentRouteName () {
 export {
   getCurrentRouteName,
   navigate,
+  goBack,
   setTopLevelNavigator
 }

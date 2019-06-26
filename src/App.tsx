@@ -5,9 +5,9 @@ import { createAppContainer } from 'react-navigation'
 import Sentry from 'sentry-expo'
 import { ContextProvider, MarketPricesContextConsumer } from './context'
 import preloadAssets from './preloadAsssets'
-import withAppState from './withAppState'
+import AppStateProvider from './AppStateProvider'
 import AppNavigator from './AppNavigator'
-import { setTopLevelNavigator } from './navigation'
+import { setTopLevelNavigator } from './services/navigation'
 import { fetchNewVersionIfAvailable } from './services/versioning'
 
 // NOTE: for testing Sentry locally
@@ -45,6 +45,7 @@ export default class App extends React.Component<{}, State> {
   public render () {
     return (
       <ContextProvider>
+        <AppStateProvider>
         {!this.state.isReady ? (
           <MarketPricesContextConsumer>
             {({ fetchMarketPrices }) => (
@@ -59,6 +60,7 @@ export default class App extends React.Component<{}, State> {
               ref={(navigatorRef: any) => setTopLevelNavigator(navigatorRef)}
             />
         )}
+        </AppStateProvider>
       </ContextProvider>
 
     )

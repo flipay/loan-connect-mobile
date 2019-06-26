@@ -4,7 +4,7 @@ import { StatusBar, ScrollView, RefreshControl, View, StyleSheet } from 'react-n
 import { withNavigation, NavigationScreenProps } from 'react-navigation'
 import { COLORS } from '../constants'
 import { logEvent } from '../analytics'
-import { getCurrentRouteName } from '../navigation'
+import { getCurrentRouteName } from '../services/navigation'
 
 interface Props {
   children: any
