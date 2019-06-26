@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { Animated, Easing } from 'react-native'
 import _ from 'lodash'
 import {
   createStackNavigator,
@@ -26,6 +27,7 @@ import WithdrawalScreen from './screens/WithdrawalScreen'
 import ComparisonScreen from './screens/ComparisonScreen'
 import AccountScreen from './screens/AccountScreen'
 import PinScreen from './screens/PinScreen'
+import SplashScreen from './screens/SplashScreen'
 import { Text } from './components'
 import { COLORS, PRIVATE_ROUTES } from './constants'
 import { logEvent } from './analytics'
@@ -189,11 +191,19 @@ const AppContent = createBottomTabNavigator(
 const MainApp = createStackNavigator(
   {
     AppContent: { screen: AppContent },
-    Unlock: { screen: PinScreen }
+    Unlock: { screen: PinScreen },
+    Splash: { screen: SplashScreen }
   },
   {
     mode: 'modal',
-    headerMode: 'none'
+    headerMode: 'none',
+    transitionConfig : () => ({
+      transitionSpec: {
+        duration: 0,
+        timing: Animated.timing,
+        easing: Easing.step0
+      }
+    })
   }
 )
 
