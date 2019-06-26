@@ -9,7 +9,7 @@ export default class SplashScreen extends React.Component <NavigationScreenProps
       <View style={styles.screen}>
         <Image
           source={require('../img/flipay_logo.png')}
-          style={{ width: 400, height: 400 }}
+          style={{ width: 150, height: 150 }}
         />
       </View>
     )
