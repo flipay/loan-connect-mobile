@@ -18,7 +18,7 @@ function navigate (routeName: string, params?: object) {
 
 function goBack () {
   _navigator.dispatch(
-    NavigationActions.back
+    NavigationActions.back()
   )
 }
 

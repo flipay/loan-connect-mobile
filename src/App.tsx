@@ -22,7 +22,7 @@ if (Platform.OS === 'android') {
   require('intl/locale-data/jsonp/en-US')
 }
 
-const AppContainer = createAppContainer(withAppState(AppNavigator))
+const AppContainer = createAppContainer(AppNavigator)
 
 interface State {
   isReady: boolean
