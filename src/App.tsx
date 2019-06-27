@@ -9,6 +9,7 @@ import AppStateProvider from './AppStateProvider'
 import AppNavigator from './AppNavigator'
 import { setTopLevelNavigator } from './services/navigation'
 import { fetchNewVersionIfAvailable } from './services/versioning'
+import { isJailBroken } from './services/jailbreak'
 
 // NOTE: for testing Sentry locally
 // Sentry.enableInExpoDevelopment = true
@@ -26,23 +27,31 @@ const AppContainer = createAppContainer(AppNavigator)
 
 interface State {
   isReady: boolean
+  jailBroken: boolean
 }
 
 export default class App extends React.Component<{}, State> {
   constructor (props: {}) {
     super(props)
     this.state = {
-      isReady: false
+      isReady: false,
+      jailBroken: false
     }
   }
 
   public loadAssetsAsync = async (fetchMarketPrices: () => void) => {
-    await fetchNewVersionIfAvailable()
-    await preloadAssets()
-    await fetchMarketPrices()
+    const jailBroken = await isJailBroken()
+    if (jailBroken) {
+      this.setState({ jailBroken: true })
+    } else {
+      await fetchNewVersionIfAvailable()
+      await preloadAssets()
+      await fetchMarketPrices()
+    }
   }
 
   public render () {
+    if (this.state.jailBroken) { return null }
     return (
       <ContextProvider>
         <AppStateProvider>
