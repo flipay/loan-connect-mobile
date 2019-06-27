@@ -14,8 +14,16 @@ export async function isJailBroken () {
 }
 
 async function isExisted (path: string) {
-  const { exists } = await FileSystem.getInfoAsync(path)
-  return exists
+  try {
+    const { exists } = await FileSystem.getInfoAsync(path)
+    return exists
+  } catch (err) {
+    if (err.code === 'E_FILESYSTEM_PERMISSIONS') {
+      return false
+    } else {
+      return true
+    }
+  }
 }
 
 async function checkFilePaths (paths: Array<any>) {
@@ -23,7 +31,7 @@ async function checkFilePaths (paths: Array<any>) {
     const existed = await isExisted(path)
     return existed
   })
-  for (const existed in existedList) {
+  for (const existed of existedList) {
     if (existed) { return true }
   }
   return false
