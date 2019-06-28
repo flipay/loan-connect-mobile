@@ -17,6 +17,10 @@ export function setUpRequest (nav: any) {
   // 'https://flipay-mock-backend.herokuapp.com/'
   // 'http://192.168.0.4:8000'
   axios.defaults.baseURL = 'https://api.flipay.co/v1/'
+  axios.defaults.headers.common['Cache-Control'] = 'no-cache'
+  axios.defaults.headers.common.Pragma = 'no-cache'
+  axios.defaults.headers.common.Expires = '0'
+
   axios.interceptors.response.use((response) => {
     return response
   }, (err) => {
