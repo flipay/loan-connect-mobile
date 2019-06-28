@@ -13,10 +13,10 @@ async function checkNewVersion (action: () => void) {
       }
     } catch (err) {
       const { type } = await NetInfo.getConnectionInfo()
-      let errorMessage = 'Please connect to the internet.'
+      const errorMessage = 'Please connect to the internet.'
       if (type !== 'none') {
-        errorMessage = 'Have a problem on updating new version of Flipay'
         Sentry.captureException(err)
+        checkNewVersion(action)
       }
       postError(errorMessage)
     }
