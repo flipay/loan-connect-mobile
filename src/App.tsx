@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Platform } from 'react-native'
+import { Platform, StyleSheet, View, Text } from 'react-native'
 import { AppLoading } from 'expo'
 import { createAppContainer } from 'react-navigation'
 import Sentry from 'sentry-expo'
@@ -51,7 +51,13 @@ export default class App extends React.Component<{}, State> {
   }
 
   public render () {
-    if (this.state.jailBroken) { return null }
+    if (this.state.jailBroken) {
+      return (
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+          <Text>No support for rooted/jailbroken phones</Text>
+        </View>
+      )
+    }
     return (
       <ContextProvider>
         <AppStateProvider>

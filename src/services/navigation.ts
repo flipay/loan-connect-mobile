@@ -8,18 +8,22 @@ function setTopLevelNavigator (navigatorRef: any) {
 }
 
 function navigate (routeName: string, params?: object) {
-  _navigator.dispatch(
-    NavigationActions.navigate({
-      routeName,
-      params
-    })
-  )
+  if (_navigator) {
+    _navigator.dispatch(
+      NavigationActions.navigate({
+        routeName,
+        params
+      })
+    )
+  }
 }
 
 function goBack () {
-  _navigator.dispatch(
-    NavigationActions.back()
-  )
+  if (_navigator) {
+    _navigator.dispatch(
+      NavigationActions.back()
+    )
+  }
 }
 
 function getActiveRouteName (navigationState: any) {

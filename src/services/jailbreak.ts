@@ -18,7 +18,7 @@ async function isExisted (path: string) {
     const { exists } = await FileSystem.getInfoAsync(path)
     return exists
   } catch (err) {
-    if (err.code === 'E_FILESYSTEM_PERMISSIONS') {
+    if (err.code === 'E_FILESYSTEM_PERMISSIONS' || err.code === 'E_UNKNOWN_ERROR') {
       return false
     } else {
       return true
