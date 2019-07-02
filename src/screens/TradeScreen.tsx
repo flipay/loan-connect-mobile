@@ -36,7 +36,7 @@ interface State {
   takeAssetBoxValue: string
   giveAssetBoxWarningMessage?: string
   typing: boolean
-  loading: boolean
+  submitPressed: boolean
   lastFetchSuccessfullyGiveAmount?: string
   lastFetchSuccessfullyTakeAmount?: string
   executed: boolean
@@ -59,7 +59,7 @@ export default class TradeScreen extends React.Component<
       giveAssetBoxValue: '',
       takeAssetBoxValue: '',
       typing: false,
-      loading: false,
+      submitPressed: false,
       executed: false,
       tradeResultGive: 0,
       tradeResultTake: 0
@@ -166,8 +166,7 @@ export default class TradeScreen extends React.Component<
           lastFetchSuccessfullyGiveAmount: initialValue,
           lastFetchSuccessfullyTakeAmount: flipayResponseValue,
           giveAssetBoxWarningMessage: undefined,
-          takeAssetBoxValue: flipayResponseValue,
-          loading: false
+          takeAssetBoxValue: flipayResponseValue
         })
       }
     } catch (err) {
@@ -215,13 +214,14 @@ export default class TradeScreen extends React.Component<
   }
 
   public execute = async () => {
+    if (!this.isSubmitable()) { return }
     const side = this.props.navigation.getParam('side')
     const assetId = this.props.navigation.getParam('assetId')
     logEvent('trade/press-submit-button', {
       side: this.props.navigation.getParam('side'),
       assetId: this.props.navigation.getParam('assetId')
     })
-    await this.setState({ loading: true })
+    await this.setState({ submitPressed: true })
     try {
       const {
         amount_give: tradeResultGive,
@@ -234,12 +234,12 @@ export default class TradeScreen extends React.Component<
       )
       this.setState({
         executed: true,
-        loading: false,
         tradeResultGive: Number(tradeResultGive),
         tradeResultTake: Number(tradeResultTake)
       })
     } catch (err) {
       const code = getErrorCode(err)
+      this.setState({ submitPressed: false })
       if (code === 'insufficient_balance') {
         const remainingBalance = this.props.balances && this.props.balances[side === 'buy' ? 'THB' : assetId]
         Alert.alert(
@@ -290,7 +290,7 @@ export default class TradeScreen extends React.Component<
   }
 
   public isSubmitable = () => {
-    if (this.state.loading) { return false }
+    if (this.state.submitPressed && !this.state.executed) { return false }
     return (
       this.state.giveAssetBoxValue ===
         this.state.lastFetchSuccessfullyGiveAmount &&

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import _ from 'lodash'
-import { TouchableHighlight, StyleSheet } from 'react-native'
+import { TouchableOpacity, View, StyleSheet } from 'react-native'
 import Text from './Text'
 import { COLORS } from '../constants'
 
@@ -16,8 +16,9 @@ export default class SubmitButton extends React.Component<Props> {
   }
 
   public render () {
+    const Container = this.props.active ? TouchableOpacity : View
     return (
-      <TouchableHighlight
+      <Container
         style={[
           styles.submitButton,
           !this.props.active && styles.inactiveSubmitButton
@@ -27,7 +28,7 @@ export default class SubmitButton extends React.Component<Props> {
         <Text type='button' color={COLORS.WHITE}>
           {this.props.children}
         </Text>
-      </TouchableHighlight>
+      </Container>
     )
   }
 }
@@ -41,6 +42,6 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.P400
   },
   inactiveSubmitButton: {
-    opacity: 0.35
+    backgroundColor: COLORS.P100
   }
 })
