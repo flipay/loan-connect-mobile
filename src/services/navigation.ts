@@ -8,12 +8,22 @@ function setTopLevelNavigator (navigatorRef: any) {
 }
 
 function navigate (routeName: string, params?: object) {
-  _navigator.dispatch(
-    NavigationActions.navigate({
-      routeName,
-      params
-    })
-  )
+  if (_navigator) {
+    _navigator.dispatch(
+      NavigationActions.navigate({
+        routeName,
+        params
+      })
+    )
+  }
+}
+
+function goBack () {
+  if (_navigator) {
+    _navigator.dispatch(
+      NavigationActions.back()
+    )
+  }
 }
 
 function getActiveRouteName (navigationState: any) {
@@ -35,5 +45,6 @@ function getCurrentRouteName () {
 export {
   getCurrentRouteName,
   navigate,
+  goBack,
   setTopLevelNavigator
 }

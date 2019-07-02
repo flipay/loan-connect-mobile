@@ -6,7 +6,7 @@ import { AntDesign, Ionicons } from '@expo/vector-icons'
 import { COLORS } from '../constants/styleGuides'
 import { Text, Key, FullScreenLoading, CloseButton } from '../components'
 import { logEvent } from '../analytics'
-import { getCurrentRouteName } from '../navigation'
+import { getCurrentRouteName } from '../services/navigation'
 
 interface State {
   pin: string

@@ -120,7 +120,6 @@ export default class MarketScreen extends React.Component<Props & NavigationScre
         refreshing={this.state.refreshing}
         onRefresh={this.onRefresh}
       >
-
         {this.renderMarketData()}
       </ScreenWithCover>
     )

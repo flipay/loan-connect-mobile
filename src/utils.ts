@@ -39,17 +39,20 @@ export function getErrorCode (err: Error) {
 }
 
 export function getErrorDetail (err: Error) {
-  return JSON.stringify(_.get(err, 'response.data.errors'))
+  return _.get(err, 'response.data.errors.detail')
 }
 
-export function alert (err: Error) {
-  Sentry.captureException(err)
-  console.log('========error========', JSON.stringify(err, undefined, 2))
-
-  if (getErrorDetail(err)) {
-    return Alert.alert(`Something went wrong: ${getErrorDetail(err)}`)
+export function alert (err: Error | string) {
+  if (typeof err === 'string') {
+    return Alert.alert(`Something went wrong: ${err}`)
   } else {
-    return Alert.alert(`Something went wrong, Please contact our customer support team`)
+    Sentry.captureException(err)
+    console.log('========error========', JSON.stringify(err, undefined, 2)) 
+    if (getErrorDetail(err)) {
+      return Alert.alert(`Something went wrong: ${getErrorDetail(err)}`)
+    } else {
+      return Alert.alert(`Something went wrong, Please contact our customer support team`)
+    }
   }
 }
 
