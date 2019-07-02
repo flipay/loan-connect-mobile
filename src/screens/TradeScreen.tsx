@@ -120,8 +120,7 @@ export default class TradeScreen extends React.Component<
         competitorThbAmounts: undefined,
         lastFetchSuccessfullyGiveAmount: undefined,
         lastFetchSuccessfullyTakeAmount: undefined,
-        takeAssetBoxValue: '',
-        loading: false
+        takeAssetBoxValue: ''
       })
     }
   }
@@ -222,6 +221,7 @@ export default class TradeScreen extends React.Component<
       side: this.props.navigation.getParam('side'),
       assetId: this.props.navigation.getParam('assetId')
     })
+    await this.setState({ loading: true })
     try {
       const {
         amount_give: tradeResultGive,
@@ -234,6 +234,7 @@ export default class TradeScreen extends React.Component<
       )
       this.setState({
         executed: true,
+        loading: false,
         tradeResultGive: Number(tradeResultGive),
         tradeResultTake: Number(tradeResultTake)
       })
@@ -289,6 +290,7 @@ export default class TradeScreen extends React.Component<
   }
 
   public isSubmitable = () => {
+    if (this.state.loading) { return false }
     return (
       this.state.giveAssetBoxValue ===
         this.state.lastFetchSuccessfullyGiveAmount &&
