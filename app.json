@@ -27,11 +27,11 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "co.flipay.flipay",
-      "buildNumber": "7"
+      "buildNumber": "8"
     },
     "android": {
       "package": "co.flipay.flipay",
-      "versionCode": 3
+      "versionCode": 4
     },
     "hooks": {
       "postPublish": [
