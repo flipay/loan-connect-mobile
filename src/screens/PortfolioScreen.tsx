@@ -68,7 +68,10 @@ export default class PortfolioScreen extends React.Component<
       ])
       this.setState({ hasDeposited })
     } catch (err) {
-      alert(err)
+      // HACK: fix the unknow problem, when the login token has expired.
+      if (!_.includes(err.sourceURL, 'hashAssetFiles.js')) {
+        alert(err)
+      }
     }
   }
 
