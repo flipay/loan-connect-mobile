@@ -61,9 +61,12 @@ export default class TextBox extends React.Component<Props> {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10
+    paddingTop: 12,
+    paddingHorizontal: 16,
+    paddingBottom: 17
   },
   textInput: {
+    marginTop: 6,
     fontSize: FONT_TYPES['body'].fontSize,
     fontFamily: FONT_TYPES['large-title'].fontFamily,
     color: COLORS.N800
