@@ -2,6 +2,7 @@ import CryptoJS from 'crypto-js'
 import { Alert } from 'react-native'
 import { SecureStore } from 'expo'
 import { navigate } from './services/navigation'
+import Sentry from 'sentry-expo'
 
 const ENCRYPTED_TOKEN = 'flipay-encrypted-token'
 const HASHED_TOKEN = 'flipay-hashed-token'
@@ -11,6 +12,7 @@ export async function getWrongPinAttempts () {
   const attempts = await SecureStore.getItemAsync(WRONG_PIN_ATTEMPTS)
   return isNaN(Number(attempts)) ? 0 : Number(attempts)
 }
+
 export async function setWrongPinAttempts (value: number) {
   await SecureStore.setItemAsync(WRONG_PIN_ATTEMPTS, String(value))
 }
@@ -20,12 +22,21 @@ export async function resetWrongPinAttempts () {
 }
 
 export async function checkLoginStatus () {
-  const value = await SecureStore.getItemAsync(ENCRYPTED_TOKEN)
-  return !!value
+  try {
+    const value = await SecureStore.getItemAsync(ENCRYPTED_TOKEN)
+    return !!value
+  } catch (err) {
+    Sentry.captureMessage(`checkLoginStatus function: ${JSON.stringify(err, undefined, 2)}`)
+    return false
+  }
 }
 
 export async function clearToken () {
-  await SecureStore.deleteItemAsync(ENCRYPTED_TOKEN)
+  try {
+    await SecureStore.deleteItemAsync(ENCRYPTED_TOKEN)
+  } catch (err) {
+    Sentry.captureMessage(`clearToken function: ${JSON.stringify(err, undefined, 2)}`)
+  }
 }
 
 export async function setToken (token: string, pin: string) {
