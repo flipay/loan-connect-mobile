@@ -64,7 +64,7 @@ export default class CollectInfo extends React.Component<NavigationScreenProps, 
               active={this.state.activeBox === 'lastName'}
             />
             <TextBox
-              description='Email Address'
+              description='Email address'
               onPress={this.onPressEmail}
               onChangeValue={(value) => this.setState({ email: value })}
               value={this.state.email}
