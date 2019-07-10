@@ -24,7 +24,7 @@ interface Props {
 }
 
 interface State {
-  typing: boolean
+  typing?: boolean
 }
 
 export default class TextBox extends React.Component<Props, State> {
@@ -34,16 +34,16 @@ export default class TextBox extends React.Component<Props, State> {
   constructor (props: Props) {
     super(props)
     this.state = {
-      typing: false
+      typing: undefined
     }
   }
 
-  public getDerivedStateFromProps (props: Props, state: State) {
+  public UNSAFE_componentWillReceiveProps (props: Props, state: State) {
     if (props.value !== this.props.value) {
       clearTimeout(this.timeout)
       this.timeout = setTimeout(() => {
         this.setState({ typing: false })
-      }, 3000)
+      }, 1000)
       return { typing: true }
     }
     return null
@@ -51,7 +51,7 @@ export default class TextBox extends React.Component<Props, State> {
 
   public isError () {
     if (!this.props.validate) { return false }
-    return !this.state.typing && !this.props.validate()
+    return this.state.typing !== undefined && !this.props.validate()
   }
 
   public onPress = () => {
@@ -62,7 +62,7 @@ export default class TextBox extends React.Component<Props, State> {
 
   public render () {
     return (
-      <View>
+      <View style={{ flex: 1 }}>
         <Layer
           style={[styles.container, this.isError() && styles.errorContainer, this.props.style]}
           onPress={this.onPress}
@@ -93,7 +93,6 @@ export default class TextBox extends React.Component<Props, State> {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     paddingTop: 12,
     paddingHorizontal: 16,
     paddingBottom: 17

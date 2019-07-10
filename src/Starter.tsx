@@ -13,7 +13,7 @@ export default class Start extends React.Component<
     setUpRequest(this.props.navigation)
 
     // NOTE: for testing first run
-    // await AsyncStorage.clear()
+    await AsyncStorage.clear()
 
     const firstRun = await isFirstRun()
     if (firstRun) {
@@ -23,7 +23,7 @@ export default class Start extends React.Component<
     if (isLogIned) {
       this.props.navigation.navigate('Market')
     } else {
-      this.props.navigation.navigate('Welcome')
+      this.props.navigation.navigate('CollectInfo')
     }
   }
 
