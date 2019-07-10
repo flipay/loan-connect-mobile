@@ -18,7 +18,7 @@ interface Props {
   autoCorrect?: boolean
   value?: string
   numberPad?: boolean
-  style: any
+  style?: any
 }
 
 export default class TextBox extends React.Component<Props> {

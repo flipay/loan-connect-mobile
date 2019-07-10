@@ -15,6 +15,7 @@ import {
 } from './context'
 
 import Starter from './Starter'
+import CollectInfoScreen from './screens/CollectInfoScreen'
 import MarketScreen from './screens/MarketScreen'
 import CryptoScreen from './screens/CryptoScreen'
 import PortfolioScreen from './screens/PortfolioScreen'
@@ -54,6 +55,7 @@ const AuthStack = createStackNavigator(
 
 const VerificationStack = createStackNavigator(
   {
+    CollectInfo: { screen: CollectInfoScreen },
     Welcome: { screen: WelcomeScreen },
     Authen: { screen: AuthenScreen },
     VerifyPhoneNumber: { screen: VerifyPhoneNumberScreen }
