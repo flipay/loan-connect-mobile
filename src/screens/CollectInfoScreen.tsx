@@ -43,11 +43,31 @@ export default class CollectInfo extends React.Component<NavigationScreenProps, 
     })
   }
 
+  public validateEmail = () => {
+    const emailReg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    return emailReg.test(this.state.email)
+  }
+
+  public onPressSubmitButton = () => {
+    this.props.navigation.getParam('onSubmitInfo')
+  }
+
+  public isButtonActive = () => {
+    return (
+      this.state.firstName !== '' &&
+      this.state.lastName !== '' &&
+      this.state.email !== ''
+    )
+  }
+
   public render () {
     return (
-      <Screen>
+      <Screen
+        activeSubmitButton={this.isButtonActive}
+        onPessSubmitButton={this.onPressSubmitButton}
+      >
         {(autoFocus: boolean) => (
-          <View>
+          <View style={styles.screen}>
             <Text type='title'>
               Let us know more about yourself.
             </Text>
@@ -74,6 +94,8 @@ export default class CollectInfo extends React.Component<NavigationScreenProps, 
               onPress={this.onPressEmail}
               onChangeValue={(value) => this.setState({ email: value })}
               value={this.state.email}
+              validate={this.validateEmail}
+              errorMessage='Incorrect email format'
               active={this.state.activeBox === 'email'}
             />
           </View>
@@ -84,6 +106,9 @@ export default class CollectInfo extends React.Component<NavigationScreenProps, 
 }
 
 const styles = StyleSheet.create({
+  screen: {
+    marginTop: 30
+  },
   nameRow: {
     flexDirection: 'row',
     marginBottom: 16,
