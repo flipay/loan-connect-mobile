@@ -1,13 +1,16 @@
 import * as React from 'react'
 import _ from 'lodash'
 import { View, SafeAreaView, TextInput, StyleSheet, TouchableOpacity } from 'react-native'
+import Sentry from 'sentry-expo'
 import { AntDesign } from '@expo/vector-icons'
 import { NavigationScreenProps } from 'react-navigation'
-import { finalizeAuthenProcess, submitOtp } from '../requests'
+import { submitOtp, hasEmailAndName, getCurrentUser } from '../requests'
 import { COLORS } from '../constants'
 import { Text, Screen, Layer, Link } from '../components'
 import { alert } from '../utils'
-import { logEvent } from '../analytics'
+import { logEvent, identify } from '../analytics'
+import { setToken } from '../secureStorage'
+import { setPhoneNumber } from '../asyncStorage'
 
 type No = 0 | 1 | 2 | 3 | 4 | 5
 
@@ -17,6 +20,7 @@ interface State {
   timer: number
   loading: boolean
   errorMessage: string
+  nextScreen: 'CollectInfo' | 'Pin'
 }
 
 const DEFAULT_TIMER = 60
@@ -36,7 +40,8 @@ export default class VerifyPhoneNumberScreen extends React.Component<
       timer: DEFAULT_TIMER,
       verified: false,
       loading: false,
-      errorMessage: ''
+      errorMessage: '',
+      nextScreen: 'Pin'
     }
   }
 
@@ -90,7 +95,10 @@ export default class VerifyPhoneNumberScreen extends React.Component<
           logEvent('confirm-pin/pin-match')
           try {
             startLoading()
-            await finalizeAuthenProcess(this.accessToken, secondPin)
+            await Promise.all([
+              setToken(this.accessToken, secondPin),
+              this.setUserContextToThirdParties()
+            ])
             logEvent('confirm-pin/successfully-setting-pin')
             stackNavigationConmfirmPin.navigate('Market')
           } catch (error) {
@@ -120,9 +128,12 @@ export default class VerifyPhoneNumberScreen extends React.Component<
       }
       try {
         this.setState({ loading: true })
-        const { token } = await submitOtp(this.props.navigation.getParam('otpToken'), text)
-        this.accessToken = token
+        const accessToken = await submitOtp(this.props.navigation.getParam('otpToken'), text)
+        this.accessToken = accessToken
         logEvent('verify-phone-number/successfully-verified')
+        if (!await hasEmailAndName()) {
+          this.setState({ nextScreen: 'CollectInfo' })
+        }
         this.setState({ verified: true, loading: false })
       } catch (err) {
         let errorMessage = ''
@@ -154,12 +165,44 @@ export default class VerifyPhoneNumberScreen extends React.Component<
     }
   }
 
-  public onNextStep = () => {
-    logEvent('verify-phone-number/press-next-button')
+  public goToCreatePin = () => {
     this.props.navigation.navigate('Pin', {
       title: 'Create a PIN',
       onSuccess: this.navigateToConfirmPinScreen
     })
+  }
+
+  public onNextStep = () => {
+    logEvent('verify-phone-number/press-next-button')
+    if (this.state.nextScreen === 'Pin') {
+      this.goToCreatePin()
+    } else {
+      this.props.navigation.navigate('CollectInfo', {
+        onSubmitInfo: this.goToCreatePin
+      })
+    }
+  }
+
+  public setUserContextToThirdParties = async () => {
+    const user = await getCurrentUser()
+    if (user) {
+      const { uid, phoneNumber, firstName, lastName, email } = user
+      const name = firstName + ' ' + lastName
+      identify(uid, {
+        phone_number: phoneNumber,
+        name,
+        email
+      })
+      setPhoneNumber('0' + phoneNumber.substring(2))
+      Sentry.setUserContext({
+        id: uid,
+        email,
+        extra: {
+          name,
+          phoneNumber
+        }
+      })
+    }
   }
 
   public onPressBoxes = () => {

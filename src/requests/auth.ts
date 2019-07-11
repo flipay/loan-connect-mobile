@@ -3,9 +3,7 @@ import axios from 'axios'
 import _ from 'lodash'
 import { Alert, AppState } from 'react-native'
 import { getErrorCode, alert } from '../utils'
-import { setToken, getToken, clearToken } from '../secureStorage'
-import { setPhoneNumber } from '../asyncStorage'
-import { identify } from '../analytics'
+import { getToken, clearToken } from '../secureStorage'
 import { PRIVATE_ROUTES } from '../constants'
 import { getCurrentRouteName, navigate } from '../services/navigation'
 
@@ -65,20 +63,9 @@ function setLockTimeout () {
   }, min * 60 * 1000)
 }
 
-function setAuthorization (token: string) {
+export function setAuthorization (token: string) {
   axios.defaults.headers.common.Authorization = `Bearer ${token}`
   setLockTimeout()
-}
-
-export async function finalizeAuthenProcess (token: string, pin: string) {
-  await setToken(token, pin)
-  setAuthorization(token)
-  const { data } = await axios.get('users/me')
-  if (data && data.data) {
-    const { uid, phone_number } = data.data
-    identify(uid, { phone_number })
-    setPhoneNumber('0' + phone_number.substring(2))
-  }
 }
 
 export function isLocked () {
@@ -133,11 +120,13 @@ function handleTooManyRequests () {
   alert('Too many reqests for OTP. You can request again after 30 seconds.')
 }
 
-export async function submitOtp (token: string, otpNumber: string) {
+export async function submitOtp (otpToken: string, otpNumber: string) {
   const response = await axios.post(
     `auth/verify`,
     { code: otpNumber },
-    { headers: { Authorization: 'Bearer ' + token } }
+    { headers: { Authorization: 'Bearer ' + otpToken } }
   )
-  return response.data
+  const { token: accessToken } = response.data
+  setAuthorization(accessToken)
+  return accessToken
 }

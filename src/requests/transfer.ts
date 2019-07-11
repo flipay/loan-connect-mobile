@@ -3,7 +3,7 @@ import { Alert } from 'react-native'
 import _ from 'lodash'
 import { AssetId } from '../types'
 import { markFirstDepositAsDone } from '../asyncStorage'
-import { getErrorCode, alert } from '../utils'
+import { alert } from '../utils'
 
 export async function deposit (assetId: AssetId, amount: number) {
   try {
@@ -50,36 +50,4 @@ export async function withdraw (
       crypto_transaction_identifier: tag
     })
   }
-}
-
-export async function order (
-  assetGive: AssetId,
-  assetTake: AssetId,
-  amountGive: number,
-  expectedAmountTake: number
-) {
-  let response
-  try {
-    response = await axios.post('orders', {
-      asset_give: assetGive,
-      asset_take: assetTake,
-      amount_give: amountGive,
-      expected_amount_take: expectedAmountTake
-    })
-  } catch (err) {
-    if (getErrorCode(err) === 'resource_not_found') {
-      await axios.post('wallets', {
-        asset: assetTake
-      })
-      response = await axios.post('orders', {
-        asset_give: assetGive,
-        asset_take: assetTake,
-        amount_give: amountGive,
-        expected_amount_take: expectedAmountTake
-      })
-    } else {
-      throw(err)
-    }
-  }
-  return response.data.data
 }
