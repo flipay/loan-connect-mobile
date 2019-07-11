@@ -44,14 +44,13 @@ export default class TextBox extends React.Component<Props, State> {
       this.timeout = setTimeout(() => {
         this.setState({ typing: false })
       }, 1000)
-      return { typing: true }
+      this.setState({ typing: true })
     }
-    return null
   }
 
   public isError () {
     if (!this.props.validate) { return false }
-    return this.state.typing !== undefined && !this.props.validate()
+    return this.state.typing === false && !this.props.validate()
   }
 
   public onPress = () => {

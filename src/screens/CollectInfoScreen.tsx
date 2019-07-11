@@ -56,14 +56,14 @@ export default class CollectInfo extends React.Component<NavigationScreenProps, 
     return (
       this.state.firstName !== '' &&
       this.state.lastName !== '' &&
-      this.state.email !== ''
+      this.validateEmail()
     )
   }
 
   public render () {
     return (
       <Screen
-        activeSubmitButton={this.isButtonActive}
+        activeSubmitButton={this.isButtonActive()}
         onPessSubmitButton={this.onPressSubmitButton}
       >
         {(autoFocus: boolean) => (
