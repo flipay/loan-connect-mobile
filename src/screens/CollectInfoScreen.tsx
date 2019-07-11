@@ -1,8 +1,8 @@
 import * as React from 'react'
 import { StyleSheet, View } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
-
 import { Screen, TextBox, Text } from '../components'
+import { setUserContext } from '../requests'
 
 type Box = 'firstName' | 'lastName' | 'email'
 
@@ -48,8 +48,13 @@ export default class CollectInfo extends React.Component<NavigationScreenProps, 
     return emailReg.test(this.state.email)
   }
 
-  public onPressSubmitButton = () => {
-    this.props.navigation.getParam('onSubmitInfo')
+  public onPressSubmitButton = async () => {
+    setUserContext({
+      firstName: this.state.firstName,
+      lastName: this.state.lastName,
+      email: this.state.email
+    })
+    this.props.navigation.getParam('onSubmitInfo')()
   }
 
   public isButtonActive = () => {

@@ -23,7 +23,7 @@ export default class Start extends React.Component<
     if (isLogIned) {
       this.props.navigation.navigate('Market')
     } else {
-      this.props.navigation.navigate('CollectInfo')
+      this.props.navigation.navigate('Welcome')
     }
   }
 

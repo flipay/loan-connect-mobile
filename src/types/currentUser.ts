@@ -6,3 +6,9 @@ export interface CurrentUser {
   lastName?: string,
   email?: string
 }
+
+export interface EditableCurrentUser {
+  firstName?: string,
+  lastName?: string,
+  email?: string
+}

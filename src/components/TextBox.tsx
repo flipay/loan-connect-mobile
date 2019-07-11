@@ -48,6 +48,10 @@ export default class TextBox extends React.Component<Props, State> {
     }
   }
 
+  public componentWillUnmount () {
+    clearTimeout(this.timeout)
+  }
+
   public isError () {
     if (!this.props.validate) { return false }
     return this.state.typing === false && !this.props.validate()

@@ -96,7 +96,7 @@ export default class VerifyPhoneNumberScreen extends React.Component<
           try {
             startLoading()
             await Promise.all([
-              setToken(this.accessToken, secondPin), 
+              setToken(this.accessToken, secondPin),
               this.setUserContextToThirdParties()
             ])
             logEvent('confirm-pin/successfully-setting-pin')
