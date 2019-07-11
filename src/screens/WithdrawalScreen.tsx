@@ -178,39 +178,37 @@ export default class WithdrawalScreen extends React.Component<
             {this.state.submitted
               ? this.renderResult()
               : (
-                <View>
-                  <View style={styles.content}>
-                    <AssetBoxWithBalance
-                      autoFocus={autoFocus}
-                      description='Withdrawal amount'
-                      assetId={assetId}
-                      onPress={this.onPressAmountBox}
-                      onChangeValue={(value) => this.onChangeValue(boxes[0], value)}
-                      active={this.state.activeBox === boxes[0]}
-                      value={this.state.amount}
-                      balance={remainingBalance}
-                      onPressMax={() => this.setState({ amount: toString(remainingBalance, ASSETS[assetId].decimal) })}
-                      onPressHalf={() => this.setState({ amount: toString(remainingBalance / 2, ASSETS[assetId].decimal) })}
-                    />
-                    <TextBox
-                      style={styles.textBox}
-                      label={assetId === 'THB' ? 'Account number' : description}
-                      onPress={this.onPressAddressBox}
-                      onChangeValue={(value) => this.onChangeValue(boxes[1], value)}
-                      active={this.state.activeBox === boxes[1]}
-                      value={this.state.address}
-                      numberPad={assetId === 'THB'}
-                    />
-                    {ASSETS[assetId].tag && <TextBox
-                      label='Tag name'
-                      onPress={this.onPressTagBox}
-                      onChangeValue={(value) => this.onChangeValue(boxes[2], value)}
-                      active={this.state.activeBox === boxes[2]}
-                      value={this.state.tag}
-                      numberPad={true}
-                    />}
-                    {assetId === 'THB' && this.renderCashContent()}
-                  </View>
+                <View style={styles.content}>
+                  <AssetBoxWithBalance
+                    autoFocus={autoFocus}
+                    description='Withdrawal amount'
+                    assetId={assetId}
+                    onPress={this.onPressAmountBox}
+                    onChangeValue={(value) => this.onChangeValue(boxes[0], value)}
+                    active={this.state.activeBox === boxes[0]}
+                    value={this.state.amount}
+                    balance={remainingBalance}
+                    onPressMax={() => this.setState({ amount: toString(remainingBalance, ASSETS[assetId].decimal) })}
+                    onPressHalf={() => this.setState({ amount: toString(remainingBalance / 2, ASSETS[assetId].decimal) })}
+                  />
+                  <TextBox
+                    style={styles.textBox}
+                    label={assetId === 'THB' ? 'Account number' : description}
+                    onPress={this.onPressAddressBox}
+                    onChangeValue={(value) => this.onChangeValue(boxes[1], value)}
+                    active={this.state.activeBox === boxes[1]}
+                    value={this.state.address}
+                    numberPad={assetId === 'THB'}
+                  />
+                  {ASSETS[assetId].tag && <TextBox
+                    label='Tag name'
+                    onPress={this.onPressTagBox}
+                    onChangeValue={(value) => this.onChangeValue(boxes[2], value)}
+                    active={this.state.activeBox === boxes[2]}
+                    value={this.state.tag}
+                    numberPad={true}
+                  />}
+                  {assetId === 'THB' && this.renderCashContent()}
                 </View>
               )
             }
