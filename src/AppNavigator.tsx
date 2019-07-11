@@ -46,6 +46,7 @@ const privateRoutes = _.map(PRIVATE_ROUTES)
 
 const AuthStack = createStackNavigator(
   {
+    CollectInfo: { screen: CollectInfoScreen },
     Pin: { screen: PinScreen }
   },
   {
@@ -55,7 +56,6 @@ const AuthStack = createStackNavigator(
 
 const VerificationStack = createStackNavigator(
   {
-    CollectInfo: { screen: CollectInfoScreen },
     Welcome: { screen: WelcomeScreen },
     Authen: { screen: AuthenScreen },
     VerifyPhoneNumber: { screen: VerifyPhoneNumberScreen }
