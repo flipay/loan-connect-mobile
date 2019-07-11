@@ -66,29 +66,9 @@ function setLockTimeout () {
   }, min * 60 * 1000)
 }
 
-function setAuthorization (token: string) {
+export function setAuthorization (token: string) {
   axios.defaults.headers.common.Authorization = `Bearer ${token}`
   setLockTimeout()
-}
-
-export async function finalizeAuthenProcess (token: string, pin: string) {
-  await setToken(token, pin)
-  setAuthorization(token)
-  const { data } = await axios.get('users/me')
-  if (data && data.data) {
-    const { uid, phone_number, first_name, last_name, email } = data.data
-    identify(uid, { phone_number })
-    setPhoneNumber('0' + phone_number.substring(2))
-    Sentry.setUserContext({
-      id: uid,
-      email,
-      extra: {
-        first_name,
-        last_name,
-        phone_number
-      }
-    })
-  }
 }
 
 export function isLocked () {

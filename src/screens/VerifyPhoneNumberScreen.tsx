@@ -1,13 +1,16 @@
 import * as React from 'react'
 import _ from 'lodash'
 import { View, SafeAreaView, TextInput, StyleSheet, TouchableOpacity } from 'react-native'
+import Sentry from 'sentry-expo'
 import { AntDesign } from '@expo/vector-icons'
 import { NavigationScreenProps } from 'react-navigation'
-import { finalizeAuthenProcess, submitOtp, hasEmailAndName } from '../requests'
+import { submitOtp, hasEmailAndName, setAuthorization, getCurrentUser } from '../requests'
 import { COLORS } from '../constants'
 import { Text, Screen, Layer, Link } from '../components'
 import { alert } from '../utils'
-import { logEvent } from '../analytics'
+import { logEvent, identify } from '../analytics'
+import { setToken } from '../secureStorage'
+import { setPhoneNumber } from '../asyncStorage'
 
 type No = 0 | 1 | 2 | 3 | 4 | 5
 
@@ -92,7 +95,10 @@ export default class VerifyPhoneNumberScreen extends React.Component<
           logEvent('confirm-pin/pin-match')
           try {
             startLoading()
-            await finalizeAuthenProcess(this.accessToken, secondPin)
+            await Promise.all([
+              setToken(this.accessToken, secondPin), 
+              this.setUserContextToThirdParties()
+            ])
             logEvent('confirm-pin/successfully-setting-pin')
             stackNavigationConmfirmPin.navigate('Market')
           } catch (error) {
@@ -123,6 +129,7 @@ export default class VerifyPhoneNumberScreen extends React.Component<
       try {
         this.setState({ loading: true })
         const { token } = await submitOtp(this.props.navigation.getParam('otpToken'), text)
+        await setAuthorization(token)
         this.accessToken = token
         logEvent('verify-phone-number/successfully-verified')
         if (!await hasEmailAndName()) {
@@ -173,6 +180,24 @@ export default class VerifyPhoneNumberScreen extends React.Component<
     } else {
       this.props.navigation.navigate('CollectInfo', {
         onSubmitInfo: this.goToCreatePin
+      })
+    }
+  }
+
+  public setUserContextToThirdParties = async () => {
+    const user = await getCurrentUser()
+    if (user) {
+      const { uid, phoneNumber, firstName, lastName, email } = user
+      identify(uid, { phoneNumber })
+      setPhoneNumber('0' + phoneNumber.substring(2))
+      Sentry.setUserContext({
+        id: uid,
+        email,
+        extra: {
+          firstName,
+          lastName,
+          phoneNumber
+        }
       })
     }
   }
