@@ -13,7 +13,7 @@ export default class Start extends React.Component<
     setUpRequest(this.props.navigation)
 
     // NOTE: for testing first run
-    await AsyncStorage.clear()
+    // await AsyncStorage.clear()
 
     const firstRun = await isFirstRun()
     if (firstRun) {
