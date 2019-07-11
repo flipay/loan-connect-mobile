@@ -46,7 +46,6 @@ const privateRoutes = _.map(PRIVATE_ROUTES)
 
 const AuthStack = createStackNavigator(
   {
-    CollectInfo: { screen: CollectInfoScreen },
     Pin: { screen: PinScreen }
   },
   {
@@ -271,6 +270,7 @@ async function onUnlockPinSuccessfully (
 
 const App = createSwitchNavigator({
   Starter,
+  CollectInfo: CollectInfoScreen,
   Verification: VerificationStack,
   MainApp,
   Auth: AuthStack
