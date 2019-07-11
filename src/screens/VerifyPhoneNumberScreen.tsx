@@ -4,7 +4,7 @@ import { View, SafeAreaView, TextInput, StyleSheet, TouchableOpacity } from 'rea
 import Sentry from 'sentry-expo'
 import { AntDesign } from '@expo/vector-icons'
 import { NavigationScreenProps } from 'react-navigation'
-import { submitOtp, hasEmailAndName, setAuthorization, getCurrentUser } from '../requests'
+import { submitOtp, hasEmailAndName, getCurrentUser } from '../requests'
 import { COLORS } from '../constants'
 import { Text, Screen, Layer, Link } from '../components'
 import { alert } from '../utils'
@@ -128,9 +128,8 @@ export default class VerifyPhoneNumberScreen extends React.Component<
       }
       try {
         this.setState({ loading: true })
-        const { token } = await submitOtp(this.props.navigation.getParam('otpToken'), text)
-        await setAuthorization(token)
-        this.accessToken = token
+        const accessToken = await submitOtp(this.props.navigation.getParam('otpToken'), text)
+        this.accessToken = accessToken
         logEvent('verify-phone-number/successfully-verified')
         if (!await hasEmailAndName()) {
           this.setState({ nextScreen: 'CollectInfo' })

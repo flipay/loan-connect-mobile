@@ -1,12 +1,9 @@
 
 import axios from 'axios'
 import _ from 'lodash'
-import Sentry from 'sentry-expo'
 import { Alert, AppState } from 'react-native'
 import { getErrorCode, alert } from '../utils'
-import { setToken, getToken, clearToken } from '../secureStorage'
-import { setPhoneNumber } from '../asyncStorage'
-import { identify } from '../analytics'
+import { getToken, clearToken } from '../secureStorage'
 import { PRIVATE_ROUTES } from '../constants'
 import { getCurrentRouteName, navigate } from '../services/navigation'
 
@@ -123,11 +120,13 @@ function handleTooManyRequests () {
   alert('Too many reqests for OTP. You can request again after 30 seconds.')
 }
 
-export async function submitOtp (token: string, otpNumber: string) {
+export async function submitOtp (otpToken: string, otpNumber: string) {
   const response = await axios.post(
     `auth/verify`,
     { code: otpNumber },
-    { headers: { Authorization: 'Bearer ' + token } }
+    { headers: { Authorization: 'Bearer ' + otpToken } }
   )
-  return response.data
+  const { token: accessToken } = response.data
+  setAuthorization(accessToken)
+  return accessToken
 }
