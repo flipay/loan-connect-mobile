@@ -187,14 +187,18 @@ export default class VerifyPhoneNumberScreen extends React.Component<
     const user = await getCurrentUser()
     if (user) {
       const { uid, phoneNumber, firstName, lastName, email } = user
-      identify(uid, { phoneNumber })
+      const name = firstName + ' ' + lastName
+      identify(uid, {
+        phone_number: phoneNumber,
+        name,
+        email
+      })
       setPhoneNumber('0' + phoneNumber.substring(2))
       Sentry.setUserContext({
         id: uid,
         email,
         extra: {
-          firstName,
-          lastName,
+          name,
           phoneNumber
         }
       })
