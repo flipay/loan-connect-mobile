@@ -3,7 +3,7 @@ import _ from 'lodash'
 import { View, SafeAreaView, TextInput, StyleSheet, TouchableOpacity } from 'react-native'
 import { AntDesign } from '@expo/vector-icons'
 import { NavigationScreenProps } from 'react-navigation'
-import { finalizeAuthenProcess, submitOtp } from '../requests'
+import { finalizeAuthenProcess, submitOtp, hasEmailAndName } from '../requests'
 import { COLORS } from '../constants'
 import { Text, Screen, Layer, Link } from '../components'
 import { alert } from '../utils'
@@ -17,6 +17,7 @@ interface State {
   timer: number
   loading: boolean
   errorMessage: string
+  nextScreen: 'CollectInfo' | 'Pin'
 }
 
 const DEFAULT_TIMER = 60
@@ -36,7 +37,8 @@ export default class VerifyPhoneNumberScreen extends React.Component<
       timer: DEFAULT_TIMER,
       verified: false,
       loading: false,
-      errorMessage: ''
+      errorMessage: '',
+      nextScreen: 'Pin'
     }
   }
 
@@ -123,6 +125,9 @@ export default class VerifyPhoneNumberScreen extends React.Component<
         const { token } = await submitOtp(this.props.navigation.getParam('otpToken'), text)
         this.accessToken = token
         logEvent('verify-phone-number/successfully-verified')
+        if (!await hasEmailAndName()) {
+          this.setState({ nextScreen: 'CollectInfo' })
+        }
         this.setState({ verified: true, loading: false })
       } catch (err) {
         let errorMessage = ''
@@ -154,12 +159,22 @@ export default class VerifyPhoneNumberScreen extends React.Component<
     }
   }
 
-  public onNextStep = () => {
-    logEvent('verify-phone-number/press-next-button')
+  public goToCreatePin = () => {
     this.props.navigation.navigate('Pin', {
       title: 'Create a PIN',
       onSuccess: this.navigateToConfirmPinScreen
     })
+  }
+
+  public onNextStep = () => {
+    logEvent('verify-phone-number/press-next-button')
+    if (this.state.nextScreen === 'Pin') {
+      this.goToCreatePin()
+    } else {
+      this.props.navigation.navigate('CollectInfo', {
+        onSubmitInfo: this.goToCreatePin
+      })
+    }
   }
 
   public onPressBoxes = () => {
