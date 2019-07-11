@@ -1,6 +1,7 @@
 
 import axios from 'axios'
 import _ from 'lodash'
+import Sentry from 'sentry-expo'
 import { Alert, AppState } from 'react-native'
 import { getErrorCode, alert } from '../utils'
 import { setToken, getToken, clearToken } from '../secureStorage'
@@ -75,9 +76,18 @@ export async function finalizeAuthenProcess (token: string, pin: string) {
   setAuthorization(token)
   const { data } = await axios.get('users/me')
   if (data && data.data) {
-    const { uid, phone_number } = data.data
+    const { uid, phone_number, first_name, last_name, email } = data.data
     identify(uid, { phone_number })
     setPhoneNumber('0' + phone_number.substring(2))
+    Sentry.setUserContext({
+      id: uid,
+      email,
+      extra: {
+        first_name,
+        last_name,
+        phone_number
+      }
+    })
   }
 }
 
