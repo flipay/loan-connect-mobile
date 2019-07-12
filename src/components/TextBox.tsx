@@ -76,6 +76,7 @@ export default class TextBox extends React.Component<Props, State> {
             ref={element => {
               this.input = element
             }}
+            autoCapitalize='none'
             style={styles.textInput}
             autoFocus={this.props.autoFocus}
             placeholder={this.props.placeholder}
