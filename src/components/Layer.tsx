@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { TouchableOpacity, StyleSheet, View } from 'react-native'
+import { StyleSheet, View, TouchableWithoutFeedback } from 'react-native'
 import { COLORS } from '../constants'
 
 interface Props {
@@ -10,17 +10,23 @@ interface Props {
 }
 
 export default class Layer extends React.Component<Props> {
-  public render () {
 
-    const Container = this.props.onPress ? TouchableOpacity : View
+  public renderContent () {
     return (
-      <Container
-        style={[styles.container, this.props.active && styles.activeContainer, this.props.style]}
+      <View style={[styles.container, this.props.active && styles.activeContainer, this.props.style]}>
+        {this.props.children}
+      </View>
+    )
+  }
+
+  public render () {
+    return this.props.onPress ? (
+      <TouchableWithoutFeedback
         onPress={this.props.onPress}
       >
-        {this.props.children}
-      </Container>
-    )
+        {this.renderContent()}
+      </TouchableWithoutFeedback>
+    ) : this.renderContent()
   }
 }
 
