@@ -6,7 +6,7 @@ import { NavigationScreenProps } from 'react-navigation'
 import {
   Text,
   AssetBoxWithBalance,
-  AssetBoxTemp,
+  AssetBox,
   Screen,
   Link
 } from '../components'
@@ -303,7 +303,6 @@ export default class TradeScreen extends React.Component<
     const side = this.props.navigation.getParam('side', 'buy')
     const assetId: AssetId = this.props.navigation.getParam('assetId', 'BTC')
     const remainingBalance = this.props.balances && this.props.balances[side === 'buy' ? 'THB' : assetId]
-
     const giveSideAssetId = side === 'buy' ? 'THB' : assetId
     return (
       <View style={styles.body}>
@@ -321,14 +320,9 @@ export default class TradeScreen extends React.Component<
             balance={remainingBalance}
             warning={this.state.giveAssetBoxWarningMessage}
           />
-          <AssetBoxTemp
-            description={
-              side === 'sell' ? 'You will receive' : 'You will receive'
-            }
+          <AssetBox
+            description={side === 'sell' ? 'You will receive' : 'You will receive'}
             assetId={side === 'sell' ? 'THB' : assetId}
-            // onPress={() => this.onPressAssetBox('take')}
-            // onChangeValue={(value: string) => this.onChangeValue('take', value)}
-            // active={this.state.activeAssetBox === 'take'}
             value={this.state.takeAssetBoxValue}
           />
         </View>
@@ -370,6 +364,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   body: {
+    flex: 1,
     paddingTop: 20,
     alignItems: 'center'
   },

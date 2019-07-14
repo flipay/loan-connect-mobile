@@ -6,14 +6,15 @@ interface Props {
   children: Element
   onPress?: () => void
   active?: boolean,
-  style?: any
+  style?: any,
+  borderRadius?: number
 }
 
 export default class Layer extends React.Component<Props> {
 
   public renderContent () {
     return (
-      <View style={[styles.container, this.props.active && styles.activeContainer, this.props.style]}>
+      <View style={[styles.container, this.props.active && styles.activeContainer, this.props.style, { borderRadius: this.props.borderRadius }]}>
         {this.props.children}
       </View>
     )
