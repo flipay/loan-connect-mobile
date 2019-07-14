@@ -23,6 +23,7 @@ import WelcomeScreen from './screens/WelcomeScreen'
 import AuthenScreen from './screens/AuthenScreen'
 import VerifyPhoneNumberScreen from './screens/VerifyPhoneNumberScreen'
 import TradeScreen from './screens/TradeScreen'
+import TradeConfirmationScreen from './screens/TradeConfirmationScreen'
 import DepositScreen from './screens/DepositScreen'
 import WithdrawalScreen from './screens/WithdrawalScreen'
 import ComparisonScreen from './screens/ComparisonScreen'
@@ -37,6 +38,7 @@ import { unlock, isLocked } from './requests'
 const {
   PORTFOLIO,
   TRADE,
+  TRADE_CONFIRMATION,
   DEPOSIT,
   WITHDRAWAL,
   ACCOUNT,
@@ -82,6 +84,7 @@ const MarketStack = createStackNavigator(
         )}
       </BalancesContextConsumer>
     )},
+    [TRADE_CONFIRMATION]: { screen: TradeConfirmationScreen },
     [COMPARISON]: { screen: ComparisonScreen }
   },
   {

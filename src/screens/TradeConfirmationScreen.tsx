@@ -1,22 +1,24 @@
 import * as React from 'react'
 import _ from 'lodash'
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, View, Alert } from 'react-native'
 import Sentry from 'sentry-expo'
-import { NavigationScreenProps } from 'react-navigation'
+import { NavigationScreenProps, StackActions, NavigationActions } from 'react-navigation'
 import {
   Text,
   AssetBoxWithBalance,
   AssetBoxTemp,
+  TradeResult,
   Screen,
   Link
 } from '../components'
 import { COLORS, ASSETS, THBAmountTypes } from '../constants'
 import { AssetId, OrderPart, Balances } from '../types'
-import { getAmount, getCompetitorTHBAmounts } from '../requests'
+import { getAmount, order, getCompetitorTHBAmounts } from '../requests'
 import {
   toNumber,
   toString,
   getErrorCode,
+  alert,
   calSaveAmount
 } from '../utils'
 import { logEvent } from '../analytics'
@@ -37,12 +39,13 @@ interface State {
   submitPressed: boolean
   lastFetchSuccessfullyGiveAmount?: string
   lastFetchSuccessfullyTakeAmount?: string
+  executed: boolean
   tradeResultGive: number
   tradeResultTake: number
   competitorThbAmounts?: THBAmountTypes
 }
 
-export default class TradeScreen extends React.Component<
+export default class TradeConfirmationScreen extends React.Component<
   Props & NavigationScreenProps,
   State
 > {
@@ -57,6 +60,7 @@ export default class TradeScreen extends React.Component<
       takeAssetBoxValue: '',
       typing: false,
       submitPressed: false,
+      executed: false,
       tradeResultGive: 0,
       tradeResultTake: 0
     }
@@ -209,6 +213,47 @@ export default class TradeScreen extends React.Component<
     }, 500)
   }
 
+  public execute = async () => {
+    if (!this.isSubmitable()) { return }
+    const side = this.props.navigation.getParam('side')
+    const assetId = this.props.navigation.getParam('assetId')
+    logEvent('trade/press-submit-button', {
+      side: this.props.navigation.getParam('side'),
+      assetId: this.props.navigation.getParam('assetId')
+    })
+    await this.setState({ submitPressed: true })
+    try {
+      const {
+        amount_give: tradeResultGive,
+        amount_take: tradeResultTake
+      } = await order(
+        side === 'buy' ? 'THB' : assetId,
+        side === 'buy' ? assetId : 'THB',
+        toNumber(this.state.giveAssetBoxValue),
+        toNumber(this.state.takeAssetBoxValue)
+      )
+      this.setState({
+        executed: true,
+        tradeResultGive: Number(tradeResultGive),
+        tradeResultTake: Number(tradeResultTake)
+      })
+    } catch (err) {
+      const code = getErrorCode(err)
+      this.setState({ submitPressed: false })
+      if (code === 'insufficient_balance') {
+        const remainingBalance = this.props.balances && this.props.balances[side === 'buy' ? 'THB' : assetId]
+        Alert.alert(
+          `The balance is not enough. (remaining ${toString(
+            remainingBalance,
+            ASSETS[this.getGiveAsset()].decimal
+          )} ${ASSETS[this.getGiveAsset()].unit})`
+        )
+      } else {
+        alert(err)
+      }
+    }
+  }
+
   public onClose = () => {
     logEvent('trade/press-back-button', {
       side: this.props.navigation.getParam('side'),
@@ -245,6 +290,7 @@ export default class TradeScreen extends React.Component<
   }
 
   public isSubmitable = () => {
+    if (this.state.submitPressed && !this.state.executed) { return false }
     return (
       this.state.giveAssetBoxValue ===
         this.state.lastFetchSuccessfullyGiveAmount &&
@@ -337,10 +383,18 @@ export default class TradeScreen extends React.Component<
     )
   }
 
-  public goToReview = () => {
-    this.props.navigation.navigate('TradeConfirmation', {
-
+  public pressDone = () => {
+    logEvent('trade-result/press-done-button', {
+      side: this.props.navigation.getParam('side'),
+      assetId: this.props.navigation.getParam('assetId')
     })
+    const resetAction = StackActions.reset({
+      index: 0,
+      key: 'MarketStack',
+      actions: [NavigationActions.navigate({ routeName: 'Market' })]
+    })
+    this.props.navigation.dispatch(resetAction)
+    this.props.navigation.navigate('Portfolio')
   }
 
   public render () {
@@ -349,15 +403,34 @@ export default class TradeScreen extends React.Component<
     return (
       <Screen
         backButtonType='close'
-        title={`${_.capitalize(side)} ${ASSETS[assetId].name}`}
-        onPressBackButton={this.onClose}
-        submitButtonText='Review'
+        title={!this.state.executed ? `${_.capitalize(side)} ${ASSETS[assetId].name}` : undefined}
+        onPressBackButton={this.state.executed ? undefined : this.onClose}
+        submitButtonText={
+          this.state.executed ? 'Done' : _.capitalize(side)
+        }
         activeSubmitButton={this.isSubmitable()}
-        onPessSubmitButton={this.goToReview}
+        onPessSubmitButton={this.state.executed ? this.pressDone : this.execute}
       >
-        {(autoFocus: boolean) => (
+        {autoFocus => (
           <View style={styles.bodyContainer}>
-            {this.renderTradeBody(autoFocus)}
+            {this.state.executed ? (
+              <TradeResult
+                orderType={side}
+                assetId={this.props.navigation.getParam('assetId', 'BTC')}
+                cryptoAmount={
+                  side === 'buy'
+                    ? this.state.tradeResultTake
+                    : this.state.tradeResultGive
+                }
+                thbAmount={
+                  side === 'sell'
+                    ? this.state.tradeResultTake
+                    : this.state.tradeResultGive
+                }
+              />
+            ) : (
+              this.renderTradeBody(autoFocus)
+            )}
           </View>
         )}
       </Screen>
