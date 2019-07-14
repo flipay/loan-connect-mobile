@@ -11,10 +11,10 @@ interface Props {
 }
 
 export default class Layer extends React.Component<Props> {
-
   public renderContent () {
+    const { borderRadius } = this.props
     return (
-      <View style={[styles.container, this.props.active && styles.activeContainer, this.props.style, { borderRadius: this.props.borderRadius }]}>
+      <View style={[styles.container, this.props.active && styles.activeContainer, this.props.style, borderRadius && { borderRadius }]}>
         {this.props.children}
       </View>
     )
