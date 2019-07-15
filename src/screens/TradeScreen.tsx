@@ -1,6 +1,6 @@
 import * as React from 'react'
 import _ from 'lodash'
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, View, TouchableOpacity } from 'react-native'
 import Sentry from 'sentry-expo'
 import { NavigationScreenProps } from 'react-navigation'
 import {
@@ -8,7 +8,6 @@ import {
   AssetBoxWithBalance,
   AssetBox,
   Screen,
-  Link,
   Value
 } from '../components'
 import { COLORS, ASSETS, THBAmountTypes } from '../constants'
@@ -284,13 +283,13 @@ export default class TradeScreen extends React.Component<
       )
     }
     return (
-      <View style={styles.footer}>
+      <TouchableOpacity style={[styles.footer, styles.savedFooter]} onPress={this.onPressPriceComparison}>
         <Text color={COLORS.N500}>
           You save up to
           <Text color={COLORS.N800}>{` ${toString(saved, 2)} THB`}</Text>
         </Text>
-        <Link onPress={this.onPressPriceComparison}>See price comparison</Link>
-      </View>
+        <Text bold={true} color={COLORS.P400}>See price comparison</Text>
+      </TouchableOpacity>
     )
   }
 
@@ -393,9 +392,16 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   footer: {
-    marginTop: 10,
+    marginTop: 22,
     marginHorizontal: 50,
     alignItems: 'center'
+  },
+  savedFooter: {
+    width: '100%',
+    paddingVertical: 14,
+    borderWidth: 1,
+    borderColor: COLORS.P400,
+    borderRadius: 6
   },
   priceRow: {
     marginTop: 11,
