@@ -26,7 +26,7 @@ export default class AssetBoxWithBalance extends React.Component<Props> {
   public renderSmallbutton (text: string, onPress: () => void) {
     return (
       <TouchableOpacity onPress={onPress} style={styles.button}>
-        <Text type='button' color={COLORS.P400}>
+        <Text type='body' bold={true} color={COLORS.P400}>
           {text}
         </Text>
       </TouchableOpacity>
@@ -87,10 +87,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   button: {
-    backgroundColor: COLORS.N100,
+    borderWidth: 1,
+    borderColor: COLORS.P200,
+    backgroundColor: COLORS.WHITE,
     paddingHorizontal: 13,
     paddingVertical: 6,
-    borderRadius: 4,
+    borderRadius: 6,
     marginRight: 8
   }
 })
