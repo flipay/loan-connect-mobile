@@ -114,7 +114,7 @@ export default class AssetBox extends React.Component<Props> {
           onFocus={this.props.onPress}
         />
       ) : (
-        <Text type='large-title'>{this.props.value}</Text>
+        <Text type='large-title'>{this.props.value || 0}</Text>
       )
   }
 
