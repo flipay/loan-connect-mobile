@@ -11,19 +11,21 @@ interface Props {
   style?: any
   fontType?: FontType
   decimal?: number
+  color?: string
 }
 
 class Value extends React.Component<Props> {
   public render () {
-    const { style, ...otherProps } = this.props
+    const { style, color, fontType, ...otherProps } = this.props
     const amount = toString(
       this.props.children,
       this.props.decimal || ASSETS[this.props.assetId].decimal
     )
     return (
       <Text
-        style={this.props.style}
-        type={this.props.fontType || 'inherit'}
+        style={style}
+        color={color}
+        type={fontType || 'inherit'}
         {...otherProps}
       >
         {amount}

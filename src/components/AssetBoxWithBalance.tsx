@@ -42,8 +42,8 @@ export default class AssetBoxWithBalance extends React.Component<Props> {
         </View>
         {this.props.balance !== undefined && (
           <Text type='caption'>
-            <Text>{`Balance `}</Text>
-            <Value assetId={this.props.assetId}>{this.props.balance}</Value>
+            <Text type='caption' color={COLORS.N500}>{`Balance `}</Text>
+            <Value assetId={this.props.assetId} color={COLORS.N800} fontType='caption'>{this.props.balance}</Value>
           </Text>
         )}
       </View>

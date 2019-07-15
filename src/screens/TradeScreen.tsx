@@ -8,7 +8,8 @@ import {
   AssetBoxWithBalance,
   AssetBox,
   Screen,
-  Link
+  Link,
+  Value
 } from '../components'
 import { COLORS, ASSETS, THBAmountTypes } from '../constants'
 import { AssetId, OrderPart, Balances } from '../types'
@@ -299,6 +300,19 @@ export default class TradeScreen extends React.Component<
     return side === 'buy' ? 'THB' : assetId
   }
 
+  public renderPrice () {
+    return (
+      <View style={styles.priceRow}>
+        <Text type='caption' color={COLORS.N500}>
+          {`Price `}
+        </Text>
+        <Value assetId='THB' fontType='caption' color={COLORS.N800}>
+          {3000}
+        </Value>
+      </View>
+    )
+  }
+
   public renderTradeBody (autoFocus: boolean) {
     const side = this.props.navigation.getParam('side', 'buy')
     const assetId: AssetId = this.props.navigation.getParam('assetId', 'BTC')
@@ -325,6 +339,7 @@ export default class TradeScreen extends React.Component<
             assetId={side === 'sell' ? 'THB' : assetId}
             value={this.state.takeAssetBoxValue}
           />
+          {this.renderPrice()}
         </View>
         {this.renderFooter()}
       </View>
@@ -374,6 +389,12 @@ const styles = StyleSheet.create({
   footer: {
     marginTop: 10,
     marginHorizontal: 50,
+    alignItems: 'center'
+  },
+  priceRow: {
+    marginTop: 11,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
     alignItems: 'center'
   }
 })
