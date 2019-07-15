@@ -301,13 +301,19 @@ export default class TradeScreen extends React.Component<
   }
 
   public renderPrice () {
+    const { lastFetchSuccessfullyGiveAmount, lastFetchSuccessfullyTakeAmount } = this.state
+    if (!lastFetchSuccessfullyGiveAmount || !lastFetchSuccessfullyTakeAmount) { return null }
+    const amountGive = toNumber(lastFetchSuccessfullyGiveAmount)
+    const amountTake = toNumber(lastFetchSuccessfullyTakeAmount)
+    const side = this.props.navigation.getParam('side', 'buy')
+    const price = side === 'buy' ? (amountGive / amountTake) : (amountTake / amountGive)
     return (
       <View style={styles.priceRow}>
         <Text type='caption' color={COLORS.N500}>
           {`Price `}
         </Text>
         <Value assetId='THB' fontType='caption' color={COLORS.N800}>
-          {3000}
+          {price}
         </Value>
       </View>
     )
