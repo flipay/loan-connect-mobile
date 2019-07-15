@@ -23,6 +23,7 @@ import { withNavigation, NavigationScreenProps } from 'react-navigation'
 
 interface Props {
   title?: string | any
+  noHeaderLine?: boolean
   renderFooter?: () => any
   children: (autoFocus: boolean) => any
   onPressBackButton?: () => void
@@ -105,7 +106,7 @@ class Screen extends React.Component<Props & NavigationScreenProps, State> {
             <View style={styles.safeArea}>
               <View style={styles.container}>
                 {this.hasHeader() && (
-                  <View style={[styles.headerRow, (!!this.props.title && typeof this.props.title === 'string') && styles.headerRowBorder]}>
+                  <View style={[styles.headerRow, !this.props.noHeaderLine && (!!this.props.title && typeof this.props.title === 'string') && styles.headerRowBorder]}>
                     {this.renderTitle()}
                     {this.props.onPressBackButton && (
                       <View style={styles.backButtonContainer}>

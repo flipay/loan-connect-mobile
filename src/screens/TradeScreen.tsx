@@ -364,6 +364,7 @@ export default class TradeScreen extends React.Component<
       <Screen
         backButtonType='close'
         title={`${_.capitalize(side)} ${ASSETS[assetId].name}`}
+        noHeaderLine={true}
         onPressBackButton={this.onClose}
         submitButtonText='Review'
         activeSubmitButton={this.isSubmitable()}
@@ -385,7 +386,7 @@ const styles = StyleSheet.create({
   },
   body: {
     flex: 1,
-    paddingTop: 20,
+    paddingTop: 10,
     alignItems: 'center'
   },
   assetBoxesContainer: {
