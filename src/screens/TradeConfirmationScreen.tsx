@@ -6,7 +6,8 @@ import {
   Text,
   AssetBox,
   TradeResult,
-  Screen
+  Screen,
+  Value
 } from '../components'
 import { COLORS, ASSETS, THBAmountTypes } from '../constants'
 import { AssetId } from '../types'
@@ -205,6 +206,25 @@ export default class TradeConfirmationScreen extends React.Component<
     )
   }
 
+  public renderPrice () {
+    const { takeAmount } = this.state
+    const giveAmount = this.props.navigation.getParam('giveAmount')
+    const amountGive = toNumber(giveAmount)
+    const amountTake = toNumber(takeAmount)
+    const side = this.props.navigation.getParam('side', 'buy')
+    const price = side === 'buy' ? (amountGive / amountTake) : (amountTake / amountGive)
+    return (
+      <View style={styles.priceRow}>
+        <Text type='caption' color={COLORS.N500}>
+          {`Price `}
+        </Text>
+        <Value assetId='THB' fontType='caption' color={COLORS.N800}>
+          {price}
+        </Value>
+      </View>
+    )
+  }
+
   public getGiveAsset () {
     const side = this.props.navigation.getParam('side', 'buy')
     const assetId: AssetId = this.props.navigation.getParam('assetId', 'BTC')
@@ -247,6 +267,7 @@ export default class TradeConfirmationScreen extends React.Component<
             assetId={side === 'sell' ? 'THB' : assetId}
             value={this.state.takeAmount}
           />
+          {this.renderPrice()}
         </View>
         {this.renderFooter()}
       </View>
@@ -304,7 +325,7 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   footer: {
-    marginTop: 10,
+    marginTop: 20,
     marginHorizontal: 50,
     alignItems: 'center'
   },
@@ -314,5 +335,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.P400,
     borderRadius: 6
+  },
+  priceRow: {
+    marginTop: 11,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center'
   }
 })

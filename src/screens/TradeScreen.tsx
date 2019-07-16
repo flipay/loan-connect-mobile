@@ -375,7 +375,7 @@ const styles = StyleSheet.create({
   },
   footer: {
     marginTop: 10,
-    marginHorizontal: 50,
+    marginHorizontal: 30,
     alignItems: 'center'
   },
   savedFooter: {
