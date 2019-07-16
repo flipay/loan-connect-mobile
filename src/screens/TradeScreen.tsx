@@ -242,7 +242,7 @@ export default class TradeScreen extends React.Component<
 
   public renderFooter () {
     const saved = this.getSavedAmount()
-
+    if (!this.state.lastFetchSuccessfullyGiveAmount && !this.state.lastFetchSuccessfullyTakeAmount) { return null }
     let countError = 0
     _.map(this.state.competitorThbAmounts, (amount) => {
       if (isNaN(Number(amount))) { countError++ }
@@ -259,9 +259,10 @@ export default class TradeScreen extends React.Component<
 
     if (!saved) { return null }
     return (
-      <Text color={COLORS.G400}>
-        You save up to
-        <Text color={COLORS.N800}>{` ${toString(saved, 2)} THB`}</Text>
+      <Text color={COLORS.G400} style={styles.footer}>
+        Save up to
+        <Text color={COLORS.G400} bold={true}>{` ${toString(saved, 2)} THB `}</Text>
+        with Flipay
       </Text>
     )
   }
@@ -373,7 +374,7 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   footer: {
-    marginTop: 22,
+    marginTop: 10,
     marginHorizontal: 50,
     alignItems: 'center'
   },
