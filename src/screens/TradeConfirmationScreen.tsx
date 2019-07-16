@@ -280,10 +280,9 @@ export default class TradeConfirmationScreen extends React.Component<
     return (
       <Screen
         backButtonType='arrowleft'
+        gradientSubmitButton={true}
         onPressBackButton={this.state.executed ? undefined : this.onClose}
-        submitButtonText={
-          this.state.executed ? 'Done' : _.capitalize(side)
-        }
+        submitButtonText={this.state.executed ? 'Done' : `Confirm to ${_.capitalize(side)}`}
         activeSubmitButton={this.isSubmitable()}
         onPessSubmitButton={this.state.executed ? this.pressDone : this.execute}
       >

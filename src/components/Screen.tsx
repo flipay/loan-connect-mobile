@@ -29,6 +29,7 @@ interface Props {
   onPressBackButton?: () => void
   backButtonType?: 'arrowleft' | 'close'
   activeSubmitButton?: boolean
+  gradientSubmitButton?: boolean
   submitButtonText?: string
   onPessSubmitButton?: () => void
   fullScreenLoading?: boolean
@@ -143,6 +144,7 @@ class Screen extends React.Component<Props & NavigationScreenProps, State> {
                   <SubmitButton
                     onPress={this.props.onPessSubmitButton}
                     active={this.props.activeSubmitButton}
+                    gradient={this.props.gradientSubmitButton}
                   >
                     {this.props.submitButtonText || 'Next'}
                   </SubmitButton>
