@@ -1,18 +1,15 @@
 import * as React from 'react'
 import _ from 'lodash'
-import { StyleSheet, View, Alert } from 'react-native'
-import Sentry from 'sentry-expo'
+import { StyleSheet, View, Alert, TouchableOpacity } from 'react-native'
 import { NavigationScreenProps, StackActions, NavigationActions } from 'react-navigation'
 import {
   Text,
-  AssetBoxWithBalance,
-  AssetBoxTemp,
+  AssetBox,
   TradeResult,
-  Screen,
-  Link
+  Screen
 } from '../components'
 import { COLORS, ASSETS, THBAmountTypes } from '../constants'
-import { AssetId, OrderPart, Balances } from '../types'
+import { AssetId } from '../types'
 import { getAmount, order, getCompetitorTHBAmounts } from '../requests'
 import {
   toNumber,
@@ -23,194 +20,75 @@ import {
 } from '../utils'
 import { logEvent } from '../analytics'
 
-type AssetBoxType = OrderPart
-
-interface Props {
-  balances: Balances
-  fetchBalances: () => void
-}
-
 interface State {
-  activeAssetBox: AssetBoxType
-  giveAssetBoxValue: string
-  takeAssetBoxValue: string
-  giveAssetBoxWarningMessage?: string
-  typing: boolean
   submitPressed: boolean
-  lastFetchSuccessfullyGiveAmount?: string
-  lastFetchSuccessfullyTakeAmount?: string
   executed: boolean
+  takeAmount: string
+  competitorThbAmounts?: THBAmountTypes
   tradeResultGive: number
   tradeResultTake: number
-  competitorThbAmounts?: THBAmountTypes
 }
 
 export default class TradeConfirmationScreen extends React.Component<
-  Props & NavigationScreenProps,
+  NavigationScreenProps,
   State
 > {
   private mounted: boolean = false
-  private timeout: any
   private interval: any
-  public constructor (props: Props & NavigationScreenProps) {
+  public constructor (props: NavigationScreenProps) {
     super(props)
     this.state = {
-      activeAssetBox: 'give',
-      giveAssetBoxValue: '',
-      takeAssetBoxValue: '',
-      typing: false,
       submitPressed: false,
       executed: false,
+      takeAmount: props.navigation.getParam('takeAmount'),
+      competitorThbAmounts: props.navigation.getParam('competitorThbAmounts'),
       tradeResultGive: 0,
       tradeResultTake: 0
     }
   }
 
-  public async componentDidMount () {
-    await this.props.fetchBalances()
-  }
-
-  public componentDidUpdate (
-    prevProps: Props & NavigationScreenProps,
-    prevState: State
-  ) {
+  public componentDidMount () {
     this.mounted = true
-    if (!prevState.typing && this.state.typing) {
-      clearInterval(this.interval)
-    } else if (prevState.typing && !this.state.typing) {
+    this.interval = setInterval(() => {
       this.getAmount()
-      this.interval = setInterval(() => {
-        this.getAmount()
-      }, 1000)
-    }
+    }, 1000)
   }
 
   public componentWillUnmount () {
     this.mounted = false
     clearInterval(this.interval)
-    clearTimeout(this.timeout)
-  }
-
-  public handleMinimumAmount (initialAmount: number, flipayResponseAmount: number) {
-    const side = this.props.navigation.getParam('side', 'buy')
-    const assetId: AssetId = this.props.navigation.getParam('assetId', 'BTC')
-    const minimumThaiAmount = 300
-    const thaiAmount = side === 'buy' ? initialAmount : flipayResponseAmount
-    const cryptoAmount = side === 'buy' ? flipayResponseAmount : initialAmount
-    if (thaiAmount > 0 && thaiAmount < minimumThaiAmount) {
-      let minimumAmount
-      if (side === 'buy') {
-        minimumAmount = `${minimumThaiAmount} THB`
-      } else {
-        const buffer = 1.05
-        const multiplier = minimumThaiAmount / thaiAmount
-        const minimumCryptoAmount = multiplier * cryptoAmount * buffer
-        minimumAmount = `${toString(minimumCryptoAmount, ASSETS[assetId].decimal)} ${ASSETS[assetId].unit}`
-      }
-      this.setState({
-        giveAssetBoxWarningMessage: `${minimumAmount} is the minimum amount.`
-      })
-      throw(Error('below_minimum'))
-    }
-  }
-
-  public disableTrade = () => {
-    if (this.mounted) {
-      this.setState({
-        competitorThbAmounts: undefined,
-        lastFetchSuccessfullyGiveAmount: undefined,
-        lastFetchSuccessfullyTakeAmount: undefined,
-        takeAssetBoxValue: ''
-      })
-    }
   }
 
   public getAmount = async () => {
-    const activeAssetBox = this.state.activeAssetBox
-    const initialValue =
-      activeAssetBox === 'give'
-        ? this.state.giveAssetBoxValue
-        : this.state.takeAssetBoxValue
+    const giveAmount = this.props.navigation.getParam('giveAmount')
+    const initialValue = giveAmount
     const num = toNumber(initialValue)
     let flipayResponseValue = '0'
     const side = this.props.navigation.getParam('side', 'buy')
     const assetId: AssetId = this.props.navigation.getParam('assetId', 'BTC')
-    try {
-      const amount = await getAmount(
-        side,
-        assetId,
-        activeAssetBox,
-        num,
-        'liquid'
-      )
-      const responseAsset = side === 'buy' ? assetId : 'THB'
-      flipayResponseValue = toString(amount, ASSETS[responseAsset].decimal)
-      const result = await getCompetitorTHBAmounts(
-        side,
-        assetId,
-        side === 'buy'
-          ? amount
-          : toNumber(this.state.giveAssetBoxValue)
-      )
+    const amount = await getAmount(
+      side,
+      assetId,
+      'give',
+      num,
+      'liquid'
+    )
+    const responseAsset = side === 'buy' ? assetId : 'THB'
+    flipayResponseValue = toString(amount, ASSETS[responseAsset].decimal)
+    const result = await getCompetitorTHBAmounts(
+      side,
+      assetId,
+      side === 'buy'
+        ? amount
+        : toNumber(giveAmount)
+    )
 
-      if (toNumber(flipayResponseValue) === 0) {
-        this.disableTrade()
-        return
-      }
-
-      this.handleMinimumAmount(toNumber(initialValue), toNumber(flipayResponseValue))
-
-      if (this.mounted) {
-        this.setState({
-          competitorThbAmounts: result,
-          lastFetchSuccessfullyGiveAmount: initialValue,
-          lastFetchSuccessfullyTakeAmount: flipayResponseValue,
-          giveAssetBoxWarningMessage: undefined,
-          takeAssetBoxValue: flipayResponseValue
-        })
-      }
-    } catch (err) {
-      this.disableTrade()
-      if (getErrorCode(err) === 'rate_unavailable') {
-        this.setState({
-          giveAssetBoxWarningMessage: 'Maximum amount exceeded'
-        })
-      } else if (err.message !== 'below_minimum') {
-        Sentry.captureException(err)
-      }
-    }
-  }
-
-  public onPressAssetBox = (assetBox: AssetBoxType) => {
-    logEvent('trade/press-asset-box', {
-      side: this.props.navigation.getParam('side'),
-      assetId: this.props.navigation.getParam('assetId'),
-      tradeSide: assetBox
-    })
-    if (assetBox !== this.state.activeAssetBox) {
+    if (this.mounted) {
       this.setState({
-        activeAssetBox: assetBox
+        competitorThbAmounts: result,
+        takeAmount: flipayResponseValue
       })
     }
-  }
-
-  public onChangeValue = async (assetBox: AssetBoxType, value: string) => {
-    if (assetBox === 'give') {
-      this.setState({
-        typing: true,
-        giveAssetBoxValue: value
-      })
-    } else if (assetBox === 'take') {
-      this.setState({
-        typing: true,
-        takeAssetBoxValue: value
-      })
-    }
-
-    clearTimeout(this.timeout)
-    this.timeout = setTimeout(() => {
-      this.setState({ typing: false })
-    }, 500)
   }
 
   public execute = async () => {
@@ -229,8 +107,8 @@ export default class TradeConfirmationScreen extends React.Component<
       } = await order(
         side === 'buy' ? 'THB' : assetId,
         side === 'buy' ? assetId : 'THB',
-        toNumber(this.state.giveAssetBoxValue),
-        toNumber(this.state.takeAssetBoxValue)
+        toNumber(this.props.navigation.getParam('giveAmount')),
+        toNumber(this.state.takeAmount || '0')
       )
       this.setState({
         executed: true,
@@ -262,15 +140,20 @@ export default class TradeConfirmationScreen extends React.Component<
     this.props.navigation.goBack()
   }
 
+  public isSubmitable = () => {
+    if (this.state.submitPressed && !this.state.executed) { return false }
+    return true
+  }
+
   public onPressPriceComparison = () => {
     const cryptoAmount =
       this.props.navigation.getParam('side') === 'buy'
-        ? this.state.lastFetchSuccessfullyTakeAmount
-        : this.state.lastFetchSuccessfullyGiveAmount
+        ? this.state.takeAmount
+        : this.props.navigation.getParam('giveAmount')
     const flipayAmount =
       this.props.navigation.getParam('side') === 'sell'
-        ? this.state.lastFetchSuccessfullyTakeAmount
-        : this.state.lastFetchSuccessfullyGiveAmount
+        ? this.state.takeAmount
+        : this.props.navigation.getParam('giveAmount')
 
     if (!flipayAmount) {
       return null
@@ -289,30 +172,13 @@ export default class TradeConfirmationScreen extends React.Component<
     })
   }
 
-  public isSubmitable = () => {
-    if (this.state.submitPressed && !this.state.executed) { return false }
-    return (
-      this.state.giveAssetBoxValue ===
-        this.state.lastFetchSuccessfullyGiveAmount &&
-      this.state.takeAssetBoxValue ===
-        this.state.lastFetchSuccessfullyTakeAmount
-    )
-  }
-
   public renderFooter () {
-    if (!this.state.lastFetchSuccessfullyGiveAmount || !toNumber(this.state.lastFetchSuccessfullyGiveAmount)) {
-      return null
-    }
-    if (!this.state.lastFetchSuccessfullyTakeAmount || !toNumber(this.state.lastFetchSuccessfullyTakeAmount)) {
-      return null
-    }
-
     const side = this.props.navigation.getParam('side', 'buy')
     const saved = calSaveAmount(
       side,
       side === 'buy'
-        ? toNumber(this.state.lastFetchSuccessfullyGiveAmount)
-        : toNumber(this.state.lastFetchSuccessfullyTakeAmount),
+        ? toNumber(this.props.navigation.getParam('giveAmount'))
+        : toNumber(this.state.takeAmount),
       this.state.competitorThbAmounts
     )
     let countError = 0
@@ -329,13 +195,13 @@ export default class TradeConfirmationScreen extends React.Component<
       )
     }
     return (
-      <View style={styles.footer}>
+      <TouchableOpacity style={[styles.footer, styles.savedFooter]} onPress={this.onPressPriceComparison}>
         <Text color={COLORS.N500}>
           You save up to
           <Text color={COLORS.N800}>{` ${toString(saved, 2)} THB`}</Text>
         </Text>
-        <Link onPress={this.onPressPriceComparison}>See price comparison</Link>
-      </View>
+        <Text bold={true} color={COLORS.P400}>See price comparison</Text>
+      </TouchableOpacity>
     )
   }
 
@@ -343,44 +209,6 @@ export default class TradeConfirmationScreen extends React.Component<
     const side = this.props.navigation.getParam('side', 'buy')
     const assetId: AssetId = this.props.navigation.getParam('assetId', 'BTC')
     return side === 'buy' ? 'THB' : assetId
-  }
-
-  public renderTradeBody (autoFocus: boolean) {
-    const side = this.props.navigation.getParam('side', 'buy')
-    const assetId: AssetId = this.props.navigation.getParam('assetId', 'BTC')
-    const remainingBalance = this.props.balances && this.props.balances[side === 'buy' ? 'THB' : assetId]
-
-    const giveSideAssetId = side === 'buy' ? 'THB' : assetId
-    return (
-      <View style={styles.body}>
-        <View style={styles.assetBoxesContainer}>
-          <AssetBoxWithBalance
-            autoFocus={autoFocus}
-            description={side === 'buy' ? 'You buy with' : 'You sell'}
-            assetId={giveSideAssetId}
-            onPress={() => this.onPressAssetBox('give')}
-            onChangeValue={(value: string) => this.onChangeValue('give', value)}
-            active={this.state.activeAssetBox === 'give'}
-            value={this.state.giveAssetBoxValue}
-            onPressMax={() => this.onChangeValue('give', toString(remainingBalance, ASSETS[giveSideAssetId].decimal))}
-            onPressHalf={() => this.onChangeValue('give', toString(remainingBalance / 2, ASSETS[giveSideAssetId].decimal))}
-            balance={remainingBalance}
-            warning={this.state.giveAssetBoxWarningMessage}
-          />
-          <AssetBoxTemp
-            description={
-              side === 'sell' ? 'You will receive' : 'You will receive'
-            }
-            assetId={side === 'sell' ? 'THB' : assetId}
-            // onPress={() => this.onPressAssetBox('take')}
-            // onChangeValue={(value: string) => this.onChangeValue('take', value)}
-            // active={this.state.activeAssetBox === 'take'}
-            value={this.state.takeAssetBoxValue}
-          />
-        </View>
-        {this.renderFooter()}
-      </View>
-    )
   }
 
   public pressDone = () => {
@@ -397,13 +225,40 @@ export default class TradeConfirmationScreen extends React.Component<
     this.props.navigation.navigate('Portfolio')
   }
 
+  public renderConfirmationBody () {
+    const side = this.props.navigation.getParam('side', 'buy')
+    const assetId: AssetId = this.props.navigation.getParam('assetId', 'BTC')
+    const giveSideAssetId = side === 'buy' ? 'THB' : assetId
+    const giveAmount = this.props.navigation.getParam('giveAmount')
+
+    return (
+      <View style={styles.body}>
+        <View style={styles.assetBoxesContainer}>
+          <Text type='title' bold={true}>Ready to buy Bitcoin?</Text>
+          <View style={{ height: 27 }} />
+          <AssetBox
+            description={side === 'buy' ? 'You buy with' : 'You sell'}
+            assetId={giveSideAssetId}
+            value={giveAmount}
+          />
+          <View style={{ height: 8 }} />
+          <AssetBox
+            description={side === 'sell' ? 'You will receive' : 'You will receive'}
+            assetId={side === 'sell' ? 'THB' : assetId}
+            value={this.state.takeAmount}
+          />
+        </View>
+        {this.renderFooter()}
+      </View>
+    )
+  }
+
   public render () {
     const side = this.props.navigation.getParam('side', 'buy')
     const assetId: AssetId = this.props.navigation.getParam('assetId', 'BTC')
     return (
       <Screen
-        backButtonType='close'
-        title={!this.state.executed ? `${_.capitalize(side)} ${ASSETS[assetId].name}` : undefined}
+        backButtonType='arrowleft'
         onPressBackButton={this.state.executed ? undefined : this.onClose}
         submitButtonText={
           this.state.executed ? 'Done' : _.capitalize(side)
@@ -411,12 +266,12 @@ export default class TradeConfirmationScreen extends React.Component<
         activeSubmitButton={this.isSubmitable()}
         onPessSubmitButton={this.state.executed ? this.pressDone : this.execute}
       >
-        {autoFocus => (
+        {() => (
           <View style={styles.bodyContainer}>
             {this.state.executed ? (
               <TradeResult
                 orderType={side}
-                assetId={this.props.navigation.getParam('assetId', 'BTC')}
+                assetId={assetId}
                 cryptoAmount={
                   side === 'buy'
                     ? this.state.tradeResultTake
@@ -429,7 +284,7 @@ export default class TradeConfirmationScreen extends React.Component<
                 }
               />
             ) : (
-              this.renderTradeBody(autoFocus)
+              this.renderConfirmationBody()
             )}
           </View>
         )}
@@ -443,7 +298,6 @@ const styles = StyleSheet.create({
     flex: 1
   },
   body: {
-    paddingTop: 20,
     alignItems: 'center'
   },
   assetBoxesContainer: {
@@ -453,5 +307,12 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginHorizontal: 50,
     alignItems: 'center'
+  },
+  savedFooter: {
+    width: '100%',
+    paddingVertical: 14,
+    borderWidth: 1,
+    borderColor: COLORS.P400,
+    borderRadius: 6
   }
 })

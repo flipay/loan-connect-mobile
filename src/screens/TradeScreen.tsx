@@ -37,8 +37,6 @@ interface State {
   submitPressed: boolean
   lastFetchSuccessfullyGiveAmount?: string
   lastFetchSuccessfullyTakeAmount?: string
-  tradeResultGive: number
-  tradeResultTake: number
   competitorThbAmounts?: THBAmountTypes
 }
 
@@ -56,9 +54,7 @@ export default class TradeScreen extends React.Component<
       giveAssetBoxValue: '',
       takeAssetBoxValue: '',
       typing: false,
-      submitPressed: false,
-      tradeResultGive: 0,
-      tradeResultTake: 0
+      submitPressed: false
     }
   }
 
@@ -217,33 +213,6 @@ export default class TradeScreen extends React.Component<
     this.props.navigation.goBack()
   }
 
-  public onPressPriceComparison = () => {
-    const cryptoAmount =
-      this.props.navigation.getParam('side') === 'buy'
-        ? this.state.lastFetchSuccessfullyTakeAmount
-        : this.state.lastFetchSuccessfullyGiveAmount
-    const flipayAmount =
-      this.props.navigation.getParam('side') === 'sell'
-        ? this.state.lastFetchSuccessfullyTakeAmount
-        : this.state.lastFetchSuccessfullyGiveAmount
-
-    if (!flipayAmount) {
-      return null
-    }
-
-    logEvent('trade/press-price-comparison-link', {
-      side: this.props.navigation.getParam('side'),
-      assetId: this.props.navigation.getParam('assetId')
-    })
-    this.props.navigation.navigate('Comparison', {
-      side: this.props.navigation.getParam('side'),
-      assetId: this.props.navigation.getParam('assetId'),
-      competitorAmounts: this.state.competitorThbAmounts,
-      flipayAmount: toNumber(flipayAmount),
-      cryptoAmount
-    })
-  }
-
   public isSubmitable = () => {
     return (
       this.state.giveAssetBoxValue ===
@@ -253,7 +222,7 @@ export default class TradeScreen extends React.Component<
     )
   }
 
-  public renderFooter () {
+  public getSavedAmount () {
     if (!this.state.lastFetchSuccessfullyGiveAmount || !toNumber(this.state.lastFetchSuccessfullyGiveAmount)) {
       return null
     }
@@ -262,13 +231,18 @@ export default class TradeScreen extends React.Component<
     }
 
     const side = this.props.navigation.getParam('side', 'buy')
-    const saved = calSaveAmount(
+    return calSaveAmount(
       side,
       side === 'buy'
         ? toNumber(this.state.lastFetchSuccessfullyGiveAmount)
         : toNumber(this.state.lastFetchSuccessfullyTakeAmount),
       this.state.competitorThbAmounts
     )
+  }
+
+  public renderFooter () {
+    const saved = this.getSavedAmount()
+
     let countError = 0
     _.map(this.state.competitorThbAmounts, (amount) => {
       if (isNaN(Number(amount))) { countError++ }
@@ -282,14 +256,13 @@ export default class TradeScreen extends React.Component<
         </View>
       )
     }
+
+    if (!saved) { return null }
     return (
-      <TouchableOpacity style={[styles.footer, styles.savedFooter]} onPress={this.onPressPriceComparison}>
-        <Text color={COLORS.N500}>
-          You save up to
-          <Text color={COLORS.N800}>{` ${toString(saved, 2)} THB`}</Text>
-        </Text>
-        <Text bold={true} color={COLORS.P400}>See price comparison</Text>
-      </TouchableOpacity>
+      <Text color={COLORS.G400}>
+        You save up to
+        <Text color={COLORS.N800}>{` ${toString(saved, 2)} THB`}</Text>
+      </Text>
     )
   }
 
@@ -352,8 +325,15 @@ export default class TradeScreen extends React.Component<
   }
 
   public goToReview = () => {
-    this.props.navigation.navigate('TradeConfirmation', {
+    const side = this.props.navigation.getParam('side', 'buy')
+    const assetId: AssetId = this.props.navigation.getParam('assetId', 'BTC')
 
+    this.props.navigation.navigate('TradeConfirmation', {
+      side,
+      assetId,
+      giveAmount: this.state.lastFetchSuccessfullyGiveAmount,
+      takeAmount: this.state.lastFetchSuccessfullyTakeAmount,
+      competitorThbAmounts: this.state.competitorThbAmounts
     })
   }
 
