@@ -10,7 +10,7 @@ import {
   Value
 } from '../components'
 import { COLORS, ASSETS, THBAmountTypes } from '../constants'
-import { AssetId } from '../types'
+import { AssetId, Balances } from '../types'
 import { getAmount, order, getCompetitorTHBAmounts } from '../requests'
 import {
   toNumber,
@@ -20,6 +20,10 @@ import {
   calSaveAmount
 } from '../utils'
 import { logEvent } from '../analytics'
+
+interface Props {
+  balances: Balances
+}
 
 interface State {
   submitPressed: boolean
@@ -31,12 +35,12 @@ interface State {
 }
 
 export default class TradeConfirmationScreen extends React.Component<
-  NavigationScreenProps,
+  Props & NavigationScreenProps,
   State
 > {
   private mounted: boolean = false
   private interval: any
-  public constructor (props: NavigationScreenProps) {
+  public constructor (props: Props & NavigationScreenProps) {
     super(props)
     this.state = {
       submitPressed: false,

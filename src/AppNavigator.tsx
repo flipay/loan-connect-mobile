@@ -84,7 +84,13 @@ const MarketStack = createStackNavigator(
         )}
       </BalancesContextConsumer>
     )},
-    [TRADE_CONFIRMATION]: { screen: TradeConfirmationScreen },
+    [TRADE_CONFIRMATION]: { screen: ({ navigation }: any) => (
+      <BalancesContextConsumer>
+        {(args) => (
+          <TradeConfirmationScreen navigation={navigation} {...args} />
+        )}
+      </BalancesContextConsumer>
+    )},
     [COMPARISON]: { screen: ComparisonScreen }
   },
   {
