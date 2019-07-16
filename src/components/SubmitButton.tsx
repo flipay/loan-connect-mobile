@@ -39,7 +39,7 @@ export default class SubmitButton extends React.Component<Props> {
       <View
         style={[
           styles.submitButton,
-          !this.props.active ? styles.activeSubmitButton : styles.inactiveSubmitButton
+          this.props.active ? styles.activeSubmitButton : styles.inactiveSubmitButton
         ]}
       >
         {this.renderText()}
