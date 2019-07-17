@@ -328,12 +328,21 @@ export default class TradeScreen extends React.Component<
   public goToReview = () => {
     const side = this.props.navigation.getParam('side', 'buy')
     const assetId: AssetId = this.props.navigation.getParam('assetId', 'BTC')
+    const giveAmount = this.state.lastFetchSuccessfullyGiveAmount
+    const takeAmount = this.state.lastFetchSuccessfullyTakeAmount
+
+    logEvent('trade/press-review-button', {
+      side: this.props.navigation.getParam('side'),
+      assetId: this.props.navigation.getParam('assetId'),
+      thbAmount: side === 'buy' ? giveAmount : takeAmount,
+      cryptoAmount: side === 'sell' ? giveAmount : takeAmount
+    })
 
     this.props.navigation.navigate('TradeConfirmation', {
       side,
       assetId,
-      giveAmount: this.state.lastFetchSuccessfullyGiveAmount,
-      takeAmount: this.state.lastFetchSuccessfullyTakeAmount,
+      giveAmount,
+      takeAmount,
       competitorThbAmounts: this.state.competitorThbAmounts
     })
   }
