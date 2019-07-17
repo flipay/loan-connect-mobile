@@ -64,6 +64,13 @@ export default class TradeConfirmationScreen extends React.Component<
     clearInterval(this.interval)
   }
 
+  public getThaiBahtAmount () {
+    const side = this.props.navigation.getParam('side', 'buy')
+    const giveAmount = this.props.navigation.getParam('giveAmount')
+    const takeAmount = this.state.takeAmount
+    return side === 'buy' ? toNumber(giveAmount) : toNumber(takeAmount)
+  }
+
   public getAmount = async () => {
     const giveAmount = this.props.navigation.getParam('giveAmount')
     const initialValue = giveAmount
@@ -100,9 +107,10 @@ export default class TradeConfirmationScreen extends React.Component<
     if (!this.isSubmitable()) { return }
     const side = this.props.navigation.getParam('side')
     const assetId = this.props.navigation.getParam('assetId')
-    logEvent('trade/press-submit-button', {
+    logEvent('trade-confirmation/press-submit-button', {
       side: this.props.navigation.getParam('side'),
-      assetId: this.props.navigation.getParam('assetId')
+      assetId: this.props.navigation.getParam('assetId'),
+      volume: `${toString(this.getThaiBahtAmount(), ASSETS.THB.decimal)} THB`
     })
     await this.setState({ submitPressed: true })
     try {
@@ -155,12 +163,9 @@ export default class TradeConfirmationScreen extends React.Component<
       this.props.navigation.getParam('side') === 'buy'
         ? this.state.takeAmount
         : this.props.navigation.getParam('giveAmount')
-    const flipayAmount =
-      this.props.navigation.getParam('side') === 'sell'
-        ? this.state.takeAmount
-        : this.props.navigation.getParam('giveAmount')
+    const thbAmount = this.getThaiBahtAmount()
 
-    if (!flipayAmount) {
+    if (!thbAmount) {
       return null
     }
 
@@ -172,7 +177,7 @@ export default class TradeConfirmationScreen extends React.Component<
       side: this.props.navigation.getParam('side'),
       assetId: this.props.navigation.getParam('assetId'),
       competitorAmounts: this.state.competitorThbAmounts,
-      flipayAmount: toNumber(flipayAmount),
+      flipayAmount: thbAmount,
       cryptoAmount
     })
   }
