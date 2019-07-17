@@ -2,21 +2,19 @@ import * as React from 'react'
 import _ from 'lodash'
 import {
   View,
-  StatusBar,
   StyleSheet,
   Image,
-  ImageSourcePropType,
-  SafeAreaView
+  ImageSourcePropType
 } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import resolveAssetSource from 'resolveAssetSource'
-import { LinearGradient } from 'expo'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
-import { Text, Value, CloseButton } from '../components'
+import { Text, Value } from '../components'
 import { COLORS, PROVIDERS } from '../constants'
 import { AssetId } from '../types'
 import { calSaveAmount } from '../utils'
 import { logEvent } from '../analytics'
+import GradientScreen from '../components/GradientScreen'
 
 interface RequestedRecord {
   id: string
@@ -99,10 +97,10 @@ export default class ComparisonScreen extends React.Component<
               color='#FE4747'
               style={styles.downTrendIcon}
             />
-            <Text type='caption' color={COLORS.N500}>
-              {side === 'buy' ? '+ ' : '- '}
-              <Value assetId='THB'>{data.difference}</Value>
-            </Text>
+            <View style={styles.captionData}>
+              <Text type='caption' color={COLORS.N500}>{side === 'buy' ? '+ ' : '- '}</Text>
+              <Value assetId='THB' fontType='caption' color={COLORS.N500}>{data.difference}</Value>
+            </View>
           </View>
         )}
       </View>
@@ -170,9 +168,11 @@ export default class ComparisonScreen extends React.Component<
     const flipayAmount = this.props.navigation.getParam('flipayAmount', 'sell')
     const competitorAmounts = this.props.navigation.getParam('competitorAmounts')
     return (
-      <Text type='title' color={COLORS.WHITE}>
-        Save <Value assetId='THB' decimal={2}>{calSaveAmount(side, flipayAmount, competitorAmounts)}</Value> with us!
-      </Text>
+      <View style={{ flexDirection: 'row' }}>
+        <Text type='title' color={COLORS.WHITE}>{`Save `}</Text>
+        <Value assetId='THB' decimal={2} fontType='title' color={COLORS.WHITE}>{calSaveAmount(side, flipayAmount, competitorAmounts)}</Value>
+        <Text type='title' color={COLORS.WHITE}>{` with us!`}</Text>
+      </View>
     )
   }
 
@@ -186,10 +186,10 @@ export default class ComparisonScreen extends React.Component<
           <Text color={COLORS.WHITE}>
             {`Looks like Flipay offers the ${quility} price`}
           </Text>
-          <Text color={COLORS.WHITE}>
-            {` for ${side}ing `}
-            <Value assetId={assetId} full={true}>{cryptoAmount}</Value>
-          </Text>
+          <View style={{ flexDirection: 'row' }}>
+            <Text color={COLORS.WHITE}>{` for ${side}ing `}</Text>
+            <Value assetId={assetId} full={true} fontType='body' color={COLORS.WHITE}>{cryptoAmount}</Value>
+          </View>
         </View>
     )
   }
@@ -208,30 +208,18 @@ export default class ComparisonScreen extends React.Component<
     const worst = _.findLast(sortedRecords, (record) => (typeof record.amount === 'number'))
     if (!worst) { return null }
     return (
-      <LinearGradient
-        colors={[COLORS.P400, COLORS.C500]}
-        start={[0.3, 0.7]}
-        end={[2, -0.8]}
-        style={styles.screen}
+      <GradientScreen
+        onPressBackButton={this.onClose}
       >
-        <SafeAreaView style={styles.screen}>
-          <View style={styles.content}>
-            <StatusBar barStyle='light-content' />
-            <CloseButton onPress={this.onClose} color={COLORS.WHITE} top={8} left={5} />
-            {this.renderTitle()}
-            {this.renderSubtitle(best)}
-            {this.renderTable(sortedRecords)}
-          </View>
-        </SafeAreaView>
-      </LinearGradient>
+        {this.renderTitle()}
+        {this.renderSubtitle(best)}
+        {this.renderTable(sortedRecords)}
+      </GradientScreen>
     )
   }
 }
 
 const styles = StyleSheet.create({
-  screen: {
-    flex: 1
-  },
   content: {
     flex: 1,
     alignItems: 'center',
@@ -274,6 +262,9 @@ const styles = StyleSheet.create({
   captionRow: {
     flexDirection: 'row',
     alignItems: 'center'
+  },
+  captionData: {
+    flexDirection: 'row'
   },
   downTrendIcon: {
     marginRight: 4

@@ -1,4 +1,5 @@
 import * as React from 'react'
+import _ from 'lodash'
 import { StyleSheet, View } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { Screen, TextBox, Text } from '../components'
@@ -45,7 +46,8 @@ export default class CollectInfo extends React.Component<NavigationScreenProps, 
 
   public validateEmail = () => {
     const emailReg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-    return emailReg.test(this.state.email)
+    const trimData = _.trim(this.state.email)
+    return emailReg.test(trimData)
   }
 
   public onPressSubmitButton = async () => {
