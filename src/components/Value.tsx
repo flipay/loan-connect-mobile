@@ -19,7 +19,7 @@ interface Props {
 
 class Value extends React.Component<Props> {
   public render () {
-    const { style, color, fontType, ...otherProps } = this.props
+    const { style, fontType, ...otherProps } = this.props
     const amount = toString(
       this.props.children,
       this.props.decimal || ASSETS[this.props.assetId].decimal
