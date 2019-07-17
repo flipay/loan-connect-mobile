@@ -124,7 +124,7 @@ export default class TradeConfirmationScreen extends React.Component<
         tradeResultGive: Number(tradeResultGive),
         tradeResultTake: Number(tradeResultTake)
       })
-
+      clearInterval(this.interval)
       logEvent('trade-confirmation/press-submit-button', {
         side: this.props.navigation.getParam('side'),
         assetId: this.props.navigation.getParam('assetId'),
@@ -267,7 +267,7 @@ export default class TradeConfirmationScreen extends React.Component<
     return (
       <View style={styles.body}>
         <View style={styles.assetBoxesContainer}>
-          <Text type='title' bold={true}>Ready to buy Bitcoin?</Text>
+          <Text type='title' bold={true}>{`Ready to ${side} ${ASSETS[assetId].name}?`}</Text>
           <View style={{ height: 27 }} />
           <AssetBox
             description={side === 'buy' ? 'You buy with' : 'You sell'}
@@ -287,43 +287,47 @@ export default class TradeConfirmationScreen extends React.Component<
     )
   }
 
-  public render () {
+  public renderExecutedScreen () {
     const side = this.props.navigation.getParam('side', 'buy')
     const assetId: AssetId = this.props.navigation.getParam('assetId', 'BTC')
     return (
+      <TradeResult
+        orderType={side}
+        assetId={assetId}
+        onPressDone={this.pressDone}
+        cryptoAmount={
+          side === 'buy'
+            ? this.state.tradeResultTake
+            : this.state.tradeResultGive
+        }
+        thbAmount={
+          side === 'sell'
+            ? this.state.tradeResultTake
+            : this.state.tradeResultGive
+        }
+      />
+    )
+  }
+
+  public render () {
+    const side = this.props.navigation.getParam('side', 'buy')
+    return !this.state.executed ? (
       <Screen
         backButtonType='arrowleft'
         gradientSubmitButton={true}
-        onPressBackButton={this.state.executed ? undefined : this.onClose}
-        submitButtonText={this.state.executed ? 'Done' : `Confirm to ${_.capitalize(side)}`}
-        activeSubmitButton={this.isSubmitable()}
-        onPessSubmitButton={this.state.executed ? this.pressDone : this.execute}
-        fullScreenLoading={!this.isSubmitable()}
+        onPressBackButton={this.onClose}
+        submitButtonText={`Confirm to ${_.capitalize(side)}`}
+        activeSubmitButton={!this.state.submitPressed}
+        onPessSubmitButton={this.execute}
+        fullScreenLoading={this.state.submitPressed}
       >
         {() => (
           <View style={styles.bodyContainer}>
-            {this.state.executed ? (
-              <TradeResult
-                orderType={side}
-                assetId={assetId}
-                cryptoAmount={
-                  side === 'buy'
-                    ? this.state.tradeResultTake
-                    : this.state.tradeResultGive
-                }
-                thbAmount={
-                  side === 'sell'
-                    ? this.state.tradeResultTake
-                    : this.state.tradeResultGive
-                }
-              />
-            ) : (
-              this.renderConfirmationBody()
-            )}
+            {this.renderConfirmationBody()}
           </View>
         )}
       </Screen>
-    )
+    ) : this.renderExecutedScreen()
   }
 }
 

@@ -41,10 +41,10 @@ export default class AssetBoxWithBalance extends React.Component<Props> {
           {this.renderSmallbutton('Half', this.props.onPressHalf)}
         </View>
         {this.props.balance !== undefined && (
-          <Text type='caption'>
+          <View style={styles.balance}>
             <Text type='caption' color={COLORS.N500}>{`Balance `}</Text>
             <Value assetId={this.props.assetId} color={COLORS.N800} fontType='caption'>{this.props.balance}</Value>
-          </Text>
+          </View>
         )}
       </View>
     )
@@ -79,6 +79,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center'
+  },
+  balance: {
+    flexDirection: 'row'
   },
   errorBalanceSection: {
     marginTop: 8

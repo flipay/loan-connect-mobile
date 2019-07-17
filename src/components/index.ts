@@ -15,6 +15,7 @@ import Layer from './Layer'
 import Asset from './Asset'
 import Key from './Key'
 import Screen from './Screen'
+import GradientScreen from './GradientScreen'
 import ScreenWithCover from './ScreenWithCover'
 import Link from './Link'
 import FullScreenLoading from './FullScreenLoading'
@@ -39,6 +40,7 @@ export {
   Asset,
   Key,
   Screen,
+  GradientScreen,
   ScreenWithCover,
   Link,
   FullScreenLoading,

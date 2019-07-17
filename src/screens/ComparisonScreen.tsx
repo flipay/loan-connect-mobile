@@ -97,10 +97,10 @@ export default class ComparisonScreen extends React.Component<
               color='#FE4747'
               style={styles.downTrendIcon}
             />
-            <Text type='caption' color={COLORS.N500}>
-              {side === 'buy' ? '+ ' : '- '}
-              <Value assetId='THB'>{data.difference}</Value>
-            </Text>
+            <View style={styles.captionData}>
+              <Text type='caption' color={COLORS.N500}>{side === 'buy' ? '+ ' : '- '}</Text>
+              <Value assetId='THB' fontType='caption' color={COLORS.N500}>{data.difference}</Value>
+            </View>
           </View>
         )}
       </View>
@@ -168,9 +168,11 @@ export default class ComparisonScreen extends React.Component<
     const flipayAmount = this.props.navigation.getParam('flipayAmount', 'sell')
     const competitorAmounts = this.props.navigation.getParam('competitorAmounts')
     return (
-      <Text type='title' color={COLORS.WHITE}>
-        Save <Value assetId='THB' decimal={2}>{calSaveAmount(side, flipayAmount, competitorAmounts)}</Value> with us!
-      </Text>
+      <View style={{ flexDirection: 'row' }}>
+        <Text type='title' color={COLORS.WHITE}>{`Save `}</Text>
+        <Value assetId='THB' decimal={2} fontType='title' color={COLORS.WHITE}>{calSaveAmount(side, flipayAmount, competitorAmounts)}</Value>
+        <Text type='title' color={COLORS.WHITE}>{` with us!`}</Text>
+      </View>
     )
   }
 
@@ -184,10 +186,10 @@ export default class ComparisonScreen extends React.Component<
           <Text color={COLORS.WHITE}>
             {`Looks like Flipay offers the ${quility} price`}
           </Text>
-          <Text color={COLORS.WHITE}>
-            {` for ${side}ing `}
-            <Value assetId={assetId} full={true}>{cryptoAmount}</Value>
-          </Text>
+          <View style={{ flexDirection: 'row' }}>
+            <Text color={COLORS.WHITE}>{` for ${side}ing `}</Text>
+            <Value assetId={assetId} full={true} fontType='body' color={COLORS.WHITE}>{cryptoAmount}</Value>
+          </View>
         </View>
     )
   }
@@ -260,6 +262,9 @@ const styles = StyleSheet.create({
   captionRow: {
     flexDirection: 'row',
     alignItems: 'center'
+  },
+  captionData: {
+    flexDirection: 'row'
   },
   downTrendIcon: {
     marginRight: 4
