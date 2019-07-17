@@ -2,21 +2,19 @@ import * as React from 'react'
 import _ from 'lodash'
 import {
   View,
-  StatusBar,
   StyleSheet,
   Image,
-  ImageSourcePropType,
-  SafeAreaView
+  ImageSourcePropType
 } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import resolveAssetSource from 'resolveAssetSource'
-import { LinearGradient } from 'expo'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
-import { Text, Value, CloseButton } from '../components'
+import { Text, Value } from '../components'
 import { COLORS, PROVIDERS } from '../constants'
 import { AssetId } from '../types'
 import { calSaveAmount } from '../utils'
 import { logEvent } from '../analytics'
+import GradientScreen from '../components/GradientScreen'
 
 interface RequestedRecord {
   id: string
@@ -208,30 +206,18 @@ export default class ComparisonScreen extends React.Component<
     const worst = _.findLast(sortedRecords, (record) => (typeof record.amount === 'number'))
     if (!worst) { return null }
     return (
-      <LinearGradient
-        colors={[COLORS.P400, COLORS.C500]}
-        start={[0.3, 0.7]}
-        end={[2, -0.8]}
-        style={styles.screen}
+      <GradientScreen
+        onPressBackButton={this.onClose}
       >
-        <SafeAreaView style={styles.screen}>
-          <View style={styles.content}>
-            <StatusBar barStyle='light-content' />
-            <CloseButton onPress={this.onClose} color={COLORS.WHITE} top={8} left={5} />
-            {this.renderTitle()}
-            {this.renderSubtitle(best)}
-            {this.renderTable(sortedRecords)}
-          </View>
-        </SafeAreaView>
-      </LinearGradient>
+        {this.renderTitle()}
+        {this.renderSubtitle(best)}
+        {this.renderTable(sortedRecords)}
+      </GradientScreen>
     )
   }
 }
 
 const styles = StyleSheet.create({
-  screen: {
-    flex: 1
-  },
   content: {
     flex: 1,
     alignItems: 'center',
