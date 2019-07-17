@@ -26,6 +26,10 @@ type AssetBoxType = OrderPart
 interface Props {
   balances: Balances
   fetchBalances: () => void
+  lastFetchSuccessfullyTakeAmount?: string
+  competitorThbAmounts?: THBAmountTypes
+  setRateData: (a: string, b: THBAmountTypes) => void
+  clearRateData: () => void
 }
 
 interface State {
@@ -36,8 +40,6 @@ interface State {
   typing: boolean
   submitPressed: boolean
   lastFetchSuccessfullyGiveAmount?: string
-  lastFetchSuccessfullyTakeAmount?: string
-  competitorThbAmounts?: THBAmountTypes
 }
 
 export default class TradeScreen extends React.Component<
@@ -108,10 +110,9 @@ export default class TradeScreen extends React.Component<
 
   public disableTrade = () => {
     if (this.mounted) {
+      this.props.clearRateData()
       this.setState({
-        competitorThbAmounts: undefined,
         lastFetchSuccessfullyGiveAmount: undefined,
-        lastFetchSuccessfullyTakeAmount: undefined,
         takeAssetBoxValue: ''
       })
     }
@@ -153,10 +154,12 @@ export default class TradeScreen extends React.Component<
       this.handleMinimumAmount(toNumber(initialValue), toNumber(flipayResponseValue))
 
       if (this.mounted) {
+        this.props.setRateData(
+          flipayResponseValue,
+          result
+        )
         this.setState({
-          competitorThbAmounts: result,
           lastFetchSuccessfullyGiveAmount: initialValue,
-          lastFetchSuccessfullyTakeAmount: flipayResponseValue,
           giveAssetBoxWarningMessage: undefined,
           takeAssetBoxValue: flipayResponseValue
         })
@@ -218,7 +221,7 @@ export default class TradeScreen extends React.Component<
       this.state.giveAssetBoxValue ===
         this.state.lastFetchSuccessfullyGiveAmount &&
       this.state.takeAssetBoxValue ===
-        this.state.lastFetchSuccessfullyTakeAmount
+        this.props.lastFetchSuccessfullyTakeAmount
     )
   }
 
@@ -226,7 +229,7 @@ export default class TradeScreen extends React.Component<
     if (!this.state.lastFetchSuccessfullyGiveAmount || !toNumber(this.state.lastFetchSuccessfullyGiveAmount)) {
       return null
     }
-    if (!this.state.lastFetchSuccessfullyTakeAmount || !toNumber(this.state.lastFetchSuccessfullyTakeAmount)) {
+    if (!this.props.lastFetchSuccessfullyTakeAmount || !toNumber(this.props.lastFetchSuccessfullyTakeAmount)) {
       return null
     }
 
@@ -235,19 +238,19 @@ export default class TradeScreen extends React.Component<
       side,
       side === 'buy'
         ? toNumber(this.state.lastFetchSuccessfullyGiveAmount)
-        : toNumber(this.state.lastFetchSuccessfullyTakeAmount),
-      this.state.competitorThbAmounts
+        : toNumber(this.props.lastFetchSuccessfullyTakeAmount),
+      this.props.competitorThbAmounts
     )
   }
 
   public renderFooter () {
     const saved = this.getSavedAmount()
-    if (!this.state.lastFetchSuccessfullyGiveAmount && !this.state.lastFetchSuccessfullyTakeAmount) { return null }
+    if (!this.state.lastFetchSuccessfullyGiveAmount && !this.props.lastFetchSuccessfullyTakeAmount) { return null }
     let countError = 0
-    _.map(this.state.competitorThbAmounts, (amount) => {
+    _.map(this.props.competitorThbAmounts, (amount) => {
       if (isNaN(Number(amount))) { countError++ }
     })
-    if (countError === _.map(this.state.competitorThbAmounts).length) {
+    if (countError === _.map(this.props.competitorThbAmounts).length) {
       return (
         <View style={styles.footer}>
           <Text color={COLORS.N500} style={{ textAlign: 'center' }}>
@@ -274,7 +277,8 @@ export default class TradeScreen extends React.Component<
   }
 
   public renderPrice () {
-    const { lastFetchSuccessfullyGiveAmount, lastFetchSuccessfullyTakeAmount } = this.state
+    const { lastFetchSuccessfullyGiveAmount } = this.state
+    const { lastFetchSuccessfullyTakeAmount } = this.props
     if (!lastFetchSuccessfullyGiveAmount || !lastFetchSuccessfullyTakeAmount) { return null }
     const amountGive = toNumber(lastFetchSuccessfullyGiveAmount)
     const amountTake = toNumber(lastFetchSuccessfullyTakeAmount)
@@ -329,7 +333,7 @@ export default class TradeScreen extends React.Component<
     const side = this.props.navigation.getParam('side', 'buy')
     const assetId: AssetId = this.props.navigation.getParam('assetId', 'BTC')
     const giveAmount = this.state.lastFetchSuccessfullyGiveAmount
-    const takeAmount = this.state.lastFetchSuccessfullyTakeAmount
+    const takeAmount = this.props.lastFetchSuccessfullyTakeAmount
 
     logEvent('trade/press-review-button', {
       side: this.props.navigation.getParam('side'),
@@ -343,7 +347,7 @@ export default class TradeScreen extends React.Component<
       assetId,
       giveAmount,
       takeAmount,
-      competitorThbAmounts: this.state.competitorThbAmounts
+      competitorThbAmounts: this.props.competitorThbAmounts
     })
   }
 
