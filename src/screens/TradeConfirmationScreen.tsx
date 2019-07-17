@@ -1,6 +1,6 @@
 import * as React from 'react'
 import _ from 'lodash'
-import { StyleSheet, View, Alert, TouchableOpacity } from 'react-native'
+import { View, Alert, TouchableOpacity, StyleSheet } from 'react-native'
 import { NavigationScreenProps, StackActions, NavigationActions } from 'react-navigation'
 import {
   Text,
@@ -298,6 +298,7 @@ export default class TradeConfirmationScreen extends React.Component<
         submitButtonText={this.state.executed ? 'Done' : `Confirm to ${_.capitalize(side)}`}
         activeSubmitButton={this.isSubmitable()}
         onPessSubmitButton={this.state.executed ? this.pressDone : this.execute}
+        fullScreenLoading={!this.isSubmitable()}
       >
         {() => (
           <View style={styles.bodyContainer}>
