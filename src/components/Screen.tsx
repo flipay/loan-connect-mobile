@@ -11,7 +11,7 @@ import {
   ScrollView,
   SafeAreaView
 } from 'react-native'
-import { Constants } from 'expo'
+import Constants from 'expo-constants'
 import { AntDesign } from '@expo/vector-icons'
 import { COLORS } from '../constants'
 import Text from './Text'

@@ -1,6 +1,6 @@
 import * as _ from 'lodash'
 import { Alert } from 'react-native'
-import { Constants } from 'expo'
+import Constants from 'expo-constants'
 import Sentry from 'sentry-expo'
 import { THBAmountTypes } from './constants'
 import { OrderType } from './types'

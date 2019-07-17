@@ -8,7 +8,7 @@ import {
   StatusBar,
   TouchableOpacity
 } from 'react-native'
-import { Constants } from 'expo'
+import Constants from 'expo-constants'
 import { NavigationScreenProps } from 'react-navigation'
 
 import { lock } from '../requests'
