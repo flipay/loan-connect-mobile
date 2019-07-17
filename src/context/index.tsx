@@ -2,6 +2,7 @@
 import * as React from 'react'
 import { MarketPricesContextProvider, MarketPricesContextConsumer } from './MarketPricesContext'
 import { BalancesContextProvider, BalancesContextConsumer } from './BalancesContext'
+import { RateContextProvider, RateContextConsumer } from './RateContext'
 
 interface Props {
   children: any
@@ -12,7 +13,9 @@ export class ContextProvider extends React.Component<Props> {
     return (
       <MarketPricesContextProvider>
         <BalancesContextProvider>
-          {this.props.children}
+          <RateContextProvider>
+            {this.props.children}
+          </RateContextProvider>
         </BalancesContextProvider>
       </MarketPricesContextProvider>
     )
@@ -21,5 +24,6 @@ export class ContextProvider extends React.Component<Props> {
 
 export {
   MarketPricesContextConsumer,
-  BalancesContextConsumer
+  BalancesContextConsumer,
+  RateContextConsumer
 }

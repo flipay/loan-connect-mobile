@@ -11,7 +11,8 @@ import { FontAwesome } from '@expo/vector-icons'
 
 import {
   MarketPricesContextConsumer,
-  BalancesContextConsumer
+  BalancesContextConsumer,
+  RateContextConsumer
 } from './context'
 
 import Starter from './Starter'
@@ -79,15 +80,19 @@ const MarketStack = createStackNavigator(
     Crypto: { screen: CryptoScreen },
     [TRADE]: { screen: ({ navigation }: any) => (
       <BalancesContextConsumer>
-        {(args) => (
-          <TradeScreen navigation={navigation} {...args} />
+        {(args1) => (
+          <RateContextConsumer>
+            {(args2) => (<TradeScreen navigation={navigation} {...args1} {...args2} />)}
+          </RateContextConsumer>
         )}
       </BalancesContextConsumer>
     )},
     [TRADE_CONFIRMATION]: { screen: ({ navigation }: any) => (
       <BalancesContextConsumer>
-        {(args) => (
-          <TradeConfirmationScreen navigation={navigation} {...args} />
+        {(args1) => (
+          <RateContextConsumer>
+            {(args2) => (<TradeConfirmationScreen navigation={navigation} {...args1} {...args2} />)}
+          </RateContextConsumer>
         )}
       </BalancesContextConsumer>
     )},
