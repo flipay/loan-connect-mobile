@@ -7,10 +7,11 @@ import {
   StyleSheet
 } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
-import { LinearGradient, Asset } from 'expo'
+import { Asset } from 'expo-asset'
+import { LinearGradient } from 'expo-linear-gradient'
 import { Text } from '../components'
 import { COLORS } from '../constants'
-import { logEvent } from '../analytics' 
+import { logEvent } from '../analytics'
 
 export default class WelcomeScreen extends React.Component<
   NavigationScreenProps

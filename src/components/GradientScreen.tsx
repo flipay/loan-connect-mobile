@@ -5,7 +5,7 @@ import {
   View,
   StatusBar
 } from 'react-native'
-import { LinearGradient } from 'expo'
+import { LinearGradient } from 'expo-linear-gradient'
 import { COLORS } from '../constants'
 import CloseButton from './CloseButton'
 

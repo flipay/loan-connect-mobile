@@ -1,6 +1,6 @@
 import * as React from 'react'
 import _ from 'lodash'
-import { LinearGradient } from 'expo'
+import { LinearGradient } from 'expo-linear-gradient'
 import { TouchableOpacity, View, StyleSheet } from 'react-native'
 import Text from './Text'
 import { COLORS } from '../constants'

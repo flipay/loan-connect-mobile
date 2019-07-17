@@ -1,4 +1,4 @@
-import { Amplitude } from 'expo'
+import * as Amplitude from 'expo-analytics-amplitude'
 import _ from 'lodash'
 import { getEnv } from './utils'
 

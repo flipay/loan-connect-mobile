@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import { Platform } from 'react-native'
-import { FileSystem } from 'expo'
+import * as FileSystem from 'expo-file-system'
 import BlueBird from 'bluebird'
 
 export async function isJailBroken () {
