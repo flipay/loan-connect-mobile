@@ -107,11 +107,7 @@ export default class TradeConfirmationScreen extends React.Component<
     if (!this.isSubmitable()) { return }
     const side = this.props.navigation.getParam('side')
     const assetId = this.props.navigation.getParam('assetId')
-    logEvent('trade-confirmation/press-submit-button', {
-      side: this.props.navigation.getParam('side'),
-      assetId: this.props.navigation.getParam('assetId'),
-      volume: `${toString(this.getThaiBahtAmount(), ASSETS.THB.decimal)} THB`
-    })
+
     await this.setState({ submitPressed: true })
     try {
       const {
@@ -128,6 +124,14 @@ export default class TradeConfirmationScreen extends React.Component<
         tradeResultGive: Number(tradeResultGive),
         tradeResultTake: Number(tradeResultTake)
       })
+
+      logEvent('trade-confirmation/press-submit-button', {
+        side: this.props.navigation.getParam('side'),
+        assetId: this.props.navigation.getParam('assetId'),
+        thbAmount: side === 'buy' ? tradeResultGive : tradeResultTake,
+        cryptoAmount: side === 'sell' ? tradeResultGive : tradeResultTake
+      })
+
     } catch (err) {
       const code = getErrorCode(err)
       this.setState({ submitPressed: false })
@@ -146,7 +150,7 @@ export default class TradeConfirmationScreen extends React.Component<
   }
 
   public onClose = () => {
-    logEvent('trade/press-back-button', {
+    logEvent('trade-confirmation/press-back-button', {
       side: this.props.navigation.getParam('side'),
       assetId: this.props.navigation.getParam('assetId')
     })
@@ -169,7 +173,7 @@ export default class TradeConfirmationScreen extends React.Component<
       return null
     }
 
-    logEvent('trade/press-price-comparison-link', {
+    logEvent('trade-confirmation/press-price-comparison-button', {
       side: this.props.navigation.getParam('side'),
       assetId: this.props.navigation.getParam('assetId')
     })
