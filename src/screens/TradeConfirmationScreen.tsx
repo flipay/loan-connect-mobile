@@ -11,7 +11,7 @@ import {
 } from '../components'
 import { COLORS, ASSETS, THBAmountTypes } from '../constants'
 import { AssetId, Balances } from '../types'
-import { getAmount, order, getCompetitorTHBAmounts } from '../requests'
+import { order } from '../requests'
 import {
   toNumber,
   toString,
@@ -23,13 +23,13 @@ import { logEvent } from '../analytics'
 
 interface Props {
   balances: Balances
+  lastFetchSuccessfullyTakeAmount: string
+  competitorThbAmounts: THBAmountTypes
 }
 
 interface State {
   submitPressed: boolean
   executed: boolean
-  takeAmount: string
-  competitorThbAmounts?: THBAmountTypes
   tradeResultGive: number
   tradeResultTake: number
 }
@@ -38,69 +38,22 @@ export default class TradeConfirmationScreen extends React.Component<
   Props & NavigationScreenProps,
   State
 > {
-  private mounted: boolean = false
   private interval: any
   public constructor (props: Props & NavigationScreenProps) {
     super(props)
     this.state = {
       submitPressed: false,
       executed: false,
-      takeAmount: props.navigation.getParam('takeAmount'),
-      competitorThbAmounts: props.navigation.getParam('competitorThbAmounts'),
       tradeResultGive: 0,
       tradeResultTake: 0
     }
   }
 
-  public componentDidMount () {
-    this.mounted = true
-    this.interval = setInterval(() => {
-      this.getAmount()
-    }, 1000)
-  }
-
-  public componentWillUnmount () {
-    this.mounted = false
-    clearInterval(this.interval)
-  }
-
   public getThaiBahtAmount () {
     const side = this.props.navigation.getParam('side', 'buy')
     const giveAmount = this.props.navigation.getParam('giveAmount')
-    const takeAmount = this.state.takeAmount
+    const takeAmount = this.props.lastFetchSuccessfullyTakeAmount
     return side === 'buy' ? toNumber(giveAmount) : toNumber(takeAmount)
-  }
-
-  public getAmount = async () => {
-    const giveAmount = this.props.navigation.getParam('giveAmount')
-    const initialValue = giveAmount
-    const num = toNumber(initialValue)
-    let flipayResponseValue = '0'
-    const side = this.props.navigation.getParam('side', 'buy')
-    const assetId: AssetId = this.props.navigation.getParam('assetId', 'BTC')
-    const amount = await getAmount(
-      side,
-      assetId,
-      'give',
-      num,
-      'liquid'
-    )
-    const responseAsset = side === 'buy' ? assetId : 'THB'
-    flipayResponseValue = toString(amount, ASSETS[responseAsset].decimal)
-    const result = await getCompetitorTHBAmounts(
-      side,
-      assetId,
-      side === 'buy'
-        ? amount
-        : toNumber(giveAmount)
-    )
-
-    if (this.mounted) {
-      this.setState({
-        competitorThbAmounts: result,
-        takeAmount: flipayResponseValue
-      })
-    }
   }
 
   public execute = async () => {
@@ -117,7 +70,7 @@ export default class TradeConfirmationScreen extends React.Component<
         side === 'buy' ? 'THB' : assetId,
         side === 'buy' ? assetId : 'THB',
         toNumber(this.props.navigation.getParam('giveAmount')),
-        toNumber(this.state.takeAmount || '0')
+        toNumber(this.props.lastFetchSuccessfullyTakeAmount || '0')
       )
       this.setState({
         executed: true,
@@ -165,7 +118,7 @@ export default class TradeConfirmationScreen extends React.Component<
   public onPressPriceComparison = () => {
     const cryptoAmount =
       this.props.navigation.getParam('side') === 'buy'
-        ? this.state.takeAmount
+        ? this.props.lastFetchSuccessfullyTakeAmount
         : this.props.navigation.getParam('giveAmount')
     const thbAmount = this.getThaiBahtAmount()
 
@@ -180,7 +133,7 @@ export default class TradeConfirmationScreen extends React.Component<
     this.props.navigation.navigate('Comparison', {
       side: this.props.navigation.getParam('side'),
       assetId: this.props.navigation.getParam('assetId'),
-      competitorAmounts: this.state.competitorThbAmounts,
+      competitorAmounts: this.props.competitorThbAmounts,
       flipayAmount: thbAmount,
       cryptoAmount
     })
@@ -192,14 +145,14 @@ export default class TradeConfirmationScreen extends React.Component<
       side,
       side === 'buy'
         ? toNumber(this.props.navigation.getParam('giveAmount'))
-        : toNumber(this.state.takeAmount),
-      this.state.competitorThbAmounts
+        : toNumber(this.props.lastFetchSuccessfullyTakeAmount),
+      this.props.competitorThbAmounts
     )
     let countError = 0
-    _.map(this.state.competitorThbAmounts, (amount) => {
+    _.map(this.props.competitorThbAmounts, (amount) => {
       if (isNaN(Number(amount))) { countError++ }
     })
-    if (countError === _.map(this.state.competitorThbAmounts).length) {
+    if (countError === _.map(this.props.competitorThbAmounts).length) {
       return (
         <View style={styles.footer}>
           <Text color={COLORS.N500} style={{ textAlign: 'center' }}>
@@ -220,10 +173,10 @@ export default class TradeConfirmationScreen extends React.Component<
   }
 
   public renderPrice () {
-    const { takeAmount } = this.state
+    const { lastFetchSuccessfullyTakeAmount } = this.props
     const giveAmount = this.props.navigation.getParam('giveAmount')
     const amountGive = toNumber(giveAmount)
-    const amountTake = toNumber(takeAmount)
+    const amountTake = toNumber(lastFetchSuccessfullyTakeAmount)
     const side = this.props.navigation.getParam('side', 'buy')
     const price = side === 'buy' ? (amountGive / amountTake) : (amountTake / amountGive)
     return (
@@ -278,7 +231,7 @@ export default class TradeConfirmationScreen extends React.Component<
           <AssetBox
             description={side === 'sell' ? 'You will receive' : 'You will receive'}
             assetId={side === 'sell' ? 'THB' : assetId}
-            value={this.state.takeAmount}
+            value={this.props.lastFetchSuccessfullyTakeAmount}
           />
           {this.renderPrice()}
         </View>

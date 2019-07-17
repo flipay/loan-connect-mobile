@@ -1,6 +1,6 @@
 import * as React from 'react'
 import _ from 'lodash'
-import { StyleSheet, View, TouchableOpacity } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import Sentry from 'sentry-expo'
 import { NavigationScreenProps } from 'react-navigation'
 import {
@@ -81,6 +81,7 @@ export default class TradeScreen extends React.Component<
 
   public componentWillUnmount () {
     this.mounted = false
+    this.props.clearRateData()
     clearInterval(this.interval)
     clearTimeout(this.timeout)
   }
