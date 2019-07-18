@@ -4,7 +4,7 @@ import { NavigationScreenProps } from 'react-navigation'
 import { AntDesign } from '@expo/vector-icons'
 import { Text, Screen, Button } from '../components'
 import { COLORS, CONTACTS, ASSETS } from '../constants'
-import { logEvent } from '../analytics'
+import { logEvent } from '../services/Analytic'
 import { AssetId } from '../types'
 import { alert } from '../utils'
 

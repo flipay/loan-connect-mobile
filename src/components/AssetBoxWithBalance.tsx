@@ -26,7 +26,7 @@ export default class AssetBoxWithBalance extends React.Component<Props> {
   public renderSmallbutton (text: string, onPress: () => void) {
     return (
       <TouchableOpacity onPress={onPress} style={styles.button}>
-        <Text type='button' color={COLORS.P400}>
+        <Text type='body' bold={true} color={COLORS.P400}>
           {text}
         </Text>
       </TouchableOpacity>
@@ -41,10 +41,10 @@ export default class AssetBoxWithBalance extends React.Component<Props> {
           {this.renderSmallbutton('Half', this.props.onPressHalf)}
         </View>
         {this.props.balance !== undefined && (
-          <Text type='caption'>
-            <Text>{`Balance `}</Text>
-            <Value assetId={this.props.assetId}>{this.props.balance}</Value>
-          </Text>
+          <View style={styles.balance}>
+            <Text type='caption' color={COLORS.N500}>{`Balance `}</Text>
+            <Value assetId={this.props.assetId} color={COLORS.N800} fontType='caption'>{this.props.balance}</Value>
+          </View>
         )}
       </View>
     )
@@ -80,6 +80,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center'
   },
+  balance: {
+    flexDirection: 'row'
+  },
   errorBalanceSection: {
     marginTop: 8
   },
@@ -87,10 +90,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   button: {
-    backgroundColor: COLORS.N100,
+    borderWidth: 1,
+    borderColor: COLORS.P200,
+    backgroundColor: COLORS.WHITE,
     paddingHorizontal: 13,
     paddingVertical: 6,
-    borderRadius: 4,
+    borderRadius: 6,
     marginRight: 8
   }
 })

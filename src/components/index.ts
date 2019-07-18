@@ -8,7 +8,6 @@ import Value from './Value'
 import TextBox from './TextBox'
 import AssetBox from './AssetBox'
 import AssetBoxWithBalance from './AssetBoxWithBalance'
-import AssetBoxTemp from './AssetBoxTemp'
 import TradeResult from './TradeResult'
 import Picker from './Picker'
 import SubmitButton from './SubmitButton'
@@ -16,6 +15,7 @@ import Layer from './Layer'
 import Asset from './Asset'
 import Key from './Key'
 import Screen from './Screen'
+import GradientScreen from './GradientScreen'
 import ScreenWithCover from './ScreenWithCover'
 import Link from './Link'
 import FullScreenLoading from './FullScreenLoading'
@@ -33,7 +33,6 @@ export {
   TextBox,
   AssetBox,
   AssetBoxWithBalance,
-  AssetBoxTemp,
   TradeResult,
   Picker,
   SubmitButton,
@@ -41,6 +40,7 @@ export {
   Asset,
   Key,
   Screen,
+  GradientScreen,
   ScreenWithCover,
   Link,
   FullScreenLoading,

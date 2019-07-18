@@ -1,6 +1,7 @@
 
 import { Image } from 'react-native'
-import { Asset, Font } from 'expo'
+import * as Font from 'expo-font'
+import { Asset } from 'expo-asset'
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons'
 
 function loadImages (images: Array<string | number>) {

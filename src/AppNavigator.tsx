@@ -11,7 +11,8 @@ import { FontAwesome } from '@expo/vector-icons'
 
 import {
   MarketPricesContextConsumer,
-  BalancesContextConsumer
+  BalancesContextConsumer,
+  RateContextConsumer
 } from './context'
 
 import Starter from './Starter'
@@ -23,6 +24,7 @@ import WelcomeScreen from './screens/WelcomeScreen'
 import AuthenScreen from './screens/AuthenScreen'
 import VerifyPhoneNumberScreen from './screens/VerifyPhoneNumberScreen'
 import TradeScreen from './screens/TradeScreen'
+import TradeConfirmationScreen from './screens/TradeConfirmationScreen'
 import DepositScreen from './screens/DepositScreen'
 import WithdrawalScreen from './screens/WithdrawalScreen'
 import ComparisonScreen from './screens/ComparisonScreen'
@@ -31,12 +33,13 @@ import PinScreen from './screens/PinScreen'
 import SplashScreen from './screens/SplashScreen'
 import { Text } from './components'
 import { COLORS, PRIVATE_ROUTES } from './constants'
-import { logEvent } from './analytics'
+import { logEvent } from './services/Analytic'
 import { unlock, isLocked } from './requests'
 
 const {
   PORTFOLIO,
   TRADE,
+  TRADE_CONFIRMATION,
   DEPOSIT,
   WITHDRAWAL,
   ACCOUNT,
@@ -77,8 +80,19 @@ const MarketStack = createStackNavigator(
     Crypto: { screen: CryptoScreen },
     [TRADE]: { screen: ({ navigation }: any) => (
       <BalancesContextConsumer>
-        {(args) => (
-          <TradeScreen navigation={navigation} {...args} />
+        {(args1) => (
+          <RateContextConsumer>
+            {(args2) => (<TradeScreen navigation={navigation} {...args1} {...args2} />)}
+          </RateContextConsumer>
+        )}
+      </BalancesContextConsumer>
+    )},
+    [TRADE_CONFIRMATION]: { screen: ({ navigation }: any) => (
+      <BalancesContextConsumer>
+        {(args1) => (
+          <RateContextConsumer>
+            {(args2) => (<TradeConfirmationScreen navigation={navigation} {...args1} {...args2} />)}
+          </RateContextConsumer>
         )}
       </BalancesContextConsumer>
     )},

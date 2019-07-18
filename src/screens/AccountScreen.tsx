@@ -8,14 +8,14 @@ import {
   StatusBar,
   TouchableOpacity
 } from 'react-native'
-import { Constants } from 'expo'
+import Constants from 'expo-constants'
 import { NavigationScreenProps } from 'react-navigation'
 
 import { lock } from '../requests'
 import { getPhoneNumber } from '../asyncStorage'
 import { Text, Record, Screen } from '../components'
 import { COLORS, CONTACTS } from '../constants'
-import { logEvent } from '../analytics'
+import { logEvent } from '../services/Analytic'
 
 interface State {
   phoneNumber?: string | null

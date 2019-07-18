@@ -1,9 +1,10 @@
 import * as React from 'react'
-import { View, StyleSheet, Image } from 'react-native'
+import { View, StyleSheet } from 'react-native'
 import Layer from './Layer'
 import Text from './Text'
 import Value from './Value'
-import Asset from './Asset'
+import Button from './Button'
+import GradientScreen from './GradientScreen'
 import { COLORS } from '../constants/styleGuides'
 import { AssetId, OrderType } from '../types'
 
@@ -13,17 +14,20 @@ interface Props {
   cryptoAmount: number
   thbAmount: number
   fee?: number
+  onPressDone: () => void
 }
 
 export default class TradeResult extends React.Component<Props> {
   public renderStatusHeader () {
     return (
       <View style={styles.header}>
-        <Image
-          style={{ width: 48, height: 48 }}
-          source={require('../img/confirm_icon.png')}
-        />
-        <Text type='title' color={COLORS.N800} style={styles.title}>
+        <Text
+          style={{ fontFamily: 'flipay-icon', fontSize: 40 }}
+          color={COLORS.N300}
+        >
+          
+        </Text>
+        <Text type='title' bold={true} color={COLORS.WHITE} style={styles.title}>
           Transaction Completed
         </Text>
       </View>
@@ -33,11 +37,8 @@ export default class TradeResult extends React.Component<Props> {
   public renderAssetPart () {
     return (
       <View style={styles.assetPart}>
-        <Text>{this.props.orderType === 'buy' ? 'You received' : 'You sold'}</Text>
-        <View style={[styles.row, styles.assetRow]}>
-          <Asset id={this.props.assetId} />
-          <Value assetId={this.props.assetId}>{this.props.cryptoAmount}</Value>
-        </View>
+        <Text type='caption' color={COLORS.N800}>{this.props.orderType === 'buy' ? 'You received' : 'You sold'}</Text>
+        <Value assetId={this.props.assetId} fontType='headline' bold={true} withImage={true}>{this.props.cryptoAmount}</Value>
       </View>
     )
   }
@@ -46,18 +47,13 @@ export default class TradeResult extends React.Component<Props> {
     return (
       <View style={styles.paymentPart}>
         <View style={styles.row}>
-          <Text type='caption'>Exchange price</Text>
-          <Value fontType='caption' assetId='THB'>
-            {this.props.thbAmount}
-          </Value>
+          <Text type='caption' color={COLORS.N500}>Total expense</Text>
+          <Value assetId='THB' fontType='caption' color={COLORS.N800}>{this.props.thbAmount}</Value>
         </View>
-        {/* <View style={[styles.row, styles.fee]}>
-          <Text type='caption'>Transaction Fee</Text>
-          <Value fontType='caption' assetId='THB'>{this.props.fee}</Value>
-        </View> */}
+        <View style={styles.space} />
         <View style={styles.row}>
-          <Text type='headline'>Total expense</Text>
-          <Value assetId='THB'>{this.props.thbAmount}</Value>
+          <Text type='caption' color={COLORS.N500}>Price</Text>
+          <Value assetId='THB' fontType='caption' color={COLORS.N800}>{this.props.thbAmount / this.props.cryptoAmount}</Value>
         </View>
       </View>
     )
@@ -65,39 +61,44 @@ export default class TradeResult extends React.Component<Props> {
 
   public renderTradeDetail () {
     return (
-      <Layer>
+      <Layer style={styles.layer}>
         {this.renderAssetPart()}
         {this.renderPaymentPart()}
+        <Button onPress={this.props.onPressDone} primary={true}>Done</Button>
       </Layer>
     )
   }
 
   public render () {
     return (
-      <View style={styles.container}>
+      <GradientScreen>
         {this.renderStatusHeader()}
         {this.renderTradeDetail()}
-      </View>
+      </GradientScreen>
     )
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center'
+  layer: {
+    paddingHorizontal: 20,
+    paddingBottom: 24
   },
   header: {
+    marginTop: 30,
+    marginBottom: 60,
     alignItems: 'center'
   },
   title: {
-    marginTop: 12,
-    marginBottom: 32
+    marginTop: 12
   },
   assetPart: {
     padding: 16,
-    paddingTop: 24,
-    backgroundColor: COLORS.WHITE
+    paddingTop: 40,
+    backgroundColor: COLORS.WHITE,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
   },
   assetRow: {
     flexDirection: 'row',
@@ -105,8 +106,12 @@ const styles = StyleSheet.create({
   },
   paymentPart: {
     padding: 16,
-    paddingBottom: 24,
-    backgroundColor: COLORS.N200
+    backgroundColor: COLORS.N200,
+    borderRadius: 6,
+    marginBottom: 16
+  },
+  space: {
+    height: 16
   },
   row: {
     flexDirection: 'row',

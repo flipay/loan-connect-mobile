@@ -11,23 +11,25 @@ import {
   ScrollView,
   SafeAreaView
 } from 'react-native'
-import { Constants } from 'expo'
+import Constants from 'expo-constants'
 import { AntDesign } from '@expo/vector-icons'
 import { COLORS } from '../constants'
 import Text from './Text'
 import SubmitButton from './SubmitButton'
 import FullScreenLoading from './FullScreenLoading'
-import { logEvent } from '../analytics'
+import { logEvent } from '../services/Analytic'
 import { getCurrentRouteName } from '../services/navigation'
 import { withNavigation, NavigationScreenProps } from 'react-navigation'
 
 interface Props {
   title?: string | any
+  noHeaderLine?: boolean
   renderFooter?: () => any
   children: (autoFocus: boolean) => any
   onPressBackButton?: () => void
   backButtonType?: 'arrowleft' | 'close'
   activeSubmitButton?: boolean
+  gradientSubmitButton?: boolean
   submitButtonText?: string
   onPessSubmitButton?: () => void
   fullScreenLoading?: boolean
@@ -105,7 +107,7 @@ class Screen extends React.Component<Props & NavigationScreenProps, State> {
             <View style={styles.safeArea}>
               <View style={styles.container}>
                 {this.hasHeader() && (
-                  <View style={[styles.headerRow, (!!this.props.title && typeof this.props.title === 'string') && styles.headerRowBorder]}>
+                  <View style={[styles.headerRow, !this.props.noHeaderLine && (!!this.props.title && typeof this.props.title === 'string') && styles.headerRowBorder]}>
                     {this.renderTitle()}
                     {this.props.onPressBackButton && (
                       <View style={styles.backButtonContainer}>
@@ -142,6 +144,7 @@ class Screen extends React.Component<Props & NavigationScreenProps, State> {
                   <SubmitButton
                     onPress={this.props.onPessSubmitButton}
                     active={this.props.activeSubmitButton}
+                    gradient={this.props.gradientSubmitButton}
                   >
                     {this.props.submitButtonText || 'Next'}
                   </SubmitButton>

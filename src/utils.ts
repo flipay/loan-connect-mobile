@@ -1,9 +1,9 @@
 import * as _ from 'lodash'
 import { Alert } from 'react-native'
-import { Constants } from 'expo'
-import Sentry from 'sentry-expo'
+
 import { THBAmountTypes } from './constants'
 import { OrderType } from './types'
+import * as ErrorReport from './services/ErrorReport'
 
 export function toNumber (value: string) {
   const valueInStringWithoutComma = _.replace(value, /,/g, '')
@@ -46,8 +46,8 @@ export function alert (err: Error | string) {
   if (typeof err === 'string') {
     return Alert.alert(`Something went wrong: ${err}`)
   } else {
-    Sentry.captureException(err)
-    console.log('========error========', JSON.stringify(err, undefined, 2)) 
+    ErrorReport.notify(err)
+    console.log('========error========', JSON.stringify(err, undefined, 2))
     if (getErrorDetail(err)) {
       return Alert.alert(`Something went wrong: ${getErrorDetail(err)}`)
     } else {
@@ -82,17 +82,5 @@ export function calSaveAmount (side: OrderType, amount: number, thbAmounts?: THB
     } else {
       return amount - worstAmount
     }
-  }
-}
-
-type Env = 'production' | 'staging' | 'development'
-
-export function getEnv (): Env {
-  if (Constants.manifest.releaseChannel === 'default') {
-    return 'production'
-  } else if (Constants.manifest.releaseChannel === 'staging') {
-    return 'staging'
-  } else {
-    return 'development'
   }
 }
