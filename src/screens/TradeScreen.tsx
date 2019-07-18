@@ -1,7 +1,6 @@
 import * as React from 'react'
 import _ from 'lodash'
 import { StyleSheet, View } from 'react-native'
-import Sentry from 'sentry-expo'
 import { NavigationScreenProps } from 'react-navigation'
 import {
   Text,
@@ -20,6 +19,7 @@ import {
   calSaveAmount
 } from '../utils'
 import { logEvent } from '../analytics'
+import * as ErrorReport from '../services/ErrorReport'
 
 type AssetBoxType = OrderPart
 
@@ -172,7 +172,7 @@ export default class TradeScreen extends React.Component<
           giveAssetBoxWarningMessage: 'Maximum amount exceeded'
         })
       } else if (err.message !== 'below_minimum') {
-        Sentry.captureException(err)
+        ErrorReport.notify(err)
       }
     }
   }

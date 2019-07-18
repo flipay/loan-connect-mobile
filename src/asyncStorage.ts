@@ -1,11 +1,11 @@
 import { AsyncStorage } from 'react-native'
-import Sentry from 'sentry-expo'
+import * as ErrorReport from './services/ErrorReport'
 
 async function setData (key: string, value: string) {
   try {
     await AsyncStorage.setItem(key, value)
   } catch (err) {
-    Sentry.captureException(err)
+    ErrorReport.notify(err)
   }
 }
 
@@ -14,7 +14,7 @@ async function getData (key: string) {
     const value = await AsyncStorage.getItem(key)
     return value
   } catch (err) {
-    Sentry.captureException(err)
+    ErrorReport.notify(err)
     return undefined
   }
 }

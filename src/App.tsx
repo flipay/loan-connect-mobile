@@ -1,21 +1,18 @@
 import * as React from 'react'
-import { Platform, StyleSheet, View, Text } from 'react-native'
+import { Platform, View, Text } from 'react-native'
 import { AppLoading } from 'expo'
 import { createAppContainer } from 'react-navigation'
-import Sentry from 'sentry-expo'
 import { ContextProvider, MarketPricesContextConsumer } from './context'
 import preloadAssets from './preloadAsssets'
 import AppStateProvider from './AppStateProvider'
 import AppNavigator from './AppNavigator'
 import { setTopLevelNavigator } from './services/navigation'
 import { fetchNewVersionIfAvailable } from './services/versioning'
+import * as ErrorReport from './services/ErrorReport'
 import { isJailBroken } from './services/jailbreak'
 
-// NOTE: for testing Sentry locally
-// Sentry.enableInExpoDevelopment = true
-Sentry.config(
-  'https://7461bec2f42c41cdafde6f0048ac0047@sentry.io/1438488'
-).install()
+ErrorReport.initialize()
+const ErrorBoundary = ErrorReport.getErrorBoundary()
 
 // HACK: to make (number).toLocaleString to work correctly for Android
 if (Platform.OS === 'android') {
@@ -59,25 +56,26 @@ export default class App extends React.Component<{}, State> {
       )
     }
     return (
-      <ContextProvider>
-        <AppStateProvider>
-        {!this.state.isReady ? (
-          <MarketPricesContextConsumer>
-            {({ fetchMarketPrices }) => (
-              <AppLoading
-                startAsync={() => this.loadAssetsAsync(fetchMarketPrices)}
-                onFinish={() => this.setState({ isReady: true })}
-                onError={Sentry.captureException}
-              />)}
-          </MarketPricesContextConsumer>
-        ) : (
-            <AppContainer
-              ref={(navigatorRef: any) => setTopLevelNavigator(navigatorRef)}
-            />
-        )}
-        </AppStateProvider>
-      </ContextProvider>
-
+      <ErrorBoundary>
+        <ContextProvider>
+          <AppStateProvider>
+          {!this.state.isReady ? (
+            <MarketPricesContextConsumer>
+              {({ fetchMarketPrices }) => (
+                <AppLoading
+                  startAsync={() => this.loadAssetsAsync(fetchMarketPrices)}
+                  onFinish={() => this.setState({ isReady: true })}
+                  onError={ErrorReport.notify}
+                />)}
+            </MarketPricesContextConsumer>
+          ) : (
+              <AppContainer
+                ref={(navigatorRef: any) => setTopLevelNavigator(navigatorRef)}
+              />
+          )}
+          </AppStateProvider>
+        </ContextProvider>
+      </ErrorBoundary>
     )
   }
 }
