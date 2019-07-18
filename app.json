@@ -15,6 +15,12 @@
     "splash": {
       "image": "./assets/splash.png"
     },
+    "assetBundlePatterns": [
+      "assets/fonts/*",
+      "assets/icons/*",
+      "assets/img/*",
+      "src/img/*"
+    ],
     "packagerOpts": {
       "assetExts": [
         "ttf",
