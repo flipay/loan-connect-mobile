@@ -1,6 +1,6 @@
 import * as _ from 'lodash'
 import { Alert } from 'react-native'
-import Constants from 'expo-constants'
+
 import { THBAmountTypes } from './constants'
 import { OrderType } from './types'
 import * as ErrorReport from './services/ErrorReport'
@@ -82,17 +82,5 @@ export function calSaveAmount (side: OrderType, amount: number, thbAmounts?: THB
     } else {
       return amount - worstAmount
     }
-  }
-}
-
-type Env = 'production' | 'staging' | 'development'
-
-export function getEnv (): Env {
-  if (Constants.manifest.releaseChannel === 'default') {
-    return 'production'
-  } else if (Constants.manifest.releaseChannel === 'staging') {
-    return 'staging'
-  } else {
-    return 'development'
   }
 }
