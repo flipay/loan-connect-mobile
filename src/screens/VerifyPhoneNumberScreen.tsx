@@ -1,16 +1,16 @@
 import * as React from 'react'
 import _ from 'lodash'
 import { View, SafeAreaView, TextInput, StyleSheet, TouchableOpacity } from 'react-native'
-import Sentry from 'sentry-expo'
 import { AntDesign } from '@expo/vector-icons'
 import { NavigationScreenProps } from 'react-navigation'
 import { submitOtp, hasEmailAndName, getCurrentUser } from '../requests'
 import { COLORS } from '../constants'
 import { Text, Screen, Layer, Link } from '../components'
 import { alert } from '../utils'
-import { logEvent, identify } from '../analytics'
+import { logEvent, identify } from '../services/Analytic'
 import { setToken } from '../secureStorage'
 import { setPhoneNumber } from '../asyncStorage'
+import * as ErrorReport from '../services/ErrorReport'
 
 type No = 0 | 1 | 2 | 3 | 4 | 5
 
@@ -194,14 +194,13 @@ export default class VerifyPhoneNumberScreen extends React.Component<
         email
       })
       setPhoneNumber('0' + phoneNumber.substring(2))
-      Sentry.setUserContext({
-        id: uid,
-        email,
-        extra: {
-          name,
-          phoneNumber
-        }
-      })
+      ErrorReport.setUserContext(
+        uid,
+        name,
+        email || '',
+        phoneNumber
+      )
+
     }
   }
 

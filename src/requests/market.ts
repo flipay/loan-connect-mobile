@@ -1,10 +1,10 @@
 import axios from 'axios'
 import _ from 'lodash'
 import Bluebird from 'bluebird'
-import Sentry from 'sentry-expo'
-import { OrderType, OrderPart, AssetId, Asset, MarketPrices } from '../types'
+import { OrderType, OrderPart, AssetId, Asset } from '../types'
 import { ASSETS, COMPETITOR_IDS } from '../constants'
 import { getErrorCode } from '../utils'
+import * as ErrorReport from '../services/ErrorReport'
 
 export async function fetchMarketPrices () {
   const request = axios.create({
@@ -90,7 +90,7 @@ export async function getCompetitorTHBAmounts (
         providerId
       )
     } catch (err) {
-      Sentry.captureException(err)
+      ErrorReport.notify(err)
       amount = getErrorCode(err)
     }
     return [providerId, amount]

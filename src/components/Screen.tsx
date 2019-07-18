@@ -17,7 +17,7 @@ import { COLORS } from '../constants'
 import Text from './Text'
 import SubmitButton from './SubmitButton'
 import FullScreenLoading from './FullScreenLoading'
-import { logEvent } from '../analytics'
+import { logEvent } from '../services/Analytic'
 import { getCurrentRouteName } from '../services/navigation'
 import { withNavigation, NavigationScreenProps } from 'react-navigation'
 

@@ -1,8 +1,8 @@
 
-import { getEnv } from '../utils'
+import { getEnv } from '../services/Env'
 import { NetInfo, Alert } from 'react-native'
 import { Updates } from 'expo'
-import Sentry from 'sentry-expo'
+import * as ErrorReport from './ErrorReport'
 
 async function checkNewVersion (action: () => void) {
   if (getEnv() !== 'development') {
@@ -15,7 +15,7 @@ async function checkNewVersion (action: () => void) {
       const { type } = await NetInfo.getConnectionInfo()
       const errorMessage = 'Please connect to the internet.'
       if (type !== 'none') {
-        Sentry.captureException(err)
+        ErrorReport.notify(err)
         checkNewVersion(action)
       }
       postError(errorMessage)

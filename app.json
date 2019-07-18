@@ -5,7 +5,7 @@
     "slug": "flipay",
     "privacy": "unlisted",
     "sdkVersion": "33.0.0",
-    "version": "0.7.1",
+    "version": "0.7.2",
     "orientation": "portrait",
     "primaryColor": "#fff",
     "icon": "./assets/icons/app-icon.png",
@@ -45,8 +45,17 @@
             "project": "flipay-mobile",
             "authToken": "a5626fc0492c4684b5c15ba2636eee1e603e611716c14de78bbd58b1441790ff"
           }
+        },
+        {
+          "file": "@bugsnag/expo/hooks/post-publish.js",
+          "config": {}
         }
       ]
+    },
+    "extra": {
+      "bugsnag": {
+        "apiKey": "ccf55e4a50a05fec82e1c777332ec8bb"
+      }
     }
   }
 }

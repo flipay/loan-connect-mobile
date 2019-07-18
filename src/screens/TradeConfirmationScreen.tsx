@@ -19,7 +19,7 @@ import {
   alert,
   calSaveAmount
 } from '../utils'
-import { logEvent } from '../analytics'
+import { logEvent } from '../services/Analytic'
 
 interface Props {
   balances: Balances

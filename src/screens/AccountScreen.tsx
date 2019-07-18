@@ -15,7 +15,7 @@ import { lock } from '../requests'
 import { getPhoneNumber } from '../asyncStorage'
 import { Text, Record, Screen } from '../components'
 import { COLORS, CONTACTS } from '../constants'
-import { logEvent } from '../analytics'
+import { logEvent } from '../services/Analytic'
 
 interface State {
   phoneNumber?: string | null

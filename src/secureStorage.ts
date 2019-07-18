@@ -2,7 +2,7 @@ import CryptoJS from 'crypto-js'
 import { Alert } from 'react-native'
 import * as SecureStore from 'expo-secure-store'
 import { navigate } from './services/navigation'
-import Sentry from 'sentry-expo'
+import * as ErrorReport from './services/ErrorReport'
 
 const ENCRYPTED_TOKEN = 'flipay-encrypted-token'
 const HASHED_TOKEN = 'flipay-hashed-token'
@@ -26,7 +26,7 @@ export async function checkLoginStatus () {
     const value = await SecureStore.getItemAsync(ENCRYPTED_TOKEN)
     return !!value
   } catch (err) {
-    Sentry.captureMessage(`checkLoginStatus function: ${JSON.stringify(err, undefined, 2)}`)
+    ErrorReport.message(`checkLoginStatus function: ${JSON.stringify(err, undefined, 2)}`)
     return false
   }
 }
@@ -35,7 +35,7 @@ export async function clearToken () {
   try {
     await SecureStore.deleteItemAsync(ENCRYPTED_TOKEN)
   } catch (err) {
-    Sentry.captureMessage(`clearToken function: ${JSON.stringify(err, undefined, 2)}`)
+    ErrorReport.message(`clearToken function: ${JSON.stringify(err, undefined, 2)}`)
   }
 }
 

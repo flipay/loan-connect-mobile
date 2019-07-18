@@ -7,7 +7,7 @@ import { NavigationScreenProps } from 'react-navigation'
 import { AssetId, OrderType } from '../types'
 import { ASSETS, COLORS } from '../constants'
 import { toString } from '../utils'
-import { logEvent } from '../analytics'
+import { logEvent } from '../services/Analytic'
 
 export default class CryptoScreen extends React.Component<NavigationScreenProps> {
   public onPressBackButton = () => {

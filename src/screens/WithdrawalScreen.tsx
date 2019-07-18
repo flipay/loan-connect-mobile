@@ -10,7 +10,7 @@ import { withdraw } from '../requests'
 import { toNumber, toString, alert } from '../utils'
 import { ACCOUNT_ISSUERS, ASSETS } from '../constants'
 import { Issuer, AssetId } from '../types'
-import { logEvent } from '../analytics'
+import { logEvent } from '../services/Analytic'
 
 const boxes = ['amount', 'address', 'tag', 'accountName']
 type Box = typeof boxes[number]
