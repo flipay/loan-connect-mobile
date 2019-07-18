@@ -18,7 +18,7 @@ import {
   getErrorCode,
   calSaveAmount
 } from '../utils'
-import { logEvent } from '../analytics'
+import { logEvent } from '../services/Analytic'
 import * as ErrorReport from '../services/ErrorReport'
 
 type AssetBoxType = OrderPart

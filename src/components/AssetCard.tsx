@@ -14,7 +14,7 @@ import Value from './Value'
 import Layer from './Layer'
 import { COLORS } from '../constants'
 import { AssetId } from '../types'
-import { logEvent } from '../analytics'
+import { logEvent } from '../services/Analytic'
 
 interface Props {
   id: AssetId

@@ -33,7 +33,7 @@ import PinScreen from './screens/PinScreen'
 import SplashScreen from './screens/SplashScreen'
 import { Text } from './components'
 import { COLORS, PRIVATE_ROUTES } from './constants'
-import { logEvent } from './analytics'
+import { logEvent } from './services/Analytic'
 import { unlock, isLocked } from './requests'
 
 const {

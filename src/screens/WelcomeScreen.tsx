@@ -11,7 +11,7 @@ import { Asset } from 'expo-asset'
 import { LinearGradient } from 'expo-linear-gradient'
 import { Text } from '../components'
 import { COLORS } from '../constants'
-import { logEvent } from '../analytics'
+import { logEvent } from '../services/Analytic'
 
 export default class WelcomeScreen extends React.Component<
   NavigationScreenProps

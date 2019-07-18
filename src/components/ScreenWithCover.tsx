@@ -3,7 +3,7 @@ import _ from 'lodash'
 import { StatusBar, ScrollView, RefreshControl, View, StyleSheet } from 'react-native'
 import { withNavigation, NavigationScreenProps } from 'react-navigation'
 import { COLORS } from '../constants'
-import { logEvent } from '../analytics'
+import { logEvent } from '../services/Analytic'
 import { getCurrentRouteName } from '../services/navigation'
 
 interface Props {

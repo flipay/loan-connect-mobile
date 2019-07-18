@@ -13,7 +13,7 @@ import { Text, Value } from '../components'
 import { COLORS, PROVIDERS } from '../constants'
 import { AssetId } from '../types'
 import { calSaveAmount } from '../utils'
-import { logEvent } from '../analytics'
+import { logEvent } from '../services/Analytic'
 import GradientScreen from '../components/GradientScreen'
 
 interface RequestedRecord {

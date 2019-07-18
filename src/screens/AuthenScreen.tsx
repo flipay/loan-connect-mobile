@@ -3,7 +3,7 @@ import _ from 'lodash'
 import { NavigationScreenProps } from 'react-navigation'
 import { TextInput, StyleSheet, Keyboard, SafeAreaView } from 'react-native'
 import { authen } from '../requests'
-import { logEvent } from '../analytics'
+import { logEvent } from '../services/Analytic'
 
 import { Screen, Text, Layer } from '../components'
 

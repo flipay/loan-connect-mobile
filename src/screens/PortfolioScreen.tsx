@@ -15,7 +15,7 @@ import { COLORS, ASSETS } from '../constants'
 import { AssetId, Asset, Balances, MarketPrices } from '../types'
 import { hasEverDeposit } from '../asyncStorage'
 import { alert, toString } from '../utils'
-import { logEvent } from '../analytics'
+import { logEvent } from '../services/Analytic'
 
 interface Props {
   balances: Balances

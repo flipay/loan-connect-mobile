@@ -1,6 +1,6 @@
 import * as Amplitude from 'expo-analytics-amplitude'
 import _ from 'lodash'
-import { getEnv } from './services/Env'
+import { getEnv } from './Env'
 
 type Event = 'reboost-the-app'
   | 'open-the-app'

@@ -6,7 +6,7 @@ import { showPrice } from '../utils'
 import { Text, Layer, ChangeBox, ScreenWithCover } from '../components'
 import { ASSETS, COLORS } from '../constants'
 import { MarketPrices, Asset } from '../types'
-import { logEvent } from '../analytics'
+import { logEvent } from '../services/Analytic'
 
 interface Props {
   marketPrices?: MarketPrices

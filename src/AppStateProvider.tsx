@@ -1,7 +1,7 @@
 
 import * as React from 'react'
 import { AppState } from 'react-native'
-import { logEvent } from './analytics'
+import { logEvent } from './services/Analytic'
 import { reloadIfNewVersionAvailable } from './services/versioning'
 import { navigate, goBack } from './services/navigation'
 
