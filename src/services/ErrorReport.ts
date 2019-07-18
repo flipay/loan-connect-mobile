@@ -1,44 +1,61 @@
 import Sentry from 'sentry-expo'
 import bugsnag, { Bugsnag } from '@bugsnag/expo'
+import { getEnv } from './Env'
 
 let bugsnagClient: Bugsnag.Client
 let initialized = false
+let developmentEnabled = false
 
 export function initialize () {
-  bugsnagClient = bugsnag()
-
-  // NOTE: for testing Sentry locally
-  // Sentry.enableInExpoDevelopment = true
+  const notifyReleaseStages = ['production', 'staging']
+  if (developmentEnabled) {
+    notifyReleaseStages.push('development')
+    Sentry.enableInExpoDevelopment = true
+  }
+  bugsnagClient = bugsnag({
+    releaseStage: getEnv(),
+    notifyReleaseStages
+  })
   Sentry.config(
     'https://7461bec2f42c41cdafde6f0048ac0047@sentry.io/1438488'
   ).install()
   initialized = true
 }
 
-export function setUserContext (uid: string, name: string , email: string, phoneNumber: string) {
-  Sentry.setUserContext({
-    id: uid,
-    email,
-    extra: {
-      name,
-      phoneNumber
-    }
-  })
+export function enableInDevelopment () {
+  developmentEnabled = true
 }
 
-export function notify (err: Error) {
-  if (!initialized) { initialize() }
-  bugsnagClient.notify(err)
-  Sentry.captureException(err)
+function createErrorReportFunction (action: any) {
+  return (...args: Array<any>) => {
+    if (!initialized) { initialize() }
+    action(...args)
+  }
 }
 
-export function message (text: string) {
-  if (!initialized) { initialize() }
-  Sentry.captureBreadcrumb({ message: text })
-  bugsnagClient.leaveBreadcrumb(text)
-}
+export const setUserContext = createErrorReportFunction(
+  (uid: string, name: string , email: string, phoneNumber: string) => {
+    Sentry.setUserContext({
+      id: uid,
+      email,
+      extra: {
+        name,
+        phoneNumber
+      }
+    })
+  }
+)
 
-export function getErrorBoundary () {
-  if (!initialized) { initialize() }
-  return bugsnagClient.getPlugin('react')
-}
+export const notify = createErrorReportFunction(
+  (err: Error) => {
+    bugsnagClient.notify(err)
+    Sentry.captureException(err)
+  }
+)
+
+export const message = createErrorReportFunction(
+  (text: string) => {
+    Sentry.captureBreadcrumb({ message: text })
+    bugsnagClient.leaveBreadcrumb(text)
+  }
+)

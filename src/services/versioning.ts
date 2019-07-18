@@ -1,5 +1,5 @@
 
-import { getEnv } from '../utils'
+import { getEnv } from '../services/Env'
 import { NetInfo, Alert } from 'react-native'
 import { Updates } from 'expo'
 import * as ErrorReport from './ErrorReport'

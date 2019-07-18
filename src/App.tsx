@@ -11,8 +11,10 @@ import { fetchNewVersionIfAvailable } from './services/versioning'
 import * as ErrorReport from './services/ErrorReport'
 import { isJailBroken } from './services/jailbreak'
 
+// NOTE: to enble this ErrorReport service in Development
+ErrorReport.enableInDevelopment()
 ErrorReport.initialize()
-const ErrorBoundary = ErrorReport.getErrorBoundary()
+ErrorReport.notify('test kak 5555')
 
 // HACK: to make (number).toLocaleString to work correctly for Android
 if (Platform.OS === 'android') {
@@ -56,26 +58,24 @@ export default class App extends React.Component<{}, State> {
       )
     }
     return (
-      <ErrorBoundary>
-        <ContextProvider>
-          <AppStateProvider>
-          {!this.state.isReady ? (
-            <MarketPricesContextConsumer>
-              {({ fetchMarketPrices }) => (
-                <AppLoading
-                  startAsync={() => this.loadAssetsAsync(fetchMarketPrices)}
-                  onFinish={() => this.setState({ isReady: true })}
-                  onError={ErrorReport.notify}
-                />)}
-            </MarketPricesContextConsumer>
-          ) : (
-              <AppContainer
-                ref={(navigatorRef: any) => setTopLevelNavigator(navigatorRef)}
-              />
-          )}
-          </AppStateProvider>
-        </ContextProvider>
-      </ErrorBoundary>
+      <ContextProvider>
+        <AppStateProvider>
+        {!this.state.isReady ? (
+          <MarketPricesContextConsumer>
+            {({ fetchMarketPrices }) => (
+              <AppLoading
+                startAsync={() => this.loadAssetsAsync(fetchMarketPrices)}
+                onFinish={() => this.setState({ isReady: true })}
+                onError={ErrorReport.notify}
+              />)}
+          </MarketPricesContextConsumer>
+        ) : (
+            <AppContainer
+              ref={(navigatorRef: any) => setTopLevelNavigator(navigatorRef)}
+            />
+        )}
+        </AppStateProvider>
+      </ContextProvider>
     )
   }
 }
