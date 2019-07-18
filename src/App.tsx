@@ -12,9 +12,7 @@ import * as ErrorReport from './services/ErrorReport'
 import { isJailBroken } from './services/jailbreak'
 
 // NOTE: to enble this ErrorReport service in Development
-ErrorReport.enableInDevelopment()
 ErrorReport.initialize()
-ErrorReport.notify('test kak 5555')
 
 // HACK: to make (number).toLocaleString to work correctly for Android
 if (Platform.OS === 'android') {
