@@ -90,7 +90,11 @@ export async function getCompetitorTHBAmounts (
         providerId
       )
     } catch (err) {
-      ErrorReport.notify(err)
+
+      // NOTE: won't report error when there is no pair for the exchange
+      if (getErrorCode(err) !== 'invalid_request') {
+        ErrorReport.notify(err)
+      }
       amount = getErrorCode(err)
     }
     return [providerId, amount]
