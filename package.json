@@ -46,7 +46,6 @@
     "@babel/core": "^7.0.0-0",
     "@types/bluebird": "^3.5.26",
     "@types/crypto-js": "^3.1.43",
-    "@types/expo": "^32.0.9",
     "@types/expo__vector-icons": "^9.0.1",
     "@types/fbemitter": "2.0.32",
     "@types/jest": "^24.0.11",

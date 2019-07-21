@@ -33,8 +33,8 @@
       "buildNumber": "9"
     },
     "android": {
-      "package": "co.flipay.flipay",
-      "versionCode": 5
+      "package": "co.flip.flipay",
+      "versionCode": 1
     },
     "hooks": {
       "postPublish": [
