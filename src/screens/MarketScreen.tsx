@@ -65,7 +65,7 @@ export default class MarketScreen extends React.Component<Props & NavigationScre
   public renderPriceDetail (crypto: Asset) {
     return (
       <View style={styles.priceContainer}>
-        {crypto.price && <Text style={styles.price} color={COLORS.N800}>{`${showPrice(crypto.price)} THB`}</Text>}
+        {typeof crypto.price === 'number' && <Text style={styles.price} color={COLORS.N800}>{`${showPrice(crypto.price)} THB`}</Text>}
       </View>
     )
   }
@@ -73,7 +73,7 @@ export default class MarketScreen extends React.Component<Props & NavigationScre
   public renderDailyChange (crypto: Asset) {
     return (
       <View style={styles.dailyChange}>
-        {crypto.dailyChange && <ChangeBox value={crypto.dailyChange} style={styles.changeBox} />}
+        {typeof crypto.dailyChange === 'number' && <ChangeBox value={crypto.dailyChange} style={styles.changeBox} />}
       </View>
     )
   }
