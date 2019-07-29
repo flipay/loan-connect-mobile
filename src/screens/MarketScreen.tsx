@@ -1,6 +1,7 @@
 import * as React from 'react'
 import _ from 'lodash'
 import { View, StyleSheet, Image, TouchableOpacity } from 'react-native'
+import { WebView } from 'react-native-webview'
 import { NavigationScreenProps } from 'react-navigation'
 import { showPrice } from '../utils'
 import { Text, Layer, ChangeBox, ScreenWithCover } from '../components'
@@ -109,6 +110,7 @@ export default class MarketScreen extends React.Component<Props & NavigationScre
       <View style={styles.headerContent}>
         <Text type='large-title' bold={true} color={COLORS.WHITE}>Market</Text>
         <Text color={COLORS.WHITE}>See what's going on in crypto market</Text>
+        <WebView source={{ uri: 'https://flipay-charts.firebaseapp.com/' }} style={{ marginTop: 20 }} />
       </View>
     )
   }
@@ -128,7 +130,8 @@ export default class MarketScreen extends React.Component<Props & NavigationScre
 
 const styles = StyleSheet.create({
   headerContent: {
-    marginBottom: 24
+    marginBottom: 24,
+    height: 500
   },
   cryptoContainer: {
   },

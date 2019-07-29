@@ -1274,17 +1274,6 @@
   resolved "https://registry.yarnpkg.com/@types/crypto-js/-/crypto-js-3.1.43.tgz#b859347d6289ba13e347c335a4c9efa63337a748"
   integrity sha512-EHe/YKctU3IYNBsDmSOPX/7jLHPRlx8WaiDKSY9JCTnJ8XJeM4c0ZJvx+9Gxmr2s2ihI92R+3U/gNL1sq5oRuQ==
 
-"@types/expo@^32.0.9":
-  version "32.0.13"
-  resolved "https://registry.yarnpkg.com/@types/expo/-/expo-32.0.13.tgz#c43c9c0ada5e62a466ea427cc922c495345f55a7"
-  integrity sha512-kKU0zpkiyGGB4+A26vT9QmWbQ8/ccu9ui8ek7gDsz8FAk8atAvHQq9WaZpARSNqH6jTn+Ww2tKUo3Mw/cutoQQ==
-  dependencies:
-    "@types/fbemitter" "*"
-    "@types/react" "*"
-    "@types/react-native" "*"
-    react-native-maps "*"
-    react-native-svg "*"
-
 "@types/expo__vector-icons@^9.0.1":
   version "9.0.1"
   resolved "https://registry.yarnpkg.com/@types/expo__vector-icons/-/expo__vector-icons-9.0.1.tgz#46a0a9701cb69e632a05b87aafa7b0f537919896"
@@ -1294,7 +1283,7 @@
     "@types/react-native" "*"
     "@types/react-native-vector-icons" "*"
 
-"@types/fbemitter@*", "@types/fbemitter@2.0.32", "@types/fbemitter@^2.0.32":
+"@types/fbemitter@2.0.32", "@types/fbemitter@^2.0.32":
   version "2.0.32"
   resolved "https://registry.yarnpkg.com/@types/fbemitter/-/fbemitter-2.0.32.tgz#8ed204da0f54e9c8eaec31b1eec91e25132d082c"
   integrity sha1-jtIE2g9U6cjq7DGx7skeJRMtCCw=
@@ -6584,11 +6573,6 @@ react-native-gesture-handler@1.2.1:
     invariant "^2.2.2"
     prop-types "^15.5.10"
 
-react-native-maps@*:
-  version "0.25.0"
-  resolved "https://registry.yarnpkg.com/react-native-maps/-/react-native-maps-0.25.0.tgz#81bc51eb50e33811a9e1c345cc48869413ead67d"
-  integrity sha512-PFJuW1pt+HnnnN0m0OGk29RSvICFVkK/DScX6cUk0SuCSN2DAHx0y6y57lZyYXcYqU4J4usNpfxgp/ccjASDiw==
-
 react-native-maps@0.24.2:
   version "0.24.2"
   resolved "https://registry.yarnpkg.com/react-native-maps/-/react-native-maps-0.24.2.tgz#19974f967cb0c2e24dab74ca879118e0932571b2"
@@ -6633,11 +6617,6 @@ react-native-sentry@^0.42.0:
     "@sentry/wizard" "^0.12.1"
     raven-js "^3.24.2"
 
-react-native-svg@*:
-  version "9.5.3"
-  resolved "https://registry.yarnpkg.com/react-native-svg/-/react-native-svg-9.5.3.tgz#2389f3ffd700c6441166496a1aeade31ead89c59"
-  integrity sha512-VUOe4TLz7RFdmm/XT9EH87VSwlRykx49qbwJMA+dh9eFM7KPY1qH3kEyN7uRCqJD2eE8toxt9NpjR6ByvtPNlA==
-
 react-native-svg@9.4.0:
   version "9.4.0"
   resolved "https://registry.yarnpkg.com/react-native-svg/-/react-native-svg-9.4.0.tgz#e428e0eae55aebd2355f1ff4f22675dad4611960"
@@ -6659,6 +6638,14 @@ react-native-webview@5.8.1:
   version "5.8.1"
   resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-5.8.1.tgz#6f5a83dec55bbc02700155b1a16a668870f14de0"
   integrity sha512-b6pSvmjoiWtcz6YspggW02X+BRXJWuquHwkh37BRx1NMW1iwMZA31SnFQvTpPzWYYIb9WF/mRsy2nGtt9C6NIg==
+  dependencies:
+    escape-string-regexp "1.0.5"
+    invariant "2.2.4"
+
+react-native-webview@~5.8.1:
+  version "5.8.2"
+  resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-5.8.2.tgz#dcc9c802f145183cfc828944350bd43f968aa72c"
+  integrity sha512-WvB5vH3xaxwXbk0RFGDIkM+MEeMfrfkhXdgYW1qj/xUuioeH5lduCpR+sID8+OR35zx+pBuamQ9jSlRGuREJrw==
   dependencies:
     escape-string-regexp "1.0.5"
     invariant "2.2.4"
