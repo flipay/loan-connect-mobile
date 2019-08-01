@@ -123,22 +123,20 @@ class Screen extends React.Component<Props & NavigationScreenProps, State> {
                     )}
                   </View>
                 )}
-                <View style={styles.scrollView}>
-                  <ScrollView keyboardShouldPersistTaps='handled'>
-                    <View
-                      style={[
-                        styles.content,
-                        this.hasHeader() && styles.contentWithHeader,
-                        this.props.style
-                      ]}
-                    >
-                      {this.props.children(
-                        this.state.keyboardAvoidingViewKey ===
-                          DEFAULT_KEYBOARD_KEY
-                      )}
-                    </View>
-                  </ScrollView>
-                </View>
+                <ScrollView keyboardShouldPersistTaps='handled'>
+                  <View
+                    style={[
+                      styles.content,
+                      this.hasHeader() && styles.contentWithHeader,
+                      this.props.style
+                    ]}
+                  >
+                    {this.props.children(
+                      this.state.keyboardAvoidingViewKey ===
+                        DEFAULT_KEYBOARD_KEY
+                    )}
+                  </View>
+                </ScrollView>
                 {this.props.renderFooter && this.props.renderFooter()}
                 {this.props.onPessSubmitButton && (
                   <SubmitButton
@@ -166,10 +164,6 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: COLORS.WHITE
-  },
-  scrollView: {
-    height: 100,
-    flex: 1
   },
   safeArea: {
     marginTop: Platform.OS === 'android' ? Constants.statusBarHeight : 20,
