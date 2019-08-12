@@ -10,7 +10,7 @@ import { toString } from '../utils'
 import { logEvent } from '../services/Analytic'
 import AutoHeightWebView from 'react-native-autoheight-webview'
 
-export default class CryptoScreen extends React.Component<NavigationScreenProps, State> {
+export default class CryptoScreen extends React.Component<NavigationScreenProps> {
   public onPressBackButton = () => {
     const assetId: AssetId = this.props.navigation.getParam('id')
     logEvent('crypto/press-back-button', { assetId })
@@ -41,7 +41,7 @@ export default class CryptoScreen extends React.Component<NavigationScreenProps,
         <AutoHeightWebView
           source={{ uri: `http://41acce1c.ngrok.io/?crypto=${assetId}&width=${width}` }}
           scrollEnabled={false}
-          style={{ width, marginTop: 20, backgroundColor: 'black' }}
+          style={{ width, marginTop: 24 }}
           zoomable={false}
         />
       </View>
