@@ -31,6 +31,7 @@ export default class CryptoScreen extends React.Component<NavigationScreenProps>
     const dailyChange = this.props.navigation.getParam('dailyChange')
     const { width } = Dimensions.get('window')
     const height = 200
+
     return this.renderSection(
       <View style={styles.priceSection}>
         <View style={styles.price}>
@@ -40,7 +41,7 @@ export default class CryptoScreen extends React.Component<NavigationScreenProps>
         <ChangeBox value={dailyChange} />
         <Text type='caption' style={styles.dailyChange}>24hr change</Text>
         <WebView
-          source={{ uri: `http://b7b46e10.ngrok.io/?crypto=bitcoin&width=${width}&height=${height}` }}
+          source={{ uri: `http://b7b46e10.ngrok.io/?crypto=${ASSETS[assetId].coinStatsId}&width=${width}&height=${height}` }}
           scrollEnabled={false}
           style={{ width, height, marginTop: 24 }}
         />
