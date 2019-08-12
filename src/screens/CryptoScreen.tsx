@@ -8,7 +8,7 @@ import { AssetId, OrderType } from '../types'
 import { ASSETS, COLORS } from '../constants'
 import { toString } from '../utils'
 import { logEvent } from '../services/Analytic'
-import AutoHeightWebView from 'react-native-autoheight-webview'
+import { WebView } from 'react-native-webview'
 
 export default class CryptoScreen extends React.Component<NavigationScreenProps> {
   public onPressBackButton = () => {
@@ -30,6 +30,7 @@ export default class CryptoScreen extends React.Component<NavigationScreenProps>
     const price = this.props.navigation.getParam('price')
     const dailyChange = this.props.navigation.getParam('dailyChange')
     const { width } = Dimensions.get('window')
+    const height = 200
     return this.renderSection(
       <View style={styles.priceSection}>
         <View style={styles.price}>
@@ -38,11 +39,10 @@ export default class CryptoScreen extends React.Component<NavigationScreenProps>
         </View>
         <ChangeBox value={dailyChange} />
         <Text type='caption' style={styles.dailyChange}>24hr change</Text>
-        <AutoHeightWebView
-          source={{ uri: `http://41acce1c.ngrok.io/?crypto=${assetId}&width=${width}` }}
+        <WebView
+          source={{ uri: `http://b7b46e10.ngrok.io/?crypto=bitcoin&width=${width}&height=${height}` }}
           scrollEnabled={false}
-          style={{ width, marginTop: 24 }}
-          zoomable={false}
+          style={{ width, height, marginTop: 24 }}
         />
       </View>
     , true)
