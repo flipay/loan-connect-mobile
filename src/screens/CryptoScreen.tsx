@@ -8,9 +8,9 @@ import { AssetId, OrderType } from '../types'
 import { ASSETS, COLORS } from '../constants'
 import { toString } from '../utils'
 import { logEvent } from '../services/Analytic'
-import { WebView } from 'react-native-webview'
+import AutoHeightWebView from 'react-native-autoheight-webview'
 
-export default class CryptoScreen extends React.Component<NavigationScreenProps> {
+export default class CryptoScreen extends React.Component<NavigationScreenProps, State> {
   public onPressBackButton = () => {
     const assetId: AssetId = this.props.navigation.getParam('id')
     logEvent('crypto/press-back-button', { assetId })
@@ -38,10 +38,11 @@ export default class CryptoScreen extends React.Component<NavigationScreenProps>
         </View>
         <ChangeBox value={dailyChange} />
         <Text type='caption' style={styles.dailyChange}>24hr change</Text>
-        <WebView
+        <AutoHeightWebView
           source={{ uri: `http://41acce1c.ngrok.io/?crypto=${assetId}&width=${width}` }}
           scrollEnabled={false}
-          style={{ width, marginTop: 20, height: 400, backgroundColor: 'black' }}
+          style={{ width, marginTop: 20, backgroundColor: 'black' }}
+          zoomable={false}
         />
       </View>
     , true)

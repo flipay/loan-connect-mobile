@@ -6552,6 +6552,13 @@ react-lifecycles-compat@^3.0.2, react-lifecycles-compat@^3.0.4:
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
 
+react-native-autoheight-webview@^1.1.6:
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/react-native-autoheight-webview/-/react-native-autoheight-webview-1.1.6.tgz#16779560d617cabdce7e2000ec9b78d0035bb92a"
+  integrity sha512-YifeoSgte/JUGYTkWkG1/I0aiH9WtuUqtqlb7EOht7MDX0GAgKQih03wfVswLRPEhQH05hk+wGzlNCJRLBs8Hw==
+  dependencies:
+    prop-types "^15.7.2"
+
 react-native-branch@2.2.5:
   version "2.2.5"
   resolved "https://registry.yarnpkg.com/react-native-branch/-/react-native-branch-2.2.5.tgz#4074dd63b4973e6397d9ce50e97b57c77a518e9d"
