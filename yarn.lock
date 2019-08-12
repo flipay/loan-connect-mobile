@@ -6696,6 +6696,14 @@ react-native-webview@5.8.1:
     escape-string-regexp "1.0.5"
     invariant "2.2.4"
 
+react-native-webview@~5.8.1:
+  version "5.8.2"
+  resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-5.8.2.tgz#dcc9c802f145183cfc828944350bd43f968aa72c"
+  integrity sha512-WvB5vH3xaxwXbk0RFGDIkM+MEeMfrfkhXdgYW1qj/xUuioeH5lduCpR+sID8+OR35zx+pBuamQ9jSlRGuREJrw==
+  dependencies:
+    escape-string-regexp "1.0.5"
+    invariant "2.2.4"
+
 "react-native@https://github.com/expo/react-native/archive/sdk-33.0.0.tar.gz":
   version "0.59.8"
   resolved "https://github.com/expo/react-native/archive/sdk-33.0.0.tar.gz#970a32631977dbe7158f024abc23e4c0c0975058"
@@ -8419,9 +8427,9 @@ xcode@^2.0.0:
     simple-plist "^1.0.0"
     uuid "^3.3.2"
 
-"xcode@git+https://github.com/apache/cordova-node-xcode.git#e7646f0680d509b590b839e567c217590451505b":
+"xcode@https://github.com/apache/cordova-node-xcode#e7646f0680d509b590b839e567c217590451505b":
   version "1.0.1-dev"
-  resolved "git+https://github.com/apache/cordova-node-xcode.git#e7646f0680d509b590b839e567c217590451505b"
+  resolved "https://github.com/apache/cordova-node-xcode#e7646f0680d509b590b839e567c217590451505b"
   dependencies:
     simple-plist "^0.2.1"
     uuid "3.0.1"

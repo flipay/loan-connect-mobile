@@ -36,6 +36,7 @@
     "react-native": "https://github.com/expo/react-native/archive/sdk-33.0.0.tar.gz",
     "react-native-autoheight-webview": "^1.1.6",
     "react-native-dropdownalert": "^3.7.1",
+    "react-native-webview": "~5.8.1",
     "react-navigation": "^3.11.0",
     "react-redux": "^6.0.0",
     "recompose": "^0.30.0",
