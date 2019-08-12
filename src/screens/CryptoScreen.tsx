@@ -1,7 +1,7 @@
 
 import * as React from 'react'
 import _ from 'lodash'
-import { View, StyleSheet } from 'react-native'
+import { View, StyleSheet, Dimensions } from 'react-native'
 import { Text, Screen, Asset, Button, Layer, ChangeBox } from '../components'
 import { NavigationScreenProps } from 'react-navigation'
 import { AssetId, OrderType } from '../types'
@@ -26,8 +26,10 @@ export default class CryptoScreen extends React.Component<NavigationScreenProps>
   }
 
   public renderPriceSection () {
+    const assetId: AssetId = this.props.navigation.getParam('id')
     const price = this.props.navigation.getParam('price')
     const dailyChange = this.props.navigation.getParam('dailyChange')
+    const { width } = Dimensions.get('window')
     return this.renderSection(
       <View style={styles.priceSection}>
         <View style={styles.price}>
@@ -36,7 +38,11 @@ export default class CryptoScreen extends React.Component<NavigationScreenProps>
         </View>
         <ChangeBox value={dailyChange} />
         <Text type='caption' style={styles.dailyChange}>24hr change</Text>
-        <WebView source={{ uri: `http://41acce1c.ngrok.io/?crypto=XRP&width=400` }} style={{ width: 400, marginTop: 20, height: 400 }} />
+        <WebView
+          source={{ uri: `http://41acce1c.ngrok.io/?crypto=${assetId}&width=${width}` }}
+          scrollEnabled={false}
+          style={{ width, marginTop: 20, height: 400, backgroundColor: 'black' }}
+        />
       </View>
     , true)
   }
