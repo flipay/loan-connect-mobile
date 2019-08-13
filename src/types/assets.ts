@@ -6,6 +6,7 @@ type PriceSource = 'bxth' | 'binance'
 export interface Asset {
   id: AssetId
   name: string
+  coinStatsId?: string
   image: ImageSourcePropType
   unit: string
   decimal: number
