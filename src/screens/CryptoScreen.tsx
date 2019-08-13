@@ -88,12 +88,10 @@ export default class CryptoScreen extends React.Component<NavigationScreenProps>
         renderFooter={this.renderFooter}
         onPressBackButton={this.onPressBackButton}
       >
-        {() => (
-          <View style={{ flex: 1 }}>
-            {this.renderPriceSection()}
-            {this.renderAboutSection()}
-          </View>
-        )}
+        <View style={{ flex: 1 }}>
+          {this.renderPriceSection()}
+          {this.renderAboutSection()}
+        </View>
       </Screen>
     )
   }

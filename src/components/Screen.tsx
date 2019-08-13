@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   StatusBar,
   Platform,
-  Keyboard,
   ScrollView
 } from 'react-native'
 import Constants from 'expo-constants'
@@ -35,29 +34,13 @@ interface Props {
   style?: any
 }
 
-interface State {
-  keyboardAvoidingViewKey: string
-}
-
-const DEFAULT_KEYBOARD_KEY = 'keyboardAvoidingViewKey'
-
-class Screen extends React.Component<Props & NavigationScreenProps, State> {
+class Screen extends React.Component<Props & NavigationScreenProps> {
   public static defaultProps = {
     backButtonType: 'arrowleft'
   }
-  private keyboardHideListener: any
   private willFocusSubscription: any
 
-  public constructor (props: Props & NavigationScreenProps) {
-    super(props)
-    this.state = {
-      keyboardAvoidingViewKey: DEFAULT_KEYBOARD_KEY
-    }
-  }
-
   public componentDidMount () {
-    // using keyboardWillHide is better but it does not work for android
-
     this.willFocusSubscription = this.props.navigation.addListener(
       'willFocus',
       () => {
@@ -65,22 +48,10 @@ class Screen extends React.Component<Props & NavigationScreenProps, State> {
         StatusBar.setBarStyle('dark-content')
       }
     )
-
-    this.keyboardHideListener = Keyboard.addListener(
-      Platform.OS === 'android' ? 'keyboardDidHide' : 'keyboardWillHide',
-      this.handleKeyboardHide.bind(this)
-    )
   }
 
   public componentWillUnmount () {
-    this.keyboardHideListener.remove()
     this.willFocusSubscription.remove()
-  }
-
-  public handleKeyboardHide () {
-    this.setState({
-      keyboardAvoidingViewKey: 'keyboardAvoidingViewKey' + new Date().getTime()
-    })
   }
 
   public hasHeader () {
@@ -98,7 +69,6 @@ class Screen extends React.Component<Props & NavigationScreenProps, State> {
     return (
       <View style={styles.screen}>
         <KeyboardAvoidingView
-          key={this.state.keyboardAvoidingViewKey}
           style={styles.screen}
           behavior='height'
         >
@@ -131,10 +101,7 @@ class Screen extends React.Component<Props & NavigationScreenProps, State> {
                       this.props.style
                     ]}
                   >
-                    {this.props.children(
-                      this.state.keyboardAvoidingViewKey ===
-                        DEFAULT_KEYBOARD_KEY
-                    )}
+                    {this.props.children}
                   </View>
                 </ScrollView>
                 {this.props.renderFooter && this.props.renderFooter()}

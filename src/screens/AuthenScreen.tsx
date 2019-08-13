@@ -60,27 +60,25 @@ export default class AuthenScreen extends React.Component<
         onPessSubmitButton={this.onPressSubmit}
         fullScreenLoading={this.state.loading}
       >
-        {(autoFocus: boolean) => (
-          <SafeAreaView>
-            <Text type='title' style={styles.title}>Enter your mobile number</Text>
-              <Layer
-                style={styles.layer}
-                active={this.state.activeLayer}
-              >
-                <TextInput
-                  onFocus={() => this.setState({ activeLayer: true })}
-                  onBlur={() => this.setState({ activeLayer: false })}
-                  autoFocus={autoFocus}
-                  keyboardType='number-pad'
-                  textContentType='none'
-                  placeholder='0899999999'
-                  onChangeText={this.onChangeText}
-                  maxLength={10}
-                  value={this.state.phoneNumber}
-                />
-              </Layer>
-          </SafeAreaView>
-        )}
+        <SafeAreaView>
+          <Text type='title' style={styles.title}>Enter your mobile number</Text>
+            <Layer
+              style={styles.layer}
+              active={this.state.activeLayer}
+            >
+              <TextInput
+                onFocus={() => this.setState({ activeLayer: true })}
+                onBlur={() => this.setState({ activeLayer: false })}
+                autoFocus={true}
+                keyboardType='number-pad'
+                textContentType='none'
+                placeholder='0899999999'
+                onChangeText={this.onChangeText}
+                maxLength={10}
+                value={this.state.phoneNumber}
+              />
+            </Layer>
+        </SafeAreaView>
       </Screen>
     )
   }
