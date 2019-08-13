@@ -15,6 +15,7 @@ import { COLORS } from '../constants'
 import Text from './Text'
 import SubmitButton from './SubmitButton'
 import FullScreenLoading from './FullScreenLoading'
+import * as Device from '../services/Device'
 import { logEvent } from '../services/Analytic'
 import { getCurrentRouteName } from '../services/navigation'
 import { withNavigation, NavigationScreenProps } from 'react-navigation'
@@ -106,13 +107,16 @@ class Screen extends React.Component<Props & NavigationScreenProps> {
                 </ScrollView>
                 {this.props.renderFooter && this.props.renderFooter()}
                 {this.props.onPessSubmitButton && (
-                  <SubmitButton
-                    onPress={this.props.onPessSubmitButton}
-                    active={this.props.activeSubmitButton}
-                    gradient={this.props.gradientSubmitButton}
-                  >
-                    {this.props.submitButtonText || 'Next'}
-                  </SubmitButton>
+                  <View>
+                    <SubmitButton
+                      onPress={this.props.onPessSubmitButton}
+                      active={this.props.activeSubmitButton}
+                      gradient={this.props.gradientSubmitButton}
+                    >
+                      {this.props.submitButtonText || 'Next'}
+                    </SubmitButton>
+                    {Device.isIphoneX() && <View style={styles.iphoneXFooter} />}
+                  </View>
                 )}
               </View>
             </View>
@@ -166,5 +170,9 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0
+  },
+  iphoneXFooter: {
+    height: 34,
+    backgroundColor: COLORS.P500
   }
 })
