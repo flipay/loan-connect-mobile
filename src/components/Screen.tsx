@@ -8,8 +8,7 @@ import {
   StatusBar,
   Platform,
   Keyboard,
-  ScrollView,
-  SafeAreaView
+  ScrollView
 } from 'react-native'
 import Constants from 'expo-constants'
 import { AntDesign } from '@expo/vector-icons'
@@ -103,7 +102,6 @@ class Screen extends React.Component<Props & NavigationScreenProps, State> {
           style={styles.screen}
           behavior='height'
         >
-          <SafeAreaView style={styles.safeAreaContainer}>
             <View style={styles.safeArea}>
               <View style={styles.container}>
                 {this.hasHeader() && (
@@ -154,7 +152,6 @@ class Screen extends React.Component<Props & NavigationScreenProps, State> {
             {this.props.fullScreenLoading && (
               <FullScreenLoading visible={this.props.fullScreenLoading} />
             )}
-          </SafeAreaView>
         </KeyboardAvoidingView>
       </View>
     )
@@ -168,11 +165,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.WHITE
   },
-  safeAreaContainer: {
-    flex: 1,
-    marginTop: Platform.OS === 'android' ? Constants.statusBarHeight : 0
-  },
   safeArea: {
+    marginTop: Platform.OS === 'android' ? Constants.statusBarHeight : 20,
     flex: 1
   },
   container: {
