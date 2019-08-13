@@ -42,7 +42,7 @@ export default class CryptoScreen extends React.Component<NavigationScreenProps>
         <ChangeBox value={dailyChange} />
         <Text type='caption' style={styles.dailyChange}>24hr change</Text>
         <WebView
-          source={{ uri: `http://b7b46e10.ngrok.io/?crypto=${ASSETS[assetId].coinStatsId}&width=${width}&height=${height}&color=${colorCode}` }}
+          source={{ uri: `https://flipay-charts.firebaseapp.com/?crypto=${ASSETS[assetId].coinStatsId}&width=${width}&height=${height}&color=${colorCode}` }}
           scrollEnabled={false}
           style={{ width, height, marginTop: 24 }}
         />
