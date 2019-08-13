@@ -30,7 +30,7 @@ export default class CryptoScreen extends React.Component<NavigationScreenProps>
     const price = this.props.navigation.getParam('price')
     const dailyChange = this.props.navigation.getParam('dailyChange')
     const { width } = Dimensions.get('window')
-    const color = dailyChange >= 0 ? COLORS.P400 : COLORS.R400
+    const color = dailyChange >= 0 ? COLORS.G400 : COLORS.R400
     const height = 200
     const colorCode = color.substring(1)
     return this.renderSection(
