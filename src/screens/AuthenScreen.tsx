@@ -72,7 +72,7 @@ export default class AuthenScreen extends React.Component<
                   onBlur={() => this.setState({ activeLayer: false })}
                   autoFocus={autoFocus}
                   keyboardType='number-pad'
-                  textContentType='telephoneNumber'
+                  textContentType='none'
                   placeholder='0899999999'
                   onChangeText={this.onChangeText}
                   maxLength={10}
