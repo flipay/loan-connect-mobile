@@ -30,8 +30,9 @@ export default class CryptoScreen extends React.Component<NavigationScreenProps>
     const price = this.props.navigation.getParam('price')
     const dailyChange = this.props.navigation.getParam('dailyChange')
     const { width } = Dimensions.get('window')
+    const color = dailyChange >= 0 ? COLORS.P400 : COLORS.R400
     const height = 200
-
+    const colorCode = color.substring(1)
     return this.renderSection(
       <View style={styles.priceSection}>
         <View style={styles.price}>
@@ -41,7 +42,7 @@ export default class CryptoScreen extends React.Component<NavigationScreenProps>
         <ChangeBox value={dailyChange} />
         <Text type='caption' style={styles.dailyChange}>24hr change</Text>
         <WebView
-          source={{ uri: `http://b7b46e10.ngrok.io/?crypto=${ASSETS[assetId].coinStatsId}&width=${width}&height=${height}` }}
+          source={{ uri: `http://b7b46e10.ngrok.io/?crypto=${ASSETS[assetId].coinStatsId}&width=${width}&height=${height}&color=${colorCode}` }}
           scrollEnabled={false}
           style={{ width, height, marginTop: 24 }}
         />
