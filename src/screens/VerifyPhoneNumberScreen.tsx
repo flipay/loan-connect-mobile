@@ -296,7 +296,7 @@ export default class VerifyPhoneNumberScreen extends React.Component<
     }
   }
 
-  public renderHiddenTextInput (autoFocus: boolean) {
+  public renderHiddenTextInput () {
     return (
       <TextInput
         style={styles.hiddenTextInput}
@@ -305,7 +305,7 @@ export default class VerifyPhoneNumberScreen extends React.Component<
         }}
         keyboardType='number-pad'
         selectTextOnFocus={false}
-        autoFocus={autoFocus}
+        autoFocus={true}
         onChangeText={this.onChangeText}
         maxLength={6}
         value={this.state.otp}
@@ -327,17 +327,15 @@ export default class VerifyPhoneNumberScreen extends React.Component<
         activeSubmitButton={this.state.verified}
         fullScreenLoading={this.state.loading}
       >
-        {(autoFocus: boolean) => (
-          <SafeAreaView style={styles.content}>
-            <Text type='title'>{`Enter the 6-digit code sent to ${this.props.navigation.getParam(
-              'phoneNumber',
-              '08XXXXXXXX'
-            )} (Ref: ${this.props.navigation.getParam('refCode', 'XXXX')})`}</Text>
-            {this.renderBoxes()}
-            {this.renderBody()}
-            {this.renderHiddenTextInput(autoFocus)}
-          </SafeAreaView>
-        )}
+        <SafeAreaView style={styles.content}>
+          <Text type='title'>{`Enter the 6-digit code sent to ${this.props.navigation.getParam(
+            'phoneNumber',
+            '08XXXXXXXX'
+          )} (Ref: ${this.props.navigation.getParam('refCode', 'XXXX')})`}</Text>
+          {this.renderBoxes()}
+          {this.renderBody()}
+          {this.renderHiddenTextInput()}
+        </SafeAreaView>
       </Screen>
     )
   }

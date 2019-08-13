@@ -102,23 +102,21 @@ export default class AccountScreen extends React.Component<
   public render () {
     return (
       <Screen>
-        {() => (
-          <View>
-            <View style={styles.header}>
-              <View style={styles.headerDetail}>
-                <Text type='caption'>ACCOUNT</Text>
-                <Text type='title'>
-                  {this.state.phoneNumber || '08XXXXXXXX'}
-                </Text>
-              </View>
-              <Image
-                source={require('../img/default_avatar.png')}
-                style={{ width: 60, height: 60 }}
-              />
+        <View>
+          <View style={styles.header}>
+            <View style={styles.headerDetail}>
+              <Text type='caption'>ACCOUNT</Text>
+              <Text type='title'>
+                {this.state.phoneNumber || '08XXXXXXXX'}
+              </Text>
             </View>
-            {this.renderList()}
+            <Image
+              source={require('../img/default_avatar.png')}
+              style={{ width: 60, height: 60 }}
+            />
           </View>
-        )}
+          {this.renderList()}
+        </View>
       </Screen>
     )
   }

@@ -73,40 +73,38 @@ export default class CollectInfo extends React.Component<NavigationScreenProps, 
         activeSubmitButton={this.isButtonActive()}
         onPessSubmitButton={this.onPressSubmitButton}
       >
-        {(autoFocus: boolean) => (
-          <View style={styles.screen}>
-            <Text type='title'>
-              Let us know more about yourself.
-            </Text>
-            <View style={styles.nameRow}>
-              <TextBox
-                autoFocus={autoFocus}
-                label='First name'
-                onPress={this.onPressFirstName}
-                onChangeValue={(value) => this.setState({ firstName: value })}
-                value={this.state.firstName}
-                active={this.state.activeBox === 'firstName'}
-              />
-              <View style={styles.space} />
-              <TextBox
-                label='Last name'
-                onPress={this.onPressLastName}
-                onChangeValue={(value) => this.setState({ lastName: value })}
-                value={this.state.lastName}
-                active={this.state.activeBox === 'lastName'}
-              />
-            </View>
+        <View style={styles.screen}>
+          <Text type='title'>
+            Let us know more about yourself.
+          </Text>
+          <View style={styles.nameRow}>
             <TextBox
-              label='Email address'
-              onPress={this.onPressEmail}
-              onChangeValue={(value) => this.setState({ email: value })}
-              value={this.state.email}
-              validate={this.validateEmail}
-              errorMessage='Incorrect email format'
-              active={this.state.activeBox === 'email'}
+              autoFocus={true}
+              label='First name'
+              onPress={this.onPressFirstName}
+              onChangeValue={(value) => this.setState({ firstName: value })}
+              value={this.state.firstName}
+              active={this.state.activeBox === 'firstName'}
+            />
+            <View style={styles.space} />
+            <TextBox
+              label='Last name'
+              onPress={this.onPressLastName}
+              onChangeValue={(value) => this.setState({ lastName: value })}
+              value={this.state.lastName}
+              active={this.state.activeBox === 'lastName'}
             />
           </View>
-        )}
+          <TextBox
+            label='Email address'
+            onPress={this.onPressEmail}
+            onChangeValue={(value) => this.setState({ email: value })}
+            value={this.state.email}
+            validate={this.validateEmail}
+            errorMessage='Incorrect email format'
+            active={this.state.activeBox === 'email'}
+          />
+        </View>
       </Screen>
     )
   }

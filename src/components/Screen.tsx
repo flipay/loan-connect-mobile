@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   StatusBar,
   Platform,
-  Keyboard,
   ScrollView
 } from 'react-native'
 import Constants from 'expo-constants'
@@ -16,6 +15,7 @@ import { COLORS } from '../constants'
 import Text from './Text'
 import SubmitButton from './SubmitButton'
 import FullScreenLoading from './FullScreenLoading'
+import * as Device from '../services/Device'
 import { logEvent } from '../services/Analytic'
 import { getCurrentRouteName } from '../services/navigation'
 import { withNavigation, NavigationScreenProps } from 'react-navigation'
@@ -35,29 +35,13 @@ interface Props {
   style?: any
 }
 
-interface State {
-  keyboardAvoidingViewKey: string
-}
-
-const DEFAULT_KEYBOARD_KEY = 'keyboardAvoidingViewKey'
-
-class Screen extends React.Component<Props & NavigationScreenProps, State> {
+class Screen extends React.Component<Props & NavigationScreenProps> {
   public static defaultProps = {
     backButtonType: 'arrowleft'
   }
-  private keyboardHideListener: any
   private willFocusSubscription: any
 
-  public constructor (props: Props & NavigationScreenProps) {
-    super(props)
-    this.state = {
-      keyboardAvoidingViewKey: DEFAULT_KEYBOARD_KEY
-    }
-  }
-
   public componentDidMount () {
-    // using keyboardWillHide is better but it does not work for android
-
     this.willFocusSubscription = this.props.navigation.addListener(
       'willFocus',
       () => {
@@ -65,22 +49,10 @@ class Screen extends React.Component<Props & NavigationScreenProps, State> {
         StatusBar.setBarStyle('dark-content')
       }
     )
-
-    this.keyboardHideListener = Keyboard.addListener(
-      Platform.OS === 'android' ? 'keyboardDidHide' : 'keyboardWillHide',
-      this.handleKeyboardHide.bind(this)
-    )
   }
 
   public componentWillUnmount () {
-    this.keyboardHideListener.remove()
     this.willFocusSubscription.remove()
-  }
-
-  public handleKeyboardHide () {
-    this.setState({
-      keyboardAvoidingViewKey: 'keyboardAvoidingViewKey' + new Date().getTime()
-    })
   }
 
   public hasHeader () {
@@ -98,7 +70,6 @@ class Screen extends React.Component<Props & NavigationScreenProps, State> {
     return (
       <View style={styles.screen}>
         <KeyboardAvoidingView
-          key={this.state.keyboardAvoidingViewKey}
           style={styles.screen}
           behavior='height'
         >
@@ -131,21 +102,21 @@ class Screen extends React.Component<Props & NavigationScreenProps, State> {
                       this.props.style
                     ]}
                   >
-                    {this.props.children(
-                      this.state.keyboardAvoidingViewKey ===
-                        DEFAULT_KEYBOARD_KEY
-                    )}
+                    {this.props.children}
                   </View>
                 </ScrollView>
                 {this.props.renderFooter && this.props.renderFooter()}
                 {this.props.onPessSubmitButton && (
-                  <SubmitButton
-                    onPress={this.props.onPessSubmitButton}
-                    active={this.props.activeSubmitButton}
-                    gradient={this.props.gradientSubmitButton}
-                  >
-                    {this.props.submitButtonText || 'Next'}
-                  </SubmitButton>
+                  <View>
+                    <SubmitButton
+                      onPress={this.props.onPessSubmitButton}
+                      active={this.props.activeSubmitButton}
+                      gradient={this.props.gradientSubmitButton}
+                    >
+                      {this.props.submitButtonText || 'Next'}
+                    </SubmitButton>
+                    {Device.isIphoneX() && <View style={styles.iphoneXFooter} />}
+                  </View>
                 )}
               </View>
             </View>
@@ -199,5 +170,9 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0
+  },
+  iphoneXFooter: {
+    height: 34,
+    backgroundColor: COLORS.P500
   }
 })

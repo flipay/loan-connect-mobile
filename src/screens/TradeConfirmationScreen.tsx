@@ -274,11 +274,9 @@ export default class TradeConfirmationScreen extends React.Component<
         onPessSubmitButton={this.execute}
         fullScreenLoading={this.state.submitPressed}
       >
-        {() => (
-          <View style={styles.bodyContainer}>
-            {this.renderConfirmationBody()}
-          </View>
-        )}
+        <View style={styles.bodyContainer}>
+          {this.renderConfirmationBody()}
+        </View>
       </Screen>
     ) : this.renderExecutedScreen()
   }
