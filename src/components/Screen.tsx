@@ -107,16 +107,13 @@ class Screen extends React.Component<Props & NavigationScreenProps> {
                 </ScrollView>
                 {this.props.renderFooter && this.props.renderFooter()}
                 {this.props.onPessSubmitButton && (
-                  <View>
-                    <SubmitButton
-                      onPress={this.props.onPessSubmitButton}
-                      active={this.props.activeSubmitButton}
-                      gradient={this.props.gradientSubmitButton}
-                    >
-                      {this.props.submitButtonText || 'Next'}
-                    </SubmitButton>
-                    {Device.isIphoneX() && <View style={styles.iphoneXFooter} />}
-                  </View>
+                  <SubmitButton
+                    onPress={this.props.onPessSubmitButton}
+                    active={this.props.activeSubmitButton}
+                    gradient={this.props.gradientSubmitButton}
+                  >
+                    {this.props.submitButtonText || 'Next'}
+                  </SubmitButton>
                 )}
               </View>
             </View>
@@ -124,6 +121,7 @@ class Screen extends React.Component<Props & NavigationScreenProps> {
               <FullScreenLoading visible={this.props.fullScreenLoading} />
             )}
         </KeyboardAvoidingView>
+        {this.props.onPessSubmitButton && Device.isIphoneX() && <View style={this.props.activeSubmitButton ? styles.iphoneXFooter : styles.inactiveIphoneXFooter} />}
       </View>
     )
   }
@@ -131,13 +129,26 @@ class Screen extends React.Component<Props & NavigationScreenProps> {
 
 export default withNavigation(Screen)
 
+function getTopSafeArea () {
+  if (Platform.OS === 'android') {
+    return Constants.statusBarHeight
+  } else {
+    if (Device.isIphoneX()) {
+      return 44
+    } else {
+      return 20
+    }
+  }
+
+}
+
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: COLORS.WHITE
   },
   safeArea: {
-    marginTop: Platform.OS === 'android' ? Constants.statusBarHeight : 20,
+    marginTop: getTopSafeArea(),
     flex: 1
   },
   container: {
@@ -174,5 +185,9 @@ const styles = StyleSheet.create({
   iphoneXFooter: {
     height: 34,
     backgroundColor: COLORS.P500
+  },
+  inactiveIphoneXFooter: {
+    height: 34,
+    backgroundColor: COLORS.P200
   }
 })
