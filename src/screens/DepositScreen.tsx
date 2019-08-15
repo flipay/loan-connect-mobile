@@ -165,11 +165,9 @@ export default class DepositScreen extends React.Component<
         fullScreenLoading={false}
         title={`Deposit ${ASSETS[assetId].name}`}
       >
-        {(autoFocus: boolean) => (
-          <View style={styles.body}>
-            {this.renderSteps()}
-          </View>
-        )}
+        <View style={styles.body}>
+          {this.renderSteps()}
+        </View>
       </Screen>
     )
   }

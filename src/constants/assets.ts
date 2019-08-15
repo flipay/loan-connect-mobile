@@ -18,6 +18,7 @@ export const ASSETS: AssetTypes = {
   BTC: {
     id: 'BTC',
     name: 'Bitcoin',
+    coinStatsId: 'bitcoin',
     image: require('../img/icon_btc.png'),
     unit: 'BTC',
     decimal: 8,
@@ -29,6 +30,7 @@ export const ASSETS: AssetTypes = {
   ETH: {
     id: 'ETH',
     name: 'Ethereum',
+    coinStatsId: 'ethereum',
     image: require('../img/icon_eth.png'),
     unit: 'ETH',
     decimal: 6,
@@ -40,6 +42,7 @@ export const ASSETS: AssetTypes = {
   XRP: {
     id: 'XRP',
     name: 'XRP',
+    coinStatsId: 'ripple',
     image: require('../img/icon_xrp.png'),
     unit: 'XRP',
     decimal: 2,
@@ -52,6 +55,7 @@ export const ASSETS: AssetTypes = {
   BNB: {
     id: 'BNB',
     name: 'Binance Coin',
+    coinStatsId: 'binance-coin',
     image: require('../img/icon_bnb.png'),
     unit: 'BNB',
     decimal: 5,
@@ -63,6 +67,7 @@ export const ASSETS: AssetTypes = {
   OMG: {
     id: 'OMG',
     name: 'OmiseGo',
+    coinStatsId: 'omisego',
     image: require('../img/icon_omg.png'),
     unit: 'OMG',
     decimal: 4,

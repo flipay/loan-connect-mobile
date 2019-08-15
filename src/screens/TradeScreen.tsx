@@ -297,7 +297,7 @@ export default class TradeScreen extends React.Component<
     )
   }
 
-  public renderTradeBody (autoFocus: boolean) {
+  public renderTradeBody () {
     const side = this.props.navigation.getParam('side', 'buy')
     const assetId: AssetId = this.props.navigation.getParam('assetId', 'BTC')
     const remainingBalance = this.props.balances && this.props.balances[side === 'buy' ? 'THB' : assetId]
@@ -306,7 +306,7 @@ export default class TradeScreen extends React.Component<
       <View style={styles.body}>
         <View style={styles.assetBoxesContainer}>
           <AssetBoxWithBalance
-            autoFocus={autoFocus}
+            autoFocus={true}
             description={side === 'buy' ? 'You buy with' : 'You sell'}
             assetId={giveSideAssetId}
             onPress={() => this.onPressAssetBox('give')}
@@ -365,11 +365,9 @@ export default class TradeScreen extends React.Component<
         activeSubmitButton={this.isSubmitable()}
         onPessSubmitButton={this.goToReview}
       >
-        {(autoFocus: boolean) => (
-          <View style={styles.bodyContainer}>
-            {this.renderTradeBody(autoFocus)}
-          </View>
-        )}
+        <View style={styles.bodyContainer}>
+          {this.renderTradeBody()}
+        </View>
       </Screen>
     )
   }
