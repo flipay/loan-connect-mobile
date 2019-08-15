@@ -171,7 +171,7 @@ export default class WithdrawalScreen extends React.Component<
         submitButtonText={this.state.submitted ? 'OK' : 'Submit'}
         onPessSubmitButton={this.onPressSubmit}
         fullScreenLoading={false}
-        title={`Withdraw ${ASSETS[assetId].name}`}
+        header={`Withdraw ${ASSETS[assetId].name}`}
       >
         <View style={styles.container}>
           {this.state.submitted

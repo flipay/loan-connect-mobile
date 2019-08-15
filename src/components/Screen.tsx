@@ -21,7 +21,7 @@ import { getCurrentRouteName } from '../services/navigation'
 import { withNavigation, NavigationScreenProps } from 'react-navigation'
 
 interface Props {
-  title?: string | any
+  header?: string | any
   noHeaderLine?: boolean
   renderFooter?: () => any
   children: (autoFocus: boolean) => any
@@ -56,14 +56,14 @@ class Screen extends React.Component<Props & NavigationScreenProps> {
   }
 
   public hasHeader () {
-    return this.props.onPressBackButton || !!this.props.title
+    return this.props.onPressBackButton || !!this.props.header
   }
 
-  public renderTitle () {
-    if (!this.props.title) { return null }
-    return (typeof this.props.title) === 'string'
-      ? <Text type='headline'>{this.props.title}</Text>
-      : this.props.title()
+  public renderHeader () {
+    if (!this.props.header) { return null }
+    return (typeof this.props.header) === 'string'
+      ? <Text type='headline'>{this.props.header}</Text>
+      : this.props.header()
   }
 
   public render () {
@@ -76,8 +76,7 @@ class Screen extends React.Component<Props & NavigationScreenProps> {
             <View style={styles.safeArea}>
               <View style={styles.container}>
                 {this.hasHeader() && (
-                  <View style={[styles.headerRow, !this.props.noHeaderLine && (!!this.props.title && typeof this.props.title === 'string') && styles.headerRowBorder]}>
-                    {this.renderTitle()}
+                  <View style={[styles.headerRow, !this.props.noHeaderLine && (!!this.props.header && typeof this.props.header === 'string') && styles.headerRowBorder]}>
                     {this.props.onPressBackButton && (
                       <View style={styles.backButtonContainer}>
                         <TouchableOpacity
@@ -92,6 +91,7 @@ class Screen extends React.Component<Props & NavigationScreenProps> {
                         </TouchableOpacity>
                       </View>
                     )}
+                    {this.renderHeader()}
                   </View>
                 )}
                 <ScrollView keyboardShouldPersistTaps='handled'>

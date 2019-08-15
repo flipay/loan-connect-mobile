@@ -66,7 +66,7 @@ export default class CryptoScreen extends React.Component<NavigationScreenProps>
     this.props.navigation.navigate('Trade', { side, assetId })
   }
 
-  public renderTitle = () => {
+  public renderHeader = () => {
     const assetId: AssetId = this.props.navigation.getParam('id')
     return <Asset id={assetId} withUnit={true} />
   }
@@ -84,7 +84,7 @@ export default class CryptoScreen extends React.Component<NavigationScreenProps>
   public render () {
     return (
       <Screen
-        title={this.renderTitle}
+        header={this.renderHeader}
         renderFooter={this.renderFooter}
         onPressBackButton={this.onPressBackButton}
       >

@@ -7,7 +7,9 @@ import {
   AssetBoxWithBalance,
   AssetBox,
   Screen,
-  Value
+  Value,
+  Link,
+  TransferModal
 } from '../components'
 import { COLORS, ASSETS, THBAmountTypes } from '../constants'
 import { AssetId, OrderPart, Balances } from '../types'
@@ -40,6 +42,7 @@ interface State {
   typing: boolean
   submitPressed: boolean
   lastFetchSuccessfullyGiveAmount?: string
+  orderTypeModalVisible: boolean
 }
 
 export default class TradeScreen extends React.Component<
@@ -56,7 +59,8 @@ export default class TradeScreen extends React.Component<
       giveAssetBoxValue: '',
       takeAssetBoxValue: '',
       typing: false,
-      submitPressed: false
+      submitPressed: false,
+      orderTypeModalVisible: false
     }
   }
 
@@ -209,6 +213,10 @@ export default class TradeScreen extends React.Component<
     }, 500)
   }
 
+  public onPressOrderType = () => {
+    this.setState({ orderTypeModalVisible: true })
+  }
+
   public onClose = () => {
     logEvent('trade/press-back-button', {
       side: this.props.navigation.getParam('side'),
@@ -352,13 +360,33 @@ export default class TradeScreen extends React.Component<
     })
   }
 
-  public render () {
+  public renderHeader = () => {
     const side = this.props.navigation.getParam('side', 'buy')
     const assetId: AssetId = this.props.navigation.getParam('assetId', 'BTC')
     return (
+      <View>
+        <Text>{_.capitalize(side) + ' ' + ASSETS[assetId].name}</Text>
+        <Link onPress={this.onPressOrderType}>Order Type</Link>
+      </View>
+    )
+  }
+
+  public renderOrderTypeModal () {
+    return (
+      <TransferModal
+        assetId='THB'
+        onPressDeposit={() => {}}
+        onPressWithdraw={() => {}}
+        onPressOutside={() => {}}
+      />
+    )
+  }
+
+  public render () {
+    return (
       <Screen
         backButtonType='close'
-        title={`${_.capitalize(side)} ${ASSETS[assetId].name}`}
+        header={this.renderHeader}
         noHeaderLine={true}
         onPressBackButton={this.onClose}
         submitButtonText='Review'
@@ -368,6 +396,7 @@ export default class TradeScreen extends React.Component<
         <View style={styles.bodyContainer}>
           {this.renderTradeBody()}
         </View>
+        {this.state.orderTypeModalVisible && this.renderOrderTypeModal()}
       </Screen>
     )
   }
