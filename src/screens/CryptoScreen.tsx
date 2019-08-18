@@ -4,7 +4,7 @@ import _ from 'lodash'
 import { View, StyleSheet, Dimensions } from 'react-native'
 import { Text, Screen, Asset, Button, Layer, ChangeBox } from '../components'
 import { NavigationScreenProps } from 'react-navigation'
-import { AssetId, OrderType } from '../types'
+import { AssetId, OrderSide } from '../types'
 import { ASSETS, COLORS } from '../constants'
 import { toString } from '../utils'
 import { logEvent } from '../services/Analytic'
@@ -60,7 +60,7 @@ export default class CryptoScreen extends React.Component<NavigationScreenProps>
     , false)
   }
 
-  public onPressTradeButton = (side: OrderType) => {
+  public onPressTradeButton = (side: OrderSide) => {
     const assetId: AssetId = this.props.navigation.getParam('id')
     logEvent('crypto/press-trade-button', { assetId, side })
     this.props.navigation.navigate('Trade', { side, assetId })

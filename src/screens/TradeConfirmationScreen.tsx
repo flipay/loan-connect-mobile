@@ -245,7 +245,7 @@ export default class TradeConfirmationScreen extends React.Component<
     const assetId: AssetId = this.props.navigation.getParam('assetId', 'BTC')
     return (
       <TradeResult
-        orderType={side}
+        orderSide={side}
         assetId={assetId}
         onPressDone={this.pressDone}
         cryptoAmount={

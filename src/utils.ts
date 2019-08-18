@@ -2,7 +2,7 @@ import * as _ from 'lodash'
 import { Alert } from 'react-native'
 
 import { THBAmountTypes } from './constants'
-import { OrderType } from './types'
+import { OrderSide } from './types'
 import * as ErrorReport from './services/ErrorReport'
 
 export function toNumber (value: string) {
@@ -56,7 +56,7 @@ export function alert (err: Error | string) {
   }
 }
 
-export function calSaveAmount (side: OrderType, amount: number, thbAmounts?: THBAmountTypes) {
+export function calSaveAmount (side: OrderSide, amount: number, thbAmounts?: THBAmountTypes) {
   if (!thbAmounts) {
     return 0
   }
