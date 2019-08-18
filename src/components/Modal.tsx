@@ -45,7 +45,6 @@ const styles = StyleSheet.create({
   modalCard: {
     opacity: 1,
     backgroundColor: COLORS.WHITE,
-    paddingHorizontal: 10,
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8
   },

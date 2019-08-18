@@ -376,7 +376,7 @@ export default class TradeScreen extends React.Component<
   public renderOrderTypeModal () {
     return (
       <OrderTypeModal
-        orderType={this.state.orderType}
+        selectedOrderType={this.state.orderType}
         onClose={this.toggleOrderTypeModal}
       />
     )

@@ -43,8 +43,8 @@ export default class OrderTypeModal extends React.Component<Props> {
       <Modal onPressOutside={this.props.onClose}>
         <View>
           <View style={[styles.header, styles.paddings]}>
-            <Text>Select an order type</Text>
-            <AntDesign name='close' size={28} color={COLORS.N800} />
+            <Text color={COLORS.N800}>Select an order type</Text>
+            <AntDesign name='close' size={18} color={COLORS.N800} />
           </View>
         </View>
         {this.renderOption('market')}
