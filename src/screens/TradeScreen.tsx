@@ -9,10 +9,10 @@ import {
   Screen,
   Value,
   Link,
-  TransferModal
+  OrderTypeModal
 } from '../components'
 import { COLORS, ASSETS, THBAmountTypes } from '../constants'
-import { AssetId, OrderPart, Balances } from '../types'
+import { AssetId, OrderPart, OrderType, Balances } from '../types'
 import { getAmount, getCompetitorTHBAmounts } from '../requests'
 import {
   toNumber,
@@ -43,6 +43,7 @@ interface State {
   submitPressed: boolean
   lastFetchSuccessfullyGiveAmount?: string
   orderTypeModalVisible: boolean
+  orderType: OrderType
 }
 
 export default class TradeScreen extends React.Component<
@@ -60,7 +61,8 @@ export default class TradeScreen extends React.Component<
       takeAssetBoxValue: '',
       typing: false,
       submitPressed: false,
-      orderTypeModalVisible: false
+      orderTypeModalVisible: false,
+      orderType: 'market'
     }
   }
 
@@ -213,8 +215,8 @@ export default class TradeScreen extends React.Component<
     }, 500)
   }
 
-  public onPressOrderType = () => {
-    this.setState({ orderTypeModalVisible: true })
+  public toggleOrderTypeModal = () => {
+    this.setState({ orderTypeModalVisible: !this.state.orderTypeModalVisible })
   }
 
   public onClose = () => {
@@ -366,18 +368,16 @@ export default class TradeScreen extends React.Component<
     return (
       <View>
         <Text>{_.capitalize(side) + ' ' + ASSETS[assetId].name}</Text>
-        <Link onPress={this.onPressOrderType}>Order Type</Link>
+        <Link onPress={this.toggleOrderTypeModal}>Order Type</Link>
       </View>
     )
   }
 
   public renderOrderTypeModal () {
     return (
-      <TransferModal
-        assetId='THB'
-        onPressDeposit={() => {}}
-        onPressWithdraw={() => {}}
-        onPressOutside={() => {}}
+      <OrderTypeModal
+        orderType={this.state.orderType}
+        onClose={this.toggleOrderTypeModal}
       />
     )
   }

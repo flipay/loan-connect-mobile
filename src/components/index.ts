@@ -22,6 +22,8 @@ import FullScreenLoading from './FullScreenLoading'
 import Record from './Record'
 import Activity from './Activity'
 import TransferModal from './TransferModal'
+import Modal from './Modal'
+import OrderTypeModal from './OrderTypeModal'
 
 export {
   AssetCard,
@@ -46,5 +48,7 @@ export {
   FullScreenLoading,
   Record,
   Activity,
-  TransferModal
+  TransferModal,
+  Modal,
+  OrderTypeModal
 }
