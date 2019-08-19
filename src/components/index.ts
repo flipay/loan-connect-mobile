@@ -24,6 +24,7 @@ import Activity from './Activity'
 import TransferModal from './TransferModal'
 import Modal from './Modal'
 import OrderTypeModal from './OrderTypeModal'
+import SetLimitPriceFullScreenModal from './SetLimitPriceFullScreenModal'
 
 export {
   AssetCard,
@@ -50,5 +51,6 @@ export {
   Activity,
   TransferModal,
   Modal,
-  OrderTypeModal
+  OrderTypeModal,
+  SetLimitPriceFullScreenModal
 }
