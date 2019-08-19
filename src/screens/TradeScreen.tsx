@@ -1,14 +1,14 @@
 import * as React from 'react'
 import _ from 'lodash'
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, View, TouchableOpacity } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
+import { AntDesign } from '@expo/vector-icons'
 import {
   Text,
   AssetBoxWithBalance,
   AssetBox,
   Screen,
   Value,
-  Link,
   OrderTypeModal,
   SetLimitPriceFullScreenModal
 } from '../components'
@@ -424,9 +424,12 @@ export default class TradeScreen extends React.Component<
     const side = this.props.navigation.getParam('side', 'buy')
     const assetId: AssetId = this.props.navigation.getParam('assetId', 'BTC')
     return (
-      <View>
-        <Text>{_.capitalize(side) + ' ' + ASSETS[assetId].name}</Text>
-        <Link onPress={this.toggleOrderTypeModal}>Order Type</Link>
+      <View style={styles.header}>
+        <Text type='headline'>{_.capitalize(side) + ' ' + ASSETS[assetId].name}</Text>
+        <TouchableOpacity onPress={this.toggleOrderTypeModal} style={styles.dropdown}>
+          <Text color={COLORS.P400}>{`Order Typed: ${_.capitalize(this.state.orderType)} order`}</Text>
+          <AntDesign name='down' color={COLORS.P400} style={styles.downIcon} />
+        </TouchableOpacity>
       </View>
     )
   }
@@ -476,6 +479,19 @@ export default class TradeScreen extends React.Component<
 }
 
 const styles = StyleSheet.create({
+  header: {
+    alignItems: 'center'
+  },
+  dropdown: {
+    marginTop: 5,
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  downIcon: {
+    marginLeft: 4,
+    position: 'relative',
+    top: 2
+  },
   bodyContainer: {
     flex: 1
   },
