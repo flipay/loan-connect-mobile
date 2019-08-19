@@ -1,4 +1,3 @@
-
 import * as React from 'react'
 import { View, TouchableOpacity, StyleSheet } from 'react-native'
 import AssetBox from './AssetBox'
@@ -35,12 +34,25 @@ export default class AssetBoxWithBalance extends React.Component<Props> {
 
   public renderBalanceSection = () => {
     return (
-      <View style={[styles.balanceSection, !!this.props.error && styles.errorBalanceSection]}>
-        {this.props.balance !== undefined && (
+      <View
+        style={[
+          styles.balanceSection,
+          !!this.props.error && styles.errorBalanceSection
+        ]}
+      >
+        {this.props.balance !== undefined ? (
           <View style={styles.balance}>
             <Text type='caption' color={COLORS.N500}>{`Balance `}</Text>
-            <Value assetId={this.props.assetId} color={COLORS.N800} fontType='caption'>{this.props.balance}</Value>
+            <Value
+              assetId={this.props.assetId}
+              color={COLORS.N800}
+              fontType='caption'
+            >
+              {this.props.balance}
+            </Value>
           </View>
+        ) : (
+          <View />
         )}
         <View style={styles.buttonGroup}>
           {this.renderSmallbutton('Max', this.props.onPressMax)}
