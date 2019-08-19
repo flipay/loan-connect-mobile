@@ -173,7 +173,7 @@ export default class AssetBox extends React.Component<Props> {
             ]}
             onPress={this.onPress}
             active={this.shouldShowActiveColor()}
-            borderRadius={4}
+            borderRadius={6}
           >
             {this.props.renderFooter
               ? this.renderContentWithFooter()
@@ -190,13 +190,15 @@ export default class AssetBox extends React.Component<Props> {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16
+    padding: 16,
+    paddingBottom: 0
   },
   footerPadding: {
     paddingBottom: 8
   },
   content: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    paddingBottom: 16
   },
   containerWithFooter: {
 
