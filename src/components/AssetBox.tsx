@@ -81,12 +81,16 @@ export default class AssetBox extends React.Component<Props> {
     }
   }
 
+  public shouldShowActiveColor () {
+    return this.props.active !== false
+  }
+
   public getColor () {
     if (this.props.error) {
       return COLORS.R400
     } else if (this.props.warning) {
       return COLORS.Y400
-    } else if (this.props.active) {
+    } else if (this.shouldShowActiveColor()) {
       return COLORS.P400
     } else {
       return COLORS.N500
@@ -94,7 +98,7 @@ export default class AssetBox extends React.Component<Props> {
   }
 
   public renderMainText () {
-    return (this.props.onPress && this.props.onChangeValue)
+    return (this.props.onChangeValue)
       ? (
         <TextInput
           ref={element => {
@@ -103,7 +107,7 @@ export default class AssetBox extends React.Component<Props> {
           style={styles.textInput}
           maxLength={10}
           autoFocus={this.props.autoFocus}
-          placeholderTextColor={this.props.active ? COLORS.P100 : COLORS.N300}
+          placeholderTextColor={this.shouldShowActiveColor() ? COLORS.P100 : COLORS.N300}
           selectionColor={this.getColor()}
           onChangeText={text =>
             this.props.onChangeValue(this.formatNumberInString(text))
@@ -142,12 +146,12 @@ export default class AssetBox extends React.Component<Props> {
   public render () {
     return (
       <View>
-        {this.props.onPress
+        {this.shouldShowActiveColor()
           ? (
             <Layer
               style={[this.props.warning && styles.warningContainer, this.props.error && styles.errorContainer]}
               onPress={this.onPress}
-              active={this.props.active}
+              active={this.shouldShowActiveColor()}
               borderRadius={4}
             >
               {this.renderContent()}

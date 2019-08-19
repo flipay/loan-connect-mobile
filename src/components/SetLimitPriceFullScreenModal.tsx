@@ -7,7 +7,7 @@ import Asset from './Asset'
 import AssetBox from './AssetBox'
 import { AssetId, OrderSide } from '../types'
 import { ASSETS } from '../constants'
-import { toString } from '../utils'
+import { toString, toNumber } from '../utils'
 
 interface Props {
   initialPrice?: number
@@ -19,6 +19,7 @@ interface Props {
 
 interface State {
   price?: number
+  priceBoxActive: boolean
 }
 
 export default class SetLimitPriceFullScreenModal extends React.Component <Props, State> {
@@ -26,8 +27,17 @@ export default class SetLimitPriceFullScreenModal extends React.Component <Props
   public constructor (props: Props) {
     super(props)
     this.state = {
-      price: this.props.initialPrice
+      price: this.props.initialPrice,
+      priceBoxActive: true
     }
+  }
+
+  public onSetPrice = (value: string) => {
+    this.setState({ price: toNumber(value) })
+  }
+
+  public onPressPriceBox = () => {
+    this.setState({ priceBoxActive: true })
   }
 
   public renderHeader = () => {
@@ -50,9 +60,11 @@ export default class SetLimitPriceFullScreenModal extends React.Component <Props
           onPessSubmitButton={() => this.props.onSetPrice(this.state.price || 0)}
         >
           <AssetBox
+            autoFocus={true}
             description={`Limit price per ${ASSETS[this.props.assetId].name}`}
             assetId={assetBoxAssetId}
             value={this.state.price === undefined ? undefined : toString(this.state.price, ASSETS[assetBoxAssetId].decimal)}
+            onChangeValue={this.onSetPrice}
           />
         </Screen>
       </Modal>
