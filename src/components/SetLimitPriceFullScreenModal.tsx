@@ -56,7 +56,7 @@ export default class SetLimitPriceFullScreenModal extends React.Component <Props
         <Screen
           onPressBackButton={this.props.onClose}
           header={this.renderHeader}
-          activeSubmitButton={this.state.price}
+          activeSubmitButton={!!this.state.price}
           onPessSubmitButton={() => this.props.onSetPrice(this.state.price || 0)}
         >
           <AssetBox

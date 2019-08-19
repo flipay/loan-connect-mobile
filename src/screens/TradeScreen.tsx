@@ -233,7 +233,7 @@ export default class TradeScreen extends React.Component<
   }
 
   public onSetLimitPrice = (price: number) => {
-    this.setState({ limitPrice: price })
+    this.setState({ limitPrice: price, limitPriceModalVisible: false })
   }
 
   public toggleLimitPriceModal = () => {
@@ -446,6 +446,7 @@ export default class TradeScreen extends React.Component<
     const side = this.props.navigation.getParam('side', 'buy')
     return (
       <SetLimitPriceFullScreenModal
+        initialPrice={this.state.limitPrice}
         assetId={assetId}
         orderSide={side}
         onSetPrice={this.onSetLimitPrice}
