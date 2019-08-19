@@ -201,8 +201,6 @@ const styles = StyleSheet.create({
   rightContainer: {
     flex: 1,
     flexDirection: 'row',
-    borderLeftWidth: 1,
-    borderLeftColor: COLORS.N200,
     justifyContent: 'flex-start',
     alignItems: 'center',
     paddingLeft: 16
