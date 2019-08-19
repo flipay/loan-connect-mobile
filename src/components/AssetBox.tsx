@@ -129,23 +129,20 @@ export default class AssetBox extends React.Component<Props> {
   public renderContent () {
     const { image, unit } = ASSETS[this.props.assetId]
     return (
-      <View >
-        <View style={styles.container}>
-          <View style={styles.leftContainer}>
-            <Text type='caption' color={this.getColor()}>
-              {this.props.description}
-            </Text>
-            {this.renderMainText()}
-          </View>
-          <View style={styles.rightContainer}>
-            <Image
-              source={image}
-              style={{ width: 16, height: 16, marginRight: 8 }}
-            />
-            <Text>{unit}</Text>
-          </View>
+      <View style={styles.content}>
+        <View style={styles.leftContainer}>
+          <Text type='caption' color={this.getColor()}>
+            {this.props.description}
+          </Text>
+          {this.renderMainText()}
         </View>
-
+        <View style={styles.rightContainer}>
+          <Image
+            source={image}
+            style={{ width: 16, height: 16, marginRight: 8 }}
+          />
+          <Text>{unit}</Text>
+        </View>
       </View>
     )
   }
@@ -154,9 +151,11 @@ export default class AssetBox extends React.Component<Props> {
     return (
       <View style={styles.containerWithFooter}>
         {this.renderContent()}
-        {this.props.renderFooter && <View style={styles.footerContainer}>
-          {this.props.renderFooter()}
-        </View>}
+        {this.props.renderFooter && (
+          <View style={styles.footerContainer}>
+            {this.props.renderFooter()}
+          </View>
+        )}
       </View>
     )
   }
@@ -167,6 +166,8 @@ export default class AssetBox extends React.Component<Props> {
         {this.shouldShowActiveColor() ? (
           <Layer
             style={[
+              styles.container,
+              this.props.renderFooter && styles.footerPadding,
               this.props.warning && styles.warningContainer,
               this.props.error && styles.errorContainer
             ]}
@@ -174,10 +175,12 @@ export default class AssetBox extends React.Component<Props> {
             active={this.shouldShowActiveColor()}
             borderRadius={4}
           >
-            {this.props.renderFooter ? this.renderContentWithFooter() : this.renderContent()}
+            {this.props.renderFooter
+              ? this.renderContentWithFooter()
+              : this.renderContent()}
           </Layer>
         ) : (
-          <View style={styles.staticContainer}>{this.renderContent()}</View>
+          <View style={[styles.staticContainer, styles.container]}>{this.renderContent()}</View>
         )}
         {this.renderErrorMessage()}
       </View>
@@ -187,13 +190,20 @@ export default class AssetBox extends React.Component<Props> {
 
 const styles = StyleSheet.create({
   container: {
+    padding: 16
+  },
+  footerPadding: {
+    paddingBottom: 8
+  },
+  content: {
     flexDirection: 'row'
   },
   containerWithFooter: {
 
   },
   footerContainer: {
-
+    borderTopWidth: 1,
+    borderTopColor: COLORS.N200
   },
   staticContainer: {
     backgroundColor: COLORS.N100,
@@ -210,8 +220,7 @@ const styles = StyleSheet.create({
     borderWidth: 1
   },
   leftContainer: {
-    flex: 2,
-    padding: 10
+    flex: 3
   },
   textInput: {
     fontSize: FONT_TYPES['large-title'].fontSize,
