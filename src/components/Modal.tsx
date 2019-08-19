@@ -6,6 +6,7 @@ import {
   StyleSheet
 } from 'react-native'
 import { COLORS } from '../constants'
+import * as Device from '../services/Device'
 
 interface Props {
   children: any
@@ -39,7 +40,8 @@ const styles = StyleSheet.create({
     opacity: 1,
     backgroundColor: COLORS.WHITE,
     borderTopLeftRadius: 8,
-    borderTopRightRadius: 8
+    borderTopRightRadius: 8,
+    paddingBottom: Device.getFooterHeight()
   },
   button: {
     marginBottom: 8

@@ -121,7 +121,7 @@ class Screen extends React.Component<Props & NavigationScreenProps> {
               <FullScreenLoading visible={this.props.fullScreenLoading} />
             )}
         </KeyboardAvoidingView>
-        {this.props.onPessSubmitButton && Device.isIphoneX() && <View style={this.props.activeSubmitButton ? styles.iphoneXFooter : styles.inactiveIphoneXFooter} />}
+        {this.props.onPessSubmitButton && <View style={this.props.activeSubmitButton ? styles.activeFooter : styles.inactiveFooter} />}
       </View>
     )
   }
@@ -182,12 +182,12 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0
   },
-  iphoneXFooter: {
-    height: 34,
+  activeFooter: {
+    height: Device.getFooterHeight(),
     backgroundColor: COLORS.P500
   },
-  inactiveIphoneXFooter: {
-    height: 34,
+  inactiveFooter: {
+    height: Device.getFooterHeight(),
     backgroundColor: COLORS.P200
   }
 })
