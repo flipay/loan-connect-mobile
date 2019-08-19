@@ -82,7 +82,7 @@ export default class AssetBox extends React.Component<Props> {
   }
 
   public shouldShowActiveColor () {
-    return this.props.active !== false
+    return this.props.active !== false && this.props.onChangeValue
   }
 
   public getColor () {
