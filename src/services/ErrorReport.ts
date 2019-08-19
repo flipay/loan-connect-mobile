@@ -1,3 +1,4 @@
+import { YellowBox } from 'react-native'
 import Sentry from 'sentry-expo'
 import bugsnag, { Bugsnag } from '@bugsnag/expo'
 import { getEnv } from './Env'
@@ -5,6 +6,8 @@ import { getEnv } from './Env'
 let bugsnagClient: Bugsnag.Client
 let initialized = false
 let developmentEnabled = false
+
+YellowBox.ignoreWarnings(['[bugsnag] "Session not sent'])
 
 export function initialize () {
   const notifyReleaseStages = ['production', 'staging']
