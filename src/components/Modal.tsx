@@ -30,13 +30,6 @@ export default class FlipModal extends React.Component<Props> {
 }
 
 const styles = StyleSheet.create({
-  space: {
-    flex: 1
-  },
-  title: {
-    marginTop: 20,
-    marginBottom: 15
-  },
   background: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.7)',

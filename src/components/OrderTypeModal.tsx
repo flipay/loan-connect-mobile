@@ -1,6 +1,6 @@
 import * as React from 'react'
 import _ from 'lodash'
-import { View, StyleSheet } from 'react-native'
+import { View, StyleSheet, TouchableWithoutFeedback } from 'react-native'
 import { AntDesign } from '@expo/vector-icons'
 import Modal from './Modal'
 import Text from './Text'
@@ -44,7 +44,9 @@ export default class OrderTypeModal extends React.Component<Props> {
         <View>
           <View style={[styles.header, styles.paddings]}>
             <Text color={COLORS.N800}>Select an order type</Text>
-            <AntDesign name='close' size={18} color={COLORS.N800} />
+            <TouchableWithoutFeedback onPress={this.props.onClose}>
+              <AntDesign name='close' size={18} color={COLORS.N800} />
+            </TouchableWithoutFeedback>
           </View>
         </View>
         {this.renderOption('market')}
