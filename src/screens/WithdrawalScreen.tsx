@@ -179,6 +179,7 @@ export default class WithdrawalScreen extends React.Component<
             : (
               <View style={styles.content}>
                 <AssetBoxWithBalance
+                  containerStyle={styles.box}
                   autoFocus={true}
                   description='Withdrawal amount'
                   assetId={assetId}
@@ -191,7 +192,7 @@ export default class WithdrawalScreen extends React.Component<
                   onPressHalf={() => this.setState({ amount: toString(remainingBalance / 2, ASSETS[assetId].decimal) })}
                 />
                 <TextBox
-                  style={styles.textBox}
+                  style={styles.box}
                   label={assetId === 'THB' ? 'Account number' : description}
                   onPress={this.onPressAddressBox}
                   onChangeValue={(value) => this.onChangeValue(boxes[1], value)}
@@ -234,7 +235,7 @@ const styles = StyleSheet.create({
   content: {
     width: '100%'
   },
-  textBox: {
+  box: {
     marginBottom: 16
   }
 })

@@ -19,6 +19,7 @@ interface Props {
   balance?: number
   onPressMax: () => void
   onPressHalf: () => void
+  containerStyle?: any
 }
 
 export default class AssetBoxWithBalance extends React.Component<Props> {
@@ -64,7 +65,7 @@ export default class AssetBoxWithBalance extends React.Component<Props> {
 
   public render () {
     return (
-      <View style={styles.container}>
+      <View style={this.props.containerStyle}>
         <AssetBox
           autoFocus={this.props.autoFocus}
           description={this.props.description}
@@ -83,9 +84,6 @@ export default class AssetBoxWithBalance extends React.Component<Props> {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    marginBottom: 16
-  },
   balanceSection: {
     marginTop: 8,
     flexDirection: 'row',
