@@ -541,7 +541,7 @@ const styles = StyleSheet.create({
     height: '100%',
     backgroundColor: COLORS.N200,
     position: 'relative',
-    left: -18
+    left: -19
   },
   leftPriceSection: {
     flexDirection: 'row',
