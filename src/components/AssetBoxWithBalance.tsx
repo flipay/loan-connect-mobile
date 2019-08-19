@@ -33,7 +33,7 @@ export default class AssetBoxWithBalance extends React.Component<Props> {
     )
   }
 
-  public renderBalanceSection () {
+  public renderBalanceSection = () => {
     return (
       <View style={[styles.balanceSection, !!this.props.error && styles.errorBalanceSection]}>
         <View style={styles.buttonGroup}>
@@ -63,8 +63,8 @@ export default class AssetBoxWithBalance extends React.Component<Props> {
           value={this.props.value}
           warning={this.props.warning}
           error={this.props.error}
+          renderFooter={this.renderBalanceSection}
         />
-        {this.renderBalanceSection()}
       </View>
     )
   }

@@ -17,6 +17,7 @@ interface Props {
   value?: string
   warning?: string
   error?: string
+  renderFooter?: () => any
 }
 
 export default class AssetBox extends React.Component<Props> {
@@ -44,7 +45,9 @@ export default class AssetBox extends React.Component<Props> {
         }
         endingZero = length - _.trimEnd(valueInString, '0').length
       }
-      valueInString = valueInNumber.toLocaleString(undefined, { maximumFractionDigits: 8 })
+      valueInString = valueInNumber.toLocaleString(undefined, {
+        maximumFractionDigits: 8
+      })
       if (haveDot) {
         valueInString += '.'
       }
@@ -82,7 +85,7 @@ export default class AssetBox extends React.Component<Props> {
   }
 
   public shouldShowActiveColor () {
-    return this.props.active !== false && this.props.onChangeValue
+    return this.props.active !== false && !!this.props.onChangeValue
   }
 
   public getColor () {
@@ -98,35 +101,37 @@ export default class AssetBox extends React.Component<Props> {
   }
 
   public renderMainText () {
-    return (this.props.onChangeValue)
-      ? (
-        <TextInput
-          ref={element => {
-            this.input = element
-          }}
-          style={styles.textInput}
-          maxLength={10}
-          autoFocus={this.props.autoFocus}
-          placeholderTextColor={this.shouldShowActiveColor() ? COLORS.P100 : COLORS.N300}
-          selectionColor={this.getColor()}
-          onChangeText={text =>
-            this.props.onChangeValue(this.formatNumberInString(text))
-          }
-          value={this.props.value}
-          keyboardType='decimal-pad'
-          placeholder='0'
-          onFocus={this.props.onPress}
-        />
-      ) : (
-        <Text type='large-title'>{this.props.value || 0}</Text>
-      )
+    return this.props.onChangeValue ? (
+      <TextInput
+        ref={element => {
+          this.input = element
+        }}
+        style={styles.textInput}
+        maxLength={10}
+        autoFocus={this.props.autoFocus}
+        placeholderTextColor={
+          this.shouldShowActiveColor() ? COLORS.P100 : COLORS.N300
+        }
+        selectionColor={this.getColor()}
+        onChangeText={text =>
+          this.props.onChangeValue(this.formatNumberInString(text))
+        }
+        value={this.props.value}
+        keyboardType='decimal-pad'
+        placeholder='0'
+        onFocus={this.props.onPress}
+      />
+    ) : (
+      <Text type='large-title'>{this.props.value || 0}</Text>
+    )
   }
 
   public renderContent () {
     const { image, unit } = ASSETS[this.props.assetId]
     return (
-      <View style={styles.container}>
-        <View style={styles.leftContainer}>
+      <View >
+        <View style={styles.container}>
+          <View style={styles.leftContainer}>
             <Text type='caption' color={this.getColor()}>
               {this.props.description}
             </Text>
@@ -139,6 +144,19 @@ export default class AssetBox extends React.Component<Props> {
             />
             <Text>{unit}</Text>
           </View>
+        </View>
+
+      </View>
+    )
+  }
+
+  public renderContentWithFooter () {
+    return (
+      <View style={styles.containerWithFooter}>
+        {this.renderContent()}
+        {this.props.renderFooter && <View style={styles.footerContainer}>
+          {this.props.renderFooter()}
+        </View>}
       </View>
     )
   }
@@ -146,22 +164,21 @@ export default class AssetBox extends React.Component<Props> {
   public render () {
     return (
       <View>
-        {this.shouldShowActiveColor()
-          ? (
-            <Layer
-              style={[this.props.warning && styles.warningContainer, this.props.error && styles.errorContainer]}
-              onPress={this.onPress}
-              active={this.shouldShowActiveColor()}
-              borderRadius={4}
-            >
-              {this.renderContent()}
-            </Layer>
-          ) : (
-            <View style={styles.staticContainer}>
-              {this.renderContent()}
-            </View>
-          )
-        }
+        {this.shouldShowActiveColor() ? (
+          <Layer
+            style={[
+              this.props.warning && styles.warningContainer,
+              this.props.error && styles.errorContainer
+            ]}
+            onPress={this.onPress}
+            active={this.shouldShowActiveColor()}
+            borderRadius={4}
+          >
+            {this.props.renderFooter ? this.renderContentWithFooter() : this.renderContent()}
+          </Layer>
+        ) : (
+          <View style={styles.staticContainer}>{this.renderContent()}</View>
+        )}
         {this.renderErrorMessage()}
       </View>
     )
@@ -171,6 +188,12 @@ export default class AssetBox extends React.Component<Props> {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row'
+  },
+  containerWithFooter: {
+
+  },
+  footerContainer: {
+
   },
   staticContainer: {
     backgroundColor: COLORS.N100,
