@@ -13,6 +13,7 @@ interface Props {
 export default class OrderTypeIcon extends React.Component<Props> {
   public render () {
     const { size, type } = this.props
+    const marketType = type === 'market'
     return (
       <View
         style={[
@@ -22,12 +23,12 @@ export default class OrderTypeIcon extends React.Component<Props> {
             width: size,
             height: size,
             borderRadius: size / 2,
-            backgroundColor: type ? COLORS.P400 : COLORS.Y400
+            backgroundColor: marketType ? COLORS.P400 : COLORS.Y400
           }
         ]}
       >
         <Entypo
-          name={type ? 'flash' : 'back-in-time'}
+          name={marketType ? 'flash' : 'back-in-time'}
           color={COLORS.WHITE}
           size={15}
         />
