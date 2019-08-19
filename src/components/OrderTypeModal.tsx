@@ -1,6 +1,6 @@
 import * as React from 'react'
 import _ from 'lodash'
-import { View, StyleSheet, TouchableWithoutFeedback } from 'react-native'
+import { View, StyleSheet, TouchableWithoutFeedback, TouchableOpacity } from 'react-native'
 import { Entypo, AntDesign } from '@expo/vector-icons'
 import Modal from './Modal'
 import Text from './Text'
@@ -8,6 +8,7 @@ import { OrderType } from '../types'
 import { COLORS } from '../constants'
 
 interface Props {
+  onSelect: (orderType: OrderType) => void
   selectedOrderType: OrderType
   onClose: () => void
 }
@@ -16,7 +17,8 @@ export default class OrderTypeModal extends React.Component<Props> {
   public renderOption (orderType: OrderType) {
     const marketType = orderType === 'market'
     return (
-      <View
+      <TouchableOpacity
+        onPress={() => this.props.onSelect(orderType)}
         style={[
           styles.option,
           styles.paddings,
@@ -39,13 +41,13 @@ export default class OrderTypeModal extends React.Component<Props> {
             </Text>
           )}
         </View>
-      </View>
+      </TouchableOpacity>
     )
   }
 
   public render () {
     return (
-      <Modal onPressOutside={this.props.onClose}>
+      <Modal onPressOutside={(this.props.onClose)}>
         <View style={[styles.header, styles.paddings]}>
           <Text color={COLORS.N800}>Select an order type</Text>
           <TouchableWithoutFeedback onPress={this.props.onClose}>

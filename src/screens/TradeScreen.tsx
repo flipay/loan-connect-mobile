@@ -215,6 +215,10 @@ export default class TradeScreen extends React.Component<
     }, 500)
   }
 
+  public onSelectOrderType = (orderType: OrderType) => {
+    this.setState({ orderType })
+  }
+
   public toggleOrderTypeModal = () => {
     this.setState({ orderTypeModalVisible: !this.state.orderTypeModalVisible })
   }
@@ -377,6 +381,7 @@ export default class TradeScreen extends React.Component<
     return (
       <OrderTypeModal
         selectedOrderType={this.state.orderType}
+        onSelect={this.onSelectOrderType}
         onClose={this.toggleOrderTypeModal}
       />
     )
