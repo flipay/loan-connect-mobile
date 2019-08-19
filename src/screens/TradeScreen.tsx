@@ -10,7 +10,8 @@ import {
   Screen,
   Value,
   OrderTypeModal,
-  SetLimitPriceFullScreenModal
+  SetLimitPriceFullScreenModal,
+  OrderTypeIcon
 } from '../components'
 import { COLORS, ASSETS, THBAmountTypes } from '../constants'
 import { AssetId, OrderPart, OrderType, Balances } from '../types'
@@ -329,24 +330,43 @@ export default class TradeScreen extends React.Component<
   }
 
   public renderPrice () {
-    const { lastFetchSuccessfullyGiveAmount } = this.state
-    const { lastFetchSuccessfullyTakeAmount } = this.props
-    if (!lastFetchSuccessfullyGiveAmount || !lastFetchSuccessfullyTakeAmount) {
-      return null
+    if (this.state.orderType === 'market') {
+      const { lastFetchSuccessfullyGiveAmount } = this.state
+      const { lastFetchSuccessfullyTakeAmount } = this.props
+      let marketPrice
+      if (!lastFetchSuccessfullyGiveAmount || !lastFetchSuccessfullyTakeAmount) {
+        marketPrice = null
+      } else {
+        const amountGive = toNumber(lastFetchSuccessfullyGiveAmount)
+        const amountTake = toNumber(lastFetchSuccessfullyTakeAmount)
+        const side = this.props.navigation.getParam('side', 'buy')
+        marketPrice =
+          side === 'buy' ? amountGive / amountTake : amountTake / amountGive
+      }
+
+      return marketPrice ? <Value assetId='THB'>{marketPrice}</Value> : <Text color={COLORS.N400}>Waiting for input...</Text>
     }
-    const amountGive = toNumber(lastFetchSuccessfullyGiveAmount)
-    const amountTake = toNumber(lastFetchSuccessfullyTakeAmount)
-    const side = this.props.navigation.getParam('side', 'buy')
-    const price =
-      side === 'buy' ? amountGive / amountTake : amountTake / amountGive
     return (
-      <View style={styles.priceRow}>
-        <Text type='caption' color={COLORS.N500}>
-          {`Price `}
-        </Text>
-        <Value assetId='THB' fontType='caption' color={COLORS.N800}>
-          {price}
-        </Value>
+      <View style={{ flexDirection: 'row' }}>
+        {this.state.limitPrice ? <Value assetId='THB'>{this.state.limitPrice}</Value> : <Text>-</Text>}
+      </View>
+    )
+  }
+
+  public renderPriceSection () {
+    return (
+      <View style={styles.priceSection}>
+        <View style={styles.leftPriceSection}>
+          <OrderTypeIcon type={this.state.orderType} size={20} style={styles.orderTypeIcon} />
+          <View style={styles.line} />
+          <View style={styles.priceSectionMargin}>
+            <Text type='caption' color={COLORS.N500} style={{ marginBottom: 2 }}>{`${_.capitalize(this.state.orderType)} price`}</Text>
+            {this.renderPrice()}
+          </View>
+        </View>
+        <View style={styles.rightPriceSection}>
+          <Text>Save amount</Text>
+        </View>
       </View>
     )
   }
@@ -383,7 +403,9 @@ export default class TradeScreen extends React.Component<
             }
             balance={remainingBalance}
             warning={this.state.giveAssetBoxWarningMessage}
+            containerStyle={styles.giveAssetBox}
           />
+          {this.renderPriceSection()}
           <AssetBox
             description={
               side === 'sell' ? 'You will receive' : 'You will receive'
@@ -391,7 +413,6 @@ export default class TradeScreen extends React.Component<
             assetId={side === 'sell' ? 'THB' : assetId}
             value={this.state.takeAssetBoxValue}
           />
-          {this.renderPrice()}
         </View>
         {this.renderFooter()}
       </View>
@@ -503,6 +524,35 @@ const styles = StyleSheet.create({
   assetBoxesContainer: {
     width: '100%'
   },
+  giveAssetBox: {
+    zIndex: 1
+  },
+  priceSection: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'stretch'
+  },
+  orderTypeIcon: {
+    marginRight: 8,
+    zIndex: 1
+  },
+  line: {
+    width: 2,
+    height: '100%',
+    backgroundColor: COLORS.N200,
+    position: 'relative',
+    left: -18
+  },
+  leftPriceSection: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  rightPriceSection: {
+    justifyContent: 'center'
+  },
+  priceSectionMargin: {
+    marginVertical: 28
+  },
   footer: {
     marginTop: 10,
     marginHorizontal: 30,
@@ -514,11 +564,5 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.P400,
     borderRadius: 6
-  },
-  priceRow: {
-    marginTop: 11,
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignItems: 'center'
   }
 })
