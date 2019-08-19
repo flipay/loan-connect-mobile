@@ -26,7 +26,7 @@ export default class OrderTypeModal extends React.Component<Props> {
         <View style={[styles.icon, { backgroundColor: marketType ? COLORS.P400 : COLORS.Y400 }]}>
           <Entypo name={marketType ? 'flash' : 'back-in-time'} color={COLORS.WHITE} size={15} />
         </View>
-        <View>
+        <View style={styles.optionContent}>
           <Text type='headline'>{`${_.capitalize(orderType)} order`}</Text>
           {marketType ? (
             <Text type='caption'>
@@ -46,13 +46,11 @@ export default class OrderTypeModal extends React.Component<Props> {
   public render () {
     return (
       <Modal onPressOutside={this.props.onClose}>
-        <View>
-          <View style={[styles.header, styles.paddings]}>
-            <Text color={COLORS.N800}>Select an order type</Text>
-            <TouchableWithoutFeedback onPress={this.props.onClose}>
-              <AntDesign name='close' size={18} color={COLORS.N800} />
-            </TouchableWithoutFeedback>
-          </View>
+        <View style={[styles.header, styles.paddings]}>
+          <Text color={COLORS.N800}>Select an order type</Text>
+          <TouchableWithoutFeedback onPress={this.props.onClose}>
+            <AntDesign name='close' size={18} color={COLORS.N800} />
+          </TouchableWithoutFeedback>
         </View>
         {this.renderOption('market')}
         {this.renderOption('limit')}
@@ -66,7 +64,7 @@ const iconSize = 24
 const styles = StyleSheet.create({
   paddings: {
     paddingVertical: 16,
-    paddingHorizontal: 24
+    paddingHorizontal: 20
   },
   header: {
     flexDirection: 'row',
@@ -74,6 +72,9 @@ const styles = StyleSheet.create({
   },
   option: {
     flexDirection: 'row'
+  },
+  optionContent: {
+    flex: 1
   },
   active: {
     backgroundColor: COLORS.N100
@@ -83,6 +84,7 @@ const styles = StyleSheet.create({
     height: iconSize,
     borderRadius: iconSize / 2,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    marginRight: 16
   }
 })
