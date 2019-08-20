@@ -137,13 +137,7 @@ export default class TradeScreen extends React.Component<
     const side = this.props.navigation.getParam('side', 'buy')
     const assetId: AssetId = this.props.navigation.getParam('assetId', 'BTC')
     try {
-      const amount = await getAmount(
-        side,
-        assetId,
-        'give',
-        num,
-        'liquid'
-      )
+      const amount = await getAmount(side, assetId, 'give', num, 'liquid')
       const responseAsset = side === 'buy' ? assetId : 'THB'
       flipayResponseValue = toString(amount, ASSETS[responseAsset].decimal)
       const result = await getCompetitorTHBAmounts(
@@ -202,11 +196,10 @@ export default class TradeScreen extends React.Component<
   }
 
   public onSelectOrderType = (orderType: OrderType) => {
-    this.setState({ orderType })
+    this.setState({ orderType, orderTypeModalVisible: false })
     if (orderType === 'limit') {
       this.setState({
-        limitPriceModalVisible: true,
-        orderTypeModalVisible: false
+        limitPriceModalVisible: true
       })
     }
   }
@@ -243,8 +236,7 @@ export default class TradeScreen extends React.Component<
     return (
       this.state.giveAmount ===
         this.state.lastFetchSuccessfullyMarketGiveAmount &&
-      this.state.marketTakeAmount ===
-        this.props.lastFetchSuccessfullyTakeAmount
+      this.state.marketTakeAmount === this.props.lastFetchSuccessfullyTakeAmount
     )
   }
 
@@ -273,7 +265,9 @@ export default class TradeScreen extends React.Component<
   }
 
   public renderSaveAmount () {
-    if (this.state.orderType !== 'market') { return null }
+    if (this.state.orderType !== 'market') {
+      return null
+    }
     const saved = this.getSavedAmount()
     if (
       !this.state.lastFetchSuccessfullyMarketGiveAmount &&
@@ -322,7 +316,10 @@ export default class TradeScreen extends React.Component<
       const { lastFetchSuccessfullyMarketGiveAmount } = this.state
       const { lastFetchSuccessfullyTakeAmount } = this.props
       let marketPrice
-      if (!lastFetchSuccessfullyMarketGiveAmount || !lastFetchSuccessfullyTakeAmount) {
+      if (
+        !lastFetchSuccessfullyMarketGiveAmount ||
+        !lastFetchSuccessfullyTakeAmount
+      ) {
         marketPrice = null
       } else {
         const amountGive = toNumber(lastFetchSuccessfullyMarketGiveAmount)
@@ -332,12 +329,22 @@ export default class TradeScreen extends React.Component<
           side === 'buy' ? amountGive / amountTake : amountTake / amountGive
       }
 
-      return marketPrice ? <Value assetId='THB'>{marketPrice}</Value> : <Text color={COLORS.N400}>Waiting for input...</Text>
+      return marketPrice ? (
+        <Value assetId='THB'>{marketPrice}</Value>
+      ) : (
+        <Text color={COLORS.N400}>Waiting for input...</Text>
+      )
     }
     return (
       <View style={{ flexDirection: 'row' }}>
-        {this.state.limitPrice ? <Value assetId='THB'>{this.state.limitPrice}</Value> : <Text>-</Text>}
-        <Link onPress={this.onPressEditLimitPrice} style={styles.editLink}>Edit</Link>
+        {this.state.limitPrice ? (
+          <Value assetId='THB'>{this.state.limitPrice}</Value>
+        ) : (
+          <Text>-</Text>
+        )}
+        <Link onPress={this.onPressEditLimitPrice} style={styles.editLink}>
+          Edit
+        </Link>
       </View>
     )
   }
@@ -346,16 +353,22 @@ export default class TradeScreen extends React.Component<
     return (
       <View style={styles.priceSection}>
         <View style={styles.leftPriceSection}>
-          <OrderTypeIcon type={this.state.orderType} size={20} style={styles.orderTypeIcon} />
+          <OrderTypeIcon
+            type={this.state.orderType}
+            size={20}
+            style={styles.orderTypeIcon}
+          />
           <View style={styles.line} />
           <View style={styles.priceSectionMargin}>
-            <Text type='caption' color={COLORS.N500} style={{ marginBottom: 2 }}>{`${_.capitalize(this.state.orderType)} price`}</Text>
+            <Text
+              type='caption'
+              color={COLORS.N500}
+              style={{ marginBottom: 2 }}
+            >{`${_.capitalize(this.state.orderType)} price`}</Text>
             {this.renderPrice()}
           </View>
         </View>
-        <View style={styles.rightPriceSection}>
-          {this.renderSaveAmount()}
-        </View>
+        <View style={styles.rightPriceSection}>{this.renderSaveAmount()}</View>
       </View>
     )
   }
@@ -368,12 +381,20 @@ export default class TradeScreen extends React.Component<
       const side = this.props.navigation.getParam('side', 'buy')
       const assetId: AssetId = this.props.navigation.getParam('assetId', 'BTC')
 
-      if (!this.state.limitPrice) { return undefined }
+      if (!this.state.limitPrice) {
+        return undefined
+      }
 
       if (side === 'buy') {
-        return toString(toNumber(this.state.giveAmount) / this.state.limitPrice, ASSETS[assetId].decimal)
+        return toString(
+          toNumber(this.state.giveAmount) / this.state.limitPrice,
+          ASSETS[assetId].decimal
+        )
       } else {
-        return toString(toNumber(this.state.giveAmount) * this.state.limitPrice, ASSETS.THB.decimal)
+        return toString(
+          toNumber(this.state.giveAmount) * this.state.limitPrice,
+          ASSETS.THB.decimal
+        )
       }
     }
   }
@@ -450,9 +471,16 @@ export default class TradeScreen extends React.Component<
     const assetId: AssetId = this.props.navigation.getParam('assetId', 'BTC')
     return (
       <View style={styles.header}>
-        <Text type='headline'>{_.capitalize(side) + ' ' + ASSETS[assetId].name}</Text>
-        <TouchableOpacity onPress={this.toggleOrderTypeModal} style={styles.dropdown}>
-          <Text color={COLORS.P400} bold={true}>{`Order Typed: ${_.capitalize(this.state.orderType)} order`}</Text>
+        <Text type='headline'>
+          {_.capitalize(side) + ' ' + ASSETS[assetId].name}
+        </Text>
+        <TouchableOpacity
+          onPress={this.toggleOrderTypeModal}
+          style={styles.dropdown}
+        >
+          <Text color={COLORS.P400} bold={true}>{`Order Typed: ${_.capitalize(
+            this.state.orderType
+          )} order`}</Text>
           <AntDesign name='down' color={COLORS.P400} style={styles.downIcon} />
         </TouchableOpacity>
       </View>
