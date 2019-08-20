@@ -37,7 +37,6 @@ export default class WithdrawalScreen extends React.Component<
       tag: '',
       accountName: '',
       accountIssuer: 'kbank',
-      activeBox: 'amount',
       submitted: false
     }
   }
@@ -110,12 +109,13 @@ export default class WithdrawalScreen extends React.Component<
     return (
       <View>
         <TextBox
+          style={styles.box}
           label='Account name'
           autoCorrect={false} // Thai language doesn't handle autocomplete correctly
           onChangeValue={(value) => this.onChangeValue(boxes[3], value)}
           value={this.state.accountName}
         />
-        <Text type='caption'>Account Issuer</Text>
+        <Text type='caption'>Select your bank</Text>
         <Picker
           selectedValue={this.state.accountIssuer}
           onValueChange={this.onSelectIssuer}
@@ -173,6 +173,7 @@ export default class WithdrawalScreen extends React.Component<
                   numberPad={assetId === 'THB'}
                 />
                 {ASSETS[assetId].tag && <TextBox
+                  style={styles.box}
                   label='Tag name'
                   onChangeValue={(value) => this.onChangeValue(boxes[2], value)}
                   value={this.state.tag}
@@ -197,10 +198,6 @@ const styles = StyleSheet.create({
   },
   resultContainer: {
     alignItems: 'center'
-  },
-  header: {
-    alignItems: 'center',
-    paddingBottom: 20
   },
   content: {
     width: '100%'
