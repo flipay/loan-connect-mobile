@@ -11,7 +11,8 @@ import {
   Value,
   OrderTypeModal,
   SetLimitPriceFullScreenModal,
-  OrderTypeIcon
+  OrderTypeIcon,
+  Link
 } from '../components'
 import { COLORS, ASSETS, THBAmountTypes } from '../constants'
 import { AssetId, OrderPart, OrderType, Balances } from '../types'
@@ -32,12 +33,12 @@ interface Props {
 }
 
 interface State {
-  giveAssetBoxValue: string
-  takeAssetBoxValue: string
+  giveAmount: string
+  marketTakeAmount: string
+  lastFetchSuccessfullyMarketGiveAmount?: string
   giveAssetBoxWarningMessage?: string
   typing: boolean
   submitPressed: boolean
-  lastFetchSuccessfullyGiveAmount?: string
   orderTypeModalVisible: boolean
   orderType: OrderType
   limitPriceModalVisible: boolean
@@ -54,8 +55,8 @@ export default class TradeScreen extends React.Component<
   public constructor (props: Props & NavigationScreenProps) {
     super(props)
     this.state = {
-      giveAssetBoxValue: '',
-      takeAssetBoxValue: '',
+      giveAmount: '',
+      marketTakeAmount: '',
       typing: false,
       submitPressed: false,
       orderTypeModalVisible: false,
@@ -123,14 +124,14 @@ export default class TradeScreen extends React.Component<
     if (this.mounted) {
       this.props.clearRateData()
       this.setState({
-        lastFetchSuccessfullyGiveAmount: undefined,
-        takeAssetBoxValue: ''
+        lastFetchSuccessfullyMarketGiveAmount: undefined,
+        marketTakeAmount: ''
       })
     }
   }
 
   public getAmount = async () => {
-    const initialValue = this.state.giveAssetBoxValue
+    const initialValue = this.state.giveAmount
     const num = toNumber(initialValue)
     let flipayResponseValue = '0'
     const side = this.props.navigation.getParam('side', 'buy')
@@ -148,7 +149,7 @@ export default class TradeScreen extends React.Component<
       const result = await getCompetitorTHBAmounts(
         side,
         assetId,
-        side === 'buy' ? amount : toNumber(this.state.giveAssetBoxValue)
+        side === 'buy' ? amount : toNumber(this.state.giveAmount)
       )
 
       if (toNumber(flipayResponseValue) === 0) {
@@ -164,9 +165,9 @@ export default class TradeScreen extends React.Component<
       if (this.mounted) {
         this.props.setRateData(flipayResponseValue, result)
         this.setState({
-          lastFetchSuccessfullyGiveAmount: initialValue,
+          lastFetchSuccessfullyMarketGiveAmount: initialValue,
           giveAssetBoxWarningMessage: undefined,
-          takeAssetBoxValue: flipayResponseValue
+          marketTakeAmount: flipayResponseValue
         })
       }
     } catch (err) {
@@ -185,12 +186,12 @@ export default class TradeScreen extends React.Component<
     if (assetBox === 'give') {
       this.setState({
         typing: true,
-        giveAssetBoxValue: value
+        giveAmount: value
       })
     } else if (assetBox === 'take') {
       this.setState({
         typing: true,
-        takeAssetBoxValue: value
+        marketTakeAmount: value
       })
     }
 
@@ -232,19 +233,25 @@ export default class TradeScreen extends React.Component<
     this.props.navigation.goBack()
   }
 
+  public onPressEditLimitPrice = () => {
+    this.setState({
+      limitPriceModalVisible: true
+    })
+  }
+
   public isSubmitable = () => {
     return (
-      this.state.giveAssetBoxValue ===
-        this.state.lastFetchSuccessfullyGiveAmount &&
-      this.state.takeAssetBoxValue ===
+      this.state.giveAmount ===
+        this.state.lastFetchSuccessfullyMarketGiveAmount &&
+      this.state.marketTakeAmount ===
         this.props.lastFetchSuccessfullyTakeAmount
     )
   }
 
   public getSavedAmount () {
     if (
-      !this.state.lastFetchSuccessfullyGiveAmount ||
-      !toNumber(this.state.lastFetchSuccessfullyGiveAmount)
+      !this.state.lastFetchSuccessfullyMarketGiveAmount ||
+      !toNumber(this.state.lastFetchSuccessfullyMarketGiveAmount)
     ) {
       return null
     }
@@ -259,16 +266,17 @@ export default class TradeScreen extends React.Component<
     return calSaveAmount(
       side,
       side === 'buy'
-        ? toNumber(this.state.lastFetchSuccessfullyGiveAmount)
+        ? toNumber(this.state.lastFetchSuccessfullyMarketGiveAmount)
         : toNumber(this.props.lastFetchSuccessfullyTakeAmount),
       this.props.competitorThbAmounts
     )
   }
 
   public renderSaveAmount () {
+    if (this.state.orderType !== 'market') { return null }
     const saved = this.getSavedAmount()
     if (
-      !this.state.lastFetchSuccessfullyGiveAmount &&
+      !this.state.lastFetchSuccessfullyMarketGiveAmount &&
       !this.props.lastFetchSuccessfullyTakeAmount
     ) {
       return null
@@ -311,13 +319,13 @@ export default class TradeScreen extends React.Component<
 
   public renderPrice () {
     if (this.state.orderType === 'market') {
-      const { lastFetchSuccessfullyGiveAmount } = this.state
+      const { lastFetchSuccessfullyMarketGiveAmount } = this.state
       const { lastFetchSuccessfullyTakeAmount } = this.props
       let marketPrice
-      if (!lastFetchSuccessfullyGiveAmount || !lastFetchSuccessfullyTakeAmount) {
+      if (!lastFetchSuccessfullyMarketGiveAmount || !lastFetchSuccessfullyTakeAmount) {
         marketPrice = null
       } else {
-        const amountGive = toNumber(lastFetchSuccessfullyGiveAmount)
+        const amountGive = toNumber(lastFetchSuccessfullyMarketGiveAmount)
         const amountTake = toNumber(lastFetchSuccessfullyTakeAmount)
         const side = this.props.navigation.getParam('side', 'buy')
         marketPrice =
@@ -329,6 +337,7 @@ export default class TradeScreen extends React.Component<
     return (
       <View style={{ flexDirection: 'row' }}>
         {this.state.limitPrice ? <Value assetId='THB'>{this.state.limitPrice}</Value> : <Text>-</Text>}
+        <Link onPress={this.onPressEditLimitPrice} style={styles.editLink}>Edit</Link>
       </View>
     )
   }
@@ -366,7 +375,7 @@ export default class TradeScreen extends React.Component<
             description={side === 'buy' ? 'You buy with' : 'You sell'}
             assetId={giveSideAssetId}
             onChangeValue={(value: string) => this.onChangeValue('give', value)}
-            value={this.state.giveAssetBoxValue}
+            value={this.state.giveAmount}
             onPressMax={() =>
               this.onChangeValue(
                 'give',
@@ -389,7 +398,7 @@ export default class TradeScreen extends React.Component<
               side === 'sell' ? 'You will receive' : 'You will receive'
             }
             assetId={side === 'sell' ? 'THB' : assetId}
-            value={this.state.takeAssetBoxValue}
+            value={this.state.marketTakeAmount}
           />
         </View>
       </View>
@@ -399,7 +408,7 @@ export default class TradeScreen extends React.Component<
   public goToReview = () => {
     const side = this.props.navigation.getParam('side', 'buy')
     const assetId: AssetId = this.props.navigation.getParam('assetId', 'BTC')
-    const giveAmount = this.state.lastFetchSuccessfullyGiveAmount
+    const giveAmount = this.state.lastFetchSuccessfullyMarketGiveAmount
     const takeAmount = this.props.lastFetchSuccessfullyTakeAmount
 
     logEvent('trade/press-review-button', {
@@ -425,7 +434,7 @@ export default class TradeScreen extends React.Component<
       <View style={styles.header}>
         <Text type='headline'>{_.capitalize(side) + ' ' + ASSETS[assetId].name}</Text>
         <TouchableOpacity onPress={this.toggleOrderTypeModal} style={styles.dropdown}>
-          <Text color={COLORS.P400}>{`Order Typed: ${_.capitalize(this.state.orderType)} order`}</Text>
+          <Text color={COLORS.P400} bold={true}>{`Order Typed: ${_.capitalize(this.state.orderType)} order`}</Text>
           <AntDesign name='down' color={COLORS.P400} style={styles.downIcon} />
         </TouchableOpacity>
       </View>
@@ -529,6 +538,9 @@ const styles = StyleSheet.create({
   },
   priceSectionMargin: {
     marginVertical: 28
+  },
+  editLink: {
+    marginLeft: 8
   },
   saveAmount: {
     alignItems: 'center'
