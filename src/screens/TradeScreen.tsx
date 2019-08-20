@@ -386,7 +386,6 @@ export default class TradeScreen extends React.Component<
             assetId={giveSideAssetId}
             onPress={() => this.onPressAssetBox('give')}
             onChangeValue={(value: string) => this.onChangeValue('give', value)}
-            active={this.state.activeAssetBox === 'give'}
             value={this.state.giveAssetBoxValue}
             onPressMax={() =>
               this.onChangeValue(

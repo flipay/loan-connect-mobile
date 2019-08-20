@@ -12,7 +12,6 @@ interface Props {
   assetId: AssetId
   onPress: () => void
   onChangeValue: (value: string) => void
-  active: boolean
   value?: string
   warning?: string
   error?: string
@@ -72,7 +71,6 @@ export default class AssetBoxWithBalance extends React.Component<Props> {
           assetId={this.props.assetId}
           onPress={this.props.onPress}
           onChangeValue={this.props.onChangeValue}
-          active={this.props.active}
           value={this.props.value}
           warning={this.props.warning}
           error={this.props.error}

@@ -185,7 +185,6 @@ export default class WithdrawalScreen extends React.Component<
                   assetId={assetId}
                   onPress={this.onPressAmountBox}
                   onChangeValue={(value) => this.onChangeValue(boxes[0], value)}
-                  active={this.state.activeBox === boxes[0]}
                   value={this.state.amount}
                   balance={remainingBalance}
                   onPressMax={() => this.setState({ amount: toString(remainingBalance, ASSETS[assetId].decimal) })}

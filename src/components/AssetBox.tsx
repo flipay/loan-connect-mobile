@@ -13,14 +13,25 @@ interface Props {
   assetId: AssetId
   onPress?: () => void
   onChangeValue?: (value: string) => void
-  active?: boolean
   value?: string
   warning?: string
   error?: string
   renderFooter?: () => any
 }
 
-export default class AssetBox extends React.Component<Props> {
+interface State {
+  active: boolean
+}
+
+export default class AssetBox extends React.Component<Props, State> {
+
+  public constructor (props: Props) {
+    super(props)
+    this.state = ({
+      active: false
+    })
+  }
+
   private input: TextInput | null = null
 
   public formatNumberInString (valueInString: string) {
@@ -89,14 +100,30 @@ export default class AssetBox extends React.Component<Props> {
       return COLORS.R400
     } else if (this.props.warning) {
       return COLORS.Y400
-    } else if (this.props.active) {
+    } else if (this.state.active) {
       return COLORS.P400
     } else {
       return COLORS.N500
     }
   }
 
-  public renderMainText () {
+  public onFocus = () => {
+    if (this.props.onPress) {
+      this.props.onPress()
+    }
+
+    this.setState({
+      active: true
+    })
+  }
+
+  public onBlur = () => {
+    this.setState({
+      active: false
+    })
+  }
+
+  public renderTextInput () {
     return this.props.onChangeValue ? (
       <TextInput
         ref={element => {
@@ -106,7 +133,7 @@ export default class AssetBox extends React.Component<Props> {
         maxLength={10}
         autoFocus={this.props.autoFocus}
         placeholderTextColor={
-          this.props.active ? COLORS.P100 : COLORS.N300
+          this.state.active ? COLORS.P100 : COLORS.N300
         }
         selectionColor={COLORS.P400}
         onChangeText={text =>
@@ -115,7 +142,8 @@ export default class AssetBox extends React.Component<Props> {
         value={this.props.value}
         keyboardType='decimal-pad'
         placeholder='0'
-        onFocus={this.props.onPress}
+        onFocus={this.onFocus}
+        onBlur={this.onBlur}
       />
     ) : (
       <Text type='large-title'>{this.props.value || 0}</Text>
@@ -130,7 +158,7 @@ export default class AssetBox extends React.Component<Props> {
           <Text type='caption' color={this.getDescriptionColor()}>
             {this.props.description}
           </Text>
-          {this.renderMainText()}
+          {this.renderTextInput()}
         </View>
         <View style={styles.rightContainer}>
           <Image
@@ -168,7 +196,7 @@ export default class AssetBox extends React.Component<Props> {
               this.props.error && styles.errorContainer
             ]}
             onPress={this.onPress}
-            active={this.props.active}
+            active={this.state.active}
             borderRadius={6}
           >
             {this.props.renderFooter
