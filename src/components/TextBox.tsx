@@ -12,9 +12,7 @@ interface Props {
   autoFocus?: boolean
   label: string
   placeholder?: string
-  onPress: () => void
   onChangeValue: (value: string) => void
-  active: boolean
   autoCorrect?: boolean
   value?: string
   validate?: () => boolean
@@ -25,6 +23,7 @@ interface Props {
 
 interface State {
   typing?: boolean
+  active: boolean
 }
 
 export default class TextBox extends React.Component<Props, State> {
@@ -34,7 +33,8 @@ export default class TextBox extends React.Component<Props, State> {
   constructor (props: Props) {
     super(props)
     this.state = {
-      typing: undefined
+      typing: undefined,
+      active: false
     }
   }
 
@@ -63,15 +63,23 @@ export default class TextBox extends React.Component<Props, State> {
     }
   }
 
+  public onFocus = () => {
+    this.setState({ active: true })
+  }
+
+  public onBlur = () => {
+    this.setState({ active: false })
+  }
+
   public render () {
     return (
       <View style={{ flex: 1 }}>
         <Layer
           style={[styles.container, this.isError() && styles.errorContainer, this.props.style]}
           onPress={this.onPress}
-          active={this.props.active}
+          active={this.state.active}
         >
-          <Text type='caption' color={this.isError() ? COLORS.R400 : (this.props.active ? COLORS.P400 : COLORS.N500)}>{this.props.label}</Text>
+          <Text type='caption' color={this.isError() ? COLORS.R400 : (this.state.active ? COLORS.P400 : COLORS.N500)}>{this.props.label}</Text>
           <TextInput
             ref={element => {
               this.input = element
@@ -80,12 +88,13 @@ export default class TextBox extends React.Component<Props, State> {
             style={styles.textInput}
             autoFocus={this.props.autoFocus}
             placeholder={this.props.placeholder}
-            placeholderTextColor={this.props.active ? COLORS.P100 : COLORS.N300}
+            placeholderTextColor={this.state.active ? COLORS.P100 : COLORS.N300}
             selectionColor={COLORS.P400}
             onChangeText={text => this.props.onChangeValue(text)}
             value={this.props.value}
             keyboardType={this.props.numberPad ? 'decimal-pad' : 'default'}
-            onFocus={this.props.onPress}
+            onFocus={this.onFocus}
+            onBlur={this.onBlur}
             autoCorrect={this.props.autoCorrect}
           />
         </Layer>

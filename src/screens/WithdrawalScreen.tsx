@@ -21,7 +21,6 @@ interface State {
   tag: string
   accountName: string
   accountIssuer?: Issuer
-  activeBox: Box
   submitted: boolean
 }
 
@@ -62,21 +61,6 @@ export default class WithdrawalScreen extends React.Component<
   public onPressBackButton = () => {
     logEvent('withdrawal/press-back-button')
     this.props.navigation.goBack()
-  }
-
-  public onPressAddressBox = () => {
-    logEvent('withdrawal/press-account-number-box')
-    this.setState({ activeBox: 'address' })
-  }
-
-  public onPressTagBox = () => {
-    logEvent('withdrawal/press-tag-box')
-    this.setState({ activeBox: 'tag' })
-  }
-
-  public onPressAccountNameBox = () => {
-    logEvent('withdrawal/press-account-name-box')
-    this.setState({ activeBox: 'accountName' })
   }
 
   public onChangeValue = (box: Box, value: string) => {
@@ -126,12 +110,9 @@ export default class WithdrawalScreen extends React.Component<
     return (
       <View>
         <TextBox
-          style={styles.textBox}
           label='Account name'
           autoCorrect={false} // Thai language doesn't handle autocomplete correctly
-          onPress={this.onPressAccountNameBox}
           onChangeValue={(value) => this.onChangeValue(boxes[3], value)}
-          active={this.state.activeBox === boxes[3]}
           value={this.state.accountName}
         />
         <Text type='caption'>Account Issuer</Text>
@@ -187,17 +168,13 @@ export default class WithdrawalScreen extends React.Component<
                 <TextBox
                   style={styles.box}
                   label={assetId === 'THB' ? 'Account number' : description}
-                  onPress={this.onPressAddressBox}
                   onChangeValue={(value) => this.onChangeValue(boxes[1], value)}
-                  active={this.state.activeBox === boxes[1]}
                   value={this.state.address}
                   numberPad={assetId === 'THB'}
                 />
                 {ASSETS[assetId].tag && <TextBox
                   label='Tag name'
-                  onPress={this.onPressTagBox}
                   onChangeValue={(value) => this.onChangeValue(boxes[2], value)}
-                  active={this.state.activeBox === boxes[2]}
                   value={this.state.tag}
                   numberPad={true}
                 />}
