@@ -84,16 +84,12 @@ export default class AssetBox extends React.Component<Props> {
     }
   }
 
-  public shouldShowActiveColor () {
-    return this.props.active !== false && !!this.props.onChangeValue
-  }
-
-  public getColor () {
+  public getDescriptionColor () {
     if (this.props.error) {
       return COLORS.R400
     } else if (this.props.warning) {
       return COLORS.Y400
-    } else if (this.shouldShowActiveColor()) {
+    } else if (this.props.active) {
       return COLORS.P400
     } else {
       return COLORS.N500
@@ -110,9 +106,9 @@ export default class AssetBox extends React.Component<Props> {
         maxLength={10}
         autoFocus={this.props.autoFocus}
         placeholderTextColor={
-          this.shouldShowActiveColor() ? COLORS.P100 : COLORS.N300
+          this.props.active ? COLORS.P100 : COLORS.N300
         }
-        selectionColor={this.getColor()}
+        selectionColor={COLORS.P400}
         onChangeText={text =>
           this.props.onChangeValue(this.formatNumberInString(text))
         }
@@ -131,7 +127,7 @@ export default class AssetBox extends React.Component<Props> {
     return (
       <View style={styles.content}>
         <View style={styles.leftContainer}>
-          <Text type='caption' color={this.getColor()}>
+          <Text type='caption' color={this.getDescriptionColor()}>
             {this.props.description}
           </Text>
           {this.renderMainText()}
@@ -163,7 +159,7 @@ export default class AssetBox extends React.Component<Props> {
   public render () {
     return (
       <View>
-        {this.shouldShowActiveColor() ? (
+        {this.props.onChangeValue ? (
           <Layer
             style={[
               styles.container,
@@ -172,7 +168,7 @@ export default class AssetBox extends React.Component<Props> {
               this.props.error && styles.errorContainer
             ]}
             onPress={this.onPress}
-            active={this.shouldShowActiveColor()}
+            active={this.props.active}
             borderRadius={6}
           >
             {this.props.renderFooter
