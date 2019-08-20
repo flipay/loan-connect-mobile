@@ -360,6 +360,24 @@ export default class TradeScreen extends React.Component<
     )
   }
 
+  public getTakeAmount () {
+    if (this.state.orderType === 'market') {
+      return this.state.marketTakeAmount
+    } else {
+      // Limit order
+      const side = this.props.navigation.getParam('side', 'buy')
+      const assetId: AssetId = this.props.navigation.getParam('assetId', 'BTC')
+
+      if (!this.state.limitPrice) { return undefined }
+
+      if (side === 'buy') {
+        return toString(toNumber(this.state.giveAmount) / this.state.limitPrice, ASSETS[assetId].decimal)
+      } else {
+        return toString(toNumber(this.state.giveAmount) * this.state.limitPrice, ASSETS.THB.decimal)
+      }
+    }
+  }
+
   public renderTradeBody () {
     const side = this.props.navigation.getParam('side', 'buy')
     const assetId: AssetId = this.props.navigation.getParam('assetId', 'BTC')
@@ -398,7 +416,7 @@ export default class TradeScreen extends React.Component<
               side === 'sell' ? 'You will receive' : 'You will receive'
             }
             assetId={side === 'sell' ? 'THB' : assetId}
-            value={this.state.marketTakeAmount}
+            value={this.getTakeAmount()}
           />
         </View>
       </View>
