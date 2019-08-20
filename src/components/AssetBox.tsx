@@ -11,7 +11,6 @@ interface Props {
   autoFocus?: boolean
   description: string
   assetId: AssetId
-  onPress?: () => void
   onChangeValue?: (value: string) => void
   value?: string
   warning?: string
@@ -108,10 +107,6 @@ export default class AssetBox extends React.Component<Props, State> {
   }
 
   public onFocus = () => {
-    if (this.props.onPress) {
-      this.props.onPress()
-    }
-
     this.setState({
       active: true
     })

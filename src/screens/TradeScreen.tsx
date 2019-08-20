@@ -32,7 +32,6 @@ interface Props {
 }
 
 interface State {
-  activeAssetBox: AssetBoxType
   giveAssetBoxValue: string
   takeAssetBoxValue: string
   giveAssetBoxWarningMessage?: string
@@ -55,7 +54,6 @@ export default class TradeScreen extends React.Component<
   public constructor (props: Props & NavigationScreenProps) {
     super(props)
     this.state = {
-      activeAssetBox: 'give',
       giveAssetBoxValue: '',
       takeAssetBoxValue: '',
       typing: false,
@@ -132,11 +130,7 @@ export default class TradeScreen extends React.Component<
   }
 
   public getAmount = async () => {
-    const activeAssetBox = this.state.activeAssetBox
-    const initialValue =
-      activeAssetBox === 'give'
-        ? this.state.giveAssetBoxValue
-        : this.state.takeAssetBoxValue
+    const initialValue = this.state.giveAssetBoxValue
     const num = toNumber(initialValue)
     let flipayResponseValue = '0'
     const side = this.props.navigation.getParam('side', 'buy')
@@ -145,7 +139,7 @@ export default class TradeScreen extends React.Component<
       const amount = await getAmount(
         side,
         assetId,
-        activeAssetBox,
+        'give',
         num,
         'liquid'
       )
@@ -184,19 +178,6 @@ export default class TradeScreen extends React.Component<
       } else if (err.message !== 'below_minimum') {
         ErrorReport.notify(err)
       }
-    }
-  }
-
-  public onPressAssetBox = (assetBox: AssetBoxType) => {
-    logEvent('trade/press-asset-box', {
-      side: this.props.navigation.getParam('side'),
-      assetId: this.props.navigation.getParam('assetId'),
-      tradeSide: assetBox
-    })
-    if (assetBox !== this.state.activeAssetBox) {
-      this.setState({
-        activeAssetBox: assetBox
-      })
     }
   }
 
@@ -384,7 +365,6 @@ export default class TradeScreen extends React.Component<
             autoFocus={true}
             description={side === 'buy' ? 'You buy with' : 'You sell'}
             assetId={giveSideAssetId}
-            onPress={() => this.onPressAssetBox('give')}
             onChangeValue={(value: string) => this.onChangeValue('give', value)}
             value={this.state.giveAssetBoxValue}
             onPressMax={() =>

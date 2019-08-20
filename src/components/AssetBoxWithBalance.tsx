@@ -10,7 +10,6 @@ interface Props {
   autoFocus?: boolean
   description: string
   assetId: AssetId
-  onPress: () => void
   onChangeValue: (value: string) => void
   value?: string
   warning?: string
@@ -69,7 +68,6 @@ export default class AssetBoxWithBalance extends React.Component<Props> {
           autoFocus={this.props.autoFocus}
           description={this.props.description}
           assetId={this.props.assetId}
-          onPress={this.props.onPress}
           onChangeValue={this.props.onChangeValue}
           value={this.props.value}
           warning={this.props.warning}

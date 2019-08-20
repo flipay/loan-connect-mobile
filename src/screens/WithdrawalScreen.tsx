@@ -64,11 +64,6 @@ export default class WithdrawalScreen extends React.Component<
     this.props.navigation.goBack()
   }
 
-  public onPressAmountBox = () => {
-    logEvent('withdrawal/press-amount-box')
-    this.setState({ activeBox: 'amount' })
-  }
-
   public onPressAddressBox = () => {
     logEvent('withdrawal/press-account-number-box')
     this.setState({ activeBox: 'address' })
@@ -183,7 +178,6 @@ export default class WithdrawalScreen extends React.Component<
                   autoFocus={true}
                   description='Withdrawal amount'
                   assetId={assetId}
-                  onPress={this.onPressAmountBox}
                   onChangeValue={(value) => this.onChangeValue(boxes[0], value)}
                   value={this.state.amount}
                   balance={remainingBalance}
