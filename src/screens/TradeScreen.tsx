@@ -284,7 +284,7 @@ export default class TradeScreen extends React.Component<
     )
   }
 
-  public renderFooter () {
+  public renderSaveAmount () {
     const saved = this.getSavedAmount()
     if (
       !this.state.lastFetchSuccessfullyGiveAmount &&
@@ -300,7 +300,7 @@ export default class TradeScreen extends React.Component<
     })
     if (countError === _.map(this.props.competitorThbAmounts).length) {
       return (
-        <View style={styles.footer}>
+        <View style={styles.saveAmount}>
           <Text color={COLORS.N500} style={{ textAlign: 'center' }}>
             Flipay is the only provider having this pair and volume.
           </Text>
@@ -312,13 +312,12 @@ export default class TradeScreen extends React.Component<
       return null
     }
     return (
-      <Text color={COLORS.G400} style={styles.footer}>
+      <Text color={COLORS.G400} style={styles.saveAmount}>
         Save up to
         <Text color={COLORS.G400} bold={true}>{` ${toString(
           saved,
           2
         )} THB `}</Text>
-        with Flipay
       </Text>
     )
   }
@@ -365,7 +364,7 @@ export default class TradeScreen extends React.Component<
           </View>
         </View>
         <View style={styles.rightPriceSection}>
-          <Text>Save amount</Text>
+          {this.renderSaveAmount()}
         </View>
       </View>
     )
@@ -414,7 +413,6 @@ export default class TradeScreen extends React.Component<
             value={this.state.takeAssetBoxValue}
           />
         </View>
-        {this.renderFooter()}
       </View>
     )
   }
@@ -553,9 +551,7 @@ const styles = StyleSheet.create({
   priceSectionMargin: {
     marginVertical: 28
   },
-  footer: {
-    marginTop: 10,
-    marginHorizontal: 30,
+  saveAmount: {
     alignItems: 'center'
   },
   savedFooter: {
