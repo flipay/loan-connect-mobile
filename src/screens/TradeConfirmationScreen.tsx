@@ -17,7 +17,8 @@ import {
   toString,
   getErrorCode,
   alert,
-  calSaveAmount
+  calSaveAmount,
+  calLimitTakeAmount
 } from '../utils'
 import { logEvent } from '../services/Analytic'
 
@@ -60,6 +61,7 @@ export default class TradeConfirmationScreen extends React.Component<
     if (!this.isSubmitable()) { return }
     const side = this.props.navigation.getParam('side')
     const assetId = this.props.navigation.getParam('assetId')
+    const orderType = this.props.navigation.getParam('orderType', 'market')
 
     await this.setState({ submitPressed: true })
     try {
@@ -70,8 +72,10 @@ export default class TradeConfirmationScreen extends React.Component<
         side === 'buy' ? 'THB' : assetId,
         side === 'buy' ? assetId : 'THB',
         toNumber(this.props.navigation.getParam('giveAmount')),
-        toNumber(this.props.lastFetchSuccessfullyTakeAmount || '0')
+        toNumber(this.getTakeAmount() || '0'),
+        orderType
       )
+
       this.setState({
         executed: true,
         tradeResultGive: Number(tradeResultGive),
@@ -140,6 +144,10 @@ export default class TradeConfirmationScreen extends React.Component<
   }
 
   public renderFooter () {
+    const orderType = this.props.navigation.getParam('orderType')
+    if (orderType === 'limit') {
+      return null
+    }
     const side = this.props.navigation.getParam('side', 'buy')
     const saved = calSaveAmount(
       side,
@@ -172,13 +180,23 @@ export default class TradeConfirmationScreen extends React.Component<
     )
   }
 
+  public isMarketOrder () {
+    const orderType = this.props.navigation.getParam('orderType', 'market')
+    return orderType === 'market'
+  }
+
   public renderPrice () {
-    const { lastFetchSuccessfullyTakeAmount } = this.props
-    const giveAmount = this.props.navigation.getParam('giveAmount')
-    const amountGive = toNumber(giveAmount)
-    const amountTake = toNumber(lastFetchSuccessfullyTakeAmount)
-    const side = this.props.navigation.getParam('side', 'buy')
-    const price = side === 'buy' ? (amountGive / amountTake) : (amountTake / amountGive)
+    let price
+    if (this.isMarketOrder()) {
+      const { lastFetchSuccessfullyTakeAmount } = this.props
+      const giveAmount = this.props.navigation.getParam('giveAmount')
+      const amountGive = toNumber(giveAmount)
+      const amountTake = toNumber(lastFetchSuccessfullyTakeAmount)
+      const side = this.props.navigation.getParam('side', 'buy')
+      price = side === 'buy' ? (amountGive / amountTake) : (amountTake / amountGive)
+    } else {
+      price = this.props.navigation.getParam('limitPrice', 1)
+    }
     return (
       <View style={styles.priceRow}>
         <Text type='caption' color={COLORS.N500}>
@@ -211,6 +229,18 @@ export default class TradeConfirmationScreen extends React.Component<
     this.props.navigation.navigate('Portfolio')
   }
 
+  public getTakeAmount () {
+    if (this.isMarketOrder()) {
+      return this.props.lastFetchSuccessfullyTakeAmount
+    } else {
+      const limitPrice = this.props.navigation.getParam('limitPrice', 1)
+      const side = this.props.navigation.getParam('side', 'buy')
+      const giveAmount = this.props.navigation.getParam('giveAmount', 1)
+      const assetId = this.props.navigation.getParam('assetId', 'BTC')
+      return calLimitTakeAmount(side, assetId, giveAmount, limitPrice)
+    }
+  }
+
   public renderConfirmationBody () {
     const side = this.props.navigation.getParam('side', 'buy')
     const assetId: AssetId = this.props.navigation.getParam('assetId', 'BTC')
@@ -231,7 +261,7 @@ export default class TradeConfirmationScreen extends React.Component<
           <AssetBox
             description={side === 'sell' ? 'You will receive' : 'You will receive'}
             assetId={side === 'sell' ? 'THB' : assetId}
-            value={this.props.lastFetchSuccessfullyTakeAmount}
+            value={this.getTakeAmount()}
           />
           {this.renderPrice()}
         </View>

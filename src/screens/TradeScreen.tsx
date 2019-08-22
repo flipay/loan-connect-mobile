@@ -17,7 +17,7 @@ import {
 import { COLORS, ASSETS, THBAmountTypes } from '../constants'
 import { AssetId, OrderPart, OrderType, Balances } from '../types'
 import { getAmount, getCompetitorTHBAmounts } from '../requests'
-import { toNumber, toString, getErrorCode, calSaveAmount } from '../utils'
+import { toNumber, toString, getErrorCode, calSaveAmount, calLimitTakeAmount } from '../utils'
 import { logEvent } from '../services/Analytic'
 import * as ErrorReport from '../services/ErrorReport'
 
@@ -374,28 +374,15 @@ export default class TradeScreen extends React.Component<
   }
 
   public getTakeAmount () {
-    if (this.state.orderType === 'market') {
+    const { orderType } = this.state
+    if (orderType === 'market') {
       return this.state.marketTakeAmount
-    } else {
-      // Limit order
+    } else if (orderType === 'limit') {
       const side = this.props.navigation.getParam('side', 'buy')
       const assetId: AssetId = this.props.navigation.getParam('assetId', 'BTC')
-
-      if (!this.state.limitPrice) {
-        return undefined
-      }
-
-      if (side === 'buy') {
-        return toString(
-          toNumber(this.state.giveAmount) / this.state.limitPrice,
-          ASSETS[assetId].decimal
-        )
-      } else {
-        return toString(
-          toNumber(this.state.giveAmount) * this.state.limitPrice,
-          ASSETS.THB.decimal
-        )
-      }
+      return calLimitTakeAmount(side, assetId, this.state.giveAmount, this.state.limitPrice)
+    } else {
+      throw(Error('unrecognizable order type'))
     }
   }
 
@@ -461,7 +448,8 @@ export default class TradeScreen extends React.Component<
       side,
       assetId,
       giveAmount,
-      takeAmount,
+      orderType: this.state.orderType,
+      limitPrice: this.state.limitPrice,
       competitorThbAmounts: this.props.competitorThbAmounts
     })
   }
