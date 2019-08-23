@@ -232,12 +232,23 @@ export default class TradeScreen extends React.Component<
     })
   }
 
+  public throwNoOrderTypeError () {
+    throw(Error('unrecognizable order type'))
+  }
+
   public isSubmitable = () => {
-    return (
-      this.state.giveAmount ===
+    if (this.state.orderType === 'market') {
+      return (
+        this.state.giveAmount ===
         this.state.lastFetchSuccessfullyMarketGiveAmount &&
-      this.state.marketTakeAmount === this.props.lastFetchSuccessfullyTakeAmount
-    )
+        this.state.marketTakeAmount === this.props.lastFetchSuccessfullyTakeAmount
+      )
+    } else if (this.state.orderType === 'limit') {
+      return !!this.state.giveAmount && !!this.state.limitPrice
+    } else {
+      this.throwNoOrderTypeError()
+      return
+    }
   }
 
   public getSavedAmount () {
@@ -382,7 +393,8 @@ export default class TradeScreen extends React.Component<
       const assetId: AssetId = this.props.navigation.getParam('assetId', 'BTC')
       return calLimitTakeAmount(side, assetId, this.state.giveAmount, this.state.limitPrice)
     } else {
-      throw(Error('unrecognizable order type'))
+      this.throwNoOrderTypeError()
+      return
     }
   }
 
