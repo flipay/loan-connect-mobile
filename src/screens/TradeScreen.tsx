@@ -8,11 +8,9 @@ import {
   AssetBoxWithBalance,
   AssetBox,
   Screen,
-  Value,
   OrderTypeModal,
   SetLimitPriceFullScreenModal,
-  OrderTypeIcon,
-  Link
+  PriceSection
 } from '../components'
 import { COLORS, ASSETS, THBAmountTypes } from '../constants'
 import { AssetId, OrderPart, OrderType, Balances } from '../types'
@@ -275,7 +273,7 @@ export default class TradeScreen extends React.Component<
     )
   }
 
-  public renderSaveAmount () {
+  public renderSaveAmount = () => {
     if (this.state.orderType !== 'market') {
       return null
     }
@@ -322,65 +320,33 @@ export default class TradeScreen extends React.Component<
     return side === 'buy' ? 'THB' : assetId
   }
 
-  public renderPrice () {
+  public renderPriceSection () {
+    let price
     if (this.state.orderType === 'market') {
       const { lastFetchSuccessfullyMarketGiveAmount } = this.state
       const { lastFetchSuccessfullyTakeAmount } = this.props
-      let marketPrice
       if (
         !lastFetchSuccessfullyMarketGiveAmount ||
         !lastFetchSuccessfullyTakeAmount
       ) {
-        marketPrice = null
+        price = undefined
       } else {
         const amountGive = toNumber(lastFetchSuccessfullyMarketGiveAmount)
         const amountTake = toNumber(lastFetchSuccessfullyTakeAmount)
         const side = this.props.navigation.getParam('side', 'buy')
-        marketPrice =
+        price =
           side === 'buy' ? amountGive / amountTake : amountTake / amountGive
       }
-
-      return marketPrice ? (
-        <Value assetId='THB'>{marketPrice}</Value>
-      ) : (
-        <Text color={COLORS.N400}>Waiting for input...</Text>
-      )
+    } else {
+      price = this.state.limitPrice
     }
     return (
-      <View style={{ flexDirection: 'row' }}>
-        {this.state.limitPrice ? (
-          <Value assetId='THB'>{this.state.limitPrice}</Value>
-        ) : (
-          <Text>-</Text>
-        )}
-        <Link onPress={this.onPressEditLimitPrice} style={styles.editLink}>
-          Edit
-        </Link>
-      </View>
-    )
-  }
-
-  public renderPriceSection () {
-    return (
-      <View style={styles.priceSection}>
-        <View style={styles.leftPriceSection}>
-          <OrderTypeIcon
-            type={this.state.orderType}
-            size={20}
-            style={styles.orderTypeIcon}
-          />
-          <View style={styles.line} />
-          <View style={styles.priceSectionMargin}>
-            <Text
-              type='caption'
-              color={COLORS.N500}
-              style={{ marginBottom: 2 }}
-            >{`${_.capitalize(this.state.orderType)} price`}</Text>
-            {this.renderPrice()}
-          </View>
-        </View>
-        <View style={styles.rightPriceSection}>{this.renderSaveAmount()}</View>
-      </View>
+      <PriceSection
+        orderType={this.state.orderType}
+        price={price}
+        renderSavedAmount={this.renderSaveAmount}
+        onPressEditLink={this.onPressEditLimitPrice}
+      />
     )
   }
 
@@ -559,43 +525,7 @@ const styles = StyleSheet.create({
   giveAssetBox: {
     zIndex: 1
   },
-  priceSection: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'stretch'
-  },
-  orderTypeIcon: {
-    marginRight: 8,
-    zIndex: 1
-  },
-  line: {
-    width: 2,
-    height: '100%',
-    backgroundColor: COLORS.N200,
-    position: 'relative',
-    left: -19
-  },
-  leftPriceSection: {
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-  rightPriceSection: {
-    justifyContent: 'center'
-  },
-  priceSectionMargin: {
-    marginVertical: 28
-  },
-  editLink: {
-    marginLeft: 8
-  },
   saveAmount: {
     alignItems: 'center'
-  },
-  savedFooter: {
-    width: '100%',
-    paddingVertical: 14,
-    borderWidth: 1,
-    borderColor: COLORS.P400,
-    borderRadius: 6
   }
 })

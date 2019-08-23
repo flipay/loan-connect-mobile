@@ -15,7 +15,7 @@ interface Props {
   renderSavedAmount: () => any
 
   // for Limit order
-  price: number
+  price?: number
   onPressEditLink: () => void
 }
 
