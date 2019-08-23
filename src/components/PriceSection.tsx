@@ -12,18 +12,16 @@ interface Props {
   orderType: OrderType
 
   // for market order
-  renderSavedAmount: () => any
+  renderSavedAmount?: () => any
 
   // for Limit order
   price?: number
-  onPressEditLink: () => void
+  onPressEditLink?: () => void
 }
 
 export default class PriceSection extends React.Component<Props> {
-
   public renderPrice () {
     if (this.props.orderType === 'market') {
-
       return this.props.price ? (
         <Value assetId='THB'>{this.props.price}</Value>
       ) : (
@@ -38,9 +36,9 @@ export default class PriceSection extends React.Component<Props> {
           <Text>-</Text>
         )}
         {this.props.onPressEditLink && (
-        <Link onPress={this.props.onPressEditLink} style={styles.editLink}>
-          Edit
-        </Link>
+          <Link onPress={this.props.onPressEditLink} style={styles.editLink}>
+            Edit
+          </Link>
         )}
       </View>
     )
@@ -66,7 +64,11 @@ export default class PriceSection extends React.Component<Props> {
             {this.renderPrice()}
           </View>
         </View>
-        <View style={styles.rightPriceSection}>{this.props.renderSavedAmount()}</View>
+        {this.props.renderSavedAmount && (
+          <View style={styles.rightPriceSection}>
+            {this.props.renderSavedAmount()}
+          </View>
+        )}
       </View>
     )
   }
