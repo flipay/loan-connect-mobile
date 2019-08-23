@@ -294,7 +294,7 @@ export default class TradeScreen extends React.Component<
       return (
         <View style={styles.saveAmount}>
           <Text color={COLORS.N500} style={{ textAlign: 'center' }}>
-            Flipay is the only provider having this pair and volume.
+            Only available at Flipay
           </Text>
         </View>
       )
