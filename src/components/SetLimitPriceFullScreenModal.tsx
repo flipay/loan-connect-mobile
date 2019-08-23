@@ -59,6 +59,7 @@ export default class SetLimitPriceFullScreenModal extends React.Component <Props
           activeSubmitButton={!!this.state.price}
           onPessSubmitButton={() => this.props.onSetPrice(this.state.price || 0)}
         >
+          <View style={styles.body}>
           <AssetBox
             autoFocus={true}
             description={`Limit price per ${ASSETS[this.props.assetId].name}`}
@@ -66,6 +67,7 @@ export default class SetLimitPriceFullScreenModal extends React.Component <Props
             value={this.state.price === undefined ? undefined : toString(this.state.price, ASSETS[assetBoxAssetId].decimal)}
             onChangeValue={this.onSetPrice}
           />
+          </View>
         </Screen>
       </Modal>
     )
@@ -77,6 +79,9 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   title: {
-    marginBottom: 8
+    marginBottom: 4
+  },
+  body: {
+    paddingTop: 10
   }
 })
