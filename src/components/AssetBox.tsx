@@ -11,15 +11,26 @@ interface Props {
   autoFocus?: boolean
   description: string
   assetId: AssetId
-  onPress?: () => void
   onChangeValue?: (value: string) => void
-  active?: boolean
   value?: string
   warning?: string
   error?: string
+  renderFooter?: () => any
 }
 
-export default class AssetBox extends React.Component<Props> {
+interface State {
+  active: boolean
+}
+
+export default class AssetBox extends React.Component<Props, State> {
+
+  public constructor (props: Props) {
+    super(props)
+    this.state = ({
+      active: false
+    })
+  }
+
   private input: TextInput | null = null
 
   public formatNumberInString (valueInString: string) {
@@ -44,7 +55,9 @@ export default class AssetBox extends React.Component<Props> {
         }
         endingZero = length - _.trimEnd(valueInString, '0').length
       }
-      valueInString = valueInNumber.toLocaleString(undefined, { maximumFractionDigits: 8 })
+      valueInString = valueInNumber.toLocaleString(undefined, {
+        maximumFractionDigits: 8
+      })
       if (haveDot) {
         valueInString += '.'
       }
@@ -81,60 +94,87 @@ export default class AssetBox extends React.Component<Props> {
     }
   }
 
-  public getColor () {
+  public getDescriptionColor () {
     if (this.props.error) {
       return COLORS.R400
     } else if (this.props.warning) {
       return COLORS.Y400
-    } else if (this.props.active) {
+    } else if (this.state.active) {
       return COLORS.P400
     } else {
       return COLORS.N500
     }
   }
 
-  public renderMainText () {
-    return (this.props.onPress && this.props.onChangeValue)
-      ? (
-        <TextInput
-          ref={element => {
-            this.input = element
-          }}
-          style={styles.textInput}
-          maxLength={10}
-          autoFocus={this.props.autoFocus}
-          placeholderTextColor={this.props.active ? COLORS.P100 : COLORS.N300}
-          selectionColor={this.getColor()}
-          onChangeText={text =>
-            this.props.onChangeValue(this.formatNumberInString(text))
-          }
-          value={this.props.value}
-          keyboardType='decimal-pad'
-          placeholder='0'
-          onFocus={this.props.onPress}
-        />
-      ) : (
-        <Text type='large-title'>{this.props.value || 0}</Text>
-      )
+  public onFocus = () => {
+    this.setState({
+      active: true
+    })
+  }
+
+  public onBlur = () => {
+    this.setState({
+      active: false
+    })
+  }
+
+  public renderTextInput () {
+    return this.props.onChangeValue ? (
+      <TextInput
+        ref={element => {
+          this.input = element
+        }}
+        style={styles.textInput}
+        maxLength={10}
+        autoFocus={this.props.autoFocus}
+        placeholderTextColor={
+          this.state.active ? COLORS.P100 : COLORS.N300
+        }
+        selectionColor={COLORS.P400}
+        onChangeText={text =>
+          this.props.onChangeValue(this.formatNumberInString(text))
+        }
+        value={this.props.value}
+        keyboardType='decimal-pad'
+        placeholder='0'
+        onFocus={this.onFocus}
+        onBlur={this.onBlur}
+      />
+    ) : (
+      <Text type='large-title'>{this.props.value || 0}</Text>
+    )
   }
 
   public renderContent () {
     const { image, unit } = ASSETS[this.props.assetId]
     return (
-      <View style={styles.container}>
+      <View style={styles.content}>
         <View style={styles.leftContainer}>
-            <Text type='caption' color={this.getColor()}>
-              {this.props.description}
-            </Text>
-            {this.renderMainText()}
+          <Text type='caption' color={this.getDescriptionColor()}>
+            {this.props.description}
+          </Text>
+          {this.renderTextInput()}
+        </View>
+        <View style={styles.rightContainer}>
+          <Image
+            source={image}
+            style={{ width: 16, height: 16, marginRight: 8 }}
+          />
+          <Text>{unit}</Text>
+        </View>
+      </View>
+    )
+  }
+
+  public renderContentWithFooter () {
+    return (
+      <View style={styles.containerWithFooter}>
+        {this.renderContent()}
+        {this.props.renderFooter && (
+          <View style={styles.footerContainer}>
+            {this.props.renderFooter()}
           </View>
-          <View style={styles.rightContainer}>
-            <Image
-              source={image}
-              style={{ width: 16, height: 16, marginRight: 8 }}
-            />
-            <Text>{unit}</Text>
-          </View>
+        )}
       </View>
     )
   }
@@ -142,22 +182,25 @@ export default class AssetBox extends React.Component<Props> {
   public render () {
     return (
       <View>
-        {this.props.onPress
-          ? (
-            <Layer
-              style={[this.props.warning && styles.warningContainer, this.props.error && styles.errorContainer]}
-              onPress={this.onPress}
-              active={this.props.active}
-              borderRadius={4}
-            >
-              {this.renderContent()}
-            </Layer>
-          ) : (
-            <View style={styles.staticContainer}>
-              {this.renderContent()}
-            </View>
-          )
-        }
+        {this.props.onChangeValue ? (
+          <Layer
+            style={[
+              styles.container,
+              this.props.renderFooter && styles.footerPadding,
+              this.props.warning && styles.warningContainer,
+              this.props.error && styles.errorContainer
+            ]}
+            onPress={this.onPress}
+            active={this.state.active}
+            borderRadius={6}
+          >
+            {this.props.renderFooter
+              ? this.renderContentWithFooter()
+              : this.renderContent()}
+          </Layer>
+        ) : (
+          <View style={[styles.staticContainer, styles.container]}>{this.renderContent()}</View>
+        )}
         {this.renderErrorMessage()}
       </View>
     )
@@ -166,7 +209,22 @@ export default class AssetBox extends React.Component<Props> {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row'
+    padding: 16,
+    paddingBottom: 0
+  },
+  footerPadding: {
+    paddingBottom: 8
+  },
+  content: {
+    flexDirection: 'row',
+    paddingBottom: 16
+  },
+  containerWithFooter: {
+
+  },
+  footerContainer: {
+    borderTopWidth: 1,
+    borderTopColor: COLORS.N200
   },
   staticContainer: {
     backgroundColor: COLORS.N100,
@@ -183,8 +241,7 @@ const styles = StyleSheet.create({
     borderWidth: 1
   },
   leftContainer: {
-    flex: 2,
-    padding: 10
+    flex: 3
   },
   textInput: {
     fontSize: FONT_TYPES['large-title'].fontSize,
@@ -197,8 +254,6 @@ const styles = StyleSheet.create({
   rightContainer: {
     flex: 1,
     flexDirection: 'row',
-    borderLeftWidth: 1,
-    borderLeftColor: COLORS.N200,
     justifyContent: 'flex-start',
     alignItems: 'center',
     paddingLeft: 16

@@ -6,10 +6,10 @@ import Value from './Value'
 import Button from './Button'
 import GradientScreen from './GradientScreen'
 import { COLORS } from '../constants/styleGuides'
-import { AssetId, OrderType } from '../types'
+import { AssetId, OrderSide } from '../types'
 
 interface Props {
-  orderType: OrderType
+  orderSide: OrderSide
   assetId: AssetId
   cryptoAmount: number
   thbAmount: number
@@ -37,7 +37,7 @@ export default class TradeResult extends React.Component<Props> {
   public renderAssetPart () {
     return (
       <View style={styles.assetPart}>
-        <Text type='caption' color={COLORS.N800}>{this.props.orderType === 'buy' ? 'You received' : 'You sold'}</Text>
+        <Text type='caption' color={COLORS.N800}>{this.props.orderSide === 'buy' ? 'You received' : 'You sold'}</Text>
         <Value assetId={this.props.assetId} fontType='headline' bold={true} withImage={true}>{this.props.cryptoAmount}</Value>
       </View>
     )
