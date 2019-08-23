@@ -7,7 +7,6 @@ import {
   AssetBox,
   TradeResult,
   Screen,
-  Value,
   PriceSection
 } from '../components'
 import { COLORS, ASSETS, THBAmountTypes } from '../constants'
@@ -248,8 +247,9 @@ export default class TradeConfirmationScreen extends React.Component<
     return (
       <View style={styles.body}>
         <View style={styles.assetBoxesContainer}>
-          <Text type='title' bold={true}>{`Ready to ${side} ${ASSETS[assetId].name}?`}</Text>
-          <View style={{ height: 27 }} />
+          <Text>Review</Text>
+          <Text type='title' bold={true}>{`${_.capitalize(side)} ${ASSETS[assetId].name}`}</Text>
+          <View style={{ height: 18 }} />
           <AssetBox
             description={side === 'buy' ? 'You buy with' : 'You sell'}
             assetId={giveSideAssetId}
