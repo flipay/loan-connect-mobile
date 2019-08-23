@@ -30,6 +30,7 @@ export default class OrderTypeIcon extends React.Component<Props> {
         <Entypo
           name={marketType ? 'flash' : 'back-in-time'}
           color={COLORS.WHITE}
+          style={styles.iconAdjustment}
           size={15}
         />
       </View>
@@ -41,5 +42,9 @@ const styles = StyleSheet.create({
   icon: {
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  iconAdjustment: {
+    position: 'relative',
+    top: 1
   }
 })
