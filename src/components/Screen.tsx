@@ -157,9 +157,9 @@ const styles = StyleSheet.create({
   },
   headerRow: {
     flexDirection: 'row',
-    height: 55,
-    alignItems: 'center',
-    justifyContent: 'center'
+    minHeight: 55,
+    justifyContent: 'center',
+    paddingVertical: 10
   },
   headerRowBorder: {
     borderBottomColor: COLORS.N200,

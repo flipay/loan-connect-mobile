@@ -43,7 +43,7 @@ export default class SetLimitPriceFullScreenModal extends React.Component <Props
   public renderHeader = () => {
     return (
       <View style={styles.header}>
-        <Text>{`Set ${_.capitalize(this.props.orderSide)} limit price `}</Text>
+        <Text type='headline' style={styles.title}>{`Set ${_.capitalize(this.props.orderSide)} limit price `}</Text>
         <Asset id={this.props.assetId} />
       </View>
     )
@@ -75,5 +75,8 @@ export default class SetLimitPriceFullScreenModal extends React.Component <Props
 const styles = StyleSheet.create({
   header: {
     alignItems: 'center'
+  },
+  title: {
+    marginBottom: 8
   }
 })
