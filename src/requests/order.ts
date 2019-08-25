@@ -1,6 +1,6 @@
 import axios from 'axios'
 import _ from 'lodash'
-import { AssetId, OrderType } from '../types'
+import { AssetId, OrderType, Order } from '../types'
 import { getErrorCode } from '../utils'
 import moment from 'moment'
 
@@ -38,7 +38,7 @@ export async function executeOrder (
   return response.data.data
 }
 
-export async function fetchOrders () {
+export async function fetchOrders (): Promise<Array<Order>> {
   const response = await axios.get('orders')
   const orders = response.data.data
   const formattedOrders = _.map(orders, (order) => {
@@ -46,7 +46,7 @@ export async function fetchOrders () {
     return {
       id: order.id,
       type: order.type,
-      created: moment(order.created_at).format('MMM D'),
+      created: order.created_at,
       side,
       assetId: side === 'buy' ? order.asset_take : order.asset_give,
       thbAmount: side === 'buy' ? order.amount_give : order.amount_take,

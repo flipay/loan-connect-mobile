@@ -15,6 +15,7 @@ interface Props {
   thbAmount: number
   time: string
   status: OrderStatus
+  onPress: () => void
 }
 
 export default class OrderHistory extends React.Component<Props> {
@@ -42,7 +43,7 @@ export default class OrderHistory extends React.Component<Props> {
   public render () {
     const { type, side, time } = this.props
     return (
-      <TouchableOpacity style={styles.container}>
+      <TouchableOpacity style={styles.container} onPress={this.props.onPress}>
         <View style={styles.leftPart}>
           <Text color={COLORS.N800}>{`${_.capitalize(type)} ${_.capitalize(side)}`}</Text>
           <Text type='caption'>{time}</Text>

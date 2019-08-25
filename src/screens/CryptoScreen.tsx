@@ -3,7 +3,7 @@ import _ from 'lodash'
 import { View, StyleSheet, Dimensions } from 'react-native'
 import { Text, Screen, Asset, Button, Layer, ChangeBox } from '../components'
 import { NavigationScreenProps } from 'react-navigation'
-import { AssetId, OrderSide } from '../types'
+import { AssetId, OrderSide, Order } from '../types'
 import { ASSETS, COLORS } from '../constants'
 import { toString } from '../utils'
 import { fetchOrders } from '../requests'
@@ -12,7 +12,7 @@ import { WebView } from 'react-native-webview'
 import OrderHistory from '../components/OrderHistory'
 
 interface State {
-  orders: Array<any>
+  orders: Array<Order>
 }
 
 export default class CryptoScreen extends React.Component<
@@ -37,6 +37,12 @@ export default class CryptoScreen extends React.Component<
     const assetId: AssetId = this.props.navigation.getParam('id')
     logEvent('crypto/press-back-button', { assetId })
     this.props.navigation.goBack()
+  }
+
+  public onPressOrderHistory = (order: Order) => {
+    this.props.navigation.navigate('OrderDetail', {
+      order
+    })
   }
 
   public renderSection (content: any, underline: boolean) {
@@ -109,6 +115,7 @@ export default class CryptoScreen extends React.Component<
               thbAmount={order.thbAmount}
               time={order.created}
               status={order.status}
+              onPress={() => this.onPressOrderHistory(order)}
             />
           )
         })}
