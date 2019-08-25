@@ -47,9 +47,9 @@ export default class CryptoScreen extends React.Component<
     })
   }
 
-  public renderSection (content: any, underline: boolean) {
+  public renderSection (content: any) {
     return (
-      <View style={[styles.section, underline && { borderBottomWidth: 1 }]}>
+      <View style={styles.section}>
         {content}
       </View>
     )
@@ -82,8 +82,7 @@ export default class CryptoScreen extends React.Component<
           scrollEnabled={false}
           style={{ width, height, marginTop: 24 }}
         />
-      </View>,
-      true
+      </View>
     )
   }
 
@@ -95,8 +94,7 @@ export default class CryptoScreen extends React.Component<
         <Text style={styles.aboutContent} color={COLORS.N800}>
           {ASSETS[assetId].about}
         </Text>
-      </View>,
-      true
+      </View>
     )
   }
 
@@ -122,8 +120,7 @@ export default class CryptoScreen extends React.Component<
             />
           )
         })}
-      </View>,
-      false
+      </View>
     )
   }
 
@@ -179,10 +176,11 @@ export default class CryptoScreen extends React.Component<
 
 const styles = StyleSheet.create({
   section: {
-    paddingVertical: 24,
+    paddingBottom: 36,
     borderBottomColor: COLORS.N200
   },
   priceSection: {
+    paddingTop: 24,
     alignItems: 'center'
   },
   price: {
