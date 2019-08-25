@@ -1,4 +1,3 @@
-
 import * as React from 'react'
 import _ from 'lodash'
 import { View, TouchableOpacity, StyleSheet } from 'react-native'
@@ -8,6 +7,7 @@ import Value from './Value'
 import { COLORS } from '../constants'
 
 interface Props {
+  index: number
   type: OrderType
   side: OrderSide
   assetId: AssetId
@@ -21,35 +21,47 @@ interface Props {
 export default class OrderHistory extends React.Component<Props> {
   public renderRightPart () {
     const { status, assetId, cryptoAmount, thbAmount, side } = this.props
-    if (status === 'completed') {
-      return (
-        <View style={styles.rightPart}>
-          <Value assetId={assetId}>{cryptoAmount}</Value>
-          <View style={styles.thbRow}>
-            <Text type='caption'>{side === 'buy' ? 'Paid ' : 'Received '}</Text>
-            <Value assetId='THB' fontType='caption'>{thbAmount}</Value>
-          </View>
+    // if (status === 'completed') {
+    return (
+      <View style={styles.rightPart}>
+        <Value assetId={assetId}>{cryptoAmount}</Value>
+        <View style={[styles.thbRow, styles.secondRow]}>
+          <Text type='caption'>{side === 'buy' ? 'Paid ' : 'Received '}</Text>
+          <Value assetId='THB' fontType='caption'>
+            {thbAmount}
+          </Value>
         </View>
-      )
-    } else {
-      return (
-        <Text>
-          {`${_.capitalize(status)}`}
-        </Text>
-      )
-    }
+      </View>
+    )
+    // } else {
+    //   return (
+    //     <Text>
+    //       {`${_.capitalize(status)}`}
+    //     </Text>
+    //   )
+    // }
   }
 
   public render () {
     const { type, side, time } = this.props
     return (
-      <TouchableOpacity style={styles.container} onPress={this.props.onPress}>
-        <View style={styles.leftPart}>
-          <Text color={COLORS.N800}>{`${_.capitalize(type)} ${_.capitalize(side)}`}</Text>
-          <Text type='caption'>{time}</Text>
-        </View>
-        {this.renderRightPart()}
-      </TouchableOpacity>
+      <View>
+        {this.props.index !== 0 && <View style={styles.line} />}
+        <TouchableOpacity
+          style={styles.container}
+          onPress={this.props.onPress}
+        >
+          <View style={styles.leftPart}>
+            <Text color={COLORS.N800}>{`${_.capitalize(type)} ${_.capitalize(
+              side
+            )}`}</Text>
+            <Text type='caption' style={styles.secondRow}>
+              {time}
+            </Text>
+          </View>
+          {this.renderRightPart()}
+        </TouchableOpacity>
+      </View>
     )
   }
 }
@@ -60,6 +72,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 16
   },
+  line: {
+    height: 1,
+    backgroundColor: COLORS.N200
+  },
   leftPart: {
     alignItems: 'flex-start'
   },
@@ -69,5 +85,8 @@ const styles = StyleSheet.create({
   },
   thbRow: {
     flexDirection: 'row'
+  },
+  secondRow: {
+    marginTop: 4
   }
 })

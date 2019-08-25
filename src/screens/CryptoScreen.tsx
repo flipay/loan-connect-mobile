@@ -1,5 +1,6 @@
 import * as React from 'react'
 import _ from 'lodash'
+import moment from 'moment'
 import { View, StyleSheet, Dimensions } from 'react-native'
 import { Text, Screen, Asset, Button, Layer, ChangeBox } from '../components'
 import { NavigationScreenProps } from 'react-navigation'
@@ -104,16 +105,17 @@ export default class CryptoScreen extends React.Component<
         <Text type='title' bold={true}>
           History
         </Text>
-        {_.map(this.state.orders, order => {
+        {_.map(this.state.orders, (order, index) => {
           return (
             <OrderHistory
               key={order.id}
+              index={index}
               type={order.type}
               side={order.side}
               assetId={order.assetId}
               cryptoAmount={order.cryptoAmount}
               thbAmount={order.thbAmount}
-              time={order.created}
+              time={moment(order.created).format('MMM D')}
               status={order.status}
               onPress={() => this.onPressOrderHistory(order)}
             />
