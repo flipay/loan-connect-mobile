@@ -11,7 +11,7 @@ import {
 } from '../components'
 import { COLORS, ASSETS, THBAmountTypes } from '../constants'
 import { AssetId, Balances } from '../types'
-import { order } from '../requests'
+import { executeOrder } from '../requests'
 import {
   toNumber,
   toString,
@@ -68,7 +68,7 @@ export default class TradeConfirmationScreen extends React.Component<
       const {
         amount_give: tradeResultGive,
         amount_take: tradeResultTake
-      } = await order(
+      } = await executeOrder(
         side === 'buy' ? 'THB' : assetId,
         side === 'buy' ? assetId : 'THB',
         toNumber(this.props.navigation.getParam('giveAmount')),

@@ -2,8 +2,9 @@ import axios from 'axios'
 import _ from 'lodash'
 import { AssetId, OrderType } from '../types'
 import { getErrorCode } from '../utils'
+import moment from 'moment'
 
-export async function order (
+export async function executeOrder (
   assetGive: AssetId,
   assetTake: AssetId,
   amountGive: number,
@@ -35,4 +36,22 @@ export async function order (
     }
   }
   return response.data.data
+}
+
+export async function fetchOrders () {
+  const response = await axios.get('orders')
+  const orders = response.data.data
+  const formattedOrders = _.map(orders, (order) => {
+    const side = order.asset_give === 'THB' ? 'buy' : 'sell'
+    return {
+      id: order.id,
+      type: order.type,
+      created: moment(order.created_at).format('MMM D'),
+      side,
+      assetId: side === 'buy' ? order.asset_take : order.asset_give,
+      thbAmount: side === 'buy' ? order.amount_give : order.amount_take,
+      cryptoAmount: side === 'buy' ? order.amount_take : order.amount_give
+    }
+  })
+  return formattedOrders
 }
