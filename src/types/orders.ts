@@ -11,6 +11,7 @@ export interface Order {
   created: string,
   side: OrderSide,
   assetId: AssetId,
+  price: number,
   thbAmount: number,
   cryptoAmount: number
   status: OrderStatus

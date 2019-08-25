@@ -4,6 +4,7 @@ import { View, TouchableOpacity, StyleSheet } from 'react-native'
 import { OrderType, OrderSide, OrderStatus, AssetId } from '../types'
 import Text from './Text'
 import Value from './Value'
+import Price from './Price'
 import { COLORS } from '../constants'
 
 interface Props {
@@ -12,7 +13,7 @@ interface Props {
   side: OrderSide
   assetId: AssetId
   cryptoAmount: number
-  thbAmount: number
+  price: number
   time: string
   status: OrderStatus
   onPress: () => void
@@ -20,16 +21,16 @@ interface Props {
 
 export default class OrderHistory extends React.Component<Props> {
   public renderRightPart () {
-    const { status, assetId, cryptoAmount, thbAmount, side } = this.props
+    const { status, assetId, cryptoAmount, price, side } = this.props
     // if (status === 'completed') {
     return (
       <View style={styles.rightPart}>
         <Value assetId={assetId}>{cryptoAmount}</Value>
         <View style={[styles.thbRow, styles.secondRow]}>
-          <Text type='caption'>{side === 'buy' ? 'Paid ' : 'Received '}</Text>
-          <Value assetId='THB' fontType='caption'>
-            {thbAmount}
-          </Value>
+          <Text type='caption' color={COLORS.N500}>{'Price '}</Text>
+          <Price fontType='caption' color={COLORS.N500}>
+            {price}
+          </Price>
         </View>
       </View>
     )
@@ -55,7 +56,7 @@ export default class OrderHistory extends React.Component<Props> {
             <Text color={COLORS.N800}>{`${_.capitalize(type)} ${_.capitalize(
               side
             )}`}</Text>
-            <Text type='caption' style={styles.secondRow}>
+            <Text type='caption' style={styles.secondRow} color={COLORS.N500}>
               {time}
             </Text>
           </View>

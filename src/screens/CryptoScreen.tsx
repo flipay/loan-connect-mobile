@@ -2,7 +2,15 @@ import * as React from 'react'
 import _ from 'lodash'
 import moment from 'moment'
 import { View, StyleSheet, Dimensions } from 'react-native'
-import { Text, Screen, Asset, Button, Layer, ChangeBox } from '../components'
+import {
+  Text,
+  Screen,
+  Asset,
+  Button,
+  Layer,
+  ChangeBox,
+  OrderHistory
+} from '../components'
 import { NavigationScreenProps } from 'react-navigation'
 import { AssetId, OrderSide, Order } from '../types'
 import { ASSETS, COLORS } from '../constants'
@@ -10,16 +18,15 @@ import { toString } from '../utils'
 import { fetchOrdersByAssetId } from '../requests'
 import { logEvent } from '../services/Analytic'
 import { WebView } from 'react-native-webview'
-import OrderHistory from '../components/OrderHistory'
 
 interface State {
   orders: Array<Order>
 }
 
 export default class CryptoScreen extends React.Component<
-  NavigationScreenProps, State
+  NavigationScreenProps,
+  State
 > {
-
   public constructor (props: NavigationScreenProps) {
     super(props)
     this.state = {
@@ -47,12 +54,8 @@ export default class CryptoScreen extends React.Component<
     })
   }
 
-  public renderSection (content: any, underline: boolean) {
-    return (
-      <View style={[styles.section, underline && { borderBottomWidth: 1 }]}>
-        {content}
-      </View>
-    )
+  public renderSection (content: any) {
+    return <View style={styles.section}>{content}</View>
   }
 
   public renderPriceSection () {
@@ -82,8 +85,7 @@ export default class CryptoScreen extends React.Component<
           scrollEnabled={false}
           style={{ width, height, marginTop: 24 }}
         />
-      </View>,
-      true
+      </View>
     )
   }
 
@@ -95,12 +97,14 @@ export default class CryptoScreen extends React.Component<
         <Text style={styles.aboutContent} color={COLORS.N800}>
           {ASSETS[assetId].about}
         </Text>
-      </View>,
-      true
+      </View>
     )
   }
 
   public renderHistorySection () {
+    if (_.isEmpty(this.state.orders)) {
+      return null
+    }
     return this.renderSection(
       <View>
         <Text type='title' bold={true}>
@@ -114,16 +118,15 @@ export default class CryptoScreen extends React.Component<
               type={order.type}
               side={order.side}
               assetId={order.assetId}
+              price={order.price}
               cryptoAmount={order.cryptoAmount}
-              thbAmount={order.thbAmount}
               time={moment(order.created).format('MMM D')}
               status={order.status}
               onPress={() => this.onPressOrderHistory(order)}
             />
           )
         })}
-      </View>,
-      false
+      </View>
     )
   }
 
@@ -179,10 +182,11 @@ export default class CryptoScreen extends React.Component<
 
 const styles = StyleSheet.create({
   section: {
-    paddingVertical: 24,
+    paddingBottom: 36,
     borderBottomColor: COLORS.N200
   },
   priceSection: {
+    paddingTop: 24,
     alignItems: 'center'
   },
   price: {
