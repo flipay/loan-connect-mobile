@@ -3,7 +3,7 @@ import moment from 'moment'
 import _ from 'lodash'
 import { View, StyleSheet } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
-import { Screen, Asset, Value, Text } from '../components'
+import { Screen, Asset, Value, Text, Price } from '../components'
 import { COLORS } from '../constants'
 
 export default class OrderDetailScreen extends React.Component<
@@ -26,7 +26,10 @@ export default class OrderDetailScreen extends React.Component<
         >
           {order.cryptoAmount}
         </Value>
-        <Text>Waiting for Status</Text>
+        <View style={styles.price}>
+          <Text color={COLORS.N600}>{`Price `}</Text>
+          <Price color={COLORS.N600}>{order.price}</Price>
+        </View>
       </View>
     )
   }
@@ -52,14 +55,17 @@ export default class OrderDetailScreen extends React.Component<
           'Type',
           `${_.capitalize(order.type)} ${_.capitalize(order.side)}`
         )}
+
+        {this.renderDetailRow('Status', 'Filled')}
         {this.renderDetailRow(
-          'Submitted',
-          moment(order.created).format('MMM D')
-        )}
-        {this.renderDetailRow('Status', 'No Status yet')}
-        {this.renderDetailRow(
-          'Submitted',
+          order.side === 'buy' ? 'Paid' : 'Received',
           <Value assetId='THB'>{order.thbAmount}</Value>
+        )}
+        {this.renderDetailRow(
+          'Submitted',
+          `${moment(order.created).format('MMM D, YYYY')} at ${moment(
+            order.created
+          ).format('hh:MM A')}`
         )}
       </View>
     )
@@ -94,6 +100,9 @@ const styles = StyleSheet.create({
   cryptoAmount: {
     marginTop: 14,
     marginBottom: 6
+  },
+  price: {
+    flexDirection: 'row'
   },
   detail: {
     paddingVertical: 12,

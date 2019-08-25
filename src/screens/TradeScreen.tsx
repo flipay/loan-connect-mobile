@@ -433,6 +433,7 @@ export default class TradeScreen extends React.Component<
   }
 
   public renderHeader = () => {
+    const limitOrderEnable = false
     const side = this.props.navigation.getParam('side', 'buy')
     const assetId: AssetId = this.props.navigation.getParam('assetId', 'BTC')
     return (
@@ -440,7 +441,7 @@ export default class TradeScreen extends React.Component<
         <Text type='headline'>
           {_.capitalize(side) + ' ' + ASSETS[assetId].name}
         </Text>
-        <TouchableOpacity
+        {limitOrderEnable && <TouchableOpacity
           onPress={this.toggleOrderTypeModal}
           style={styles.dropdown}
         >
@@ -448,7 +449,7 @@ export default class TradeScreen extends React.Component<
             this.state.orderType
           )} order`}</Text>
           <AntDesign name='down' color={COLORS.P400} style={styles.downIcon} />
-        </TouchableOpacity>
+        </TouchableOpacity>}
       </View>
     )
   }

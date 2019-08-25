@@ -102,6 +102,9 @@ export default class CryptoScreen extends React.Component<
   }
 
   public renderHistorySection () {
+    if (_.isEmpty(this.state.orders)) {
+      return null
+    }
     return this.renderSection(
       <View>
         <Text type='title' bold={true}>
