@@ -1,4 +1,3 @@
-
 import AssetCard from './AssetCard'
 import Button from './Button'
 import CloseButton from './CloseButton'
@@ -27,6 +26,8 @@ import OrderTypeModal from './OrderTypeModal'
 import SetLimitPriceFullScreenModal from './SetLimitPriceFullScreenModal'
 import OrderTypeIcon from './OrderTypeIcon'
 import PriceSection from './PriceSection'
+import OrderHistory from './OrderHistory'
+import Price from './Price'
 
 export {
   AssetCard,
@@ -56,5 +57,7 @@ export {
   OrderTypeModal,
   SetLimitPriceFullScreenModal,
   OrderTypeIcon,
-  PriceSection
+  PriceSection,
+  OrderHistory,
+  Price
 }

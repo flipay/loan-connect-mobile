@@ -42,14 +42,16 @@ export async function fetchOrdersByAssetId (assetId: AssetId): Promise<Array<Ord
   const orders = response.data.data
   const formattedOrders = _.map(orders, (order) => {
     const side = order.asset_give === 'THB' ? 'buy' : 'sell'
+    const buy = side === 'buy'
     return {
       id: order.id,
       type: order.type,
       created: order.created_at,
       side,
-      assetId: side === 'buy' ? order.asset_take : order.asset_give,
-      thbAmount: side === 'buy' ? order.amount_give : order.amount_take,
-      cryptoAmount: side === 'buy' ? order.amount_take : order.amount_give
+      assetId: buy ? order.asset_take : order.asset_give,
+      price: buy ? order.amount_give / order.amount_take : order.amount_take / order.amount_give,
+      thbAmount: buy ? order.amount_give : order.amount_take,
+      cryptoAmount: buy ? order.amount_take : order.amount_give
     }
   })
   return formattedOrders

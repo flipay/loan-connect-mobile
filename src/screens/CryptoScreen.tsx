@@ -2,7 +2,15 @@ import * as React from 'react'
 import _ from 'lodash'
 import moment from 'moment'
 import { View, StyleSheet, Dimensions } from 'react-native'
-import { Text, Screen, Asset, Button, Layer, ChangeBox } from '../components'
+import {
+  Text,
+  Screen,
+  Asset,
+  Button,
+  Layer,
+  ChangeBox,
+  OrderHistory
+} from '../components'
 import { NavigationScreenProps } from 'react-navigation'
 import { AssetId, OrderSide, Order } from '../types'
 import { ASSETS, COLORS } from '../constants'
@@ -10,16 +18,15 @@ import { toString } from '../utils'
 import { fetchOrdersByAssetId } from '../requests'
 import { logEvent } from '../services/Analytic'
 import { WebView } from 'react-native-webview'
-import OrderHistory from '../components/OrderHistory'
 
 interface State {
   orders: Array<Order>
 }
 
 export default class CryptoScreen extends React.Component<
-  NavigationScreenProps, State
+  NavigationScreenProps,
+  State
 > {
-
   public constructor (props: NavigationScreenProps) {
     super(props)
     this.state = {
@@ -48,11 +55,7 @@ export default class CryptoScreen extends React.Component<
   }
 
   public renderSection (content: any) {
-    return (
-      <View style={styles.section}>
-        {content}
-      </View>
-    )
+    return <View style={styles.section}>{content}</View>
   }
 
   public renderPriceSection () {
@@ -112,8 +115,8 @@ export default class CryptoScreen extends React.Component<
               type={order.type}
               side={order.side}
               assetId={order.assetId}
+              price={order.price}
               cryptoAmount={order.cryptoAmount}
-              thbAmount={order.thbAmount}
               time={moment(order.created).format('MMM D')}
               status={order.status}
               onPress={() => this.onPressOrderHistory(order)}
