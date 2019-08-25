@@ -7,7 +7,7 @@ import { NavigationScreenProps } from 'react-navigation'
 import { AssetId, OrderSide, Order } from '../types'
 import { ASSETS, COLORS } from '../constants'
 import { toString } from '../utils'
-import { fetchOrders } from '../requests'
+import { fetchOrdersByAssetId } from '../requests'
 import { logEvent } from '../services/Analytic'
 import { WebView } from 'react-native-webview'
 import OrderHistory from '../components/OrderHistory'
@@ -28,7 +28,8 @@ export default class CryptoScreen extends React.Component<
   }
 
   public async componentDidMount () {
-    const data = await fetchOrders()
+    const assetId: AssetId = this.props.navigation.getParam('id')
+    const data = await fetchOrdersByAssetId(assetId)
     this.setState({
       orders: data
     })

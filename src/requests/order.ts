@@ -37,8 +37,8 @@ export async function executeOrder (
   return response.data.data
 }
 
-export async function fetchOrders (): Promise<Array<Order>> {
-  const response = await axios.get('orders')
+export async function fetchOrdersByAssetId (assetId: AssetId): Promise<Array<Order>> {
+  const response = await axios.get(`orders?asset=${assetId}`)
   const orders = response.data.data
   const formattedOrders = _.map(orders, (order) => {
     const side = order.asset_give === 'THB' ? 'buy' : 'sell'
