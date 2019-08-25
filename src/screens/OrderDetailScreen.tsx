@@ -10,7 +10,7 @@ export default class OrderDetailScreen extends React.Component<
   NavigationScreenProps
 > {
   public onPressBackButton = () => {
-    this.props.navigation.goBack()
+    this.props.navigation.navigate('Crypto')
   }
 
   public renderMain () {
@@ -18,7 +18,12 @@ export default class OrderDetailScreen extends React.Component<
     return (
       <View style={styles.main}>
         <Asset id={order.assetId} />
-        <Value assetId={order.assetId} fontType='title' bold={true} style={styles.cryptoAmount}>
+        <Value
+          assetId={order.assetId}
+          fontType='title'
+          bold={true}
+          style={styles.cryptoAmount}
+        >
           {order.cryptoAmount}
         </Value>
         <Text>Waiting for Status</Text>
@@ -47,7 +52,10 @@ export default class OrderDetailScreen extends React.Component<
           'Type',
           `${_.capitalize(order.type)} ${_.capitalize(order.side)}`
         )}
-        {this.renderDetailRow('Submitted', moment(order.created).format('MMM D'))}
+        {this.renderDetailRow(
+          'Submitted',
+          moment(order.created).format('MMM D')
+        )}
         {this.renderDetailRow('Status', 'No Status yet')}
         {this.renderDetailRow(
           'Submitted',
@@ -59,7 +67,12 @@ export default class OrderDetailScreen extends React.Component<
 
   public render () {
     return (
-      <Screen noHeaderLine={true} header='Order detail' onPressBackButton={this.onPressBackButton}>
+      <Screen
+        backButtonType='close'
+        noHeaderLine={true}
+        header='Order detail'
+        onPressBackButton={this.onPressBackButton}
+      >
         {this.renderMain()}
         {this.renderDetail()}
       </Screen>

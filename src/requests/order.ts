@@ -2,7 +2,6 @@ import axios from 'axios'
 import _ from 'lodash'
 import { AssetId, OrderType, Order } from '../types'
 import { getErrorCode } from '../utils'
-import moment from 'moment'
 
 export async function executeOrder (
   assetGive: AssetId,
