@@ -18,6 +18,7 @@ interface Props {
   onPressMax: () => void
   onPressHalf: () => void
   containerStyle?: any
+  errorMessageStyle?: any
 }
 
 export default class AssetBoxWithBalance extends React.Component<Props> {
@@ -73,6 +74,7 @@ export default class AssetBoxWithBalance extends React.Component<Props> {
           warning={this.props.warning}
           error={this.props.error}
           renderFooter={this.renderBalanceSection}
+          errorMessageStyle={this.props.errorMessageStyle}
         />
       </View>
     )
@@ -87,6 +89,8 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   balance: {
+    flex: 1,
+    flexWrap: 'wrap',
     flexDirection: 'row'
   },
   errorBalanceSection: {

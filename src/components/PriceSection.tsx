@@ -85,7 +85,10 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   rightPriceSection: {
-    justifyContent: 'center'
+    flexWrap: 'wrap',
+    flex: 1,
+    justifyContent: 'center',
+    marginLeft: 20
   },
   priceSectionMargin: {
     marginVertical: 28

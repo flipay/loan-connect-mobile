@@ -273,7 +273,7 @@ export default class TradeScreen extends React.Component<
     )
   }
 
-  public renderSaveAmount = () => {
+  public renderSavedAmount = () => {
     if (this.state.orderType !== 'market') {
       return null
     }
@@ -292,7 +292,7 @@ export default class TradeScreen extends React.Component<
     })
     if (countError === _.map(this.props.competitorThbAmounts).length) {
       return (
-        <View style={styles.saveAmount}>
+        <View style={styles.savedAmount}>
           <Text color={COLORS.N500} style={{ textAlign: 'center' }}>
             Only available at Flipay
           </Text>
@@ -304,7 +304,7 @@ export default class TradeScreen extends React.Component<
       return null
     }
     return (
-      <Text color={COLORS.G400} style={styles.saveAmount}>
+      <Text color={COLORS.G400} style={styles.savedAmount}>
         Save up to
         <Text color={COLORS.G400} bold={true}>{` ${toString(
           saved,
@@ -344,7 +344,7 @@ export default class TradeScreen extends React.Component<
       <PriceSection
         orderType={this.state.orderType}
         price={price}
-        renderSavedAmount={this.renderSaveAmount}
+        renderSavedAmount={this.renderSavedAmount}
         onPressEditLink={this.onPressEditLimitPrice}
       />
     )
@@ -395,6 +395,7 @@ export default class TradeScreen extends React.Component<
             balance={remainingBalance}
             warning={this.state.giveAssetBoxWarningMessage}
             containerStyle={styles.giveAssetBox}
+            errorMessageStyle={styles.errorMessage}
           />
           {this.renderPriceSection()}
           <AssetBox
@@ -526,7 +527,13 @@ const styles = StyleSheet.create({
   giveAssetBox: {
     zIndex: 1
   },
-  saveAmount: {
-    alignItems: 'center'
+  errorMessage: {
+    position: 'absolute',
+    bottom: -25,
+    right: 0
+  },
+  savedAmount: {
+    alignItems: 'center',
+    textAlign: 'right'
   }
 })

@@ -16,6 +16,7 @@ interface Props {
   warning?: string
   error?: string
   renderFooter?: () => any
+  errorMessageStyle?: any
 }
 
 interface State {
@@ -79,13 +80,13 @@ export default class AssetBox extends React.Component<Props, State> {
   public renderErrorMessage () {
     if (this.props.error) {
       return (
-        <Text type='caption' color={COLORS.R400} style={styles.errorMessage}>
+        <Text type='caption' color={COLORS.R400} style={[styles.errorMessage, this.props.errorMessageStyle]}>
           {this.props.error}
         </Text>
       )
     } else if (this.props.warning) {
       return (
-        <Text type='caption' color={COLORS.Y400} style={styles.errorMessage}>
+        <Text type='caption' color={COLORS.Y400} style={[styles.errorMessage, this.props.errorMessageStyle]}>
           {this.props.warning}
         </Text>
       )
@@ -168,7 +169,7 @@ export default class AssetBox extends React.Component<Props, State> {
 
   public renderContentWithFooter () {
     return (
-      <View style={styles.containerWithFooter}>
+      <View>
         {this.renderContent()}
         {this.props.renderFooter && (
           <View style={styles.footerContainer}>
@@ -218,9 +219,6 @@ const styles = StyleSheet.create({
   content: {
     flexDirection: 'row',
     paddingBottom: 16
-  },
-  containerWithFooter: {
-
   },
   footerContainer: {
     borderTopWidth: 1,
