@@ -395,6 +395,7 @@ export default class TradeScreen extends React.Component<
             balance={remainingBalance}
             warning={this.state.giveAssetBoxWarningMessage}
             containerStyle={styles.giveAssetBox}
+            errorMessageStyle={styles.errorMessage}
           />
           {this.renderPriceSection()}
           <AssetBox
@@ -525,6 +526,11 @@ const styles = StyleSheet.create({
   },
   giveAssetBox: {
     zIndex: 1
+  },
+  errorMessage: {
+    position: 'absolute',
+    bottom: -25,
+    right: 0
   },
   saveAmount: {
     alignItems: 'center'
