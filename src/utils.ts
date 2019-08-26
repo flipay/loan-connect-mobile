@@ -1,8 +1,8 @@
 import * as _ from 'lodash'
 import { Alert } from 'react-native'
 
-import { THBAmountTypes } from './constants'
-import { OrderType } from './types'
+import { THBAmountTypes, ASSETS } from './constants'
+import { OrderSide, AssetId } from './types'
 import * as ErrorReport from './services/ErrorReport'
 
 export function toNumber (value: string) {
@@ -56,7 +56,7 @@ export function alert (err: Error | string) {
   }
 }
 
-export function calSaveAmount (side: OrderType, amount: number, thbAmounts?: THBAmountTypes) {
+export function calSaveAmount (side: OrderSide, amount: number, thbAmounts?: THBAmountTypes) {
   if (!thbAmounts) {
     return 0
   }
@@ -82,5 +82,22 @@ export function calSaveAmount (side: OrderType, amount: number, thbAmounts?: THB
     } else {
       return amount - worstAmount
     }
+  }
+}
+
+export function calLimitTakeAmount (side: OrderSide, assetId: AssetId, giveAmount: string, limitPrice?: number) {
+  if (!limitPrice) {
+    return undefined
+  }
+  if (side === 'buy') {
+    return toString(
+      toNumber(giveAmount) / limitPrice,
+      ASSETS[assetId].decimal
+    )
+  } else {
+    return toString(
+      toNumber(giveAmount) * limitPrice,
+      ASSETS.THB.decimal
+    )
   }
 }

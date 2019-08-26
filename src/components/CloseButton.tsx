@@ -10,7 +10,7 @@ interface Props {
   onPress: () => void
 }
 
-export default class Button extends React.Component<Props> {
+export default class CloseButton extends React.Component<Props> {
   public render () {
     const { top, left } = this.props
     return (

@@ -1,13 +1,14 @@
 import axios from 'axios'
 import _ from 'lodash'
-import { AssetId } from '../types'
+import { AssetId, OrderType, Order } from '../types'
 import { getErrorCode } from '../utils'
 
-export async function order (
+export async function executeOrder (
   assetGive: AssetId,
   assetTake: AssetId,
   amountGive: number,
-  expectedAmountTake: number
+  expectedAmountTake: number,
+  type: OrderType
 ) {
   let response
   try {
@@ -15,7 +16,8 @@ export async function order (
       asset_give: assetGive,
       asset_take: assetTake,
       amount_give: amountGive,
-      expected_amount_take: expectedAmountTake
+      expected_amount_take: expectedAmountTake,
+      type
     })
   } catch (err) {
     if (getErrorCode(err) === 'resource_not_found') {
@@ -33,4 +35,24 @@ export async function order (
     }
   }
   return response.data.data
+}
+
+export async function fetchOrdersByAssetId (assetId: AssetId): Promise<Array<Order>> {
+  const response = await axios.get(`orders?asset=${assetId}&page_size=30`)
+  const orders = response.data.data
+  const formattedOrders = _.map(orders, (order) => {
+    const side = order.asset_give === 'THB' ? 'buy' : 'sell'
+    const buy = side === 'buy'
+    return {
+      id: order.id,
+      type: order.type,
+      created: order.created_at,
+      side,
+      assetId: buy ? order.asset_take : order.asset_give,
+      price: buy ? order.amount_give / order.amount_take : order.amount_take / order.amount_give,
+      thbAmount: buy ? order.amount_give : order.amount_take,
+      cryptoAmount: buy ? order.amount_take : order.amount_give
+    }
+  })
+  return formattedOrders
 }

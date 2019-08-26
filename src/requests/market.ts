@@ -1,7 +1,7 @@
 import axios from 'axios'
 import _ from 'lodash'
 import Bluebird from 'bluebird'
-import { OrderType, OrderPart, AssetId, Asset } from '../types'
+import { OrderSide, OrderPart, AssetId, Asset } from '../types'
 import { ASSETS, COMPETITOR_IDS } from '../constants'
 import { getErrorCode } from '../utils'
 import * as ErrorReport from '../services/ErrorReport'
@@ -51,7 +51,7 @@ export async function fetchBalances () {
 }
 
 export async function getAmount (
-  orderType: OrderType,
+  orderSide: OrderSide,
   assetId: AssetId,
   specifiedPart: OrderPart,
   amount: number,
@@ -59,8 +59,8 @@ export async function getAmount (
 ) {
   if (amount === 0) { return 0 }
   const response = await axios.get(
-    `/rates/${orderType === 'buy' ? 'THB' : assetId}/${
-      orderType === 'sell' ? 'THB' : assetId
+    `/rates/${orderSide === 'buy' ? 'THB' : assetId}/${
+      orderSide === 'sell' ? 'THB' : assetId
     }`,
     {
       params: {
@@ -75,7 +75,7 @@ export async function getAmount (
 }
 
 export async function getCompetitorTHBAmounts (
-  orderType: OrderType,
+  orderSide: OrderSide,
   assetId: AssetId,
   cryptoAmount: number
 ) {
@@ -83,9 +83,9 @@ export async function getCompetitorTHBAmounts (
     let amount
     try {
       amount = await getAmount(
-        orderType,
+        orderSide,
         assetId,
-        orderType === 'buy' ? 'take' : 'give',
+        orderSide === 'buy' ? 'take' : 'give',
         cryptoAmount,
         providerId
       )

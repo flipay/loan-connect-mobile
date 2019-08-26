@@ -19,6 +19,7 @@ import Starter from './Starter'
 import CollectInfoScreen from './screens/CollectInfoScreen'
 import MarketScreen from './screens/MarketScreen'
 import CryptoScreen from './screens/CryptoScreen'
+import OrderDetailScreen from './screens/OrderDetailScreen'
 import PortfolioScreen from './screens/PortfolioScreen'
 import WelcomeScreen from './screens/WelcomeScreen'
 import AuthenScreen from './screens/AuthenScreen'
@@ -67,36 +68,73 @@ const VerificationStack = createStackNavigator(
   }
 )
 
+const TradeStack = createStackNavigator(
+  {
+    [TRADE]: {
+      screen: ({ navigation }: any) => (
+        <BalancesContextConsumer>
+          {args1 => (
+            <RateContextConsumer>
+              {args2 => (
+                <TradeScreen navigation={navigation} {...args1} {...args2} />
+              )}
+            </RateContextConsumer>
+          )}
+        </BalancesContextConsumer>
+      )
+    },
+    [TRADE_CONFIRMATION]: {
+      screen: ({ navigation }: any) => (
+        <BalancesContextConsumer>
+          {args1 => (
+            <RateContextConsumer>
+              {args2 => (
+                <TradeConfirmationScreen
+                  navigation={navigation}
+                  {...args1}
+                  {...args2}
+                />
+              )}
+            </RateContextConsumer>
+          )}
+        </BalancesContextConsumer>
+      )
+    },
+    [COMPARISON]: { screen: ComparisonScreen }
+  },
+  {
+    mode: 'modal',
+    headerMode: 'none',
+    navigationOptions: ({ navigation }) => {
+      return {
+        tabBarVisible: navigation.state.index === 0
+      }
+    }
+  }
+)
+
+const CryptoSwitch = createSwitchNavigator({
+  Trade: TradeStack,
+  OrderDetail: OrderDetailScreen
+})
+
 const MarketStack = createStackNavigator(
   {
-    Market: { screen: ({ navigation }: any) => (
-      <MarketPricesContextConsumer>
-        {({ marketPrices, fetchMarketPrices }) => (
-          <MarketScreen navigation={navigation} fetchMarketPrices={fetchMarketPrices} marketPrices={marketPrices} />
-        )}
-      </MarketPricesContextConsumer>
-    )
+    Market: {
+      screen: ({ navigation }: any) => (
+        <MarketPricesContextConsumer>
+          {({ marketPrices, fetchMarketPrices }) => (
+            <MarketScreen
+              navigation={navigation}
+              fetchMarketPrices={fetchMarketPrices}
+              marketPrices={marketPrices}
+            />
+          )}
+        </MarketPricesContextConsumer>
+      )
     },
-    Crypto: { screen: CryptoScreen },
-    [TRADE]: { screen: ({ navigation }: any) => (
-      <BalancesContextConsumer>
-        {(args1) => (
-          <RateContextConsumer>
-            {(args2) => (<TradeScreen navigation={navigation} {...args1} {...args2} />)}
-          </RateContextConsumer>
-        )}
-      </BalancesContextConsumer>
-    )},
-    [TRADE_CONFIRMATION]: { screen: ({ navigation }: any) => (
-      <BalancesContextConsumer>
-        {(args1) => (
-          <RateContextConsumer>
-            {(args2) => (<TradeConfirmationScreen navigation={navigation} {...args1} {...args2} />)}
-          </RateContextConsumer>
-        )}
-      </BalancesContextConsumer>
-    )},
-    [COMPARISON]: { screen: ComparisonScreen }
+    Crypto: CryptoScreen,
+    CryptoSwitch: { screen: CryptoSwitch }
   },
   {
     mode: 'modal',
@@ -111,17 +149,23 @@ const MarketStack = createStackNavigator(
 
 const PortfolioStack = createStackNavigator(
   {
-    [PORTFOLIO]: { screen: ({ navigation }: any) => (
-      <MarketPricesContextConsumer>
-        {(args1) => (
-          <BalancesContextConsumer>
-            {(args2) => (
-              <PortfolioScreen navigation={navigation} {...args1} {...args2} />
-            )}
-          </BalancesContextConsumer>
-        )}
-      </MarketPricesContextConsumer>
-    )},
+    [PORTFOLIO]: {
+      screen: ({ navigation }: any) => (
+        <MarketPricesContextConsumer>
+          {args1 => (
+            <BalancesContextConsumer>
+              {args2 => (
+                <PortfolioScreen
+                  navigation={navigation}
+                  {...args1}
+                  {...args2}
+                />
+              )}
+            </BalancesContextConsumer>
+          )}
+        </MarketPricesContextConsumer>
+      )
+    },
     [DEPOSIT]: { screen: DepositScreen },
     [WITHDRAWAL]: { screen: WithdrawalScreen }
   },
@@ -211,7 +255,7 @@ const MainApp = createStackNavigator(
   {
     mode: 'modal',
     headerMode: 'none',
-    transitionConfig : () => ({
+    transitionConfig: () => ({
       transitionSpec: {
         duration: 0,
         timing: Animated.timing,
@@ -251,7 +295,8 @@ function handlePrivateScreens (action: any, state: any) {
           onClose: () => {
             logEvent('unlock/press-back-button')
           },
-          onSuccess: (...args: Array<any>) => onUnlockPinSuccessfully(...args, action)
+          onSuccess: (...args: Array<any>) =>
+            onUnlockPinSuccessfully(...args, action)
         }
       }
     ]
@@ -298,7 +343,7 @@ export default createStackNavigator(
   {
     mode: 'modal',
     headerMode: 'none',
-    transitionConfig : () => ({
+    transitionConfig: () => ({
       transitionSpec: {
         duration: 0,
         timing: Animated.timing,

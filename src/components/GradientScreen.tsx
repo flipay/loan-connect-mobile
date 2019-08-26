@@ -23,9 +23,8 @@ export default class GradientScreen extends React.Component<Props> {
         end={[2, -0.8]}
         style={styles.screen}
       >
-        <SafeAreaView style={styles.screen}>
+        <SafeAreaView>
           <View style={styles.content}>
-            <StatusBar barStyle='light-content' />
             {this.props.onPressBackButton && <CloseButton onPress={this.props.onPressBackButton} color={COLORS.WHITE} top={8} left={5} />}
             {this.props.children}
           </View>
@@ -40,7 +39,6 @@ const styles = StyleSheet.create({
     flex: 1
   },
   content: {
-    flex: 1,
     alignItems: 'center',
     position: 'relative',
     paddingTop: 42,
