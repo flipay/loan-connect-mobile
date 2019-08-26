@@ -87,6 +87,8 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   balance: {
+    flex: 1,
+    flexWrap: 'wrap',
     flexDirection: 'row'
   },
   errorBalanceSection: {
