@@ -47,10 +47,13 @@ export function alert (err: Error | string) {
     return Alert.alert(`Something went wrong: ${err}`)
   } else {
     ErrorReport.notify(err)
-    console.log('========error========', JSON.stringify(err, undefined, 2))
-    if (getErrorDetail(err)) {
+    if (err.message === 'idle') {
+      return
+    } else if (getErrorDetail(err)) {
       return Alert.alert(`Something went wrong: ${getErrorDetail(err)}`)
     } else {
+      console.log('========error object========', JSON.stringify(err, undefined, 2))
+      console.log('========error message========', JSON.stringify(err.message, undefined, 2))
       return Alert.alert(`Something went wrong, Please contact our customer support team`)
     }
   }
