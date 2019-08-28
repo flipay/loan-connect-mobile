@@ -34,10 +34,6 @@ export function showPrice (value: number) {
   return toString(value, decimal)
 }
 
-export function getErrorCodeFromResponse (response: object) {
-  return _.get(response, 'data.code')
-}
-
 export function getErrorCode (err: Error) {
   return _.get(err, 'response.data.code')
 }
