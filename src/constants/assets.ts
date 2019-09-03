@@ -2,7 +2,7 @@ import { AssetId, Asset } from '../types'
 
 type AssetTypes = { [key in AssetId]: Asset }
 
-const etheruemBlockchainAddress = '0x9e1D9c3A2947D37f169113730da2026a113Ce78B'
+const etheruemBlockchainAddress = '0x78192938e8fb3dd2282a483fcd2cb82caa28d85a'
 
 export const ASSETS: AssetTypes = {
   THB: {
@@ -23,7 +23,7 @@ export const ASSETS: AssetTypes = {
     unit: 'BTC',
     decimal: 8,
     priceSource: 'bxth',
-    address: '3Hgise57pmBzR21dLBXgHUV8SRYznCVeS1',
+    address: '3CfoRkvFN1JQjMpDKEGfTfroKnVuUrqtzX',
     about: 'The world’s first cryptocurrency, Bitcoin is stored and exchanged securely on the internet through a digital ledger known as a blockchain. Bitcoins are divisible into smaller units known as satoshis — each satoshi is worth 0.00000001 bitcoin.',
     order: 1
   },
@@ -47,8 +47,8 @@ export const ASSETS: AssetTypes = {
     unit: 'XRP',
     decimal: 2,
     priceSource: 'bxth',
-    address: 'rp7Fq2NQVRJxQJvUZ4o8ZzsTSocvgYoBbs',
-    tag: '1001263698',
+    address: 'rpXTzCuXtjiPDFysxq8uNmtZBe9Xo97JbW',
+    tag: '1092852274',
     about: 'XRP is the cryptocurrency used by the Ripple payment network. Built for enterprise use, XRP aims to be a fast, cost-efficient cryptocurrency for cross-border payments.',
     order: 3
   },
