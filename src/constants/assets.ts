@@ -44,10 +44,36 @@ export const ASSETS: AssetTypes = {
     unit: 'XRP',
     decimal: 2,
     address: 'rpXTzCuXtjiPDFysxq8uNmtZBe9Xo97JbW',
-    tag: '1092852274',
+    additionalLabel: 'tag',
+    additionalValue: '1092852274',
     about: 'XRP is the cryptocurrency used by the Ripple payment network. Built for enterprise use, XRP aims to be a fast, cost-efficient cryptocurrency for cross-border payments.',
     order: 3
   },
+  USDT: {
+    id: 'USDT',
+    name: 'Tether',
+    coinStatsId: 'tether',
+    image: require('../img/icon_usdt.png'),
+    unit: 'USDT',
+    decimal: 2,
+    address: '0x30e053745c1a09ead5b892f5bfc262474a926776',
+    about: 'Tether (USDT) is a cryptocurrency with a value meant to mirror the value of the U.S. dollar. The idea was to create a stable cryptocurrency that can be used like digital dollars.',
+    order: 4
+  },
+  EOS: {
+    id: 'EOS',
+    name: 'EOS',
+    coinStatsId: 'eos',
+    image: require('../img/icon_eos.png'),
+    unit: 'EOS',
+    decimal: 2,
+    address: 'flipay.co',
+    additionalLabel: 'Memo',
+    additionalValue: 'Your phone number',
+    about: 'EOS is a cryptocurrency running on the EOS blockchain. It’s fast, free to transfer, used for governance, and lets users and developers generate the resources they need to run applications on EOS.',
+    order: 5
+  },
+
   BNB: {
     id: 'BNB',
     name: 'Binance Coin',
@@ -57,7 +83,7 @@ export const ASSETS: AssetTypes = {
     decimal: 5,
     address: 'bnb1cqhh44pxqw87vcm3grzvs5la9zn3ldcx6r7k3w',
     about: 'BNB is the native cryptocurrency of Binance chain that powers the Binance decentralized exchange. It\'s also used for other purposes in the Binance ecosystem.',
-    order: 4
+    order: 6
   },
   OMG: {
     id: 'OMG',
@@ -68,6 +94,6 @@ export const ASSETS: AssetTypes = {
     decimal: 4,
     address: etheruemBlockchainAddress,
     about: 'OMG is the cryptocurrency on Ethereum network that will be used as the fuel of the decentralized payment network, the OmiseGo team are building.',
-    order: 5
+    order: 7
   }
 }
