@@ -30,7 +30,7 @@ export async function withdraw (
   assetId: AssetId,
   amount: number,
   address: string,
-  tag?: string,
+  identifier?: string,
   accountName?: string,
   accountIssuer?: string
 ) {
@@ -47,7 +47,7 @@ export async function withdraw (
       asset: assetId,
       amount,
       address,
-      crypto_transaction_identifier: tag
+      crypto_transaction_identifier: identifier
     })
   }
 }
