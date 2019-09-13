@@ -16,6 +16,7 @@ import {
 } from './context'
 
 import Starter from './Starter'
+import UpdateVersionScreen from './screens/UpdateVersionScreen'
 import CollectInfoScreen from './screens/CollectInfoScreen'
 import MarketScreen from './screens/MarketScreen'
 import CryptoScreen from './screens/CryptoScreen'
@@ -335,7 +336,7 @@ const App = createSwitchNavigator({
   Auth: AuthStack
 })
 
-export default createStackNavigator(
+const AppContainer = createStackNavigator(
   {
     App: { screen: App },
     Splash: { screen: SplashScreen }
@@ -352,3 +353,8 @@ export default createStackNavigator(
     })
   }
 )
+
+export default createSwitchNavigator({
+  UpdateVersion: UpdateVersionScreen,
+  AppContainer
+})
