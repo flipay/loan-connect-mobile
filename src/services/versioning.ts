@@ -3,9 +3,14 @@ import { getEnv } from '../services/Env'
 import { NetInfo, Alert } from 'react-native'
 import { Updates } from 'expo'
 import * as ErrorReport from './ErrorReport'
+import * as Amplitude from 'expo-analytics-amplitude'
+import Constants from 'expo-constants'
 
 async function checkNewVersion (action: () => void) {
   if (getEnv() !== 'development') {
+    Amplitude.setUserProperties({
+      expo_version: Constants.expoVersion
+    })
     try {
       const { isAvailable } = await Updates.checkForUpdateAsync()
       if (isAvailable) {
