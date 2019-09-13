@@ -355,6 +355,6 @@ const AppContainer = createStackNavigator(
 )
 
 export default createSwitchNavigator({
-  UpdateVersion: UpdateVersionScreen,
-  AppContainer
+  AppContainer,
+  UpdateVersion: UpdateVersionScreen
 })
