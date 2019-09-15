@@ -1,15 +1,52 @@
-
+import axios from 'axios'
+import _ from 'lodash'
+import compareVersions from 'compare-versions'
 import { getEnv } from '../services/Env'
-import { NetInfo, Alert } from 'react-native'
+import { NetInfo, Alert, Platform } from 'react-native'
 import { Updates } from 'expo'
 import * as ErrorReport from './ErrorReport'
+import * as Amplitude from 'expo-analytics-amplitude'
+import Constants from 'expo-constants'
+import { navigate } from '../services/navigation'
+
+async function getLastSupportedVersion () {
+  const request = axios.create({
+    baseURL: 'https://storage.googleapis.com/'
+  })
+  const response = await request.get('last-supported-version/lastSupportedVersions.txt')
+  return _(response.data).split('\n').map(version => {
+    return _.split(version, ':')
+  }).fromPairs().value()
+}
 
 async function checkNewVersion (action: () => void) {
   if (getEnv() !== 'development') {
+
+    const lastSupportedVersions = await getLastSupportedVersion()
+    const nativeVersion = Constants.nativeAppVersion
+    if (!nativeVersion) { throw Error('no native version') }
+    const platform = Platform.OS
+    if (platform !== 'ios' && platform !== 'android') {
+      throw Error('not supported platform')
+    }
+
+    if (compareVersions(nativeVersion, lastSupportedVersions[platform]) < 0) {
+      navigate('UpdateVersion')
+    }
+    Amplitude.setUserProperties({
+      expo_version: Constants.expoVersion
+    })
+
     try {
       const { isAvailable } = await Updates.checkForUpdateAsync()
       if (isAvailable) {
         await action()
+      } else {
+        const expoVersion = Constants.expoVersion
+        if (compareVersions(expoVersion, lastSupportedVersions.expo) < 0) {
+          postError('The app is not up to date.')
+          ErrorReport.message('The app is not up to date.')
+        }
       }
     } catch (err) {
       const { type } = await NetInfo.getConnectionInfo()
@@ -42,6 +79,7 @@ export async function fetchNewVersionIfAvailable () {
 }
 
 function postError (message: string) {
+
   Alert.alert(
     message,
     'Please contact our customer support team',
