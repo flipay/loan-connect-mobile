@@ -7,7 +7,7 @@ export default class UpadateVersionScreen extends React.Component {
     return (
       <View style={styles.screen}>
         <Text>This current version is no longer supported.</Text>
-        <Text style={styles.row}>{`Please update the app in ${Platform.OS === 'android' ? 'App Store' : 'Google Play'}.`}</Text>
+        <Text style={styles.row}>{`Please update the app in ${Platform.OS === 'ios' ? 'App Store' : 'Google Play'}.`}</Text>
       </View>
     )
   }
