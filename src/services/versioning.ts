@@ -42,8 +42,8 @@ async function checkNewVersion (action: () => void) {
       if (isAvailable) {
         await action()
       } else {
-        const expoVersion = Constants.expoVersion
-        if (compareVersions(expoVersion, lastSupportedVersions.expo) < 0) {
+        const otaVersion = Constants.manifest.version || '0'
+        if (compareVersions(otaVersion, lastSupportedVersions.ota) < 0) {
           postError('The app is not up to date.')
           ErrorReport.message('The app is not up to date.')
         }
