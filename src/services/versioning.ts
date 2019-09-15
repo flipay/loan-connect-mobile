@@ -9,35 +9,45 @@ import * as Amplitude from 'expo-analytics-amplitude'
 import Constants from 'expo-constants'
 import { navigate } from '../services/navigation'
 
-async function blockUnsupportedVersion () {
+async function getLastSupportedVersion () {
   const request = axios.create({
     baseURL: 'https://storage.googleapis.com/'
   })
   const response = await request.get('last-supported-version/lastSupportedVersions.txt')
-  const lastSupportedVersions = _(response.data).split('\n').map(version => {
-  return _.split(version, ':')
+  return _(response.data).split('\n').map(version => {
+    return _.split(version, ':')
   }).fromPairs().value()
-  const nativeVersion = Constants.nativeAppVersion
-  if (!nativeVersion) { throw Error('no native version') }
-  const platform = Platform.OS
-  if (platform !== 'ios' && platform !== 'android') {
-    throw Error('not supported platform')
-  }
-  if (compareVersions(nativeVersion, lastSupportedVersions[platform]) < 0) {
-    navigate('UpdateVersion')
-  }
 }
 
 async function checkNewVersion (action: () => void) {
   if (getEnv() !== 'development') {
-    await blockUnsupportedVersion()
+
+    const lastSupportedVersions = getLastSupportedVersion()
+    const nativeVersion = Constants.nativeAppVersion
+    if (!nativeVersion) { throw Error('no native version') }
+    const platform = Platform.OS
+    if (platform !== 'ios' && platform !== 'android') {
+      throw Error('not supported platform')
+    }
+
+    if (compareVersions(nativeVersion, lastSupportedVersions[platform]) < 0) {
+      navigate('UpdateVersion')
+    }
     Amplitude.setUserProperties({
       expo_version: Constants.expoVersion
     })
+
     try {
       const { isAvailable } = await Updates.checkForUpdateAsync()
       if (isAvailable) {
         await action()
+      } else {
+        const expoVersion = Constants.expoVersion
+        if (compareVersions(expoVersion, lastSupportedVersions.expo) < 0) {
+          ErrorReport.notify(
+            Error('The user still uses unsupported version')
+          )
+        }
       }
     } catch (err) {
       const { type } = await NetInfo.getConnectionInfo()
