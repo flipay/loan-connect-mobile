@@ -22,7 +22,7 @@ async function getLastSupportedVersion () {
 async function checkNewVersion (action: () => void) {
   if (getEnv() !== 'development') {
 
-    const lastSupportedVersions = getLastSupportedVersion()
+    const lastSupportedVersions = await getLastSupportedVersion()
     const nativeVersion = Constants.nativeAppVersion
     if (!nativeVersion) { throw Error('no native version') }
     const platform = Platform.OS
