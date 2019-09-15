@@ -34,7 +34,7 @@ async function checkNewVersion (action: () => void) {
       navigate('UpdateVersion')
     }
     Amplitude.setUserProperties({
-      expo_version: Constants.expoVersion
+      ota_version: Constants.manifest.version
     })
 
     try {
