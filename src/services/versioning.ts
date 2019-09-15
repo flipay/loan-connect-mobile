@@ -44,9 +44,8 @@ async function checkNewVersion (action: () => void) {
       } else {
         const expoVersion = Constants.expoVersion
         if (compareVersions(expoVersion, lastSupportedVersions.expo) < 0) {
-          ErrorReport.notify(
-            Error('The user still uses unsupported version')
-          )
+          postError('The app is not up to date.')
+          ErrorReport.message('The app is not up to date.')
         }
       }
     } catch (err) {
@@ -80,6 +79,7 @@ export async function fetchNewVersionIfAvailable () {
 }
 
 function postError (message: string) {
+
   Alert.alert(
     message,
     'Please contact our customer support team',
