@@ -9,13 +9,14 @@ interface Props {
   style?: any
   color?: string
   fontType?: FontType
+  noUnit?: boolean
 }
 
 export default class Price extends React.Component<Props> {
   public render () {
     return (
       <Text color={COLORS.N800} type={this.props.fontType} {...this.props}>
-        {`${showPrice(this.props.children)} THB`}
+        {`${showPrice(this.props.children)}${this.props.noUnit ? '' : ' THB'}`}
       </Text>
     )
   }
