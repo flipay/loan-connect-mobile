@@ -35,7 +35,7 @@ export function setUpRequest (nav: any) {
         )
         shownUnauthorizedAlert = true
       }
-      return Promise.reject(Error('idle'))
+      return new Promise(_.noop)
     } else {
       return Promise.reject(err)
     }
