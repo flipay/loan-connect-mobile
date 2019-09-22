@@ -47,9 +47,7 @@ export function alert (err: Error | string) {
     return Alert.alert(`Something went wrong: ${err}`)
   } else {
     ErrorReport.notify(err)
-    if (err.message === 'idle') {
-      return
-    } else if (getErrorDetail(err)) {
+    if (getErrorDetail(err)) {
       return Alert.alert(`Something went wrong: ${getErrorDetail(err)}`)
     } else {
       console.log('========error object========', JSON.stringify(err, undefined, 2))

@@ -7,6 +7,7 @@ import Text from './Text'
 import OrderTypeIcon from './OrderTypeIcon'
 import Link from './Link'
 import Value from './Value'
+import Price from './Price'
 
 interface Props {
   orderType: OrderType
@@ -23,7 +24,7 @@ export default class PriceSection extends React.Component<Props> {
   public renderPrice () {
     if (this.props.orderType === 'market') {
       return this.props.price ? (
-        <Value assetId='THB'>{this.props.price}</Value>
+        <Price>{this.props.price}</Price>
       ) : (
         <Text color={COLORS.N400}>Waiting for input...</Text>
       )

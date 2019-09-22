@@ -9,12 +9,12 @@ import {
   Button,
   Layer,
   ChangeBox,
-  OrderHistory
+  OrderHistory,
+  Price
 } from '../components'
 import { NavigationScreenProps } from 'react-navigation'
 import { AssetId, OrderSide, Order } from '../types'
 import { ASSETS, COLORS } from '../constants'
-import { toString } from '../utils'
 import { fetchOrdersByAssetId } from '../requests'
 import { logEvent } from '../services/Analytic'
 import { WebView } from 'react-native-webview'
@@ -69,7 +69,7 @@ export default class CryptoScreen extends React.Component<
     return this.renderSection(
       <View style={styles.priceSection}>
         <View style={styles.price}>
-          <Text type='large-title'>{toString(price, ASSETS.THB.decimal)}</Text>
+          <Price fontType='large-title' noUnit={true}>{price}</Price>
           <Text type='headline'>{`  ${ASSETS.THB.unit}`}</Text>
         </View>
         <ChangeBox value={dailyChange} />
