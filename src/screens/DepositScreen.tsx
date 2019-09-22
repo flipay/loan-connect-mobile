@@ -69,6 +69,7 @@ export default class DepositScreen extends React.Component<
     const assetId: AssetId = this.props.navigation.getParam('assetId', 'THB')
     const assetName = ASSETS[assetId].name
     const addressType = assetId === 'THB' ? 'Acc No.' : 'Address'
+    const { additionalLabel } = ASSETS[assetId]
     return this.renderBullet(
       <Text color={COLORS.N700}>
         {`1. Transfer your ${assetName} into the following ${assetId === 'THB' ? 'account' : 'wallet'}.`}
@@ -86,7 +87,7 @@ export default class DepositScreen extends React.Component<
         </View>
         <View>
           {this.renderDetailRow(addressType, ASSETS[assetId].address)}
-          {ASSETS[assetId].tag && this.renderDetailRow('Name tag', ASSETS[assetId].tag)}
+          {!!additionalLabel && this.renderDetailRow(additionalLabel, ASSETS[assetId].additionalValue || '')}
           {assetId === 'THB' && this.renderDetailRow('Name', 'Mr Panumarch Anantachaiwanich')}
         </View>
         <Button

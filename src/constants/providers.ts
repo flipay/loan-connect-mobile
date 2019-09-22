@@ -22,11 +22,6 @@ export const PROVIDERS: Array<Provider> = [
     image: require('../img/company_flipay.png')
   },
   {
-    id: 'bxth',
-    name: 'BX Thailand',
-    image: require('../img/company_bx.png')
-  },
-  {
     id: 'bitkub',
     name: 'Bitkub',
     image: require('../img/company_bitkub.png')

@@ -12,13 +12,13 @@ import { ACCOUNT_ISSUERS, ASSETS } from '../constants'
 import { Issuer, AssetId } from '../types'
 import { logEvent } from '../services/Analytic'
 
-const boxes = ['amount', 'address', 'tag', 'accountName']
+const boxes = ['amount', 'address', 'additionalLabel', 'accountName']
 type Box = typeof boxes[number]
 
 interface State {
   amount: string
   address: string
-  tag: string
+  additionalLabel: string
   accountName: string
   accountIssuer?: Issuer
   submitted: boolean
@@ -34,7 +34,7 @@ export default class WithdrawalScreen extends React.Component<
     this.state = {
       amount: '',
       address: '',
-      tag: '',
+      additionalLabel: '',
       accountName: '',
       accountIssuer: 'kbank',
       submitted: false
@@ -70,7 +70,7 @@ export default class WithdrawalScreen extends React.Component<
     } else if (box === boxes[1]) {
       this.setState({ address: value })
     } else if (box === boxes[2]) {
-      this.setState({ tag: value })
+      this.setState({ additionalLabel: value })
     } else if (box === boxes[3]) {
       this.setState({ accountName: value })
     }
@@ -86,7 +86,7 @@ export default class WithdrawalScreen extends React.Component<
           assetId,
           toNumber(this.state.amount),
           this.state.address,
-          this.state.tag,
+          this.state.additionalLabel,
           this.state.accountName,
           this.state.accountIssuer
         )
@@ -139,6 +139,7 @@ export default class WithdrawalScreen extends React.Component<
     const assetId: AssetId = this.props.navigation.getParam('assetId', 'THB')
     const remainingBalance = this.props.navigation.getParam('remainingBalance')
     const description = `${ASSETS[assetId].name} address`
+    const { additionalLabel } = ASSETS[assetId]
     return (
       <Screen
         backButtonType='close'
@@ -172,11 +173,11 @@ export default class WithdrawalScreen extends React.Component<
                   value={this.state.address}
                   numberPad={assetId === 'THB'}
                 />
-                {ASSETS[assetId].tag && <TextBox
+                {!!additionalLabel && <TextBox
                   style={styles.box}
-                  label='Tag name'
+                  label={additionalLabel}
                   onChangeValue={(value) => this.onChangeValue(boxes[2], value)}
-                  value={this.state.tag}
+                  value={this.state.additionalLabel}
                   numberPad={true}
                 />}
                 {assetId === 'THB' && this.renderCashContent()}
