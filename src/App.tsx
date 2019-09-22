@@ -42,8 +42,8 @@ export default class App extends React.Component<{}, State> {
     if (jailBroken) {
       this.setState({ jailBroken: true })
     } else {
-      await fetchNewVersionIfAvailable()
       await preloadAssets()
+      await fetchNewVersionIfAvailable()
       await fetchMarketPrices()
     }
   }

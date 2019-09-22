@@ -18,8 +18,8 @@ export function setUpRequest (nav: any) {
   axios.interceptors.response.use((response) => {
     return response
   }, (err) => {
-    if (getErrorCode(err) === 'unauthorized' && !timeout) {
-      if (!shownUnauthorizedAlert) {
+    if (getErrorCode(err) === 'unauthorized') {
+      if (!shownUnauthorizedAlert && !timeout) {
         Alert.alert(
           'The login token has expired.',
           'Please login again.',
@@ -35,7 +35,7 @@ export function setUpRequest (nav: any) {
         )
         shownUnauthorizedAlert = true
       }
-      return Promise.reject(Error('idle'))
+      return new Promise(_.noop)
     } else {
       return Promise.reject(err)
     }
