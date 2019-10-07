@@ -1,5 +1,5 @@
 import { YellowBox } from 'react-native'
-import Sentry from 'sentry-expo'
+import * as Sentry from 'sentry-expo'
 import bugsnag, { Bugsnag } from '@bugsnag/expo'
 import { getEnv } from './Env'
 
@@ -13,15 +13,16 @@ export function initialize () {
   const notifyReleaseStages = ['production', 'staging']
   if (developmentEnabled) {
     notifyReleaseStages.push('development')
-    Sentry.enableInExpoDevelopment = true
   }
   bugsnagClient = bugsnag({
     releaseStage: getEnv(),
     notifyReleaseStages
   })
-  Sentry.config(
-    'https://7461bec2f42c41cdafde6f0048ac0047@sentry.io/1438488'
-  ).install()
+  Sentry.init({
+    dsn: 'https://7461bec2f42c41cdafde6f0048ac0047@sentry.io/1438488',
+    enableInExpoDevelopment: true,
+    debug: true
+  })
   initialized = true
 }
 
@@ -38,13 +39,15 @@ function createErrorReportFunction (action: any) {
 
 export const setUserContext = createErrorReportFunction(
   (uid: string, name: string , email: string, phoneNumber: string) => {
-    Sentry.setUserContext({
-      id: uid,
-      email,
-      extra: {
-        name,
-        phoneNumber
-      }
+    Sentry.configureScope((scope) => {
+      scope.setUser({
+        id: uid,
+        email,
+        extra: {
+          name,
+          phoneNumber
+        }
+      })
     })
   }
 )
@@ -58,7 +61,7 @@ export const notify = createErrorReportFunction(
 
 export const message = createErrorReportFunction(
   (text: string) => {
-    Sentry.captureBreadcrumb({ message: text })
+    Sentry.addBreadcrumb({ message: text })
     bugsnagClient.leaveBreadcrumb(text)
   }
 )
